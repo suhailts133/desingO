@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\Users\\suhai\\OneDrive\\Desktop\\designO\\backend\\logs\\.00cfb98ced87281cd6901f86874188db984fd343-audit.json",
+    "files": [
+        {
+            "date": 1773758661696,
+            "name": "C:\\Users\\suhai\\OneDrive\\Desktop\\designO\\backend\\logs\\error-2026-03-17.log",
+            "hash": "d2ff08eb6cc74db4b2ce163ebce7cacd1875886bb126b7bf429f270705336267"
+        }
+    ],
+    "hashType": "sha256"
+}

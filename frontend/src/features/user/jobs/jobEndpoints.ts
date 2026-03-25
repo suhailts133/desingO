@@ -1,0 +1,72 @@
+import { API_ROUTES } from "../../../api/apiRoutes";
+import { baseApi } from "../../../api/baseApi";
+import type { IApiResponse, IApiResponseWithPagination } from "../../../api/responseType";
+import type { IJobRequestPayload, JobRequestDetailDTO, JobsCommonResponseDTO, JobsQueryParms, JobsResponseDTO } from "./jobInterface";
+
+export const jobsApi = baseApi.injectEndpoints({
+    endpoints: (builder) => ({
+        postJob: builder.mutation<IApiResponse, IJobRequestPayload>({
+            query: (body: IJobRequestPayload) => ({
+                url: API_ROUTES.CUSTOMER.POST_JOB,
+                method: "POST",
+                body
+            }),
+            invalidatesTags: ["jobs"]
+        }),
+
+        getMyJobs: builder.query<IApiResponseWithPagination<JobsResponseDTO[]>, { page: number }>({
+            query: ({ page }) => ({
+                url: API_ROUTES.CUSTOMER.MY_JOBS,
+                method: "GET",
+                params: { page }
+            }),
+            providesTags: ["jobs"]
+        }),
+
+        getAJobRequestDetail: builder.query<IApiResponse<JobRequestDetailDTO>, string>({
+            query: (id) => ({
+                url: `${API_ROUTES.CUSTOMER.JOB_DETAIL}/${id}`,
+                method: "GET"
+            }),
+            providesTags: (_result, _error, id) => [{ type: "jobs", id }]
+        }),
+
+        deleteAJob: builder.mutation<IApiResponse, string>({
+            query: (id) => ({
+                url: `${API_ROUTES.CUSTOMER.JOB_DELETE}/${id}`,
+                method: "DELETE"
+            }),
+            invalidatesTags: ["jobs"]
+        }),
+
+        getAllJobsCommon: builder.query<IApiResponseWithPagination<JobsCommonResponseDTO[]>, JobsQueryParms>({
+            query: (args) => {
+                const designStyles = args.designStyles?.map(s => s.label).join(",") || "";
+                const propertyTypes = args.propertyTypes?.map(s => s.label).join(",") || "";
+                const timeLines = args.timeLines?.map(s => s.label).join(",") || "";
+                const sortBy = args.sortBy?.value || "";
+
+                return {
+                    url: API_ROUTES.CUSTOMER.JOBS,
+                    method: "GET",
+                    params: {
+                        page: args.page,
+                        ...(designStyles && { designStyles }),
+                        ...(propertyTypes && { propertyTypes }),
+                        ...(timeLines && { timeLines }),
+                        ...(sortBy && { sortBy }),
+                    },
+                }
+            }
+        })
+    })
+})
+
+
+export const {
+    usePostJobMutation,
+    useGetMyJobsQuery,
+    useGetAJobRequestDetailQuery,
+    useGetAllJobsCommonQuery,
+    useDeleteAJobMutation
+} = jobsApi

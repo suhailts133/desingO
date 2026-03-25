@@ -1,0 +1,76 @@
+import { string } from "joi";
+import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
+
+export interface DesignFiles {
+    coverImage: Express.Multer.File
+    gallery: Express.Multer.File[]
+
+}
+
+export interface AddDesignRequestDTO {
+    name: string;
+    propertyType: string
+    startingPrice: string;
+    district: string;
+    services: string[];
+    designStyles: string[]
+    description: string,
+    spaceType: string
+}
+
+
+export interface createDesignDTO extends AddDesignRequestDTO {
+    userId: string;
+    coverImage: ImageUploadResult;
+    gallery: ImageUploadResult[]
+}
+
+
+
+export interface getAllDesignsResponseDTO {
+    name: string
+    coverImage: string,
+    price: string,
+    description: string
+    id: string
+}
+
+
+
+
+
+
+export interface DesignDetailResponseDTO {
+    id: string;
+    designerName: string;
+    designName: string;
+    propertyType: string;
+    spaceType: string;
+    startingPrice: string;
+    services: string[];
+    designStyles: string[];
+    description: string;
+    coverImage: string;
+    gallery: string[];
+    createdAt: string;
+}
+
+
+export interface DesignFilter{
+    page?:string,
+    designStyles?:string
+    propertyTypes?:string
+    spaceTypes?:string
+    sortBy?:string
+}
+
+
+export interface GetAllDesignCommonResponseDTO{
+    id:string
+    name:string,
+    spaceType:string,
+    designStyles:string[]
+    coverImage:string,
+    budget:string,
+    designerName:string
+}

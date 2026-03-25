@@ -1,0 +1,109 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+
+@font-face {
+    font-family: "Dynalight";
+    src: url("./assets/fonts/Dynalight-Regular.ttf");
+}
+
+@font-face {
+    font-family: "jostSemiBold";
+    src: url("./assets/fonts/Jost-SemiBold.ttf");
+}
+
+@font-face {
+    font-family: "jostRegular";
+    src: url("./assets/fonts/Jost-Regular.ttf");
+}
+
+@font-face {
+    font-family: "DMsansLight";
+    src: url("./assets/fonts/DMSans_18pt-Light.ttf");
+}
+
+@theme {
+    --color-error: #C0503A;
+    --color-success: #2F8F5B;
+    --color-soft-black: #7A5C54;
+    --color-blush: #D9A090;
+    /* warm clay rose */
+    --color-blush-deep: #B86040;
+    /* rich clay */
+    --color-peach: #DDB070;
+    /* warm amber */
+    --color-blush-pale: #F2E0D8;
+    /* pale clay */
+    --color-blush-light: #E8C8BC;
+    /* soft clay rose */
+    --color-powder-petal: #EDD4A8;
+    /* warm petal sand */
+    --color-peach-glow: #DDB855;
+    /* golden amber glow */
+    --color-seashell-tint: #FAF0E8;
+    /* warm seashell */
+    --color-off-white: #F7E8DF;
+    /* warm ivory */
+    --color-linen-rose: #FFF0EB;
+    /* deep linen */
+    --color-snow-white: #FFFCFB;
+    --color-off-white: #FAF9F6
+    /* warm snow */
+}
+
+
+
+@theme {
+    --font-Dynalight-Regular: "Dynalight";
+    --font-Jost-Semibold: "jostSemiBold";
+    --font-Jost-Regular: "jostRegular";
+    --font-dm-sans-light: "DMsansLight";
+    --text-xxs: 10px
+
+}
+
+.bg-gradient {
+    background: linear-gradient(135deg, #f8edeb 0%, #fcd5ce 30%, #f9dcc4 65%, #fec89a 100%);
+}
+
+.glow-hover:hover {
+    box-shadow: 0 0 25px #e8845a;
+}
+
+.auth-input {
+    @apply w-full text-soft-black px-4 py-2 border border-gray-300 rounded-lg shadow-md bg-transparent focus:outline-none focus:border-blush-deep focus:ring focus:ring-blush-deep hover:border-blush hover:ring hover:ring-blush transition-all duration-300;
+}
+
+
+.navabr-mobile-menu {
+    @apply hover:border-b text-center font-Jost-Semibold text-sm px-6 py-2 cursor-pointer hover:scale-105 border-soft-black transition-all duration-200
+}
+
+.auth-disabled-button {
+    @apply mt-3 w-full text-white font-Jost-Semibold py-2.5 rounded-lg bg-linear-to-r from-blush-deep via-blush to-peach transition-all duration-300 hover:brightness-110 hover:scale-110 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:brightness-100
+}
+
+.auth-button {
+    @apply mt-3 w-full text-white font-Jost-Semibold py-2.5 rounded-lg bg-linear-to-r from-blush-deep via-blush to-peach transition-all duration-300 hover:brightness-110 hover:scale-110
+}
+
+.google-button {
+    @apply font-Jost-Semibold text-white w-full bg-linear-to-r from-peach via-blush to-blush-deep/85 hover:brightness-110 hover:scale-110 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center mr-2 mb-2 transition-all duration-300
+}
+
+.gradient-button {
+    @apply flex items-center gap-2 mt-3 p-5 text-white font-Jost-Semibold py-2.5 rounded-lg bg-linear-to-r from-blush-deep via-blush to-peach transition-all duration-300 hover:brightness-110 hover:scale-110
+}
+
+@layer base {
+
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: #7A5C54;
+        transition: background-color 5000s ease-in-out 0s;
+        /* box-shadow: inset 0 0 20px 20px #23232329; */
+    }
+
+}
