@@ -114,7 +114,6 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
             if (JobFilter.sortBy === "za") {
                 sortOrder = { projectTitle: -1 }
             }
-
         }
         const result = await this._model.find(query)
             .populate<{ userId: IUser }>("userId")
@@ -145,6 +144,7 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
                 rooms: data.rooms.length
             }
         })
+        console.log(output)
 
         return { data: output, pagination }
     }

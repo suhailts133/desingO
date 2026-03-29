@@ -7,6 +7,7 @@ import connectRedis from "./config/redis.js";
 import adminRoutes from "./routes/adminRoutes.js"
 import designerRoutes from "./routes/designerRoutes.js"
 import customerRoutes from "./routes/customerRoutes.js"
+import designRoutes from "./routes/designRoutes.js"
 // import passport from "passport";
 dotenv.config();
 const app = express();
@@ -21,6 +22,7 @@ app.use("/api/auth", authRoutes)
 app.use("/api/admin", adminRoutes)
 app.use("/api/designer", designerRoutes)
 app.use("/api/customer", customerRoutes)
+app.use("/api/design", designRoutes)
 
 
 

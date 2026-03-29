@@ -22,18 +22,21 @@ export const API_ROUTES = {
     },
     DESIGNER: {
         DESIGNER_VERIFICATION: "/designer/designer-verification",
-        ADD_DESIGN: "/designer/add-design",
-        MY_DESIGNS: "/designer/my-designs",
-        DESIGN_DETAIL: "/designer/designs",
-        DESIGNS: "/designer/designs",
-        DESIGN_DELETE: "/designer/designs",
+
+    },
+    DESIGNS: {
+        ADD_DESIGN: "/design/add-design",
+        MY_DESIGNS: "/design/my-designs",
+        DESIGN_DETAIL: "/design/designs",
+        DESIGNS: "/design/designs",
+        DESIGN_DELETE: "/design/designs",
     },
     CUSTOMER: {
         POST_JOB: "customer/post-job",
         MY_JOBS: "customer/my-jobs",
         JOB_DETAIL: "customer/jobs",
-        JOBS:"/customer/jobs",
-        JOB_DELETE:"/customer/jobs"
+        JOBS: "/customer/jobs",
+        JOB_DELETE: "/customer/jobs"
 
     },
 } as const

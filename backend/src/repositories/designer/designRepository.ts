@@ -92,7 +92,7 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
             }
         }
 
-        let sortOrder: any = { createdAt: -1 };
+        let sortOrder: any = { createdAt: 1 };
         if (designFilter?.sortBy) {
             if (designFilter.sortBy === "price_asc") {
                 sortOrder = { startingPrice: 1 }

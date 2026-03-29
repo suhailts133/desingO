@@ -1,4 +1,3 @@
-import { string } from "joi";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
 
 export interface DesignFiles {
@@ -34,9 +33,6 @@ export interface getAllDesignsResponseDTO {
     description: string
     id: string
 }
-
-
-
 
 
 

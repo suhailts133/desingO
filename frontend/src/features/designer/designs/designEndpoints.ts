@@ -7,7 +7,7 @@ export const designApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getAllDesign: builder.query<IApiResponseWithPagination<DesignResponseDTO[]>, { page: number }>({
             query: ({ page }) => ({
-                url: API_ROUTES.DESIGNER.MY_DESIGNS,
+                url: API_ROUTES.DESIGNS.MY_DESIGNS,
                 method: "GET",
                 params: {
                     page
@@ -17,7 +17,7 @@ export const designApi = baseApi.injectEndpoints({
         }),
         addDesign: builder.mutation<IApiResponse, FormData>({
             query: (formData: FormData) => ({
-                url: API_ROUTES.DESIGNER.ADD_DESIGN,
+                url: API_ROUTES.DESIGNS.ADD_DESIGN,
                 method: "POST",
                 body: formData
             }),
@@ -25,7 +25,7 @@ export const designApi = baseApi.injectEndpoints({
         }),
         getDesignDetail: builder.query<IApiResponse<DesignDetailResponseDTO>, string>({
             query: (id) => ({
-                url: `${API_ROUTES.DESIGNER.DESIGN_DETAIL}/${id}`,
+                url: `${API_ROUTES.DESIGNS.DESIGN_DETAIL}/${id}`,
                 method: "GET"
             }),
             providesTags: (_result, _error, id) => [{ type: "designs", id }]
@@ -33,7 +33,7 @@ export const designApi = baseApi.injectEndpoints({
 
         deleteADesign: builder.mutation<IApiResponse, string>({
             query: (id) => ({
-                url: `${API_ROUTES.DESIGNER.DESIGN_DELETE}/${id}`,
+                url: `${API_ROUTES.DESIGNS.DESIGN_DELETE}/${id}`,
                 method: "DELETE"
             }),
             invalidatesTags: ["designs"]
@@ -46,7 +46,7 @@ export const designApi = baseApi.injectEndpoints({
                 const sortBy = args.sortBy?.value || "";
 
                 return {
-                    url: API_ROUTES.DESIGNER.DESIGNS,
+                    url: API_ROUTES.DESIGNS.DESIGNS,
                     method: "GET",
                     params: {
                         page: args.page,
