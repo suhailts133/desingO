@@ -1,5 +1,5 @@
 import type { Request, Response } from "express"
-import { ensureError } from "../helpers/ensureError.js"
+import { ensureError } from "../helpers/errors/ensureError.js"
 import { designerVeificationDataValidator } from "../validators/designers/designerVerificationValidator.js"
 import { RespsonseHelper } from "../helpers/responseHelper.js"
 import { RESPONSE_CODE } from "../helpers/enums/statusCode.js"

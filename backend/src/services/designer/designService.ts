@@ -5,7 +5,7 @@ import type { IDesignService } from "../../interfaces/designer/IDesignerService.
 import type { AddDesignRequestDTO, createDesignDTO, DesignDetailResponseDTO, DesignFiles, DesignFilter, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO.js";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
 import { CLOUDINARY_FOLDER_NAME } from "../../helpers/enums/commonEnums.js";
-import { ensureError } from "../../helpers/ensureError.js";
+import { ensureError } from "../../helpers/errors/ensureError.js";
 export class DesignService implements IDesignService {
 
     constructor(private _designRepository: IDesignRepository, private _imageUploder: IImageUploaderService,) { }

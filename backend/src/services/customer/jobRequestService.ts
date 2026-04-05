@@ -1,5 +1,5 @@
 import type { JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO.js";
-import { ensureError } from "../../helpers/ensureError.js";
+import { ensureError } from "../../helpers/errors/ensureError.js";
 import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
 import type { ICreateJobRequest } from "../../interfaces/customer/ICustomer.js";

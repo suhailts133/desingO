@@ -15,4 +15,6 @@ export class RespsonseHelper{
     static error(res:Response,message:string, error:string,statusCode:number){
         return res.status(statusCode).json({success:false, error,message})
     }
+
+    // static successNew<T>(res:Response, data)
 }

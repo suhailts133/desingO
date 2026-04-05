@@ -1,7 +1,7 @@
 import { MapPin, Clock, Wallet, BedDouble, Ruler, Phone, Tag, ChevronLeft, User, Calendar } from "lucide-react";
 
 import { useState } from "react";
-import AddBidForm from "./AddBidForm";
+import ApplyForJob from "./AddBidForm";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetAJobRequestDetailQuery } from "../jobEndpoints";
 
@@ -14,7 +14,7 @@ export default function JobRequestDetail() {
     const navigate = useNavigate()
     const { data, isLoading, error } = useGetAJobRequestDetailQuery(id!, { skip: !id })
     const job = data?.data
-    console.log(job)
+   
     if (isLoading) {
         return <div className="p-10 text-center animate-pulse text-gray-400">Loading Job Request Details...</div>;
     }
@@ -25,10 +25,10 @@ export default function JobRequestDetail() {
     return (
         <div className="max-w-5xl mx-auto px-4 py-10">
 
-      
+
             <button onClick={() => navigate(-1)} className="flex items-center mb-4 text-sm text-soft-black hover:underline">
                 <ChevronLeft className="w-4 h-4" />
-                 Back
+                Back
             </button>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -43,7 +43,7 @@ export default function JobRequestDetail() {
                                 <h1 className="font-Jost-Semibold text-2xl text-soft-black leading-snug">
                                     {job.projectTitle}
                                 </h1>
-                                
+
                             </div>
 
                             <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400 mb-5">
@@ -137,13 +137,13 @@ export default function JobRequestDetail() {
                     </div>
 
                     {modalType && (
-                        <AddBidForm onClose={() => setModalType(false)} />
+                        <ApplyForJob onClose={() => setModalType(false)} jobId={job.id} />
                     )}
                     <button
                         onClick={() => setModalType(true)}
                         className="auth-button w-full"
                     >
-                        Post Your Bid
+                        Apply for job
                     </button>
 
                 </div>

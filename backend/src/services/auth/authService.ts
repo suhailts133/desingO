@@ -3,7 +3,7 @@ import generateOtp from "../../helpers/jwt/generateOTP.js";
 import sendVerificationEmail from "../../helpers/emails/sendOTP.js";
 import { comparePassword, hashPassword } from "../../helpers/hashPassword.js";
 import { jwtAccessToken } from "../../helpers/jwt/jsonTokenCreater.js";
-import { ensureError } from "../../helpers/ensureError.js";
+import { ensureError } from "../../helpers/errors/ensureError.js";
 import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
 import { jwtRefreshToken, refeshTokenVerificaion } from "../../helpers/jwt/refreshToken.js";
 // Interfaces / Repositories

@@ -1,4 +1,4 @@
-import { ensureError } from "../helpers/ensureError.js";
+import { ensureError } from "../helpers/errors/ensureError.js";
 import type { IAdminDesignerVerificatoinServices, IAdminUserManagementService } from "../interfaces/admin/IAdminService.js";
 import type { Request, Response } from "express";
 import { RespsonseHelper } from "../helpers/responseHelper.js";

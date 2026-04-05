@@ -68,7 +68,7 @@ export interface IDesign {
 
 interface DesignDetailResponseDTO {
     id: string;
-    designerName:string
+    designerName: string
     designname: string;
     propertyType: string
     spaceType: string
@@ -81,3 +81,15 @@ interface DesignDetailResponseDTO {
     gallery: string[];
     createdAt: Date;
 }
+
+export type JobApplicationStatus = "Pending" | "Approved" | "Rejected" | "Ongoing"
+
+export interface IJobApplication {
+    userId: mongoose.Types.ObjectId
+    jobId: mongoose.Types.ObjectId
+    status: JobApplicationStatus,
+    rejectionReason?: string
+    createdAt: Date
+}
+
+

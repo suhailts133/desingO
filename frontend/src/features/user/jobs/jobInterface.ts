@@ -56,7 +56,8 @@ export interface JobRequestDetailDTO extends IJobRequestPayload {
     name: string,
     createdAt: string,
     userCreatedAt: string,
-    status: JobStatus
+    status: JobStatus,
+    id:string
 }
 
 

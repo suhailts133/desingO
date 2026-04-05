@@ -13,7 +13,7 @@ import {
 
 // Helpers
 import { RespsonseHelper } from "../helpers/responseHelper.js";
-import { ensureError } from "../helpers/ensureError.js";
+import { ensureError } from "../helpers/errors/ensureError.js";
 import { RESPONSE_CODE } from "../helpers/enums/statusCode.js";
 
 

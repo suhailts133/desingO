@@ -1,5 +1,5 @@
 import type { AdminUsersResponseDTO, AdminUserToggleStatusDTO, UserFilterDTO } from "../../DTO/admin/adminDTO.js";
-import { ensureError } from "../../helpers/ensureError.js";
+import { ensureError } from "../../helpers/errors/ensureError.js";
 import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
 import type { IAdminUserManagementService } from "../../interfaces/admin/IAdminService.js";
 import type { IUserManagementRepository } from "../../interfaces/admin/IUserManagementRepository.js";

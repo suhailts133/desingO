@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { ensureError } from "../ensureError.js";
+import { ensureError } from "../errors/ensureError.js";
 
 export const sendDesignerVerificationEmail = async (
     email: string,

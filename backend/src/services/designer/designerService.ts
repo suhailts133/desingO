@@ -4,7 +4,7 @@ import type { DesignerVerificationFiles, IEducation, IWorkExperience } from "../
 import type { IDesignerService } from "../../interfaces/designer/IDesignerService.js";
 import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
 import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
-import { ensureError } from "../../helpers/ensureError.js";
+import { ensureError } from "../../helpers/errors/ensureError.js";
 import type { IDesignerRepository } from "../../interfaces/designer/IDesignerRepository.js";
 import { sendDesignerVerificationEmail } from "../../helpers/emails/designerVerificationEmail.js";
 

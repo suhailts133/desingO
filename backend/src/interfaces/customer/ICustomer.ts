@@ -27,7 +27,15 @@ export interface IJobRequest {
     description: string;
     rooms: IRoomMeasurement[];
     status: JobStatus
-    createdAt:Date
+    createdAt: Date
 }
 
 export type ICreateJobRequest = Omit<IJobRequest, "id" | "userId" | "status">
+
+
+
+export interface IBid {
+    timeLine: string
+    amount: number,
+    description: string
+}

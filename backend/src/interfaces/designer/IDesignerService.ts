@@ -1,5 +1,6 @@
 import type { AddDesignRequestDTO, DesignDetailResponseDTO, DesignFiles, DesignFilter, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO.js";
 import type { DesignerVerificationBodyDTO } from "../../DTO/designer/designerVerificationDTOs.js";
+import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobAllicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO.js";
 import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse.js";
 import type { DesignerVerificationFiles } from "./IDesigner.js";
 
@@ -15,4 +16,13 @@ export interface IDesignService {
     getDesignDetail(designId: string): Promise<IApiResponse<DesignDetailResponseDTO>>
     getAllDesignCommon(designFilter?: DesignFilter): Promise<IApiResponseWithPagination<GetAllDesignCommonResponseDTO[]>>
     deleteADesign(id: string): Promise<IApiResponse>
+}
+
+
+export interface IJobApplicationService {
+    applyForJob(data: IJobApplicationRequestDTO): Promise<IApiResponse>
+    deleteJobApplication(id: string): Promise<IApiResponse>
+    approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRejectionRequestDTO): Promise<IApiResponse<JobApplicationApprovalOrRejectionResponseDTO>>
+    getMyJobApplications(userId: string, filters?: JobAllicationFilter): Promise<IApiResponseWithPagination<MyJobApplicationsDTO[]>>
+    getAllJobApplications(filters?: JobAllicationFilter): Promise<IApiResponseWithPagination<AllJobApplicationsDTO[]>>
 }

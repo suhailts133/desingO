@@ -1,5 +1,5 @@
 import type { DesignerFilterDTO, AdminDesignersResponseDTO, AdminDesignerRequestResponseDTO, AdminDesignerApprovalDTO, AdminDesignerStatusDTO } from "../../DTO/admin/adminDTO.js";
-import { ensureError } from "../../helpers/ensureError.js";
+import { ensureError } from "../../helpers/errors/ensureError.js";
 import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
 import type { IAdminDesignerVerificatoinServices } from "../../interfaces/admin/IAdminService.js";
 import type { IDesignerVerificationRepository } from "../../interfaces/admin/IDesignerVerificationRespository.js";

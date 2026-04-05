@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import { ensureError } from "../ensureError.js";
+import { ensureError } from "../errors/ensureError.js";
 
 
 type Role = "Customer" | "Admin" | "Designer"

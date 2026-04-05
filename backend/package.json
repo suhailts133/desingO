@@ -7,7 +7,7 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "lint": "eslint src",
-    "lint:fix":"eslint src --fix"
+    "lint:fix": "eslint src --fix"
   },
   "keywords": [],
   "type": "module",
@@ -23,6 +23,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "express-async-handler": "^1.2.0",
     "google-auth-library": "^10.6.1",
     "joi": "^18.0.2",
     "jsonwebtoken": "^9.0.3",
