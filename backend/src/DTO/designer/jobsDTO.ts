@@ -7,8 +7,9 @@ export interface IJobApplicationRequestDTO {
 }
 
 export interface JobApplicationApprovalOrRejectionRequestDTO {
-    status: "Approved" | "Rejected",
+    status: "Ongoing" | "Rejected",
     rejectionReason?: string,
+    jobId:string
 }
 
 export interface JobApplicationApprovalOrRejectionResponseDTO extends JobApplicationApprovalOrRejectionRequestDTO {
@@ -21,6 +22,12 @@ export interface MyJobApplicationsDTO {
     jobId: string,
     jobTitle: string
     id: string
+    propertyType:string,
+    timeLine:string,
+    numberOfRooms:number,
+    description:string
+    createdOn:string
+
 }
 
 export interface AllJobApplicationsDTO {
@@ -30,9 +37,12 @@ export interface AllJobApplicationsDTO {
     jobTitle: string
     designerId: string,
     designerName: string
+    propertyType:string,
+    timeLine:string
+    id:string
 }
 
-export interface JobAllicationFilter {
+export interface JobApplicationFilter {
     page?: string,
     status?: JobApplicationStatus,
 }

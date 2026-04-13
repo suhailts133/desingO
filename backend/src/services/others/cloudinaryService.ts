@@ -31,4 +31,18 @@ export class CloudinaryService implements IImageUploaderService {
             files.map(f => this.upload(f, folder))
         )
     }
+
+    async delete(publicId: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            cloudinary.uploader.destroy(publicId, (error, result) => {
+                if (error) {
+                    return reject(error);
+                }
+                if (result.result !== 'ok' && result.result !== 'not found') {
+                    return reject(new Error(`Cloudinary delete failed: ${result.result}`));
+                }
+                resolve();
+            });
+        });
+    }
 }

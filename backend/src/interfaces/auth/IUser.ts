@@ -1,3 +1,5 @@
+import type { ImageUploadResult } from "../base/IImageUpload.js";
+
 export type UserRole = "Admin" | "Customer" | "Designer";
 
 export interface IUser {
@@ -14,7 +16,7 @@ export interface IUser {
   profile_image_url?: string;
   location?: string;
   phone?: string;
-  bio?: string;
+  profileImage?:ImageUploadResult
   landmark?: string;
 }
 

@@ -34,7 +34,6 @@ export class UserRepository extends BaseRepository<IUser> implements IUserReposi
 
     async updateUser(id: string, filters: Partial<IUser>): Promise<IUser | null> {
         const result = await this.update(id, filters);
-        console.log("repo out: ", result)
         if (!result) {
             return null
         }
@@ -56,6 +55,14 @@ export class UserRepository extends BaseRepository<IUser> implements IUserReposi
     async changePassword(email: string, password: string): Promise<boolean> {
         const result = await this._model.updateOne({ email }, { $set: { password } }).exec()
         return result.matchedCount > 0;
+    }
+
+    async findUserById(id: string): Promise<IUser | null> {
+        const result = await this.findById(id);
+        if(!result){
+            return null
+        }
+        return result
     }
 }
 

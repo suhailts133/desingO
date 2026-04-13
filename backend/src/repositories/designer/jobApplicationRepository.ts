@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobAllicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO.js";
+import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO.js";
 import type { IJobApplication } from "../../interfaces/designer/IDesigner.js";
 import type { IJobApplicationRepository } from "../../interfaces/designer/IDesignerRepository.js";
 import { JobApplicationModel } from "../../models/designer/jobApplicationModel.js";
@@ -14,9 +14,31 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
         super(JobApplicationModel)
     }
 
-    async applyForJob(data: IJobApplicationRequestDTO): Promise<void> {
+
+    
+    async changeStatusForPendingUser(id: string, jobId: string): Promise<void> {
+
+        const res = await this._model.updateMany(
+            {
+                _id: { $ne: id },
+                jobId: jobId,
+                status: "Pending"
+            },
+            {
+                $set: {
+                    status: "Rejected",
+                    rejectionReason: "Already accepted another job application."
+                }
+            }
+        )
+        console.log(res)
+
+    }
+
+    async applyForJob(customerId: string, data: IJobApplicationRequestDTO): Promise<void> {
         await this.create({
-            userId: new mongoose.Types.ObjectId(data.userId),
+            designerId: new mongoose.Types.ObjectId(data.userId),
+            customerId: new mongoose.Types.ObjectId(customerId),
             jobId: new mongoose.Types.ObjectId(data.jobId)
         })
 
@@ -38,18 +60,18 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
             return null
         }
         const output: JobApplicationApprovalOrRejectionResponseDTO = {
-            status: result.status as "Approved" | "Rejected",
+            status: result.status as "Ongoing" | "Rejected",
             ...(result.rejectionReason && { rejectionReason: result.rejectionReason }),
             jobId: result._id.toString()
         }
         return output
     }
 
-    async getMyJobApplications(userId: string, filters?: JobAllicationFilter): Promise<{ data: MyJobApplicationsDTO[]; pagination: Pagination; }> {
+    async getMyJobApplications(userId: string, filters?: JobApplicationFilter): Promise<{ data: MyJobApplicationsDTO[]; pagination: Pagination; }> {
         const page = filters?.page ? Number(filters.page) : 1;
         const limit = 9;
         const skip = (page - 1) * limit;
-        const query: QueryFilter<IJobApplication> = { userId: userId };
+        const query: QueryFilter<IJobApplication> = { designerId: userId };
         if (filters) {
             if (filters.status) {
                 query.status = filters.status
@@ -73,18 +95,23 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
                 id: data.id,
                 status: data.status,
                 ...(data.rejectionReason && { rejectionReason: data.rejectionReason }),
-                jobId: data.jobId.toString(),
-                jobTitle: data.jobId.projectTitle
+                jobId: data.jobId.id,
+                jobTitle: data.jobId.projectTitle,
+                propertyType: data.jobId.propertyType,
+                timeLine: data.jobId.timeline,
+                numberOfRooms: data.jobId.rooms.length,
+                description: data.jobId.description,
+                createdOn: data.createdAt.toDateString()
             }
         })
         return { data: output, pagination }
     }
 
-    async getAllJobApplications(filters?: JobAllicationFilter): Promise<{ data: AllJobApplicationsDTO[]; pagination: Pagination; }> {
+    async getAllJobApplications(userId: string, filters?: JobApplicationFilter): Promise<{ data: AllJobApplicationsDTO[]; pagination: Pagination; }> {
         const page = filters?.page ? Number(filters.page) : 1;
         const limit = 9;
         const skip = (page - 1) * limit;
-        const query: QueryFilter<IJobApplication> = {};
+        const query: QueryFilter<IJobApplication> = { customerId: userId };
         if (filters) {
             if (filters.status) {
                 query.status = filters.status
@@ -92,11 +119,12 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
         }
         const result = await this._model.find(query)
             .populate<{ jobId: IJobRequest }>("jobId")
-            .populate<{ userId: IUser }>("userId")
+            .populate<{ designerId: IUser }>("designerId")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
             .exec()
+
 
         const total = await this._model.countDocuments(query)
         const pagination: Pagination = {
@@ -105,12 +133,16 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
         }
         const output: AllJobApplicationsDTO[] = result.map(data => ({
             status: data.status,
-            jobId: data.jobId.toString(),
+            jobId: data.jobId.id,
             jobTitle: data.jobId.projectTitle,
-            designerId: data.userId.id,
-            designerName: data.userId.full_name,
+            designerId: data.designerId.id,
+            designerName: data.designerId.full_name,
             ...(data.rejectionReason && { rejectionReason: data.rejectionReason }),
+            propertyType: data.jobId.propertyType,
+            timeLine: data.jobId.timeline,
+            id: data.id
         }))
+
 
         return { data: output, pagination }
     }

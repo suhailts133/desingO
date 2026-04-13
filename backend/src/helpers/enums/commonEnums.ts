@@ -17,7 +17,8 @@ export enum CLOUDINARY_FOLDER_NAME {
     WORK_PROOF = "designer/proof",
     GOVT = "designer/govt-id",
     COVER_IMAGES = "designer/coverImages",
-    GALLERY = "designer/gallery"
+    GALLERY = "designer/gallery",
+    PROFILE_IMAGES = "common/profileImages"
 }
 
 

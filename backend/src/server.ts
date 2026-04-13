@@ -8,6 +8,9 @@ import adminRoutes from "./routes/adminRoutes.js"
 import designerRoutes from "./routes/designerRoutes.js"
 import customerRoutes from "./routes/customerRoutes.js"
 import designRoutes from "./routes/designRoutes.js"
+import jobApplicationRoutes from "./routes/jobApplicationRoutes.js"
+import profileRoutes from "./routes/profileRoutes.js"
+import { globalErrorHandler } from "./middlewares/globalErrorHandler.js";
 // import passport from "passport";
 dotenv.config();
 const app = express();
@@ -23,7 +26,9 @@ app.use("/api/admin", adminRoutes)
 app.use("/api/designer", designerRoutes)
 app.use("/api/customer", customerRoutes)
 app.use("/api/design", designRoutes)
-
+app.use("/api/job-application", jobApplicationRoutes)
+app.use("/api/profile", profileRoutes)
+app.use(globalErrorHandler)
 
 
 

@@ -7,4 +7,5 @@ export interface IUserRepository{
     changePassword(email:string, password:string):Promise<boolean>;
     findUser(email:string):Promise<IUser | null>;
     updateUser(id:string, filters:Partial<IUser>):Promise<IUser | null>
+    findUserById(id:string):Promise<IUser | null>
 }

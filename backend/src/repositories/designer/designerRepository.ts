@@ -4,6 +4,7 @@ import type { IDesigner } from "../../interfaces/designer/IDesigner.js";
 import type { IDesignerRepository } from "../../interfaces/designer/IDesignerRepository.js";
 import { DesignerModel } from "../../models/designer/designerModel.js";
 import { BaseRepository } from "../baseRepository.js";
+import type { DesignerUpdateRequestDTO } from "../../DTO/profile/profileDTO.js";
 
 export class DesignerRepository extends BaseRepository<IDesigner> implements IDesignerRepository {
     constructor() {
@@ -13,7 +14,7 @@ export class DesignerRepository extends BaseRepository<IDesigner> implements IDe
     async createDesignerRequest(data: DesignerVerificationDTO): Promise<boolean> {
         const result = await this.create({
             ...data,
-            userId:new mongoose.Types.ObjectId(data.userId)
+            userId: new mongoose.Types.ObjectId(data.userId)
         });
         return !!result
     }
@@ -21,11 +22,18 @@ export class DesignerRepository extends BaseRepository<IDesigner> implements IDe
 
     async getDesigner(userId: string): Promise<IDesigner | null> {
         const result = await this.findOne({ userId });
-        if(!result){
+        if (!result) {
             return null
         }
         return result
     }
 
-   
+    async updateDesigner(designerId: string, data: DesignerUpdateRequestDTO): Promise<IDesigner | null> {
+        const result = await this.update(designerId, data);
+        if (!result) {
+            return null
+        }
+        return result
+    }
+
 }

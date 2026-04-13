@@ -24,8 +24,7 @@ export class DesignerController {
 
             const email = req.user?.email as string;
             const userId = req.user?.userId as string;
-            console.log("email: ", email)
-            console.log("userid: ", userId)
+      
             if (!email || !userId) {
                 return RespsonseHelper.error(res, "user not found", "user not found", RESPONSE_CODE.BAD_REQUEST)
             }

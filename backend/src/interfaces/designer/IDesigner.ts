@@ -82,10 +82,12 @@ interface DesignDetailResponseDTO {
     createdAt: Date;
 }
 
-export type JobApplicationStatus = "Pending" | "Approved" | "Rejected" | "Ongoing"
+export type JobApplicationStatus = "Pending" | "Completed" | "Rejected" | "Ongoing"
 
 export interface IJobApplication {
-    userId: mongoose.Types.ObjectId
+    id:string
+    customerId: mongoose.Types.ObjectId
+    designerId: mongoose.Types.ObjectId
     jobId: mongoose.Types.ObjectId
     status: JobApplicationStatus,
     rejectionReason?: string

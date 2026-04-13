@@ -153,4 +153,14 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
     async deleteAJob(id: string): Promise<boolean> {
         return await this.delete(id)
     }
+
+    async checkJobExists(id: string): Promise<IJobRequest | null> {
+     const result = await this.findById(id);
+     if(!result){
+        return null
+     }
+     return result   
+    
+
+    }
 }

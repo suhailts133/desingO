@@ -3,19 +3,24 @@ import type { IJobApplication } from "../../interfaces/designer/IDesigner.js"
 
 
 const jobApplicationSchema = new Schema<IJobApplication>({
-    userId: {
+    customerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    designerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
     },
     jobId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "JobRequest",
         required: true
     },
     status: {
         type: String,
-        enum: ["Pending", "Approved", "Rejected", "Ongoing"],
+        enum: ["Pending", "Completed", "Rejected", "Ongoing"],
         required: true,
         default: "Pending"
     },
