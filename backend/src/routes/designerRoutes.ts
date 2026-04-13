@@ -6,7 +6,7 @@ import { DesignerService } from "../services/designer/designerService.js";
 import { DesignerRepository } from "../repositories/designer/designerRepository.js";
 import { UserRepository } from "../repositories/auth/userRepository.js";
 import authenticate from "../middlewares/auth.js"
-import { CloudinaryService } from "../services/others/cloudinaryService.js";
+import { CloudinaryService } from "../services/common/cloudinaryService.js";
 
 const upload = multer({ storage: multer.memoryStorage() });
 

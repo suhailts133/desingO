@@ -4,7 +4,7 @@ import designerAuthentication from "../middlewares/designerAuth.js";
 import { DesignController } from "../controllers/designController.js";
 import { DesignService } from "../services/designer/designService.js";
 import { DesignRepository } from "../repositories/designer/designRepository.js";
-import { CloudinaryService } from "../services/others/cloudinaryService.js";
+import { CloudinaryService } from "../services/common/cloudinaryService.js";
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router()

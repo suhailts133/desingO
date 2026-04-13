@@ -2,12 +2,12 @@ import { Router } from "express";
 import authenticate from "../middlewares/auth.js";
 import { DesignerRepository } from "../repositories/designer/designerRepository.js";
 import { UserRepository } from "../repositories/auth/userRepository.js";
-import { ProfileService } from "../services/others/profileService.js";
+import { ProfileService } from "../services/common/profileService.js";
 import { ProfileController } from "../controllers/profileController.js";
 import { ProfileImageController } from "../controllers/profileImageController.js";
-import { ProfileImageService } from "../services/others/profileImageService.js";
+import { ProfileImageService } from "../services/common/profileImageService.js";
 import { ProfileImageRepository } from "../repositories/common/profileImageRepository.js";
-import { CloudinaryService } from "../services/others/cloudinaryService.js";
+import { CloudinaryService } from "../services/common/cloudinaryService.js";
 import multer from "multer";
 const upload = multer({ storage: multer.memoryStorage() });
 

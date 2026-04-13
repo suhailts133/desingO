@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { JobApplicationRepository } from "../repositories/designer/jobApplicationRepository.js";
-import { JobApplicationService } from "../services/designer/JobApplicationServices.js";
+import { JobApplicationRepository } from "../repositories/common/jobApplicationRepository.js";
+import { JobApplicationService } from "../services/common/JobApplicationServices.js";
 import { JobRequestRepository } from "../repositories/customer/jobRequestRepository.js";
 import { JobApplicationController } from "../controllers/jobApplicationController.js";
 import designerAuthentication from "../middlewares/designerAuth.js";
