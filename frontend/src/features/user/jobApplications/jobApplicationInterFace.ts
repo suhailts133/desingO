@@ -1,0 +1,44 @@
+export interface JobApplicationQueryParms {
+    page?: number,
+    status?:JobApplicationStatus
+}
+
+
+export type JobApplicationStatus = "Pending" | "Approved" | "Rejected" | "Ongoing"
+
+export interface AllJobApplicationsDTO {
+    status: JobApplicationStatus,
+    rejectionReason?: string,
+    jobId: string,
+    jobTitle: string
+    designerId: string,
+    designerName: string
+    propertyType:string,
+    timeLine:string,
+    id:string
+}
+
+export interface MyJobApplicationsDTO {
+    status: JobApplicationStatus,
+    rejectionReason?: string,
+    jobId: string,
+    jobTitle: string
+    id: string
+    propertyType:string,
+    timeLine:string,
+    numberOfRooms:number,
+
+}
+
+
+export interface JobApplicationApprovalOrRejectionPayload {
+    id:string
+    status: "Ongoing" | "Rejected",
+    rejectionReason?: string,
+    jobId:string
+}
+
+
+export interface JobApplicationRejection{
+    rejectionReason:string
+}

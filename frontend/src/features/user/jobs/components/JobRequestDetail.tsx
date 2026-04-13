@@ -1,9 +1,10 @@
 import { MapPin, Clock, Wallet, BedDouble, Ruler, Phone, Tag, ChevronLeft, User, Calendar } from "lucide-react";
 
 import { useState } from "react";
-import ApplyForJob from "./AddBidForm";
+// import ApplyForJob from ".";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetAJobRequestDetailQuery } from "../jobEndpoints";
+import ApplyForJob from "./applyForJob";
 
 
 
@@ -167,8 +168,7 @@ export default function JobRequestDetail() {
                             <div className="w-full h-px bg-gray-100" />
                             <div className="flex justify-around w-full">
                                 <div className="text-center">
-                                    {/* <p className="font-Jost-Semibold text-gray-800 text-lg">{mockCustomer.totalJobs}</p> */}
-                                    {/* <p className="text-xs text-gray-400">Jobs Posted</p> */}
+                              
                                 </div>
                             </div>
                         </div>

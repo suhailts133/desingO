@@ -2,7 +2,8 @@ import { useState, memo } from "react"
 import {
     LayoutDashboard, User, Briefcase,
     CircleDollarSign, ChevronRight, LogOut,
-    TriangleAlert
+    TriangleAlert,
+    ScrollText
 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import type { AppDispatch } from "../app/store"
@@ -83,7 +84,7 @@ const CustomerSidebar = memo(({ name, email }: { name: string, email: string }) 
                     {!collapsed && <span className="flex-1">Profile</span>}
                 </Link>
 
-                {/* designer verifcation */}
+                {/* jobs */}
                 <Link to="/customer/jobs" onClick={() => setActive("jobs")} className={linkClass("jobs")}>
                     {active === "jobs" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
                     <Briefcase size={18} strokeWidth={active === "jobs" ? 2.2 : 1.8} className={iconClass("jobs")} />
@@ -91,11 +92,11 @@ const CustomerSidebar = memo(({ name, email }: { name: string, email: string }) 
                 </Link>
 
                 {/* disputes */}
-                <a onClick={() => setActive("Orders")} className={linkClass("Orders")}>
-                    {active === "Orders" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
-                    <TriangleAlert size={18} strokeWidth={active === "Orders" ? 2.2 : 1.8} className={iconClass("Orders")} />
-                    {!collapsed && <span className="flex-1">Disputes</span>}
-                </a>
+                  <Link to="/customer/job-applications" onClick={() => setActive("jobApplications")} className={linkClass("jobApplications")}>
+          {active === "jobApplications" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
+          <ScrollText size={18} strokeWidth={active === "jobApplications" ? 2.2 : 1.8} className={iconClass("jobApplications")} />
+          {!collapsed && <span className="flex-1">Job applications</span>}
+        </Link>
 
                 {/* bids */}
                 <a onClick={() => setActive("Analytics")} className={linkClass("Analytics")}>

@@ -1,9 +1,10 @@
-import { useDeleteAJobMutation, usePostJobMutation } from "./jobEndpoints";
+import { useApplyForAJobMutation, useDeleteAJobMutation, usePostJobMutation } from "./jobEndpoints";
 import type { IJobRequestPayload } from "./jobInterface";
 
 export const useJobRequestServices = () => {
     const [postJobMutation, { isLoading }] = usePostJobMutation();
     const [deleteAJobMutation, { isLoading: isDeleting }] = useDeleteAJobMutation()
+    const [applyForAJobMutation, {isLoading:isApplying}] = useApplyForAJobMutation()
 
     const postJob = async (payload: IJobRequestPayload) => {
         try {
@@ -21,6 +22,14 @@ export const useJobRequestServices = () => {
             return error.data
         }
     }
+    const applyForAJob = async (jobId: string) => {
+        try {
+            const result = await applyForAJobMutation(jobId).unwrap()
+            return result
+        } catch (error: any) {
+            return error.data
+        }
+    }
 
 
 
@@ -28,6 +37,8 @@ export const useJobRequestServices = () => {
         postJob,
         isLoading,
         deleteAJob,
-        isDeleting
+        isDeleting,
+        applyForAJob,
+        isApplying
     }
 }

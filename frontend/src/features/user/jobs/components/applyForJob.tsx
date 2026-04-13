@@ -1,20 +1,24 @@
-
-import makeAnimated from "react-select/animated";
-
-const animatedComponents = makeAnimated();
+// import { useApplyForAJob } from "../../jobApplications/hooks/useApplyForJob";
+import { useApplyForAJob } from "../hooks/useApplyForJob";
 
 
 interface Props {
     onClose: () => void;
-    jobId:string
+    jobId: string
 }
 
 
-export default function ApplyForJob({ onClose,jobId }: Props) {
-    const isApplying = true
-    const onSubmit = () => {
-        // console.log(data)
-        // onClose()
+export default function ApplyForJob({ onClose, jobId }: Props) {
+    const { handleJobApplication, applyError, applySuccess, isApplying } = useApplyForAJob()
+
+    const onSubmit = async () => {
+        console.log(jobId)
+        const result = await handleJobApplication(jobId)
+        if (result) {
+            setTimeout(() => {
+                onClose()
+            }, 3000);
+        }
 
     }
 
@@ -47,6 +51,8 @@ export default function ApplyForJob({ onClose,jobId }: Props) {
                     )}
                     <button type="button" onClick={onClose} className="text-gray-500 hover:text-gray-800 text-sm font-medium">Cancel</button>
                 </div>
+                {applyError && <p className="text-sm text-error text-center">{applyError}</p>}
+                {applySuccess && <p className="text-sm text-success text-center">{applySuccess}</p>}
             </div>
         </div>
     )

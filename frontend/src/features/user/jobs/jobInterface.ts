@@ -71,6 +71,8 @@ export interface JobsQueryParms {
 
 
 
+
+
 export type JobStatus = "Pending" | "Closed" | "Ongoing"
 
 export interface JobsResponseDTO {
@@ -100,3 +102,4 @@ export interface JOBFilterForm {
     timeLines: { label: string; value: string }[] | null;
     sortBy: { label: string; value: string } | null;
 }
+

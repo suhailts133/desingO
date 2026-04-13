@@ -29,7 +29,8 @@ import JobRequestDetail from "../features/user/jobs/components/JobRequestDetail"
 import DesignDetail from "../features/designer/designs/components/DesignDetail";
 import BrowseDesigns from "../features/base/pages/BrowseDesigns";
 import BrowseJobs from "../features/base/pages/BrowseJobs";
-
+import JobApplications from "../features/user/jobApplications/pages/JobApplications";
+import MyJobApplications from "../features/designer/myJobApplications/pages/MyJobApplication";
 
 
 const router = createBrowserRouter([
@@ -79,6 +80,7 @@ const router = createBrowserRouter([
             { path: "users/:id", Component: UserDetail },
             { path: "designer-requests", Component: DesignerVerificationTable },
             { path: "designer-requests/:id", Component: DesignerVerificationDetails }
+
         ]
     },
     {
@@ -88,6 +90,7 @@ const router = createBrowserRouter([
             { path: "dashboard", Component: DesignerDashboard },
             { path: "designs", Component: Designs },
             { path: "add-design", Component: DesignForm },
+            { path: "job-applications/my", Component: MyJobApplications }
 
         ]
     },
@@ -98,9 +101,12 @@ const router = createBrowserRouter([
             { path: "dashboard", Component: CustomerDashboard },
             { path: "jobs", Component: Jobs },
             { path: "add-job", Component: JobRequestForm },
+            { path: "job-applications", Component: JobApplications }
+
 
         ]
-    }
+    },
+
 ])
 
 export default router

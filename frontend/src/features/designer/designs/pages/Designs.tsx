@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import DesignerDesignCard from "../components/DesignerDesignCard";
 import { useState } from "react";
 import { useGetAllDesignQuery } from "../designEndpoints";
-import DeleteConfirmModal from "../components/DeleteConfirmModal";
+
 import { useDeleteADesign } from "../hooks/useDeleteDesign";
+import ConfirmModal from "../../../../shared/ConfirmModal";
 
 export default function Designs() {
     const [page, setPage] = useState(1)
@@ -21,7 +22,7 @@ export default function Designs() {
 
     const handleDelete = async () => {
         if (!deleteDesign) return
-        // console.log(deleteJobRequest)
+      
         console.log(deleteDesign)
         await handleDeletion(deleteDesign)
         setDeleteDesign(null)
@@ -59,13 +60,17 @@ export default function Designs() {
                 </div>
 
             </div>
-            <DeleteConfirmModal
+            <ConfirmModal
                 isOpen={!!deleteDesign}
                 onConfirm={handleDelete}
                 onClose={() => setDeleteDesign(null)}
                 isLoading={isDeleting}
                 text="Are you sure you want to delete this design?"
+                heading="Confirm Deletion?"
+                buttonLoadingText="deleting"
+                buttonText="Confirm & delete"
             />
+            
             <div className="flex items-center justify-between px-5 py-3.5 border-t border-white/20 bg-white/10">
                 <p className="text-xs text-soft-black/50">
                     Page {page} of {totalPages} &mdash; {totalDesigns} total designs

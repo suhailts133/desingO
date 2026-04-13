@@ -2,7 +2,7 @@ import { useState, memo } from "react"
 import {
   LayoutDashboard, User,
   CircleDollarSign, ChevronRight, LogOut,
-   TriangleAlert,
+  ScrollText,
   House
 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
@@ -83,19 +83,22 @@ const DesignerSidebar = memo(({ name, email }: { name: string, email: string }) 
           {!collapsed && <span className="flex-1">Profile</span>}
         </Link>
 
-        {/* designer verifcation */}
+        {/* designs */}
         <Link to="/designer/designs" onClick={() => setActive("designs")} className={linkClass("designs")}>
           {active === "designs" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
           <House size={18} strokeWidth={active === "designs" ? 2.2 : 1.8} className={iconClass("designs")} />
           {!collapsed && <span className="flex-1">Designs</span>}
         </Link>
 
-        {/* disputes */}
-        <a onClick={() => setActive("Orders")} className={linkClass("Orders")}>
-          {active === "Orders" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
-          <TriangleAlert size={18} strokeWidth={active === "Orders" ? 2.2 : 1.8} className={iconClass("Orders")} />
-          {!collapsed && <span className="flex-1">Disputes</span>}
-        </a>
+        {/* job applications */}
+        <Link to="/designer/job-applications/my" onClick={() => setActive("jobApplications")} className={linkClass("jobApplications")}>
+          {active === "jobApplications" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
+          <ScrollText size={18} strokeWidth={active === "jobApplications" ? 2.2 : 1.8} className={iconClass("jobApplications")} />
+          {!collapsed && <span className="flex-1">Job applications</span>}
+        </Link>
+
+
+
 
         {/* bids */}
         <a onClick={() => setActive("Analytics")} className={linkClass("Analytics")}>

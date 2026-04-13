@@ -39,4 +39,12 @@ export const API_ROUTES = {
         JOB_DELETE: "/customer/jobs"
 
     },
+    JOB_APPLICATION: {
+        APPLY: "/job-application/apply",
+        MY_APPLICATIONS: "/job-application/my",
+        ALL_APPLICATIONS: "/job-application",
+        DETAIL: "/job-application",        
+        UPDATE_STATUS: "/job-application/approve-reject", 
+        DELETE: "/job-application",        
+    }
 } as const

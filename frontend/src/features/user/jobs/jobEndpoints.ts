@@ -1,6 +1,7 @@
 import { API_ROUTES } from "../../../api/apiRoutes";
 import { baseApi } from "../../../api/baseApi";
 import type { IApiResponse, IApiResponseWithPagination } from "../../../api/responseType";
+import type { AllJobApplicationsDTO, JobApplicationQueryParms } from "../jobApplications/jobApplicationInterFace";
 import type { IJobRequestPayload, JobRequestDetailDTO, JobsCommonResponseDTO, JobsQueryParms, JobsResponseDTO } from "./jobInterface";
 
 export const jobsApi = baseApi.injectEndpoints({
@@ -58,6 +59,17 @@ export const jobsApi = baseApi.injectEndpoints({
                     },
                 }
             }
+        }),
+
+
+
+        applyForAJob: builder.mutation<IApiResponse, string>({
+            query: (jobId) => ({
+                url: API_ROUTES.JOB_APPLICATION.APPLY,
+                method: "POST",
+                body: {jobId}
+            }),
+            invalidatesTags: ["myJobApplications"]
         })
     })
 })
@@ -68,5 +80,6 @@ export const {
     useGetMyJobsQuery,
     useGetAJobRequestDetailQuery,
     useGetAllJobsCommonQuery,
-    useDeleteAJobMutation
+    useDeleteAJobMutation,
+    useApplyForAJobMutation,
 } = jobsApi
