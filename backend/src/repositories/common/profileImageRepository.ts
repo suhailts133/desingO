@@ -26,12 +26,12 @@ export class ProfileImageRepository extends BaseRepository<IUser> implements IPr
     }
 
 
-    async changeProfilImage(userId: string, data: ImageUploadResult): Promise<ChangeProfileImageResponseDTO | null> {
+    async changeProfilImage(userId: string, data: ImageUploadResult): Promise<string | null> {
         const result = await this.update(userId, { profileImage: data })
         if (!result || !result.profileImage) {
             return null
         }
-        return result.profileImage
+        return result.profileImage.path
     }
 
 }

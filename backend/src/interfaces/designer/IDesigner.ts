@@ -8,8 +8,6 @@ export interface DesignerVerificationFiles {
     workExperienceImageFiles?: Express.Multer.File[]
 }
 
-
-
 export interface IEducation {
     institutionName: string;
     courseName: string;
@@ -25,6 +23,7 @@ export interface IWorkExperience {
 }
 
 export type Status = "Pending" | "Rejected" | "Approved";
+
 export type GovernmentIdType = "aadhar_card" | "driving_licence"
 
 export interface IDesigner {
@@ -45,8 +44,6 @@ export interface IDesigner {
     bio: string
 }
 
-
-
 export interface IDesign {
     id: string;
     userId: mongoose.Types.ObjectId;
@@ -64,24 +61,6 @@ export interface IDesign {
 
 }
 
-
-
-interface DesignDetailResponseDTO {
-    id: string;
-    designerName: string
-    designname: string;
-    propertyType: string
-    spaceType: string
-    startingPrice: string;
-    district: string;
-    services: string[];
-    designStyles: string[]
-    description: string
-    coverImage: string;
-    gallery: string[];
-    createdAt: Date;
-}
-
 export type JobApplicationStatus = "Pending" | "Completed" | "Rejected" | "Ongoing"
 
 export interface IJobApplication {
@@ -93,5 +72,6 @@ export interface IJobApplication {
     rejectionReason?: string
     createdAt: Date
 }
+
 
 

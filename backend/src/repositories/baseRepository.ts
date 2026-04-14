@@ -1,4 +1,4 @@
-import {  type HydratedDocument, Model, type QueryFilter, type QueryOptions, type UpdateQuery } from "mongoose";
+import { type HydratedDocument, Model, type QueryFilter, type QueryOptions, type UpdateQuery } from "mongoose";
 import type { IBaseRepository } from "../interfaces/base/IBaseRepository.js";
 
 
@@ -37,6 +37,9 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
         return await this._model.findById(id).exec();
     }
 
+    async updateOne(filter: QueryFilter<T>, item: UpdateQuery<T>): Promise<HydratedDocument<T> | null> {
+        return await this._model.findOneAndUpdate(filter, item, { returnDocument: "after" }).exec();
+    }
 }
 
 

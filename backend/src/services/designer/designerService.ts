@@ -2,7 +2,7 @@ import type { DesignerVerificationBodyDTO, DesignerVerificationDTO } from "../..
 import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
 import type { DesignerVerificationFiles, IEducation, IWorkExperience } from "../../interfaces/designer/IDesigner.js";
 import type { IDesignerService } from "../../interfaces/designer/IDesignerService.js";
-import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
+import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
 import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
 import { ensureError } from "../../helpers/errors/ensureError.js";
 import type { IDesignerRepository } from "../../interfaces/designer/IDesignerRepository.js";
@@ -10,12 +10,14 @@ import { sendDesignerVerificationEmail } from "../../helpers/emails/designerVeri
 
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
 import { CLOUDINARY_FOLDER_NAME, DESIGNER_STATUS, USER_ROLES } from "../../helpers/enums/commonEnums.js";
+import type { DesignerFilter, DesignerCardDTO } from "../../DTO/designer/designerDTO.js";
+import { MESSAGES } from "../../helpers/enums/messages.js";
 
 export class DesignerService implements IDesignerService {
     constructor(
         private _userRepository: IUserRepository,
         private _designerRepository: IDesignerRepository,
-   
+
         private _imageUploder: IImageUploaderService,
     ) { }
 
@@ -67,6 +69,11 @@ export class DesignerService implements IDesignerService {
             console.log(err)
             return { statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR, message: "Something went wrong, during designer verificaiton, contact support", success: false }
         }
+    }
+
+    async getAllDesigners(designerFilter?: DesignerFilter): Promise<IApiResponseWithPagination<DesignerCardDTO[]>> {
+        const { data, pagination } = await this._designerRepository.getAllDesigners(designerFilter)
+        return { success: true, statuscode: RESPONSE_CODE.OK, message: MESSAGES.DESIGNER.GET_ALL_DESIGNERS, data, total: pagination.total, totalPages: pagination.totalPages }
     }
 
 }

@@ -61,14 +61,14 @@ export class JobApplicationService implements IJobApplicationService {
 
 
     async getAllJobApplications(userId: string, filters?: JobApplicationFilter): Promise<IApiResponseWithPagination<AllJobApplicationsDTO[]>> {
-        const result = await this._jobApplicationRepo.getAllJobApplications(userId, filters);
+        const { data, pagination } = await this._jobApplicationRepo.getAllJobApplications(userId, filters);
         return {
             message: MESSAGES.JOB_APPLICATION.ALL_JOB_APPLICATIONS,
-            data: result.data,
+            data,
             statuscode: RESPONSE_CODE.OK,
             success: true,
-            total: result.pagination.total,
-            totalPages: result.pagination.totalPages
+            total: pagination.total,
+            totalPages: pagination.totalPages
         }
     }
     async getMyJobApplications(userId: string, filters?: JobApplicationFilter): Promise<IApiResponseWithPagination<MyJobApplicationsDTO[]>> {

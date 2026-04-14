@@ -11,11 +11,12 @@ export class ProfileImageService implements IProfileImageService {
     constructor(private _profileImageRepo: IProfileImageRepository, private _imageService: IImageUploaderService) { }
 
 
-    async changeProfileImage(userId: string, file: IProfileImage): Promise<IApiResponse<ChangeProfileImageResponseDTO>> {
+    async changeProfileImage(userId: string, file: IProfileImage): Promise<IApiResponse<string>> {
         const profileImageId = await this._profileImageRepo.getProfileImageId(userId);
+        console.log(profileImageId)
         const imageUploadResult = await this._imageService.upload(file.profileImageFile, CLOUDINARY_FOLDER_NAME.PROFILE_IMAGES)
         const profileRepoResult = await this._profileImageRepo.changeProfilImage(userId, imageUploadResult)
-
+        console.log(profileRepoResult)
         if(!profileRepoResult){
             throw new AppError(MESSAGES.PROFILE.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }

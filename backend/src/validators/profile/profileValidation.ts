@@ -1,14 +1,7 @@
 import Joi from "joi";
-import type { DesignerProfileDTO, UserProfileUpdateDTO } from "../../DTO/profile/profileDTO.js";
+import type { DesignerUpdateResponseDTO, UserProfileUpdateDTO } from "../../DTO/profile/profileDTO.js";
 
-export const designerProfileUpdateValidation: Joi.ObjectSchema<DesignerProfileDTO> = Joi.object<DesignerProfileDTO>({
-    isGoogle: Joi.boolean()
-        .required()
-        .messages({
-            "any.required": "isGoogle is required",
-            "boolean.base": "isGoogle must be a boolean"
-        }),
-
+export const designerProfileUpdateValidation: Joi.ObjectSchema<DesignerUpdateResponseDTO> = Joi.object<DesignerUpdateResponseDTO>({
     full_name: Joi.string()
         .min(2)
         .max(50)
@@ -29,6 +22,13 @@ export const designerProfileUpdateValidation: Joi.ObjectSchema<DesignerProfileDT
             "string.empty": "Bio cannot be empty",
             "string.min": "Bio must be at least 10 characters",
             "string.max": "Bio must be at most 300 characters"
+        }),
+    portfolioUrl: Joi.string()
+        .uri()
+        .required()
+        .messages({
+            "string.empty": "Portfolio URL is required",
+            "string.uri": "Portfolio URL must be a valid URL"
         }),
 
     phone: Joi.string()

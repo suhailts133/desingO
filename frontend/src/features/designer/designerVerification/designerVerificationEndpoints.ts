@@ -18,5 +18,6 @@ export const designerApi = baseApi.injectEndpoints({
 
 
 export const {
-    useDesignerVerificationMutation
+    useDesignerVerificationMutation,
+
 } = designerApi

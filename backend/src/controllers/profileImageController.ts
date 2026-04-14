@@ -11,26 +11,22 @@ export class ProfileImageController {
     constructor(private _profileImageService: IProfileImageService) { }
 
     changeProfileImage = asyncHandler(async (req: Request, res: Response) => {
-
-        const userId = req.user?.userId
+        const userId = req.user?.userId;
         if (!userId) {
-            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
+            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED);
+        }
+        
+        const file = req.file as Express.Multer.File;
+
+        if (!file) {
+            throw new AppError(MESSAGES.PROFILE.IMAGE_NOT_FOUND, RESPONSE_CODE.BAD_REQUEST);
         }
 
-        const files = req.files as {
-            profileImageFile: Express.Multer.File[]
-
-        }
-
-        if (!files.profileImageFile?.[0]) {
-            throw new AppError(MESSAGES.PROFILE.IMAGE_NOT_FOUND, RESPONSE_CODE.BAD_REQUEST)
-        }
-        const profileImage = files.profileImageFile[0]
         const profileImageData: IProfileImage = {
-            profileImageFile: profileImage
-        }
+            profileImageFile: file
+        };
 
-        const result = await this._profileImageService.changeProfileImage(userId, profileImageData)
-        RespsonseHelper.success(res, result)
-    })
+        const result = await this._profileImageService.changeProfileImage(userId, profileImageData);
+        RespsonseHelper.success(res, result);
+    });
 }

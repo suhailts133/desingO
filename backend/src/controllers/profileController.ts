@@ -6,7 +6,7 @@ import { MESSAGES } from "../helpers/enums/messages.js";
 import { RESPONSE_CODE } from "../helpers/enums/statusCode.js";
 import { RespsonseHelper } from "../helpers/responseHelper.js";
 import { designerProfileUpdateValidation, userProfileUpdateValidation } from "../validators/profile/profileValidation.js";
-import type { DesignerProfileDTO, UserProfileUpdateDTO } from "../DTO/profile/profileDTO.js";
+import type { DesignerProfileDTO, DesignerUpdateResponseDTO, UserProfileUpdateDTO } from "../DTO/profile/profileDTO.js";
 export class ProfileController {
     constructor(private _profileServices: IProfileService) { }
 
@@ -22,8 +22,10 @@ export class ProfileController {
 
 
     updateDesignerProfle = asyncHandler(async (req: Request, res: Response) => {
-        const { error, value } = designerProfileUpdateValidation.validate(req.query, { stripUnknown: true })
+        
+        const { error, value } = designerProfileUpdateValidation.validate(req.body, { stripUnknown: true })
         if (error) {
+
             throw new AppError(error.details[0]?.message || "Invalid query parameters", RESPONSE_CODE.BAD_REQUEST)
         }
         const userId = req.user?.userId
@@ -31,7 +33,7 @@ export class ProfileController {
             throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
 
-        const result = await this._profileServices.updateDesignerProfile(userId, value as DesignerProfileDTO);
+        const result = await this._profileServices.updateDesignerProfile(userId, value as DesignerUpdateResponseDTO);
         RespsonseHelper.success(res, result);
     })
 

@@ -1,18 +1,8 @@
-import { inflateRaw } from "node:zlib";
-import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
+export interface ImageUploadResult {
+    filename:string,
+    path:string,
+}
 
-// export interface userProfileResponseDTO {
-//     location?: string;
-//     phone?: string;
-//     landmark?: string;
-//     isGoogle: boolean
-//     full_name: string;
-// }
-
-
-// export interface userProfileRequestDTO extends userProfileResponseDTO {
-
-// }
 
 
 export interface UserProfileResponseDTO extends UserProfileDTO {
@@ -45,3 +35,12 @@ export interface DesignerProfileDTO {
 
 export type DesignerUpdateRequestDTO = Omit<DesignerProfileDTO, "full_name" | "isGoogle">;
 export type DesignerUpdateResponseDTO = Omit<DesignerProfileDTO, "isGoogle">;
+
+
+export interface IProfileImage {
+  profileImage: FileList;
+}
+
+
+
+

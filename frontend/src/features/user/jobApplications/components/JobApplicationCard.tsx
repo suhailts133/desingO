@@ -5,7 +5,7 @@ type Props = {
     application: AllJobApplicationsDTO
     onApprove: () => void
     onReject: () => void
-    // onReject: (jobId: string, designerId: string) => void
+    
 }
 
 const statusStyles: Record<JobApplicationStatus, string> = {
@@ -17,7 +17,7 @@ const statusStyles: Record<JobApplicationStatus, string> = {
 
 
 export default function JobApplicationCard({ application, onApprove, onReject }: Props) {
-    const { status, rejectionReason, jobId, jobTitle, designerName, propertyType, timeLine,id } = application
+    const { status, rejectionReason,  jobTitle, designerName, propertyType, timeLine } = application
 
     const isActionable = status === "Pending"
 

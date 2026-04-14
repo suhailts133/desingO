@@ -24,9 +24,12 @@ export const MESSAGES = {
         USER_NOT_FOUND: "User not found.",
         USER_FOUND: "User fetched successfully.",
         UPDATE_SUCCESS: "Profile Updation Successfull.",
-        UPDATE_FAIL: "Profile Updation failted."
-        
+        UPDATE_FAIL: "Profile Updation failed."
     },
+
+    DESIGNER: {
+        GET_ALL_DESIGNERS: "Designer fetching successfull."
+    }
 
 
 } as const  

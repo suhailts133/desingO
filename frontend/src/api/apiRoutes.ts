@@ -43,8 +43,13 @@ export const API_ROUTES = {
         APPLY: "/job-application/apply",
         MY_APPLICATIONS: "/job-application/my",
         ALL_APPLICATIONS: "/job-application",
-        DETAIL: "/job-application",        
-        UPDATE_STATUS: "/job-application/approve-reject", 
-        DELETE: "/job-application",        
+        DETAIL: "/job-application",
+        UPDATE_STATUS: "/job-application/approve-reject",
+        DELETE: "/job-application",
+    },
+    PROIFILE: {
+        GET_DESIGNER_PROFILE: "/profile/designer",
+        CHANGE_PROFILE_IMAGE: "/profile/change-profile-image",
+        UPDATE_DESIGNER_DATA: "/profile/designer"
     }
 } as const

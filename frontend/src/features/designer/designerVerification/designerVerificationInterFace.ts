@@ -22,6 +22,6 @@ export interface IDesignerProfile {
     education: IEducation[];
     workExperience?: IWorkExperience[];
     portfolioUrl: string;
-    bio:string
+    bio:string;
 }
 

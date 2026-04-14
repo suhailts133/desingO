@@ -29,7 +29,7 @@ export default function DesignerLayout() {
   }
 
   return (
-    <div className="fixed inset-0 flex bg-overflow-hidden">
+    <div className="fixed inset-0 flex overflow-hidden">
      
        <DesignerSidebar name={name} email={email}/>
 

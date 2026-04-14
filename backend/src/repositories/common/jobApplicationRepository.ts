@@ -109,7 +109,7 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
 
     async getAllJobApplications(userId: string, filters?: JobApplicationFilter): Promise<{ data: AllJobApplicationsDTO[]; pagination: Pagination; }> {
         const page = filters?.page ? Number(filters.page) : 1;
-        const limit = 9;
+        const limit =1;
         const skip = (page - 1) * limit;
         const query: QueryFilter<IJobApplication> = { customerId: userId };
         if (filters) {

@@ -83,6 +83,6 @@ export class JobApplicationController {
         }
 
         const result = await this._jobApplicationService.getAllJobApplications(userId,value)
-        RespsonseHelper.success(res, result)
+        RespsonseHelper.successWithPagination(res, result)
     })
 }

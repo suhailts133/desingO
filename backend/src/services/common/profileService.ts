@@ -1,4 +1,4 @@
-import type { DesignerProfileDTO, DesignerProfileResponseDTO, UserProfileDTO, UserProfileResponseDTO, UserProfileUpdateDTO, } from "../../DTO/profile/profileDTO.js";
+import type { DesignerProfileDTO, DesignerProfileResponseDTO, DesignerUpdateResponseDTO, UserProfileDTO, UserProfileResponseDTO, UserProfileUpdateDTO, } from "../../DTO/profile/profileDTO.js";
 import { MESSAGES } from "../../helpers/enums/messages.js";
 import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
 import { AppError } from "../../helpers/errors/appError.js";
@@ -10,7 +10,7 @@ import type { IDesignerRepository } from "../../interfaces/designer/IDesignerRep
 export class ProfileService implements IProfileService {
     constructor(private _DesignerRepo: IDesignerRepository, private _userRepo: IUserRepository) { };
 
-    
+
     async getUserProfile(userId: string): Promise<IApiResponse<UserProfileResponseDTO>> {
         const result = await this._userRepo.findUserById(userId);
         if (!result) {
@@ -68,16 +68,20 @@ export class ProfileService implements IProfileService {
             city: designerData.city,
             bio: designerData.bio,
             phone: designerData.phone,
-            ...(userData.profileImage !== undefined && { profileImage: userData.profileImage }),
+            portfolioUrl: designerData.portfolioUrl,
+            ...(userData.profileImage !== undefined && { profileImage: userData.profileImage.path }),
             ...(userData.profile_image_url !== undefined && { profile_image_url: userData.profile_image_url }),
         }
+        console.log(data)
         return { statuscode: RESPONSE_CODE.OK, message: MESSAGES.PROFILE.USER_FOUND, data, success: true }
     }
 
-    async updateDesignerProfile(designerId: string, data: DesignerProfileDTO): Promise<IApiResponse<DesignerProfileDTO>> {
-        const { full_name, isGoogle, ...designerData } = data;
-
+    async updateDesignerProfile(designerId: string, data: DesignerUpdateResponseDTO): Promise<IApiResponse<DesignerUpdateResponseDTO>> {
+        console.log("Service hit")
+        const { full_name, ...designerData } = data;
+        console.log(designerData)
         const updatedDesigner = await this._DesignerRepo.updateDesigner(designerId, designerData);
+        console.log(updatedDesigner, "updated desinger")
         if (!updatedDesigner) {
             throw new AppError(MESSAGES.PROFILE.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
         }
@@ -96,14 +100,14 @@ export class ProfileService implements IProfileService {
             finalUser = updatedUser;
         }
 
-        const output: DesignerProfileDTO = {
-            phone:updatedDesigner.phone,
-            bio:updatedDesigner.bio,
-            state:updatedDesigner.state,
-            district:updatedDesigner.district,
-            city:updatedDesigner.city,
+        const output: DesignerUpdateResponseDTO = {
+            phone: updatedDesigner.phone,
+            bio: updatedDesigner.bio,
+            state: updatedDesigner.state,
+            district: updatedDesigner.district,
+            city: updatedDesigner.city,
             full_name: finalUser.full_name,
-            isGoogle: !!finalUser.google_profile_id,
+            portfolioUrl: updatedDesigner.portfolioUrl
         };
 
         return {

@@ -31,6 +31,7 @@ import BrowseDesigns from "../features/base/pages/BrowseDesigns";
 import BrowseJobs from "../features/base/pages/BrowseJobs";
 import JobApplications from "../features/user/jobApplications/pages/JobApplications";
 import MyJobApplications from "../features/designer/myJobApplications/pages/MyJobApplication";
+import DesignerProfilePage from "../features/designer/profile/pages/DesignerProfilePage";
 
 
 const router = createBrowserRouter([
@@ -102,10 +103,15 @@ const router = createBrowserRouter([
             { path: "jobs", Component: Jobs },
             { path: "add-job", Component: JobRequestForm },
             { path: "job-applications", Component: JobApplications }
-
-
         ]
     },
+    {
+        path: "profile",
+        Component: DesignerLayout,
+        children: [
+            { path: "designer", Component: DesignerProfilePage }
+        ]
+    }
 
 ])
 

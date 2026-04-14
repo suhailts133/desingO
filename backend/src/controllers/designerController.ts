@@ -6,11 +6,26 @@ import { RESPONSE_CODE } from "../helpers/enums/statusCode.js"
 import type { DesignerVerificationBodyDTO } from "../DTO/designer/designerVerificationDTOs.js"
 import type { DesignerVerificationFiles } from "../interfaces/designer/IDesigner.js"
 import type { IDesignerService } from "../interfaces/designer/IDesignerService.js"
-
+import asyncHandler from "express-async-handler";
+import type { DesignerFilter } from "../DTO/designer/designerDTO.js"
+import { AppError } from "../helpers/errors/appError.js"
+import { JobApplicationsQueryFilter } from "../validators/designers/jobApplicationValidations.js"
+import { DesignerQueryFilter } from "../validators/designers/designerValidations.js"
 
 export class DesignerController {
 
     constructor(private _designerService: IDesignerService) { }
+
+
+    getAllDesigners = asyncHandler(async (req:Request, res:Response) => {
+           const { error, value } = DesignerQueryFilter.validate(req.query, { stripUnknown: true })
+                if (error) {
+                    throw new AppError(error.details[0]?.message || "Invalid query parameters", RESPONSE_CODE.BAD_REQUEST)
+                }
+        
+        const result = await this._designerService.getAllDesigners(value)
+        RespsonseHelper.successWithPagination(res, result) 
+    })
 
 
     designerVerificationController = async (req: Request, res: Response) => {
@@ -24,7 +39,7 @@ export class DesignerController {
 
             const email = req.user?.email as string;
             const userId = req.user?.userId as string;
-      
+
             if (!email || !userId) {
                 return RespsonseHelper.error(res, "user not found", "user not found", RESPONSE_CODE.BAD_REQUEST)
             }
