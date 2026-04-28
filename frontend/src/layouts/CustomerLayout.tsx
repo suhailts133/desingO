@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useDecodeAccessToken } from "../helpers/decodeAccessToken";
 import { logOut } from "../app/authSlice";
 import { useEffect } from "react";
-import CustomerSidebar from "../shared/CustomerSidebar";
+import CustomerSidebar from "../shared/sidebar/CustomerSidebar";
 
 export default function CustomerLayout() {
     const dispatch = useDispatch<AppDispatch>();

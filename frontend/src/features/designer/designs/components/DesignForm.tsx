@@ -79,7 +79,7 @@ export default function DesignForm() {
             }
         })
 
-        console.log([...formData.entries()])
+
         await handleSubmission(formData)
     }
 
@@ -216,31 +216,36 @@ export default function DesignForm() {
                     <div className="space-y-4">
                         <label className="block text-sm font-Jost-Semibold text-gray-700">Gallery Portfolio</label>
 
+                        {fields.length < 10 && (
 
-                        <label
-                            htmlFor="galleryInput"
-                            className="flex items-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer hover:border-primary transition-colors "
-                        >
-                            <div className="bg-gray-100 p-1.5 rounded-md">
-                                <ImageIcon className="h-4 w-4 text-gray-500" />
-                            </div>
-                            <div className="flex flex-col overflow-hidden">
-                                <span className="text-sm text-gray-700 font-medium">Upload Project Photos</span>
-                                <span className="text-[11px] text-gray-400 truncate">
-                                    {fields.length > 0 ? `${fields.length} images selected` : "Select one or more images..."}
-                                </span>
-                            </div>
-                            <Plus className="h-5 w-5 text-gray-400 ml-auto shrink-0" />
-                        </label>
+                            <>
+                                <label
+                                    htmlFor="galleryInput"
+                                    className="flex items-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer hover:border-primary transition-colors "
+                                >
+                                    <div className="bg-gray-100 p-1.5 rounded-md">
+                                        <ImageIcon className="h-4 w-4 text-gray-500" />
+                                    </div>
+                                    <div className="flex flex-col overflow-hidden">
+                                        <span className="text-sm text-gray-700 font-medium">Upload Project Photos</span>
+                                        <span className="text-[11px] text-gray-400 truncate">
+                                            {fields.length > 0 ? `${fields.length} images selected` : "Select one or more images..."}
+                                        </span>
+                                    </div>
+                                    <Plus className="h-5 w-5 text-gray-400 ml-auto shrink-0" />
+                                </label>
 
-                        <input
-                            type="file"
-                            id="galleryInput"
-                            multiple
-                            hidden
-                            onChange={handleGalleryUpload}
-                        />
 
+                                <input
+                                    type="file"
+                                    id="galleryInput"
+                                    multiple
+                                    hidden
+                                    onChange={handleGalleryUpload}
+                                />
+                            </>
+
+                        )}
                         {/* Gallery Grid Preview */}
                         {fields.length > 0 && (
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-xl border border-dashed border-gray-200">
@@ -251,7 +256,7 @@ export default function DesignForm() {
                                                 <Zoom>
                                                     <img
                                                         src={galleryPreviews[index]}
-                                                        className="w-full h-full object-cover"
+                                                        className="w-full h-full object-fill"
                                                         alt={`Gallery ${index}`}
                                                     />
                                                 </Zoom>

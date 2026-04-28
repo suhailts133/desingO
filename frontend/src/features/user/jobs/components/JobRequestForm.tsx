@@ -1,59 +1,101 @@
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import { Plus, Ruler, Trash } from "lucide-react";
+import { ImageIcon, Plus, Ruler, Trash, X } from "lucide-react";
 import { STYLE_OPTIONS, PROPERTY_OPTIONS, SPACE_OPTIONS } from "../../../designer/designs/designData";
 import { TIMELINE_OPTIONS, UNIT_OPTIONS } from "../jobData";
-import type { IJobRequest, IJobRequestPayload } from "../jobInterface";
+import type { IJobRequest } from "../jobInterface";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { jobRequestValidation } from "../../../../validations/customerValidation";
 import { INDIAN_STATES } from "../../../designer/designerVerification/indianStates";
 import { usePostJob } from "../hooks/usePostJob";
-
+import { useEffect, useState, type ChangeEvent } from "react";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 const animatedComponents = makeAnimated();
 
 
 export default function JobRequestForm() {
+
+    const [refrenceImagesPreview, setRefrenceImagesPreview] = useState<string[]>([]);
     const {
-        register, control, handleSubmit, formState: { errors } } = useForm<IJobRequest>({
+        register, control, handleSubmit, watch, formState: { errors } } = useForm<IJobRequest>({
             defaultValues: {
                 rooms: [],
+                refrenceImages: []
             },
-            resolver: joiResolver(jobRequestValidation)
+            resolver: joiResolver(jobRequestValidation),
+
         });
 
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: "rooms",
-    });
+    const watchRefrenceImages = watch("refrenceImages")
+    useEffect(() => {
+        if (!watchRefrenceImages) return;
+
+        const previews = watchRefrenceImages
+            .filter(item => item.file && item.file[0])
+            .map(item => URL.createObjectURL(item.file[0]));
+
+        setRefrenceImagesPreview(previews);
+
+        return () => previews.forEach(url => URL.revokeObjectURL(url));
+    }, [watchRefrenceImages]);
+
+
+    const {
+        fields: roomFields,
+        append: roomAppend,
+        remove: roomRemove
+    } = useFieldArray({ control, name: "rooms" })
+
+    const {
+        fields: refrenceFields,
+        append: refrenceAppend,
+        remove: refrenceRemove
+    } = useFieldArray({ control, name: "refrenceImages" })
+
 
     const { handleSubmission, isLoading, jobError, jobSuccess } = usePostJob()
-    const onSubmit = async (data: IJobRequest) => {
-        const payload: IJobRequestPayload = {
-            projectTitle: data.projectTitle,
-            propertyType: data.propertyType.label,
-            city: data.city,
-            district: data.district,
-            phone: data.phone,
-            state: data.state,
-            timeline: data.timeline.label,
-            budget: data.budget,
-            description: data.description,
-            designStyles: data.designStyles.map(({ label }) => label),
-            rooms: data.rooms.map((room) => ({
-                spaceType: room.spaceType.label,
-                length: room.length,
-                width: room.width,
-                unit: room.unit.label,
-                ceilingHeight: room.ceilingHeight || undefined,
-                notes: room.notes || undefined
-            })),
-        }
-        // console.log(payload)
-        await handleSubmission(payload)
-    }
+ const onSubmit = async (data: IJobRequest) => {
+    const formData = new FormData();
+
+    formData.append("projectTitle", data.projectTitle);
+    formData.append("propertyType", data.propertyType.label);
+    formData.append("city", data.city);
+    formData.append("district", data.district);
+    formData.append("phone", data.phone);
+    formData.append("state", data.state);
+    formData.append("timeline", data.timeline.label);
+    formData.append("minBudget", String(data.minBudget));
+    formData.append("maxBudget", String(data.maxBudget));
+    formData.append("description", data.description);
+
+    data.designStyles.forEach(({ label }, i) => {
+        formData.append(`designStyles[${i}]`, label);
+    });
+
+    data.rooms.forEach((room, i) => {
+        formData.append(`rooms[${i}][spaceType]`, room.spaceType.label);
+        formData.append(`rooms[${i}][length]`, String(room.length));
+        formData.append(`rooms[${i}][width]`, String(room.width));
+        formData.append(`rooms[${i}][unit]`, room.unit.label);
+        if (room.ceilingHeight) formData.append(`rooms[${i}][ceilingHeight]`, String(room.ceilingHeight));
+        if (room.notes) formData.append(`rooms[${i}][notes]`, room.notes);
+    });
+
+    data.refrenceImages?.forEach((item) => {
+          const file = item.file?.[0]
+            if (file) {
+                formData.append("refrenceImages", file)
+
+            }
+    });
+
+    console.log([...formData.entries()])
+    await handleSubmission(formData);
+};
     const addRoom = () => {
-        append({
+        roomAppend({
             spaceType: SPACE_OPTIONS[0],
             length: "",
             width: "",
@@ -62,6 +104,16 @@ export default function JobRequestForm() {
             notes: "",
         });
     };
+
+        const handleRefrenceImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+            const selectedFiles = Array.from(e.target.files || []);
+            selectedFiles.forEach(file => {
+                refrenceAppend({
+                    file: [file]
+                });
+            });
+            e.target.value = "";
+        };
 
     return (
         <div className="min-h-screen w-full flex justify-center items-start py-10 px-4">
@@ -136,7 +188,7 @@ export default function JobRequestForm() {
                         {errors.designStyles && <p className="text-xs text-red-500 mt-1">{errors.designStyles.message}</p>}
                     </div>
 
-                    {/* City, District, Phone */}
+                    {/* City, District, state */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">State</label>
@@ -149,15 +201,6 @@ export default function JobRequestForm() {
                             <p className="text-sm text-error">{errors.state?.message}</p>
                         </div>
                         <div>
-                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">City</label>
-                            <input
-                                {...register("city")}
-                                className="auth-input w-full"
-                                placeholder="e.g. Kochi"
-                            />
-                            {errors.city && <p className="text-xs text-red-500 mt-1">{errors.city.message}</p>}
-                        </div>
-                        <div>
                             <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">District</label>
                             <input
                                 {...register("district")}
@@ -166,6 +209,22 @@ export default function JobRequestForm() {
                             />
                             {errors.district && <p className="text-xs text-red-500 mt-1">{errors.district.message}</p>}
                         </div>
+
+                        <div>
+                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">City</label>
+                            <input
+                                {...register("city")}
+                                className="auth-input w-full"
+                                placeholder="e.g. Kochi"
+                            />
+                            {errors.city && <p className="text-xs text-red-500 mt-1">{errors.city.message}</p>}
+                        </div>
+
+
+                    </div>
+
+                    {/* Timeline & phone */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Phone</label>
                             <input
@@ -175,10 +234,7 @@ export default function JobRequestForm() {
                             />
                             {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone.message}</p>}
                         </div>
-                    </div>
 
-                    {/* Timeline & Budget */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Project Timeline</label>
                             <Controller
@@ -198,15 +254,33 @@ export default function JobRequestForm() {
                             />
                             {errors.timeline && <p className="text-xs text-red-500 mt-1">{errors.timeline.message}</p>}
                         </div>
+
+                    </div>
+
+
+                    {/**budget */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
                         <div>
-                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Budget (₹)</label>
+                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Minimum Budget (₹)</label>
                             <input
                                 type="number"
-                                {...register("budget")}
+                                {...register("minBudget", { valueAsNumber: true })}
                                 className="auth-input w-full"
                                 placeholder="e.g. 50000"
                             />
-                            {errors.budget && <p className="text-xs text-red-500 mt-1">{errors.budget.message}</p>}
+                            {errors.minBudget && <p className="text-xs text-red-500 mt-1">{errors.minBudget.message}</p>}
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Maximum Budget (₹)</label>
+                            <input
+                                type="number"
+                                {...register("maxBudget", { valueAsNumber: true })}
+                                className="auth-input w-full"
+                                placeholder="e.g. 50000"
+                            />
+                            {errors.maxBudget && <p className="text-xs text-red-500 mt-1">{errors.maxBudget.message}</p>}
                         </div>
                     </div>
 
@@ -228,7 +302,7 @@ export default function JobRequestForm() {
                             <div className="flex flex-col overflow-hidden text-left">
                                 <span className="text-sm text-gray-700 font-medium">Add a Room</span>
                                 <span className="text-[11px] text-gray-400">
-                                    {fields.length > 0 ? `${fields.length} room${fields.length > 1 ? "s" : ""} added` : "Select a space and enter measurements..."}
+                                    {roomFields.length > 0 ? `${roomFields.length} room${roomFields.length > 1 ? "s" : ""} added` : "Select a space and enter measurements..."}
                                 </span>
                             </div>
                             <Plus className="h-5 w-5 text-gray-400 ml-auto shrink-0" />
@@ -237,9 +311,9 @@ export default function JobRequestForm() {
                             <p className="text-xs text-red-500 mt-1">{errors.rooms.message}</p>
                         )}
                         {/* Room Cards */}
-                        {fields.length > 0 && (
+                        {roomFields.length > 0 && (
                             <div className="space-y-4">
-                                {fields.map((field, index) => (
+                                {roomFields.map((field, index) => (
                                     <div
                                         key={field.id}
                                         className="relative p-4 bg-gray-50 rounded-xl border border-dashed border-gray-200 space-y-3"
@@ -247,7 +321,7 @@ export default function JobRequestForm() {
                                         {/* Remove button */}
                                         <button
                                             type="button"
-                                            onClick={() => remove(index)}
+                                            onClick={() => roomRemove(index)}
                                             className="absolute top-3 right-3  text-white p-1"
                                         >
                                             <Trash size={12} className="text-error" />
@@ -347,6 +421,70 @@ export default function JobRequestForm() {
                         )}
                     </div>
 
+
+                    <div className="space-y-4">
+                        <label className="block text-sm font-Jost-Semibold text-gray-700">Refrence images (Optional)</label>
+
+                        {refrenceFields.length < 10 && (
+
+                            <>
+                                <label
+                                    htmlFor="refrence"
+                                    className="flex items-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer hover:border-primary transition-colors "
+                                >
+                                    <div className="bg-gray-100 p-1.5 rounded-md">
+                                        <ImageIcon className="h-4 w-4 text-gray-500" />
+                                    </div>
+                                    <div className="flex flex-col overflow-hidden">
+                                        <span className="text-sm text-gray-700 font-medium">Upload refrence Photos</span>
+                                        <span className="text-[11px] text-gray-400 truncate">
+                                            {refrenceFields.length > 0 ? `${refrenceFields.length} images selected` : "Select one or more images..."}
+                                        </span>
+                                    </div>
+                                    <Plus className="h-5 w-5 text-gray-400 ml-auto shrink-0" />
+                                </label>
+
+
+                                <input
+                                    type="file"
+                                    id="refrence"
+                                    multiple
+                                    hidden
+                                    onChange={handleRefrenceImageUpload}
+                                />
+                            </>
+
+                        )}
+                        {/* refrence images */}
+                        {refrenceFields.length > 0 && (
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                                {refrenceFields.map((field, index) => (
+                                    <div key={field.id} className="relative aspect-square rounded-lg overflow-hidden bg-white shadow-sm group">
+                                        {refrenceImagesPreview[index] ? (
+                                            <>
+                                                <Zoom>
+                                                    <img
+                                                        src={refrenceImagesPreview[index]}
+                                                        className="w-full h-full object-fill"
+                                                        alt={`Gallery ${index}`}
+                                                    />
+                                                </Zoom>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => refrenceRemove(index)}
+                                                    className="absolute top-1 right-1 z-10 bg-red-500/90 hover:bg-red-600 text-white p-1 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    <X size={12} />
+                                                </button>
+                                            </>
+                                        ) : null}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                        {errors.refrenceImages && <p className="text-xs text-red-500 mt-1">{errors.refrenceImages.message}</p>}
+
+                    </div>
                     {!isLoading ? (
                         <button type="submit" className="auth-button">Post Job Request</button>
                     ) : (
@@ -359,8 +497,8 @@ export default function JobRequestForm() {
                         </button>
                     )}
                 </form>
-                 {jobError && <p className="text-sm text-error text-center">{jobError}</p>}
-      {jobSuccess && <p className="text-sm text-success text-center">{jobSuccess}</p>}
+                {jobError && <p className="text-sm text-error text-center">{jobError}</p>}
+                {jobSuccess && <p className="text-sm text-success text-center">{jobSuccess}</p>}
             </div>
         </div>
     );

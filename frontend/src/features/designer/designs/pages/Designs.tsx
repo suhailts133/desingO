@@ -1,17 +1,18 @@
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import {  Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import DesignerDesignCard from "../components/DesignerDesignCard";
 import { useState } from "react";
-import { useGetAllDesignQuery } from "../designEndpoints";
+import { useGetMyDesignsQuery } from "../designEndpoints";
 
 import { useDeleteADesign } from "../hooks/useDeleteDesign";
-import ConfirmModal from "../../../../shared/ConfirmModal";
+import ConfirmModal from "../../../../shared/modals/ConfirmModal";
+import Pagination from "../../../../shared/common/Pagination";
 
 export default function Designs() {
     const [page, setPage] = useState(1)
     const [deleteDesign, setDeleteDesign] = useState<string | null>(null)
     const { handleDeletion, isDeleting, deleteError, deleteSuccess } = useDeleteADesign()
-    const { data, isLoading, error } = useGetAllDesignQuery({ page })
+    const { data, isLoading, error } = useGetMyDesignsQuery({ page })
     const designs = data?.data;
     if (isLoading) {
         return <p>Loading...</p>
@@ -22,8 +23,7 @@ export default function Designs() {
 
     const handleDelete = async () => {
         if (!deleteDesign) return
-      
-        console.log(deleteDesign)
+    
         await handleDeletion(deleteDesign)
         setDeleteDesign(null)
     }
@@ -70,34 +70,17 @@ export default function Designs() {
                 buttonLoadingText="deleting"
                 buttonText="Confirm & delete"
             />
+
+            <Pagination
+            page={page}
+            totalItem={totalDesigns}
+            totalPages={totalPages}
+            whichItem="designs"
+            onDecrease={()=> setPage(p => p -1)}
+            onIncrease={()=> setPage(p => p +1)}
+            />
             
-            <div className="flex items-center justify-between px-5 py-3.5 border-t border-white/20 bg-white/10">
-                <p className="text-xs text-soft-black/50">
-                    Page {page} of {totalPages} &mdash; {totalDesigns} total designs
-                </p>
-                <div className="flex items-center gap-2">
-                    <button
-                        disabled={page <= 1}
-                        onClick={() => setPage((p) => p - 1)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-Jost-Semibold
-                bg-blush-light/30 border border-white/40 text-soft-black/90
-                hover:bg-white/60 hover:text-blush-deep transition-all duration-200
-                disabled:opacity-30 disabled:cursor-not-allowed"
-                    >
-                        <ChevronLeft size={14} /> Prev
-                    </button>
-                    <button
-                        disabled={page >= totalPages}
-                        onClick={() => setPage((p) => p + 1)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-Jost-Semibold
-                bg-peach/40 border border-white/40 text-soft-black/70
-                hover:bg-white/60 hover:text-blush-deep transition-all duration-200
-                disabled:opacity-30 disabled:cursor-not-allowed"
-                    >
-                        Next <ChevronRight size={14} />
-                    </button>
-                </div>
-            </div>
+          
         </div>
     );
 }

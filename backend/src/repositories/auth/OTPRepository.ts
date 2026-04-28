@@ -43,8 +43,11 @@ export class OtpRepository implements IOTPRepository {
     }
 
 
-    async getUserData(email: string): Promise<IUserTemp> {
+    async getUserData(email: string): Promise<IUserTemp | null> {
             const result = await client.get(email);
+            if(!result){
+                return null
+            }
             const val: IUserTemp = JSON.parse(result as string);
             return val
     }

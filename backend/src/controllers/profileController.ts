@@ -6,7 +6,7 @@ import { MESSAGES } from "../helpers/enums/messages.js";
 import { RESPONSE_CODE } from "../helpers/enums/statusCode.js";
 import { RespsonseHelper } from "../helpers/responseHelper.js";
 import { designerProfileUpdateValidation, userProfileUpdateValidation } from "../validators/profile/profileValidation.js";
-import type { DesignerProfileDTO, DesignerUpdateResponseDTO, UserProfileUpdateDTO } from "../DTO/profile/profileDTO.js";
+import type { DesignerUpdateResponseDTO, UserProfileUpdateDTO } from "../DTO/profile/profileDTO.js";
 export class ProfileController {
     constructor(private _profileServices: IProfileService) { }
 

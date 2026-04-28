@@ -108,6 +108,7 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
     }
 
     async getAllJobApplications(userId: string, filters?: JobApplicationFilter): Promise<{ data: AllJobApplicationsDTO[]; pagination: Pagination; }> {
+   
         const page = filters?.page ? Number(filters.page) : 1;
         const limit =1;
         const skip = (page - 1) * limit;
@@ -143,7 +144,7 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
             id: data.id
         }))
 
-
+       
         return { data: output, pagination }
     }
 }

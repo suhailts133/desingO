@@ -19,7 +19,7 @@ export const useAddDesign = () => {
             setTimeout(() => {
                 setDesignSuccess(null)
                 navigate("/designer/designs")
-            }, 3000)
+            }, 2000)
         }else{
             setDesignError(result.message as string)
             setTimeout(() => {

@@ -1,3 +1,5 @@
+import type { ImageUploadResult } from "../profile/designerProfileInterface";
+
 export interface IDesign {
   name: string;
   propertyType: { value: string; label: string };
@@ -35,8 +37,8 @@ export interface DesignDetailResponseDTO {
   services: string[];
   designStyles: string[];
   description: string;
-  coverImage: string;
-  gallery: string[];
+  coverImage: ImageUploadResult;
+  gallery: ImageUploadResult[];
   createdAt: string;
 }
 
@@ -68,3 +70,17 @@ export interface DesignFilterForm {
     spaceTypes: { label: string; value: string }[] | null;
     sortBy: { label: string; value: string } | null;
 }
+
+
+export type SelectOption = { label: string; value: string };
+
+export interface EditDesignFields {
+    name: string;
+    startingPrice: number;
+    description: string;
+    designStyles: SelectOption[];
+    services: SelectOption[];
+    spaceType: SelectOption;
+    propertyType: SelectOption;
+}
+

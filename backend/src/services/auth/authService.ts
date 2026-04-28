@@ -15,6 +15,8 @@ import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
 // DTOs
 import type { CreateUserDTO, RegisterUserDTO, AuthResponseDTO, RefreshTokenDTO } from "../../DTO/auth/authDTO.js";
 import { googleLoginResponse } from "../../helpers/googleAuth.js";
+import { AppError } from "../../helpers/errors/appError.js";
+import { MESSAGES } from "../../helpers/enums/messages.js";
 
 
 
@@ -33,28 +35,24 @@ export class AuthService implements IAuthService {
 
 
     async refreshToken(refreshToken: string): Promise<IApiResponse<RefreshTokenDTO>> {
-        try {
-            const verifiedRefreshToken = refeshTokenVerificaion(refreshToken)
-            if (!verifiedRefreshToken) {
-                return { success: false, message: "Token Expired. Please Login", statuscode: RESPONSE_CODE.UNAUTHORIZED }
-            }
-            const createNewAccessToken = jwtAccessToken(
-                verifiedRefreshToken.email,
-                verifiedRefreshToken.userId,
-                verifiedRefreshToken.name,
-                verifiedRefreshToken.role
-            )
-            return {
-                success: true, message: "New access token created", data: {
-                    newAccessToken: createNewAccessToken
-                },
-                statuscode: RESPONSE_CODE.OK
-            }
-        } catch (error) {
-            const err = ensureError(error)
-            console.error(err.message);
-            return { success: false, message: "Failed to Generate Refresh Token. Please try again or contact support.", statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
+
+        const verifiedRefreshToken = refeshTokenVerificaion(refreshToken)
+        if (!verifiedRefreshToken) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.EXPIRED_TOKEN, RESPONSE_CODE.UNAUTHORIZED)
         }
+        const createNewAccessToken = jwtAccessToken(
+            verifiedRefreshToken.email,
+            verifiedRefreshToken.userId,
+            verifiedRefreshToken.name,
+            verifiedRefreshToken.role
+        )
+        return {
+            message: MESSAGES.LOGIN_SIGNUP.NEW_TOKEN_CREATED, data: {
+                newAccessToken: createNewAccessToken
+            },
+
+        }
+
     }
 
     /**
@@ -65,31 +63,26 @@ export class AuthService implements IAuthService {
      */
 
     async sendOTP(data: RegisterUserDTO): Promise<IApiResponse> {
-        try {
-            const findEmail = await this._userRepository.findEmail(data.email);
-            if (findEmail) {
-                return { message: "Email already exsits, please login", success: false, statuscode: RESPONSE_CODE.CONFILT }
-            }
-            const otp = generateOtp();
-            console.log(otp)
-            const hashed = await hashPassword(data.password)
-            const pendingUser: IUserTemp = {
-                full_name: data.full_name,
-                email: data.email,
-                otp,
-                password: hashed
-            }
-            const value = await this._otpRepository.saveUserData(pendingUser)
-            if (!value) {
-                return { success: false, message: "Failed to send OTP. Please try again or contact support.", statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
-            }
-            await sendVerificationEmail(data.email, otp)
-            return { success: true, message: "OTP has been successfully sent to your email.", statuscode: RESPONSE_CODE.OK }
-        } catch (error) {
-            const err = ensureError(error)
-            console.error(err.message);
-            return { success: false, message: "Failed to send OTP. Please try again or contact support.", statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
+
+        const findEmail = await this._userRepository.findEmail(data.email);
+        if (findEmail) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.EMAIL_ALREADY_EXISTS, RESPONSE_CODE.CONFILT)
         }
+        const otp = generateOtp();
+        console.log(otp)
+        const hashed = await hashPassword(data.password)
+        const pendingUser: IUserTemp = {
+            full_name: data.full_name,
+            email: data.email,
+            otp,
+            password: hashed
+        }
+        const value = await this._otpRepository.saveUserData(pendingUser)
+        if (!value) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.OTP_SENT_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
+        await sendVerificationEmail(data.email, otp)
+        return { message: MESSAGES.LOGIN_SIGNUP.OTP_SENT_SUCCESS }
     }
 
 
@@ -102,36 +95,34 @@ export class AuthService implements IAuthService {
      */
 
     async verifyOTP(email: string, otp: string): Promise<IApiResponse<AuthResponseDTO>> {
-        try {
-            const result = await this._otpRepository.getUserData(email);
-            const data: CreateUserDTO = {
-                full_name: result.full_name,
-                email: result.email,
-                password: result.password
-            }
-            if (result.otp === otp) {
-                const val = await this._userRepository.createNewUser(data)
-                const accessToken = jwtAccessToken(val.email, val.id, val.full_name, val.role)
-                const refreshToken = jwtRefreshToken(val.email, val.id, val.full_name, val.role)
-                const respnone: AuthResponseDTO = {
-                    user: {
-                        id: val.id,
-                        name: val.full_name,
-                        email: val.email,
-                        role: val.role
-                    },
-                    refreshToken: refreshToken,
-                    jwtToken: accessToken
-                }
-                await this._otpRepository.deleteUserData(val.email!)
-                return { success: true, message: "OTP Verification Completed", data: respnone, statuscode: RESPONSE_CODE.CREATED }
-            }
-            return { message: "Incorrect OTP", success: false, statuscode: RESPONSE_CODE.BAD_REQUEST }
-        } catch (error) {
-            const err = ensureError(error)
-            console.error(err.message);
-            return { success: false, message: "Failed to verify OTP. Please try again or contact support.", statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
+        const result = await this._otpRepository.getUserData(email);
+        if (!result) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.OTP_EXPIRED, RESPONSE_CODE.NOT_FOUND)
         }
+        const data: CreateUserDTO = {
+            full_name: result.full_name,
+            email: result.email,
+            password: result.password
+        }
+        if (result.otp === otp) {
+            const val = await this._userRepository.createNewUser(data)
+            const accessToken = jwtAccessToken(val.email, val.id, val.full_name, val.role)
+            const refreshToken = jwtRefreshToken(val.email, val.id, val.full_name, val.role)
+            const respnone: AuthResponseDTO = {
+                user: {
+                    id: val.id,
+                    name: val.full_name,
+                    email: val.email,
+                    role: val.role
+                },
+                refreshToken: refreshToken,
+                jwtToken: accessToken
+            }
+            await this._otpRepository.deleteUserData(val.email!)
+            return { message: MESSAGES.LOGIN_SIGNUP.OTP_SUCCESS, data: respnone, statuscode: RESPONSE_CODE.CREATED }
+        }
+        throw new AppError(MESSAGES.LOGIN_SIGNUP.OTP_INCORRECT, RESPONSE_CODE.BAD_REQUEST)
+
     }
 
 
@@ -143,24 +134,18 @@ export class AuthService implements IAuthService {
      */
 
     async resendOTP(email: string): Promise<IApiResponse> {
-        try {
-            const findEmail = await this._userRepository.findEmail(email);
-            if (findEmail) {
-                return { message: "Email already exsits, please login", success: false, statuscode: RESPONSE_CODE.CONFILT }
-            }
-            const otp = generateOtp();
-            console.log("new otp: ", otp)
-            const saveNewOtp = await this._otpRepository.editUserData(otp, email);
-            if (!saveNewOtp) {
-                return { message: "Resend OTP failed. Please sign up again.", success: false, statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR };
-            }
-            await sendVerificationEmail(email, otp);
-            return { message: 'A new OTP has been successfully sent to your email.', success: true, statuscode: RESPONSE_CODE.OK }
-        } catch (error) {
-            const err = ensureError(error)
-            console.error(err.message);
-            return { success: false, message: "Failed to resend OTP. Please try again or contact support.", statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
+        const findEmail = await this._userRepository.findEmail(email);
+        if (findEmail) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.EMAIL_ALREADY_EXISTS, RESPONSE_CODE.CONFILT)
         }
+        const otp = generateOtp();
+        console.log("new otp: ", otp)
+        const saveNewOtp = await this._otpRepository.editUserData(otp, email);
+        if (!saveNewOtp) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.OTP_SENT_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
+        await sendVerificationEmail(email, otp);
+        return { message: MESSAGES.LOGIN_SIGNUP.OTP_SENT_SUCCESS }
     }
 
 
@@ -172,26 +157,19 @@ export class AuthService implements IAuthService {
      */
 
     async forgetPasswordOTPSent(email: string): Promise<IApiResponse> {
-        try {
-            const findEmailCheck = await this._userRepository.findEmail(email);
-            if (!findEmailCheck) {
-                return { success: false, message: "Email Not Found, Please Signup.", statuscode: RESPONSE_CODE.NOT_FOUND }
-            }
-
-            const otp = generateOtp()
-            console.log(otp, " for forget password")
-            const val = this._otpRepository.saveOTP(otp, email);
-            if (!val) {
-                throw new Error("Failed to store otp in redis service:forgetPassword")
-            }
-            await sendVerificationEmail(email, otp)
-
-            return { success: true, message: "OTP sent for password reset.", statuscode: RESPONSE_CODE.OK }
-        } catch (error) {
-            const err = ensureError(error)
-            console.error(err.message);
-            return { success: false, message: "Failed to resend OTP. Please try again or contact support.", statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
+        const findEmailCheck = await this._userRepository.findEmail(email);
+        if (!findEmailCheck) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.EMAIL_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
+        const otp = generateOtp()
+        console.log(otp, " for forget password")
+        const val = this._otpRepository.saveOTP(otp, email);
+        if (!val) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.OTP_SENT_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
+        await sendVerificationEmail(email, otp)
+        return { message: MESSAGES.LOGIN_SIGNUP.OTP_SENT_SUCCESS }
+
     }
 
 
@@ -204,30 +182,26 @@ export class AuthService implements IAuthService {
     */
 
     async forgetPasswordOTPVerification(email: string, otp: string): Promise<IApiResponse> {
-        try {
-            const findEmailCheck = await this._userRepository.findEmail(email);
-            if (!findEmailCheck) {
-                return { success: false, message: "Email Not Found, Please Signup.", statuscode: RESPONSE_CODE.NOT_FOUND }
-            }
-            const savedOTP = await this._otpRepository.getOTP(email)
-            if (savedOTP === null) {
-                return { success: false, message: 'OTP has expired. Please request a new one.', statuscode: RESPONSE_CODE.NOT_FOUND }
-            }
 
-            const otpChecking = otp === savedOTP
-            if (!otpChecking) {
-                return { success: otpChecking, message: "Incorrect OTP, Please Try again.", statuscode: RESPONSE_CODE.BAD_REQUEST }
-            }
-            const deleted = await this._otpRepository.deleteOTP(email);
-           if(!deleted){
-            console.error("Failed")
-           }
-            return { success: true, message: "OTP verification successful. Please change your password.", statuscode: RESPONSE_CODE.OK }
-        } catch (error) {
-            const err = ensureError(error)
-            console.error(err.message);
-            return { success: false, message: "Failed to verify OTP. Please try again or contact support.", statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
+        const findEmailCheck = await this._userRepository.findEmail(email);
+        if (!findEmailCheck) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.EMAIL_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
+        const savedOTP = await this._otpRepository.getOTP(email)
+        if (savedOTP === null) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.OTP_EXPIRED, RESPONSE_CODE.NOT_FOUND)
+        }
+
+        const otpChecking = otp === savedOTP
+        if (!otpChecking) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.OTP_INCORRECT, RESPONSE_CODE.BAD_REQUEST)
+        }
+        const deleted = await this._otpRepository.deleteOTP(email);
+        if (!deleted) {
+            console.error("Failed")
+        }
+        return { message: MESSAGES.LOGIN_SIGNUP.OTP_SUCCESS }
+
     }
 
 
@@ -240,24 +214,19 @@ export class AuthService implements IAuthService {
      */
 
     async forgetPasswordResendOTP(email: string): Promise<IApiResponse> {
-        try {
-            const findEmail = await this._userRepository.findEmail(email);
-            if (!findEmail) {
-                return { success: false, message: "Email Not Found, Please Signup.", statuscode: RESPONSE_CODE.NOT_FOUND }
-            }
-            const otp = generateOtp();
-            console.log(otp, " forget password resend otp")
-            const editotp = await this._otpRepository.editOTP(otp, email);
-            if (!editotp) {
-                return { message: "Failed to resend OTP. Please try again or contact support.", success: false, statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
-            }
-            await sendVerificationEmail(email, otp)
-            return { success: true, message: "OTP for password reset has been resent successfully.", statuscode: RESPONSE_CODE.OK }
-        } catch (error) {
-            const err = ensureError(error)
-            console.error(err.message);
-            return { success: false, message: "Failed to resend OTP. Please try again or contact support.", statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
+        const findEmail = await this._userRepository.findEmail(email);
+        if (!findEmail) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.EMAIL_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
+        const otp = generateOtp();
+        console.log(otp, " forget password resend otp")
+        const editotp = await this._otpRepository.editOTP(otp, email);
+        if (!editotp) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.OTP_SENT_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
+        await sendVerificationEmail(email, otp)
+        return { message: MESSAGES.LOGIN_SIGNUP.OTP_SENT_SUCCESS }
+
     }
 
 
@@ -271,22 +240,16 @@ export class AuthService implements IAuthService {
      */
 
     async forgetPasswordChangePassword(email: string, password: string): Promise<IApiResponse> {
-        try {
-            const findEmail = await this._userRepository.findEmail(email);
-            if (!findEmail) {
-                return { success: false, message: "Email Not Found, Please Signup.", statuscode: RESPONSE_CODE.NOT_FOUND }
-            }
-            const hashedPassword = await hashPassword(password);
-            const value = await this._userRepository.changePassword(email, hashedPassword)
-            if (!value) {
-                return { success: false, message: "Unable to change the password.", statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
-            }
-            return { success: true, message: "Password changed successfully. Please log in again.", statuscode: RESPONSE_CODE.OK }
-        } catch (error) {
-            const err = ensureError(error)
-            console.error(err.message);
-            return { success: false, message: "Failed to change password. Please try again or contact support.", statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
+        const findEmail = await this._userRepository.findEmail(email);
+        if (!findEmail) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.EMAIL_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
+        const hashedPassword = await hashPassword(password);
+        const value = await this._userRepository.changePassword(email, hashedPassword)
+        if (!value) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.PASSWORD_CHANGE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
+        return { message: MESSAGES.LOGIN_SIGNUP.PASSWORD_CHANGE_SUCCESS }
     }
 
 
@@ -300,39 +263,36 @@ export class AuthService implements IAuthService {
      */
 
     async login(email: string, password: string): Promise<IApiResponse<AuthResponseDTO>> {
-        try {
-            const user = await this._userRepository.findUser(email);
-            if (!user) {
-                return { success: false, message: "Email Not Found, Please Signup.", statuscode: RESPONSE_CODE.NOT_FOUND };
-            }
-            if (user.is_blocked) {
-                return { success: false, message: "User is blocked. Contact Support", statuscode: RESPONSE_CODE.FORBIDDEN };
-            }
-            if (!user.password) {
-                return { success: false, message: "Did you logged in with google?", statuscode: RESPONSE_CODE.NOT_FOUND };
-            }
-            const checkPassword = await comparePassword(password, user.password);
-            if (!checkPassword) {
-                return { success: false, message: "Incorrect password. Please try again.", statuscode: RESPONSE_CODE.BAD_REQUEST };
-            }
-            const accessToken = jwtAccessToken(user.email, user.id, user.full_name, user.role);
-            const refreshToken = jwtRefreshToken(user.email, user.id, user.full_name, user.role)
-            const authResponse: AuthResponseDTO = {
-                user: {
-                    id: user.id,
-                    name: user.full_name,
-                    email: user.email,
-                    role: user.role
-                },
-                refreshToken: refreshToken,
-                jwtToken: accessToken
-            }
-            return { success: true, message: "Login Successfull.", data: authResponse, statuscode: RESPONSE_CODE.OK }
-        } catch (error) {
-            const err = ensureError(error)
-            console.error(err.message);
-            return { success: false, message: "Failed to login. Please try again or contact support.", statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
+        const user = await this._userRepository.findUser(email);
+        if (!user) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.INVALID_CREDENTIALS, RESPONSE_CODE.NOT_FOUND)
         }
+        if (user.is_blocked) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.USER_BLOCKED, RESPONSE_CODE.FORBIDDEN)
+        }
+        if (!user.password) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.GOOGLE_LOGIN_DETECTED, RESPONSE_CODE.BAD_REQUEST)
+
+        }
+        const checkPassword = await comparePassword(password, user.password);
+        if (!checkPassword) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.INVALID_CREDENTIALS, RESPONSE_CODE.BAD_REQUEST)
+
+        }
+        const accessToken = jwtAccessToken(user.email, user.id, user.full_name, user.role);
+        const refreshToken = jwtRefreshToken(user.email, user.id, user.full_name, user.role)
+        const authResponse: AuthResponseDTO = {
+            user: {
+                id: user.id,
+                name: user.full_name,
+                email: user.email,
+                role: user.role
+            },
+            refreshToken: refreshToken,
+            jwtToken: accessToken
+        }
+        return { message: MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse }
+
     }
 
 
@@ -347,36 +307,32 @@ export class AuthService implements IAuthService {
      */
 
     async adminLogin(email: string, password: string): Promise<IApiResponse<AuthResponseDTO>> {
-        try {
-            const admin = await this._userRepository.findUser(email);
-            if (!admin) {
-                return { success: false, message: "Admin not found.", statuscode: RESPONSE_CODE.NOT_FOUND };
-            }
-            if (admin.role !== "Admin") {
-                return { success: false, message: "Admin not found.", statuscode: RESPONSE_CODE.NOT_FOUND };
-            }
-            const checkPassword = await comparePassword(password, admin.password!);
-            if (!checkPassword) {
-                return { success: false, message: "Incorrect password. please try again.", statuscode: RESPONSE_CODE.BAD_REQUEST };
-            }
-            const accessToken = jwtAccessToken(admin.email, admin.id, admin.full_name, admin.role);
-            const refreshToken = jwtRefreshToken(admin.email, admin.id, admin.full_name, admin.role)
-            const authResponse: AuthResponseDTO = {
-                user: {
-                    id: admin.id,
-                    name: admin.full_name,
-                    email: admin.email,
-                    role: admin.role
-                },
-                refreshToken: refreshToken,
-                jwtToken: accessToken
-            }
-            return { success: true, message: "Admin login successfull.", data: authResponse, statuscode: RESPONSE_CODE.OK }
-        } catch (error) {
-            const err = ensureError(error)
-            console.error(err.message);
-            return { success: false, message: "Failed to login. Please try again or contact support.", statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR }
+        const admin = await this._userRepository.findUser(email);
+        if (!admin) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.NOT_ADMIN, RESPONSE_CODE.BAD_REQUEST)
+
         }
+        if (admin.role !== "Admin") {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.NOT_ADMIN, RESPONSE_CODE.BAD_REQUEST)
+        }
+        const checkPassword = await comparePassword(password, admin.password!);
+        if (!checkPassword) {
+            throw new AppError(MESSAGES.LOGIN_SIGNUP.NOT_ADMIN, RESPONSE_CODE.BAD_REQUEST)
+        }
+        const accessToken = jwtAccessToken(admin.email, admin.id, admin.full_name, admin.role);
+        const refreshToken = jwtRefreshToken(admin.email, admin.id, admin.full_name, admin.role)
+        const authResponse: AuthResponseDTO = {
+            user: {
+                id: admin.id,
+                name: admin.full_name,
+                email: admin.email,
+                role: admin.role
+            },
+            refreshToken: refreshToken,
+            jwtToken: accessToken
+        }
+        return { message: MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse, }
+
     }
 
     /**
@@ -392,7 +348,8 @@ export class AuthService implements IAuthService {
             const googleData = await googleLoginResponse(code);
 
             if (!googleData) {
-                return { success: false, message: "Couldn't get the user data from google.", statuscode: RESPONSE_CODE.NOT_FOUND }
+                throw new AppError(MESSAGES.LOGIN_SIGNUP.GOOGLE_DATA_ACCESS_FAIL, RESPONSE_CODE.NOT_FOUND)
+
             }
             const user = await this._userRepository.findUser(googleData.email);
 
@@ -411,7 +368,7 @@ export class AuthService implements IAuthService {
                         jwtToken: access_token,
                     }
 
-                    return { success: true, message: "Google login successfull.", data: authResponse, statuscode: RESPONSE_CODE.OK }
+                    return { message: MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse, }
                 }
 
 
@@ -434,7 +391,7 @@ export class AuthService implements IAuthService {
                         jwtToken: access_token,
                     }
 
-                    return { success: true, message: "Google login successfull.", data: authResponse, statuscode: RESPONSE_CODE.OK }
+                    return { message: MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse, }
                 }
 
             }
@@ -454,7 +411,7 @@ export class AuthService implements IAuthService {
                 refreshToken: refreshToken,
             }
 
-            return { success: true, message: "Google login successfull.", data: authResponse, statuscode: RESPONSE_CODE.OK }
+            return { message: MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse, }
         } catch (error) {
             const err = ensureError(error).message
             console.error(err);

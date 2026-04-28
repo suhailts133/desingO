@@ -5,6 +5,11 @@ export interface DesignFiles {
     gallery: Express.Multer.File[]
 
 }
+export interface EditDesignFiles {
+    coverImage?: Express.Multer.File
+    gallery?: Express.Multer.File[]
+
+}
 
 export interface AddDesignRequestDTO {
     name: string;
@@ -17,6 +22,21 @@ export interface AddDesignRequestDTO {
     spaceType: string
 }
 
+
+
+export interface EditDesign {
+    name: string;
+    description: string;
+    designStyles: string[];
+    services: string[];
+    spaceType: string;
+    propertyType: string;
+    startingPrice: number;
+    keptGallery?: ImageUploadResult[];
+}
+
+
+export type EditDesignRepoData = Omit<EditDesign, "keptGallery">
 
 export interface createDesignDTO extends AddDesignRequestDTO {
     userId: string;
@@ -46,27 +66,36 @@ export interface DesignDetailResponseDTO {
     services: string[];
     designStyles: string[];
     description: string;
-    coverImage: string;
-    gallery: string[];
+    coverImage: ImageUploadResult;
+    gallery: ImageUploadResult[];
     createdAt: string;
 }
 
 
-export interface DesignFilter{
-    page?:string,
-    designStyles?:string
-    propertyTypes?:string
-    spaceTypes?:string
-    sortBy?:string
+
+
+export interface DesignGallaryDTO {
+    coverImage: string,
+    designId: string
 }
 
 
-export interface GetAllDesignCommonResponseDTO{
-    id:string
-    name:string,
-    spaceType:string,
-    designStyles:string[]
-    coverImage:string,
-    budget:string,
-    designerName:string
+
+export interface DesignFilter {
+    page?: string,
+    designStyles?: string
+    propertyTypes?: string
+    spaceTypes?: string
+    sortBy?: string
+}
+
+
+export interface GetAllDesignCommonResponseDTO {
+    id: string
+    name: string,
+    spaceType: string,
+    designStyles: string[]
+    coverImage: string,
+    budget: string,
+    designerName: string
 }

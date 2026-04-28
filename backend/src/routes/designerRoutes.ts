@@ -24,7 +24,9 @@ router.post("/designer-verification", authenticate, upload.fields([
     { name: "governmentIdImage", maxCount: 1 },
     { name: "educationImages", maxCount: 4 },
     { name: "workExperienceImages", maxCount: 4 },
-]), designerController.designerVerificationController)
+]), designerController.designerVerification)
 
+router.get("/", designerController.getAllDesigners)
+router.get("/:id", designerController.getADesigner)
 
 export default router

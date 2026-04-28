@@ -6,7 +6,6 @@ import { DesignerModel } from "../../models/designer/designerModel.js";
 import { BaseRepository } from "../baseRepository.js";
 import type { DesignerUpdateRequestDTO } from "../../DTO/profile/profileDTO.js";
 import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { DesignFilter } from "../../DTO/designer/designDTO.js";
 import type { DesignerCardDTO, DesignerFilter } from "../../DTO/designer/designerDTO.js";
 import { UserModel } from "../../models/user/userModel.js";
 import type { IUser } from "../../interfaces/auth/IUser.js";
@@ -26,16 +25,17 @@ export class DesignerRepository extends BaseRepository<IDesigner> implements IDe
 
 
     async getDesigner(userId: string): Promise<IDesigner | null> {
+        console.log(userId, "from repo")
         const result = await this.findOne({ userId });
         if (!result) {
             return null
         }
+        console.log(result, "d data")
         return result
     }
 
     async updateDesigner(designerId: string, data: DesignerUpdateRequestDTO): Promise<IDesigner | null> {
-        console.log(designerId, "from repo")
-        console.log(data, "from repo data")
+      
         const result = await this.updateOne({ userId: designerId }, data);
 
         return result ?? null
@@ -43,7 +43,7 @@ export class DesignerRepository extends BaseRepository<IDesigner> implements IDe
 
     async getAllDesigners(designerFilter: DesignerFilter): Promise<{ data: DesignerCardDTO[], pagination: Pagination, }> {
         const PageNo = designerFilter.page ? Number(designerFilter.page) : 1;
-        const limit = 6;
+        const limit = 1;
         const skip = (PageNo - 1) * limit
         const query: QueryFilter<IDesigner> = {}
         if (designerFilter) {
@@ -70,14 +70,17 @@ export class DesignerRepository extends BaseRepository<IDesigner> implements IDe
         }
         const data: DesignerCardDTO[] = designers.map(d => {
             return {
-                designerId: d.id,
+                designerId: d.userId.id,
                 full_name: d.userId.full_name,
                 ...(d.userId.profileImage?.path && { profileImg: d.userId.profileImage.path }),
                 ...(d.userId.profile_image_url && { google_profil_img: d.userId.profile_image_url }),
                 bio: d.bio,
-                joinedAt: d.createdAt.toDateString()
+                joinedAt: d.createdAt.toDateString(),
+                state:d.state,
+                district:d.district,
             }
         })
+        console.log(data, "from repo")
         return { data, pagination }
     }
 }

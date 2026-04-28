@@ -5,14 +5,14 @@ import { AppError } from "../helpers/errors/appError.js";
 import { MESSAGES } from "../helpers/enums/messages.js";
 import { RESPONSE_CODE } from "../helpers/enums/statusCode.js";
 import { jobApplicationApprovalOrRejectionValidation, JobApplicationsQueryFilter, jobApplicationValidation } from "../validators/designers/jobApplicationValidations.js";
-import type { IJobApplicationRequestDTO, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationFilter } from "../DTO/designer/jobsDTO.js";
+import type { IJobApplicationRequestDTO, JobApplicationApprovalOrRejectionRequestDTO } from "../DTO/designer/jobsDTO.js";
 import { RespsonseHelper } from "../helpers/responseHelper.js";
 
 export class JobApplicationController {
     constructor(private _jobApplicationService: IJobApplicationService) { }
 
     applyForJob = asyncHandler(async (req: Request, res: Response) => {
-        console.log(req.body)
+     
         const { error, value } = jobApplicationValidation.validate(req.body, { stripUnknown: true })
         if (error) {
             throw new AppError(error.details[0]?.message || "Missing fields or Invalid Data", RESPONSE_CODE.BAD_REQUEST)
@@ -75,6 +75,7 @@ export class JobApplicationController {
 
         const { error, value } = JobApplicationsQueryFilter.validate(req.query, { stripUnknown: true })
         if (error) {
+            console.log("qeuery error")
             throw new AppError(error.details[0]?.message || "Invalid query parameters", RESPONSE_CODE.BAD_REQUEST)
         }
         const userId = req.user?.userId

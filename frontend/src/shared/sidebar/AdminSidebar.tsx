@@ -5,9 +5,9 @@ import {
   UserCheck, TriangleAlert
 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
-import type { AppDispatch } from "../app/store"
+import type { AppDispatch } from "../../app/store"
 import { useDispatch } from "react-redux"
-import { logOut } from "../app/authSlice"
+import { logOut } from "../../app/authSlice"
 const AdminSidebar = memo(({ name, email }: { name: string, email: string }) => {
   const [collapsed, setCollapsed] = useState(false)
   const [active, setActive] = useState("Dashboard")

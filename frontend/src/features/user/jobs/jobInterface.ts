@@ -1,3 +1,5 @@
+import type { ImageUploadResult } from "../../designer/profile/designerProfileInterface";
+
 export interface RoomMeasurement {
     spaceType: { value: string; label: string };
     length: string;
@@ -5,6 +7,14 @@ export interface RoomMeasurement {
     ceilingHeight: string;
     unit: { value: string; label: string };
     notes: string;
+}
+export interface EditRoomMeasurement {
+    spaceType: string;
+    length: string;
+    width: string;
+    ceilingHeight?: string;
+    unit: string;
+    notes?: string;
 }
 
 export interface IJobRequest {
@@ -16,11 +26,16 @@ export interface IJobRequest {
     state: string;
     phone: string;
     timeline: { value: string; label: string };
-    budget: string;
+    minBudget: number;
+    maxBudget: number;
     description: string;
     rooms: RoomMeasurement[];
+    refrenceImages: {
+        file: File[];
+    }[];
 }
 
+export type EditJobRequestFields = Omit<IJobRequest, "refrenceImages">
 
 export interface IBid {
     timeLine: { value: string; label: string }
@@ -47,8 +62,10 @@ export interface IJobRequestPayload {
     district: string;
     phone: string;
     timeline: string;
-    budget: string;
+    minBudget: number;
+    maxBudget: number;
     description: string;
+    referenceImages:ImageUploadResult[]
     rooms: RoomMeasurementPayload[];
 }
 
@@ -57,7 +74,7 @@ export interface JobRequestDetailDTO extends IJobRequestPayload {
     createdAt: string,
     userCreatedAt: string,
     status: JobStatus,
-    id:string
+    id: string
 }
 
 
@@ -86,7 +103,8 @@ export interface JobsResponseDTO {
     city: string
     district: string
     state: string
-    price: string
+    minBudget: number
+    maxBudget: number
 }
 
 export type JobsCommonResponseDTO = Omit<JobsResponseDTO, "status"> & {

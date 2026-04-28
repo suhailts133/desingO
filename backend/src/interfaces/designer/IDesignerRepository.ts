@@ -1,10 +1,11 @@
 import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { createDesignDTO, DesignDetailResponseDTO, DesignFilter, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO.js";
+import type { createDesignDTO, DesignDetailResponseDTO, DesignFilter, EditDesignFiles, EditDesignRepoData, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO.js";
 import type { DesignerCardDTO, DesignerFilter } from "../../DTO/designer/designerDTO.js";
 import type { DesignerVerificationDTO } from "../../DTO/designer/designerVerificationDTOs.js";
 import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO.js";
 import type { DesignerUpdateRequestDTO } from "../../DTO/profile/profileDTO.js";
-import type { IDesigner } from "./IDesigner.js";
+import type { ImageUploadResult } from "../base/IImageUpload.js";
+import type { IDesign, IDesigner } from "./IDesigner.js";
 
 
 export interface IDesignerRepository {
@@ -21,6 +22,8 @@ export interface IDesignRepository {
     getDesignDetail(designId: string): Promise<DesignDetailResponseDTO | null>,
     getAllDesignCommon(designFilter?: DesignFilter): Promise<{ data: GetAllDesignCommonResponseDTO[], pagination: Pagination }>;
     deleteADesign(id: string): Promise<boolean>;
+    getDesign(id: string): Promise<IDesign | null>
+    editDesign(id: string, data: EditDesignRepoData, coverImage?: ImageUploadResult, gallery?: ImageUploadResult[]): Promise<boolean>
 }
 
 

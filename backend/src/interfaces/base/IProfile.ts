@@ -1,4 +1,4 @@
-import type { DesignerProfileDTO, DesignerProfileResponseDTO, DesignerUpdateResponseDTO, UserProfileDTO, UserProfileResponseDTO, UserProfileUpdateDTO } from "../../DTO/profile/profileDTO.js"
+import type {  DesignerProfileResponseDTO, DesignerUpdateResponseDTO, UserProfileDTO, UserProfileResponseDTO, UserProfileUpdateDTO } from "../../DTO/profile/profileDTO.js"
 import type { IApiResponse } from "./IApiResponse.js"
 import type { ImageUploadResult } from "./IImageUpload.js"
 

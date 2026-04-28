@@ -22,22 +22,26 @@ export const API_ROUTES = {
     },
     DESIGNER: {
         DESIGNER_VERIFICATION: "/designer/designer-verification",
+        GET_ALL_DESIGNERS: "/designer",
+        GET_DESIGNER_DETAIL: (id: string) => `/designer/${id}`
 
     },
     DESIGNS: {
         ADD_DESIGN: "/design/add-design",
-        MY_DESIGNS: "/design/my-designs",
-        DESIGN_DETAIL: "/design/designs",
-        DESIGNS: "/design/designs",
-        DESIGN_DELETE: "/design/designs",
+        EDIT_DESIGN: "/design/edit-design",
+        MY_DESIGNS: "/design/my",
+        DESIGN_DETAIL: "/design",
+        DESIGNS: "/design/all-designs",
+        DESIGN_DELETE: "/design",
+        DESIGN_GALLARY:"/design/gallary"
     },
-    CUSTOMER: {
-        POST_JOB: "customer/post-job",
-        MY_JOBS: "customer/my-jobs",
-        JOB_DETAIL: "customer/jobs",
-        JOBS: "/customer/jobs",
-        JOB_DELETE: "/customer/jobs"
-
+    JOB: {
+        POST_JOB: "/job/post-job",
+        EDIT_JOB: "/job/edit-job",
+        MY_JOBS: "/job/my",
+        JOB_DETAIL: "/job",
+        JOBS: "/job",
+        JOB_DELETE: "/job"
     },
     JOB_APPLICATION: {
         APPLY: "/job-application/apply",

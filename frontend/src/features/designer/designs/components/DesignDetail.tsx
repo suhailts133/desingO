@@ -15,7 +15,7 @@ export default function DesignDetail() {
     const design = data?.data;
     useEffect(() => {
         if (design?.coverImage) {
-            setActiveImage(design.coverImage)
+            setActiveImage(design.coverImage.path)
         }
     }, [design])
     if (isLoading) {
@@ -24,7 +24,8 @@ export default function DesignDetail() {
     if (error || !design) {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Design not found.</div>;
     }
-    const allImages = [design.coverImage, ...design.gallery];
+    console.log(design)
+    const allImages = [design.coverImage.path, ...design.gallery.map(e => e.path)];
     return (
         <div className="max-w-5xl mx-auto px-4 py-10">
 
@@ -44,7 +45,7 @@ export default function DesignDetail() {
                         <div className="relative w-full aspect-video overflow-hidden">
                             <Zoom>
                                 <img
-                                    src={activeImage || design.coverImage}
+                                    src={activeImage || design.coverImage.path}
                                     alt={design.designName}
                                     className="w-full h-full object-cover transition-all duration-500"
                                 />
@@ -69,7 +70,7 @@ export default function DesignDetail() {
                         </div>
                     </div>
 
-               
+
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-5">
                         <h1 className="font-Jost-Semibold text-2xl text-soft-black leading-snug mb-3">
                             {design.designerName}

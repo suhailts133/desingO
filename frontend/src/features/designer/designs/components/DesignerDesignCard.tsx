@@ -12,6 +12,10 @@ export default function DesignerDesignCard({ design, onDeleteClick }: props) {
     const getDesignDetail = (id: string) => {
         navigate(`/designs/${id}`)
     }
+    const updateDesignPage = (id: string) => {
+        navigate(`/designer/designs/edit/${id}`)
+    }
+    
     return (
         <div className="group bg-off-white w-full rounded-xl border border-blush-light/40 overflow-hidden shadow-lg  hover:shadow-2xl transition-shadow duration-300 ">
 
@@ -58,16 +62,16 @@ export default function DesignerDesignCard({ design, onDeleteClick }: props) {
                         <Eye className="w-3.5 h-3.5" />
                         <span>View</span>
                     </button>
-                    <a
-                        href="#"
-                        title="Refresh"
+                    <button
+                        onClick={() => updateDesignPage(design.id)}
+                        title="View"
                         className="flex-1 inline-flex items-center justify-center gap-1.5 text-soft-black/70 bg-off-white hover:bg-blush-pale hover:text-blush-deep border border-blush-light/50 hover:border-blush-light rounded-lg text-xs font-medium py-2 transition-all duration-200"
                     >
                         <Pencil className="w-3.5 h-3.5" />
-                        <span>update</span>
-                    </a>
+                        <span>Edit</span>
+                    </button>
+   
                     <button
-                        // href="#"
                         onClick={onDeleteClick}
                         title="Delete"
                         className="inline-flex items-center justify-center text-soft-black/50 hover:text-error bg-off-white hover:bg-red-50 border border-blush-light/50 hover:border-red-200 rounded-lg p-2 transition-all duration-200"

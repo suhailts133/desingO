@@ -3,7 +3,7 @@ import { useState } from "react";
 import JobApplicationCard from "../../jobApplications/components/JobApplicationCard";
 import { useGetAllJobApplicationsQuery } from "../jobApplicationEndpoints";
 import type { JobApplicationRejection, JobApplicationStatus } from "../jobApplicationInterFace";
-import ConfirmModal from "../../../../shared/ConfirmModal";
+import ConfirmModal from "../../../../shared/modals/ConfirmModal";
 import { useApproveOrRejectJobApplication } from "../hooks/useApproveOrRejectionJobApplication";
 import RejectJobApplicationModal from "../components/RejectJobApplicationModal";
 

@@ -1,10 +1,20 @@
-import { useAddDesignMutation,  useDeleteADesignMutation } from "./designEndpoints"
+import { useAddDesignMutation, useDeleteADesignMutation, useEditDesignMutation } from "./designEndpoints"
 
 export const useDesignServices = () => {
 
     const [addDesignMutation, { isLoading }] = useAddDesignMutation();
-    const [deleteDesignMutation, { isLoading:isDeleting }] = useDeleteADesignMutation();
+    const [deleteDesignMutation, { isLoading: isDeleting }] = useDeleteADesignMutation();
+    const [editDesignMutation, { isLoading: isEditing }] = useEditDesignMutation();
 
+    const editDesign = async ({ formdata, id }: { formdata: FormData; id: string }) => {
+        try {
+            const result = await editDesignMutation({ formdata, id }).unwrap()
+
+            return result
+        } catch (error: any) {
+            return error.data
+        }
+    }
     const addDesign = async (formData: FormData) => {
         try {
             const result = await addDesignMutation(formData).unwrap()
@@ -27,6 +37,8 @@ export const useDesignServices = () => {
         addDesign,
         isLoading,
         deleteADesign,
-        isDeleting
+        isDeleting,
+        isEditing,
+        editDesign
     }
 }

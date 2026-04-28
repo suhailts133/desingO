@@ -5,7 +5,7 @@ import type { DesignDetailResponseDTO, DesignResponseDTO, DesignsQueryParms, Get
 
 export const designApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        getAllDesign: builder.query<IApiResponseWithPagination<DesignResponseDTO[]>, { page: number }>({
+        getMyDesigns: builder.query<IApiResponseWithPagination<DesignResponseDTO[]>, { page: number }>({
             query: ({ page }) => ({
                 url: API_ROUTES.DESIGNS.MY_DESIGNS,
                 method: "GET",
@@ -38,6 +38,16 @@ export const designApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["designs"]
         }),
+
+        editDesign: builder.mutation<IApiResponse, { formdata: FormData, id: string }>({
+            query: ({ formdata, id }) => ({
+                url: `${API_ROUTES.DESIGNS.EDIT_DESIGN}/${id}`,
+                method: "PATCH",
+                body: formdata
+            }),
+            invalidatesTags: ["designs"]
+        }),
+
         getAllDesignsCommon: builder.query<IApiResponseWithPagination<GetAllDesignCommonResponseDTO[]>, DesignsQueryParms>({
             query: (args) => {
                 const designStyles = args.designStyles?.map(s => s.label).join(",") || "";
@@ -63,9 +73,10 @@ export const designApi = baseApi.injectEndpoints({
 
 
 export const {
-    useGetAllDesignQuery,
+    useGetMyDesignsQuery,
     useAddDesignMutation,
     useGetDesignDetailQuery,
     useGetAllDesignsCommonQuery,
-    useDeleteADesignMutation
+    useDeleteADesignMutation,
+    useEditDesignMutation
 } = designApi

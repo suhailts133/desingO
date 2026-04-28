@@ -11,7 +11,7 @@ export class JobApplicationService implements IJobApplicationService {
     constructor(private _jobApplicationRepo: IJobApplicationRepository, private _jobRequestRepo: IJobRepository) { }
 
     async applyForJob(data: IJobApplicationRequestDTO): Promise<IApiResponse> {
-        const jobExists = await this._jobRequestRepo.checkJobExists(data.jobId)
+        const jobExists = await this._jobRequestRepo.getJobRequest(data.jobId)
         if (!jobExists) {
             throw new AppError(MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
@@ -61,7 +61,9 @@ export class JobApplicationService implements IJobApplicationService {
 
 
     async getAllJobApplications(userId: string, filters?: JobApplicationFilter): Promise<IApiResponseWithPagination<AllJobApplicationsDTO[]>> {
+     
         const { data, pagination } = await this._jobApplicationRepo.getAllJobApplications(userId, filters);
+     
         return {
             message: MESSAGES.JOB_APPLICATION.ALL_JOB_APPLICATIONS,
             data,

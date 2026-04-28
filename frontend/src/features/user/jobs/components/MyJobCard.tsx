@@ -9,7 +9,7 @@ type Props = {
 }
 
 export default function MyJobCard({ jobRequest, onDeleteClick }: Props) {
-    const navigate =  useNavigate()
+    const navigate = useNavigate()
     const statusStyle = (status: JobStatus) => {
         switch (status) {
             case "Pending":
@@ -20,8 +20,11 @@ export default function MyJobCard({ jobRequest, onDeleteClick }: Props) {
                 return "bg-gray-100 text-gray-500 border-gray-200"
         }
     }
-    const getJobDetail = (id:string) => {
+    const getJobDetail = (id: string) => {
         navigate(`/jobs/${id}`)
+    }
+    const updateJobRequestPage = (id: string) => {
+        navigate(`/customer/jobs/edit/${id}`)
     }
     return (
         <div className="group bg-off-white w-full rounded-xl border border-blush-light/40 overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
@@ -66,7 +69,7 @@ export default function MyJobCard({ jobRequest, onDeleteClick }: Props) {
                         <Clock className="w-3 h-3" /> {jobRequest.timeLine}
                     </span>
                     <span className="inline-flex items-center gap-1 text-[11px] bg-snow-white text-blush-deep px-2.5 py-1 rounded-full border border-blush-light/50">
-                        <Wallet className="w-3 h-3" /> {jobRequest.price}
+                        <Wallet className="w-3 h-3" /> {jobRequest.minBudget.toLocaleString("en-IN")} - {jobRequest.maxBudget.toLocaleString("en-IN")}
                     </span>
                     <span className="inline-flex items-center gap-1 text-[11px]  bg-snow-white text-blush-deep px-2.5 py-1 rounded-full border border-blush-light/50">
                         <BedDouble className="w-3 h-3" /> {jobRequest.rooms} Rooms
@@ -79,21 +82,22 @@ export default function MyJobCard({ jobRequest, onDeleteClick }: Props) {
                 {/* Actions */}
                 <div className="flex items-center gap-2">
                     <button
-                    onClick={() => getJobDetail(jobRequest.id)}
+                        onClick={() => getJobDetail(jobRequest.id)}
                         title="View"
                         className="flex-1 inline-flex items-center justify-center gap-1.5 text-soft-black/70 bg-off-white hover:bg-blush-pale hover:text-blush-deep border border-blush-light/50 hover:border-blush-light rounded-lg text-xs font-medium py-2 transition-all duration-200"
                     >
                         <Eye className="w-3.5 h-3.5" />
                         <span>View</span>
                     </button>
-                    <a
-                        href="#"
+                    <button
+                        onClick={() => updateJobRequestPage(jobRequest.id)}
                         title="Edit"
                         className="flex-1 inline-flex items-center justify-center gap-1.5 text-soft-black/70 bg-off-white hover:bg-blush-pale hover:text-blush-deep border border-blush-light/50 hover:border-blush-light rounded-lg text-xs font-medium py-2 transition-all duration-200"
                     >
                         <Pencil className="w-3.5 h-3.5" />
                         <span>Edit</span>
-                    </a>
+                    </button>
+
                     <button
                         onClick={onDeleteClick}
                         title="Delete"

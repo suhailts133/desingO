@@ -45,4 +45,10 @@ export class CloudinaryService implements IImageUploaderService {
             });
         });
     }
+
+    async deleteMany(publicIds: string[]): Promise<void> {
+        await Promise.all(
+            publicIds.map(id => this.delete(id))
+        );
+    }
 }

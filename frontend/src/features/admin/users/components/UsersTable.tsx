@@ -7,6 +7,7 @@ import type { AdminUsersResponseDTO } from "../adminUserInterface";
 import { useNavigate } from "react-router-dom";
 import { useGetAllusersQuery } from "../adminUsersEndpoints";
 import { useState } from "react";
+import Pagination from "../../../../shared/common/Pagination";
 
 export default function UsersTable() {
   const [page, setPage] = useState(1);
@@ -38,7 +39,7 @@ export default function UsersTable() {
       <form>
         <div className="rounded-2xl flex items-center justify-center gap-3 mb-5 bg-white/50 p-5">
           <div className="relative w-70">
-            <input type="text" className="auth-input" {...register("name")} placeholder="Enter a name"/>
+            <input type="text" className="auth-input" {...register("name")} placeholder="Enter a name" />
             <button type="button" className="absolute right-3 inset-y-0 flex items-center text-gray-500">
               <Search />
             </button>
@@ -121,34 +122,14 @@ export default function UsersTable() {
           </tbody>
         </table>
 
-        {/* Pagination */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-t border-white/20 bg-white/10">
-          <p className="text-xs text-soft-black/50">
-            Page {page} of {totalPages} &mdash; {totalUsers} total users
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              disabled={page <= 1}
-              onClick={() => setPage((p) => p - 1)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-Jost-Semibold
-                bg-blush-light/30 border border-white/40 text-soft-black/90
-                hover:bg-white/60 hover:text-blush-deep transition-all duration-200
-                disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft size={14} /> Prev
-            </button>
-            <button
-              disabled={page >= totalPages}
-              onClick={() => setPage((p) => p + 1)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-Jost-Semibold
-                bg-peach/40 border border-white/40 text-soft-black/70
-                hover:bg-white/60 hover:text-blush-deep transition-all duration-200
-                disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              Next <ChevronRight size={14} />
-            </button>
-          </div>
-        </div>
+        <Pagination
+          page={page}
+          totalItem={totalUsers}
+          whichItem="users"
+          totalPages={totalPages}
+          onDecrease={() => setPage(p => p - 1)}
+          onIncrease={() => setPage(p => p + 1)}
+        />
       </div>
     </div>
   );

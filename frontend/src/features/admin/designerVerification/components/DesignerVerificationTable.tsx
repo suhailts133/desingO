@@ -7,6 +7,7 @@ import type { AdminDesignerVerificationFilter } from "../../users/adminUserInter
 import { joiResolver } from "@hookform/resolvers/joi";
 import { adminDesignerVerificationFilter } from "../../../../validations/adminValidations";
 import { useState } from "react";
+import Pagination from "../../../../shared/common/Pagination";
 
 export default function DesignerVerificationTable() {
     const [page, setPage] = useState(1);
@@ -116,34 +117,15 @@ export default function DesignerVerificationTable() {
                     </tbody>
                 </table>
 
-                {/* Pagination  */}
-                <div className="flex items-center justify-between px-5 py-3.5 border-t border-white/20 bg-white/10">
-          <p className="text-xs text-soft-black/50">
-            Page {page} of {totalPages} &mdash; {totalResult} total users
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              disabled={page <= 1}
-              onClick={() => setPage((p) => p - 1)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-Jost-Semibold
-                bg-blush-light/30 border border-white/40 text-soft-black/90
-                hover:bg-white/60 hover:text-blush-deep transition-all duration-200
-                disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft size={14} /> Prev
-            </button>
-            <button
-              disabled={page >= totalPages}
-              onClick={() => setPage((p) => p + 1)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-Jost-Semibold
-                bg-peach/40 border border-white/40 text-soft-black/70
-                hover:bg-white/60 hover:text-blush-deep transition-all duration-200
-                disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              Next <ChevronRight size={14} />
-            </button>
-          </div>
-        </div>
+
+                <Pagination
+                    page={page}
+                    totalItem={totalResult}
+                    whichItem="Applications"
+                    totalPages={totalPages}
+                    onDecrease={() => setPage(p => p - 1)}
+                    onIncrease={() => setPage(p => p + 1)}
+                />
             </div>
         </div>
     )

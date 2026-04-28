@@ -1,4 +1,5 @@
 import type mongoose from "mongoose";
+import type { ImageUploadResult } from "../base/IImageUpload.js";
 
 export interface IRoomMeasurement {
     spaceType: string;
@@ -23,11 +24,13 @@ export interface IJobRequest {
     state: string;
     phone: string;
     timeline: string;
-    budget: string;
+    minBudget: number;
+    maxBudget: number;
     description: string;
     rooms: IRoomMeasurement[];
     status: JobStatus
-    createdAt: Date
+    createdAt: Date,
+    referenceImages:ImageUploadResult[]
 }
 
 export type ICreateJobRequest = Omit<IJobRequest, "id" | "userId" | "status">

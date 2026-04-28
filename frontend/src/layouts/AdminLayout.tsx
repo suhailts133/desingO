@@ -1,6 +1,6 @@
 import { Outlet, Navigate } from "react-router-dom";
 import type { RootState, AppDispatch } from "../app/store";
-import AdminSidebar from "../shared/AdminSidebar";
+import AdminSidebar from "../shared/sidebar/AdminSidebar";
 import { useSelector, useDispatch } from "react-redux";
 import { useDecodeAccessToken } from "../helpers/decodeAccessToken";
 import { logOut } from "../app/authSlice";

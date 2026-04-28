@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useDecodeAccessToken } from "../helpers/decodeAccessToken";
 import { logOut } from "../app/authSlice";
 import { useEffect } from "react";
-import DesignerSidebar from "../shared/DesignerSidebar";
+import DesignerSidebar from "../shared/sidebar/DesignerSidebar";
 
 export default function DesignerLayout() {
   const dispatch = useDispatch<AppDispatch>();

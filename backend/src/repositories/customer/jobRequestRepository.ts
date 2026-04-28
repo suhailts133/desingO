@@ -1,22 +1,33 @@
-import mongoose, { type QueryFilter } from "mongoose";
+import mongoose, { type QueryFilter, type SortOrder } from "mongoose";
 import type { ICreateJobRequest, IJobRequest } from "../../interfaces/customer/ICustomer.js";
 import type { IJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
 import { JobRequestModel } from "../../models/user/jobModel.js";
 import { BaseRepository } from "../baseRepository.js";
 import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO.js";
+import type { EditJobRepoData, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO.js";
 import type { IUser } from "../../interfaces/auth/IUser.js";
+import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
 
 export class JobRequestRepository extends BaseRepository<IJobRequest> implements IJobRepository {
     constructor() {
         super(JobRequestModel)
     }
 
-    async createJobRequest(userId: string, data: ICreateJobRequest): Promise<boolean> {
+    async createJobRequest(userId: string, data: ICreateJobRequest, referenceImages?: ImageUploadResult[]): Promise<boolean> {
         const result = await this.create({
             ...data,
+            referenceImages: referenceImages ?? [],
             userId: new mongoose.Types.ObjectId(userId)
         })
+        return !!result
+    }
+
+    async editJobRequest(id: string, data: EditJobRepoData, referenceImages?: ImageUploadResult[]): Promise<boolean> {
+        const updateData: QueryFilter<IJobRequest> = {
+            ...data,
+            referenceImages: referenceImages ?? []
+        }
+        const result = await this.update(id, { $set: updateData })
         return !!result
     }
 
@@ -38,7 +49,8 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
                 state: data.state,
                 district: data.district,
                 city: data.state,
-                price: data.budget,
+                minBudget: data.minBudget,
+                maxBudget: data.maxBudget,
                 description: data.description,
                 rooms: data.rooms.length,
                 timeLine: data.timeline
@@ -71,8 +83,10 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
             city: result.city,
             phone: result.phone,
             timeline: result.timeline,
-            budget: result.budget,
+            minBudget: result.minBudget,
+            maxBudget: result.maxBudget,
             description: result.description,
+            referenceImages: result.referenceImages,
             rooms: result.rooms,
             status: result.status,
             name: result.userId.full_name,
@@ -100,7 +114,7 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
         query.status = "Pending"
         console.log(query)
 
-        let sortOrder: any = { createdAt: -1 };
+        let sortOrder: { [key: string]: SortOrder } = { createdAt: -1 };
         if (JobFilter?.sortBy) {
             if (JobFilter.sortBy === "price_asc") {
                 sortOrder = { budget: -1 }
@@ -133,7 +147,8 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
                 projectTitle: data.projectTitle,
                 propertyType: data.propertyType,
                 designStyles: data.designStyles,
-                price: data.budget,
+                minBudget: data.minBudget,
+                maxBudget: data.maxBudget,
                 name: data.userId.full_name,
                 state: data.state,
                 district: data.district,
@@ -154,13 +169,13 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
         return await this.delete(id)
     }
 
-    async checkJobExists(id: string): Promise<IJobRequest | null> {
-     const result = await this.findById(id);
-     if(!result){
-        return null
-     }
-     return result   
-    
+    async getJobRequest(id: string): Promise<IJobRequest | null> {
+        const result = await this.findById(id);
+        if (!result) {
+            return null
+        }
+        return result
+
 
     }
 }

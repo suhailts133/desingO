@@ -1,12 +1,20 @@
-import { useApplyForAJobMutation, useDeleteAJobMutation, usePostJobMutation } from "./jobEndpoints";
-import type { IJobRequestPayload } from "./jobInterface";
+import { useApplyForAJobMutation, useDeleteAJobMutation, usePostJobMutation, useEditJobMutation } from "./jobEndpoints";
 
 export const useJobRequestServices = () => {
     const [postJobMutation, { isLoading }] = usePostJobMutation();
     const [deleteAJobMutation, { isLoading: isDeleting }] = useDeleteAJobMutation()
-    const [applyForAJobMutation, {isLoading:isApplying}] = useApplyForAJobMutation()
+    const [applyForAJobMutation, { isLoading: isApplying }] = useApplyForAJobMutation()
+    const [editJobMutation, { isLoading: isEditing }] = useEditJobMutation()
 
-    const postJob = async (payload: IJobRequestPayload) => {
+    const editJob = async ({ formdata, id }: { formdata: FormData; id: string }) => {
+        try {
+            const result = await editJobMutation({ formdata, id }).unwrap();
+            return result;
+        } catch (error: any) {
+            return error.data;
+        }
+    };
+    const postJob = async (payload: FormData) => {
         try {
             const result = await postJobMutation(payload).unwrap()
             return result
@@ -39,6 +47,8 @@ export const useJobRequestServices = () => {
         deleteAJob,
         isDeleting,
         applyForAJob,
-        isApplying
+        isApplying,
+        editJob,
+        isEditing
     }
 }

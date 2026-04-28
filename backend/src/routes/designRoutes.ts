@@ -18,9 +18,13 @@ router.post("/add-design", designerAuthentication, upload.fields([
     { name: "coverImage", maxCount: 1 },
     { name: "gallery", maxCount: 10 },
 ]), designController.addDesign)
-router.get("/my-designs", designerAuthentication, designController.getAllDesigns)
-router.get("/designs/:id", designController.getDesignDetail)
-router.get("/designs", designController.getAllDesignsCommon)
-router.delete("/designs/:id", designerAuthentication, designController.deleteADesign)
-
+router.patch("/edit-design/:id", designerAuthentication, upload.fields([
+    { name: "coverImage", maxCount: 1 },
+    { name: "gallery", maxCount: 10 },
+]), designController.editDesign)
+router.get("/my", designerAuthentication, designController.getAllDesigns)
+router.get("/:id", designController.getDesignDetail)
+router.get("/all-designs", designController.getAllDesignsCommon)
+router.delete("/:id", designerAuthentication, designController.deleteADesign)
+router.get("/gallary/:id", designController.getDesignGallary)
 export default router

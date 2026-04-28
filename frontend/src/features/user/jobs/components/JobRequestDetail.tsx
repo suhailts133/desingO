@@ -1,5 +1,6 @@
 import { MapPin, Clock, Wallet, BedDouble, Ruler, Phone, Tag, ChevronLeft, User, Calendar } from "lucide-react";
-
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 import { useState } from "react";
 // import ApplyForJob from ".";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,7 +16,7 @@ export default function JobRequestDetail() {
     const navigate = useNavigate()
     const { data, isLoading, error } = useGetAJobRequestDetailQuery(id!, { skip: !id })
     const job = data?.data
-   
+
     if (isLoading) {
         return <div className="p-10 text-center animate-pulse text-gray-400">Loading Job Request Details...</div>;
     }
@@ -71,7 +72,7 @@ export default function JobRequestDetail() {
                                     <Clock className="w-3.5 h-3.5 text-slate-500" /> {job.timeline}
                                 </span>
                                 <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
-                                    <Wallet className="w-3.5 h-3.5 text-slate-500" /> ₹{Number(job.budget).toLocaleString("en-IN")}
+                                    <Wallet className="w-3.5 h-3.5 text-slate-500" /> ₹{job.minBudget.toLocaleString("en-IN")} - {job.maxBudget.toLocaleString("en-IN")}
                                 </span>
                                 <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
                                     <BedDouble className="w-3.5 h-3.5 text-slate-500" /> {job.rooms.length} Room{job.rooms.length > 1 ? "s" : ""}
@@ -86,6 +87,26 @@ export default function JobRequestDetail() {
                         <p className="text-sm text-gray-600 leading-relaxed">{job.description}</p>
                     </div>
 
+                    {/** reference images */}
+
+                    {job.referenceImages.length > 0 && (
+                        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-5">
+                            <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-soft-black mb-3">Reference Images</h2>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                {job.referenceImages.map((image, index) => (
+                                    <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-white shadow-sm group">
+                                        <Zoom>
+                                            <img
+                                                src={image.path}
+                                                className="w-full h-full object-fill"
+                                                alt={`reference images ${index}`}
+                                            />
+                                        </Zoom>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                     {/* Design Styles */}
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-5">
                         <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-soft-black mb-3">Design Styles</h2>
@@ -168,7 +189,7 @@ export default function JobRequestDetail() {
                             <div className="w-full h-px bg-gray-100" />
                             <div className="flex justify-around w-full">
                                 <div className="text-center">
-                              
+
                                 </div>
                             </div>
                         </div>
@@ -181,7 +202,7 @@ export default function JobRequestDetail() {
                             {[
                                 { label: "Property", value: job.propertyType },
                                 { label: "Timeline", value: job.timeline },
-                                { label: "Budget", value: `₹${Number(job.budget).toLocaleString("en-IN")}` },
+                                { label: "Budget", value: `₹${job.minBudget.toLocaleString("en-IN")} - ₹${job.maxBudget.toLocaleString("en-IN")}` },
                                 { label: "Rooms", value: `${job.rooms.length} room${job.rooms.length > 1 ? "s" : ""}` },
                                 { label: "Location", value: `${job.city}, ${job.state}` },
                             ].map(({ label, value }) => (

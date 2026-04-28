@@ -1,6 +1,6 @@
-import { MapPin, BedDouble, IndianRupee, ArrowUpRight, User } from "lucide-react"
+import { MapPin, BedDouble, IndianRupee, ArrowUpRight, User, Wallet } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import type { JobsCommonResponseDTO } from "../../user/jobs/jobInterface"
+import type { JobsCommonResponseDTO } from "../../../user/jobs/jobInterface"
 
 type Props = {
     job: JobsCommonResponseDTO
@@ -61,7 +61,7 @@ export default function JobCard({ job }: Props) {
                     <div className="flex items-center gap-1 text-blush-deep/75">
                         <IndianRupee size={11} strokeWidth={2.5} />
                         <span className="text-xs font-semibold tracking-widest uppercase">
-                            Budget {Number(job.price).toLocaleString("en-IN")}
+                            Budget  {job.minBudget.toLocaleString("en-IN")} - {job.maxBudget.toLocaleString("en-IN")}
                         </span>
                     </div>
 

@@ -4,12 +4,16 @@ export interface DesignerCardDTO {
     google_profil_img?: string
     profileImg?: string
     bio: string
-    designerId:string
+    designerId: string,
+    state:string
+    district:string
 }
 
+
+
 export interface DesignerFilter {
-    full_name?:string,
-    page:string
+    full_name?: string,
+    page: string
 }
 
 export interface DesignGallary {
@@ -20,6 +24,6 @@ export interface DesignGallary {
 
 export interface DesignerDetailDTO extends DesignerCardDTO {
     designGallary: DesignGallary[]
-    totalDesigns:number
+    totalDesigns: number
 }
 

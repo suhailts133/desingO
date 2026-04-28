@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import type { createDesignDTO, DesignDetailResponseDTO, DesignFilter, GetAllDesignCommonResponseDTO } from "../../DTO/designer/designDTO.js";
+import mongoose, { type SortOrder } from "mongoose";
+import type { createDesignDTO, DesignDetailResponseDTO, DesignFilter, EditDesignRepoData, GetAllDesignCommonResponseDTO } from "../../DTO/designer/designDTO.js";
 import type { IDesign } from "../../interfaces/designer/IDesigner.js";
 import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository.js";
 import { DesignModel } from "../../models/designer/designModel.js";
@@ -8,6 +8,7 @@ import type { Pagination } from "../../DTO/admin/adminDTO.js";
 import type { getAllDesignsResponseDTO } from "../../DTO/designer/designDTO.js";
 import type { IUser } from "../../interfaces/auth/IUser.js";
 import type { QueryFilter } from "mongoose"
+import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
 
 export class DesignRepository extends BaseRepository<IDesign> implements IDesignRepository {
     constructor() {
@@ -19,6 +20,21 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
             ...data,
             userId: new mongoose.Types.ObjectId(data.userId)
         });
+        return !!result
+    }
+
+    async getDesign(id: string): Promise<IDesign | null> {
+        const result = await this.findById(id);
+        return result
+    }
+
+    async editDesign(id: string, data: EditDesignRepoData, coverImage?: ImageUploadResult, gallery?: ImageUploadResult[]): Promise<boolean> {
+        const updateData = {
+            ...data,
+            ...(coverImage && { coverImage }),
+            ...(gallery && { gallery }),
+        }
+        const result = await this.update(id, { $set: updateData })
         return !!result
     }
 
@@ -41,7 +57,6 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
                 price: data.startingPrice
             }
         })
-        console.log(output)
         const pagination: Pagination = {
             total,
             totalPages: Math.ceil(total / limit)
@@ -70,8 +85,8 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
             services: result.services,
             description: result.description,
             designStyles: result.designStyles,
-            coverImage: result.coverImage.path,
-            gallery: result.gallery.map((img) => img.path),
+            coverImage: result.coverImage,
+            gallery: result.gallery,
             createdAt: result.createdAt.toDateString()
         }
     }
@@ -92,7 +107,7 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
             }
         }
 
-        let sortOrder: any = { createdAt: 1 };
+        let sortOrder: { [key: string]: SortOrder } = { createdAt: 1 };
         if (designFilter?.sortBy) {
             if (designFilter.sortBy === "price_asc") {
                 sortOrder = { startingPrice: 1 }
@@ -122,7 +137,7 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
         }
         const output: GetAllDesignCommonResponseDTO[] = result.map(data => {
             return {
-                id:data.id,
+                id: data.id,
                 name: data.name,
                 spaceType: data.spaceType,
                 designStyles: data.designStyles,

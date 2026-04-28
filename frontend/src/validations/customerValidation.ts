@@ -1,5 +1,6 @@
 import Joi from "joi";
 import type { IBid, IJobRequest, RoomMeasurement } from "../features/user/jobs/jobInterface";
+import { imageValidation } from "../helpers/imageValidation";
 
 const selectOption = Joi.object({
     value: Joi.string().required(),
@@ -128,10 +129,16 @@ export const jobRequestValidation: Joi.ObjectSchema<IJobRequest> = Joi.object<IJ
             "string.pattern.base": "City must contain only letters",
             "any.required": "City is required",
         }),
+
     state: Joi.string()
+        .trim()
+        .min(2)
+        .max(100)
         .required()
         .messages({
             "string.empty": "State is required",
+            "string.min": "State must be at least 2 characters",
+            "string.max": "State must not exceed 100 characters",
             "any.required": "State is required",
         }),
 
@@ -164,14 +171,26 @@ export const jobRequestValidation: Joi.ObjectSchema<IJobRequest> = Joi.object<IJ
         "any.required": "Timeline is required",
     }),
 
-    budget: Joi.string()
-        .trim()
-        .pattern(/^\d+(\.\d{1,2})?$/)
+    minBudget: Joi.number()
+        .positive()
+        .precision(2)
         .required()
         .messages({
-            "string.empty": "Budget is required",
-            "string.pattern.base": "Enter a valid positive budget amount",
-            "any.required": "Budget is required",
+            "number.base": "Minimum budget is required",
+            "number.positive": "Minimum budget must be a positive number",
+            "any.required": "Minimum budget is required",
+        }),
+
+    maxBudget: Joi.number()
+        .positive()
+        .precision(2)
+        .greater(Joi.ref("minBudget"))
+        .required()
+        .messages({
+            "number.base": "Maximum budget is required",
+            "number.positive": "Maximum budget must be a positive number",
+            "number.greater": "Maximum budget must be greater than minimum budget",
+            "any.required": "Maximum budget is required",
         }),
 
     rooms: Joi.array()
@@ -183,4 +202,18 @@ export const jobRequestValidation: Joi.ObjectSchema<IJobRequest> = Joi.object<IJ
             "array.base": "Rooms must be an array",
             "any.required": "At least one room is required",
         }),
+    refrenceImages: Joi.array()
+        .items(
+            Joi.object({
+                file: imageValidation("Reference image", true)
+            })
+        )
+        .optional()
+        .default([]),
 });
+
+
+export const editJobRequestValidation = jobRequestValidation.fork(
+    ['refrenceImages'],
+    () => Joi.any().strip()
+);

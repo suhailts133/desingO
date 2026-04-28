@@ -2,9 +2,9 @@ import { useState } from "react"
 import { User, Bell, Heart, Menu, X } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
-import type { AppDispatch, RootState } from "../app/store"
-import { logOut } from "../app/authSlice"
-import { useDecodeAccessToken } from "../helpers/decodeAccessToken"
+import type { AppDispatch, RootState } from "../../app/store"
+import { logOut } from "../../app/authSlice"
+import { useDecodeAccessToken } from "../../helpers/decodeAccessToken"
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
@@ -62,6 +62,13 @@ export default function Navbar() {
               </Link>
             </span>
           )}
+          
+            <span className="hover:scale-110 hover:border-b hover:transition-all cursor-pointer">
+              <Link to="/designers">
+                Designers
+              </Link>
+            </span>
+          
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3 pr-1">

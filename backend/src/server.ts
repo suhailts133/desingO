@@ -6,7 +6,7 @@ import authRoutes from "./routes/authRoutes.js"
 import connectRedis from "./config/redis.js";
 import adminRoutes from "./routes/adminRoutes.js"
 import designerRoutes from "./routes/designerRoutes.js"
-import customerRoutes from "./routes/customerRoutes.js"
+import jobRoutes from "./routes/jobRoutes.js"
 import designRoutes from "./routes/designRoutes.js"
 import jobApplicationRoutes from "./routes/jobApplicationRoutes.js"
 import profileRoutes from "./routes/profileRoutes.js"
@@ -24,7 +24,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes)
 app.use("/api/admin", adminRoutes)
 app.use("/api/designer", designerRoutes)
-app.use("/api/customer", customerRoutes)
+app.use("/api/job", jobRoutes)
 app.use("/api/design", designRoutes)
 app.use("/api/job-application", jobApplicationRoutes)
 app.use("/api/profile", profileRoutes)

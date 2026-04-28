@@ -1,4 +1,4 @@
-import type { DesignerProfileDTO, DesignerProfileResponseDTO, DesignerUpdateResponseDTO, UserProfileDTO, UserProfileResponseDTO, UserProfileUpdateDTO, } from "../../DTO/profile/profileDTO.js";
+import type {  DesignerProfileResponseDTO, DesignerUpdateResponseDTO, UserProfileDTO, UserProfileResponseDTO, UserProfileUpdateDTO, } from "../../DTO/profile/profileDTO.js";
 import { MESSAGES } from "../../helpers/enums/messages.js";
 import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
 import { AppError } from "../../helpers/errors/appError.js";

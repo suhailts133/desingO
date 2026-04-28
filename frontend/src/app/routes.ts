@@ -4,7 +4,7 @@ import SignupForm from "../features/auth/components/SignupForm";
 import LoginFrom from "../features/auth/components/LoginForm";
 import OtpForm from "../features/auth/components/OtpForm";
 import MainLayout from "../layouts/MainLayout";
-import Home from "../features/base/pages/Home";
+import Home from "../features/common/pages/Home";
 import ForgetPassword from "../features/auth/components/ForgetPassword";
 import ChangePassword from "../features/auth/components/ChangePassword";
 import AdminLayout from "../layouts/AdminLayout";
@@ -27,11 +27,15 @@ import Jobs from "../features/user/jobs/page/Jobs";
 import JobRequestForm from "../features/user/jobs/components/JobRequestForm";
 import JobRequestDetail from "../features/user/jobs/components/JobRequestDetail";
 import DesignDetail from "../features/designer/designs/components/DesignDetail";
-import BrowseDesigns from "../features/base/pages/BrowseDesigns";
-import BrowseJobs from "../features/base/pages/BrowseJobs";
+import BrowseDesigns from "../features/common/pages/BrowseDesigns";
+import BrowseJobs from "../features/common/pages/BrowseJobs";
 import JobApplications from "../features/user/jobApplications/pages/JobApplications";
 import MyJobApplications from "../features/designer/myJobApplications/pages/MyJobApplication";
 import DesignerProfilePage from "../features/designer/profile/pages/DesignerProfilePage";
+import BrowseDesigners from "../features/common/pages/BrowseDesigners";
+import DesignerDetail from "../features/common/components/DesignerDetail";
+import EditDesignForm from "../features/designer/designs/components/EditDesignForm";
+import EditJobRequestForm from "../features/user/jobs/components/EditJobRequestForm";
 
 
 const router = createBrowserRouter([
@@ -43,7 +47,9 @@ const router = createBrowserRouter([
             { path: "jobs", Component: BrowseJobs },
             { path: "jobs/:id", Component: JobRequestDetail },
             { path: "designs/:id", Component: DesignDetail },
-            { path: "designs", Component: BrowseDesigns }
+            { path: "designs", Component: BrowseDesigns },
+            { path: "designers", Component: BrowseDesigners },
+            { path: "designers/:id", Component: DesignerDetail }
         ]
     },
     {
@@ -91,7 +97,8 @@ const router = createBrowserRouter([
             { path: "dashboard", Component: DesignerDashboard },
             { path: "designs", Component: Designs },
             { path: "add-design", Component: DesignForm },
-            { path: "job-applications/my", Component: MyJobApplications }
+            { path: "job-applications/my", Component: MyJobApplications },
+            { path: "designs/edit/:id", Component: EditDesignForm}
 
         ]
     },
@@ -102,6 +109,7 @@ const router = createBrowserRouter([
             { path: "dashboard", Component: CustomerDashboard },
             { path: "jobs", Component: Jobs },
             { path: "add-job", Component: JobRequestForm },
+            { path: "jobs/edit/:id", Component: EditJobRequestForm },
             { path: "job-applications", Component: JobApplications }
         ]
     },

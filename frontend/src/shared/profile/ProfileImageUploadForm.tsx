@@ -2,10 +2,10 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { useForm } from "react-hook-form";
 import { useState, useCallback, useEffect } from "react";
 import { ImageIcon } from "lucide-react";
-import type { IProfileImage } from "../features/designer/profile/designerProfileInterface";
-import { profileImageValidation } from "../validations/profileValidation";
+import type { IProfileImage } from "../../features/designer/profile/designerProfileInterface";
+import { profileImageValidation } from "../../validations/profileValidation";
 import ProfileImageCrop from "./ProfileImageCrop";
-import { getCroppedImage, type CroppedAreaPixels } from "../helpers/cropImageHelper";
+import { getCroppedImage, type CroppedAreaPixels } from "../../helpers/cropImageHelper";
 
 type Props = {
     isOpen: boolean;

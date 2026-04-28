@@ -1,11 +1,10 @@
-import { response } from "express";
 import { CLOUDINARY_FOLDER_NAME } from "../../helpers/enums/commonEnums.js";
 import { MESSAGES } from "../../helpers/enums/messages.js";
 import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
 import { AppError } from "../../helpers/errors/appError.js";
 import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
 import type { IImageUploaderService } from "../../interfaces/base/IImageUpload.js";
-import type { ChangeProfileImageResponseDTO, IProfileImage, IProfileImageRepository, IProfileImageService } from "../../interfaces/base/IProfile.js";
+import type {  IProfileImage, IProfileImageRepository, IProfileImageService } from "../../interfaces/base/IProfile.js";
 
 export class ProfileImageService implements IProfileImageService {
     constructor(private _profileImageRepo: IProfileImageRepository, private _imageService: IImageUploaderService) { }

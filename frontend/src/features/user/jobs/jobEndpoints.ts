@@ -1,23 +1,30 @@
 import { API_ROUTES } from "../../../api/apiRoutes";
 import { baseApi } from "../../../api/baseApi";
 import type { IApiResponse, IApiResponseWithPagination } from "../../../api/responseType";
-import type { AllJobApplicationsDTO, JobApplicationQueryParms } from "../jobApplications/jobApplicationInterFace";
-import type { IJobRequestPayload, JobRequestDetailDTO, JobsCommonResponseDTO, JobsQueryParms, JobsResponseDTO } from "./jobInterface";
+import type { JobRequestDetailDTO, JobsCommonResponseDTO, JobsQueryParms, JobsResponseDTO } from "./jobInterface";
 
 export const jobsApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        postJob: builder.mutation<IApiResponse, IJobRequestPayload>({
-            query: (body: IJobRequestPayload) => ({
-                url: API_ROUTES.CUSTOMER.POST_JOB,
+        postJob: builder.mutation<IApiResponse, FormData>({
+            query: (body: FormData) => ({
+                url: API_ROUTES.JOB.POST_JOB,
                 method: "POST",
                 body
+            }),
+            invalidatesTags: ["jobs"]
+        }),
+        editJob: builder.mutation<IApiResponse, {formdata:FormData, id:string}>({
+            query: ({formdata, id}) => ({
+                url: `${API_ROUTES.JOB.EDIT_JOB}/${id}`,
+                method: "PATCH",
+                body:formdata
             }),
             invalidatesTags: ["jobs"]
         }),
 
         getMyJobs: builder.query<IApiResponseWithPagination<JobsResponseDTO[]>, { page: number }>({
             query: ({ page }) => ({
-                url: API_ROUTES.CUSTOMER.MY_JOBS,
+                url: API_ROUTES.JOB.MY_JOBS,
                 method: "GET",
                 params: { page }
             }),
@@ -26,7 +33,7 @@ export const jobsApi = baseApi.injectEndpoints({
 
         getAJobRequestDetail: builder.query<IApiResponse<JobRequestDetailDTO>, string>({
             query: (id) => ({
-                url: `${API_ROUTES.CUSTOMER.JOB_DETAIL}/${id}`,
+                url: `${API_ROUTES.JOB.JOB_DETAIL}/${id}`,
                 method: "GET"
             }),
             providesTags: (_result, _error, id) => [{ type: "jobs", id }]
@@ -34,7 +41,7 @@ export const jobsApi = baseApi.injectEndpoints({
 
         deleteAJob: builder.mutation<IApiResponse, string>({
             query: (id) => ({
-                url: `${API_ROUTES.CUSTOMER.JOB_DELETE}/${id}`,
+                url: `${API_ROUTES.JOB.JOB_DELETE}/${id}`,
                 method: "DELETE"
             }),
             invalidatesTags: ["jobs"]
@@ -48,7 +55,7 @@ export const jobsApi = baseApi.injectEndpoints({
                 const sortBy = args.sortBy?.value || "";
 
                 return {
-                    url: API_ROUTES.CUSTOMER.JOBS,
+                    url: API_ROUTES.JOB.JOBS,
                     method: "GET",
                     params: {
                         page: args.page,
@@ -82,4 +89,5 @@ export const {
     useGetAllJobsCommonQuery,
     useDeleteAJobMutation,
     useApplyForAJobMutation,
+    useEditJobMutation
 } = jobsApi

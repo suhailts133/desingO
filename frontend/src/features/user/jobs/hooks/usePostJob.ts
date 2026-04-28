@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { useJobRequestServices } from "../jobService"
 import { useNavigate } from "react-router-dom"
-import type { IJobRequestPayload } from "../jobInterface"
 import type { IApiResponse } from "../../../../api/responseType"
 
 export const usePostJob = () => {
@@ -9,7 +8,7 @@ export const usePostJob = () => {
     const [jobError, setJobError] = useState<string | null>(null)
     const [jobSuccess, setJobSuccess] = useState<string | null>(null)
     const navigate = useNavigate()
-    const handleSubmission  = async (payload:IJobRequestPayload) => {
+    const handleSubmission  = async (payload:FormData) => {
         setJobError(null)
         setJobSuccess(null)
         const result:IApiResponse = await postJob(payload);

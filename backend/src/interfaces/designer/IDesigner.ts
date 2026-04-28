@@ -58,7 +58,6 @@ export interface IDesign {
     coverImage: ImageUploadResult;
     gallery: ImageUploadResult[];
     createdAt: Date;
-
 }
 
 export type JobApplicationStatus = "Pending" | "Completed" | "Rejected" | "Ongoing"

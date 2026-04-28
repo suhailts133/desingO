@@ -1,8 +1,8 @@
 export interface IApiResponse<T = null> {
-    success: boolean;
+    success?: boolean;
     message: string;
     data?: T;
-    statuscode: number;
+    statuscode?: number;
 }
 
 
