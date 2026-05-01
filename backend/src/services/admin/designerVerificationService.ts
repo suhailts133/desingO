@@ -1,13 +1,13 @@
 import type { DesignerFilterDTO, AdminDesignersResponseDTO, AdminDesignerRequestResponseDTO, AdminDesignerApprovalDTO, AdminDesignerStatusDTO } from "../../DTO/admin/adminDTO.js";
-import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
 import type { IAdminDesignerVerificatoinServices } from "../../interfaces/admin/IAdminService.js";
 import type { IDesignerVerificationRepository } from "../../interfaces/admin/IDesignerVerificationRespository.js";
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
-import { sendDesignerStatusEmail } from "../../helpers/emails/designerVerificationEmail.js";
+import { sendDesignerStatusEmail } from "../../shared/emails/designerVerificationEmail.js";
 import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
-import { DESIGNER_STATUS, USER_ROLES } from "../../helpers/enums/commonEnums.js";
-import { MESSAGES } from "../../helpers/enums/messages.js";
-import { AppError } from "../../helpers/errors/appError.js";
+import { DESIGNER_STATUS, USER_ROLES } from "../../shared/enums/commonEnums.js";
+import { MESSAGES } from "../../shared/messages/messages.js";
+import { AppError } from "../../shared/errors/appError.js";
 
 export class AdminDesignerVerificationservice implements IAdminDesignerVerificatoinServices {
     constructor(private _designerVerificationRepo: IDesignerVerificationRepository, private _userRepo: IUserRepository) { }

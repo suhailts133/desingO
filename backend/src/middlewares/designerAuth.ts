@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken";
-import { USER_ROLES } from "../helpers/enums/commonEnums.js";
-import { RESPONSE_CODE } from "../helpers/enums/statusCode.js";
-import { ensureError } from "../helpers/errors/ensureError.js";
+import { USER_ROLES } from "../shared/enums/commonEnums.js";
+import { RESPONSE_CODE } from "../shared/enums/statusCode.js";
+import { ensureError } from "../shared/errors/ensureError.js";
 
 type Role = "Customer" | "Admin" | "Designer"
 

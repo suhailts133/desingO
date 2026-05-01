@@ -1,11 +1,11 @@
 // Helpers
-import generateOtp from "../../helpers/jwt/generateOTP.js";
-import sendVerificationEmail from "../../helpers/emails/sendOTP.js";
-import { comparePassword, hashPassword } from "../../helpers/hashPassword.js";
-import { jwtAccessToken } from "../../helpers/jwt/jsonTokenCreater.js";
-import { ensureError } from "../../helpers/errors/ensureError.js";
-import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
-import { jwtRefreshToken, refeshTokenVerificaion } from "../../helpers/jwt/refreshToken.js";
+import generateOtp from "../../shared/jwt/generateOTP.js";
+import sendVerificationEmail from "../../shared/emails/sendOTP.js";
+import { comparePassword, hashPassword } from "../../shared/helpers/hashPassword.js";
+import { jwtAccessToken } from "../../shared/jwt/jsonTokenCreater.js";
+import { ensureError } from "../../shared/errors/ensureError.js";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
+import { jwtRefreshToken, refeshTokenVerificaion } from "../../shared/jwt/refreshToken.js";
 // Interfaces / Repositories
 import type { IOTPRepository } from "../../interfaces/auth/IOtpRepository.js";
 import type { IAuthService } from "../../interfaces/auth/IAuthService.js";
@@ -14,9 +14,9 @@ import type { IUserTemp } from "../../interfaces/auth/IUser.js";
 import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
 // DTOs
 import type { CreateUserDTO, RegisterUserDTO, AuthResponseDTO, RefreshTokenDTO } from "../../DTO/auth/authDTO.js";
-import { googleLoginResponse } from "../../helpers/googleAuth.js";
-import { AppError } from "../../helpers/errors/appError.js";
-import { MESSAGES } from "../../helpers/enums/messages.js";
+import { googleLoginResponse } from "../common/googleAuth.js";
+import { AppError } from "../../shared/errors/appError.js";
+import { MESSAGES } from "../../shared/messages/messages.js";
 
 
 

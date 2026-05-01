@@ -25,7 +25,7 @@ export default function BrowseDesigns() {
     });
 
     const watchedFilters = watch();
-
+    console.log("yello")
     const { data, isLoading, error } = useGetAllDesignsCommonQuery({
         ...watchedFilters,
         page

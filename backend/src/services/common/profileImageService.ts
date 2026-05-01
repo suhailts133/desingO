@@ -1,7 +1,7 @@
-import { CLOUDINARY_FOLDER_NAME } from "../../helpers/enums/commonEnums.js";
-import { MESSAGES } from "../../helpers/enums/messages.js";
-import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
-import { AppError } from "../../helpers/errors/appError.js";
+import { CLOUDINARY_FOLDER_NAME } from "../../shared/enums/commonEnums.js";
+import { MESSAGES } from "../../shared/messages/messages.js";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
+import { AppError } from "../../shared/errors/appError.js";
 import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
 import type { IImageUploaderService } from "../../interfaces/base/IImageUpload.js";
 import type {  IProfileImage, IProfileImageRepository, IProfileImageService } from "../../interfaces/base/IProfile.js";

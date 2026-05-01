@@ -1,5 +1,5 @@
 import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { createDesignDTO, DesignDetailResponseDTO, DesignFilter, EditDesignFiles, EditDesignRepoData, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO.js";
+import type { createDesignDTO, DesignDetailResponseDTO, DesignFilter, EditDesignRepoData, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO.js";
 import type { DesignerCardDTO, DesignerFilter } from "../../DTO/designer/designerDTO.js";
 import type { DesignerVerificationDTO } from "../../DTO/designer/designerVerificationDTOs.js";
 import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO.js";

@@ -1,10 +1,10 @@
 import Joi from "joi";
-import type { AdminUserFilter ,AdminDesignerVerificationFilter} from "../features/admin/users/adminUserInterface";
+import type { AdminDesignerVerificationFilter, AdminUserManagementFilter } from "../features/admin/users/adminUserInterface";
 import type { AdminDesignerReject } from "../features/admin/designerVerification/adminDesignerVerificationInterfaces";
 
 
-export const adminUserFilter:Joi.ObjectSchema<AdminUserFilter> = Joi.object<AdminUserFilter>({
-    name: Joi.string()
+export const adminUserFilter: Joi.ObjectSchema<AdminUserManagementFilter> = Joi.object<AdminUserManagementFilter>({
+  name: Joi.string()
     .pattern(/^[A-Za-z]+$/)
     .allow("")
     .optional()
@@ -31,26 +31,26 @@ export const adminUserFilter:Joi.ObjectSchema<AdminUserFilter> = Joi.object<Admi
 })
 
 
-export const adminDesignerReject:Joi.ObjectSchema<AdminDesignerReject> = Joi.object<AdminDesignerReject>({
-   rejectionReason: Joi.string()
-          .min(15)
-          .max(400)
-          .trim()
-          .required()
-          .messages({
-              "string.base": "reason must be a string",
-              "string.empty": "reason cannot be empty",
-              "string.min": "reason should have at least 15 characters",
-              "string.max": "reason should not exceed 400 characters"
-          })
+export const adminDesignerReject: Joi.ObjectSchema<AdminDesignerReject> = Joi.object<AdminDesignerReject>({
+  rejectionReason: Joi.string()
+    .min(15)
+    .max(400)
+    .trim()
+    .required()
+    .messages({
+      "string.base": "reason must be a string",
+      "string.empty": "reason cannot be empty",
+      "string.min": "reason should have at least 15 characters",
+      "string.max": "reason should not exceed 400 characters"
+    })
 })
 
 
 
 
 
-export const adminDesignerVerificationFilter:Joi.ObjectSchema<AdminDesignerVerificationFilter> = Joi.object<AdminDesignerVerificationFilter>({
-    name: Joi.string()
+export const adminDesignerVerificationFilter: Joi.ObjectSchema<AdminDesignerVerificationFilter> = Joi.object<AdminDesignerVerificationFilter>({
+  name: Joi.string()
     .pattern(/^[A-Za-z]+$/)
     .allow("")
     .optional()
@@ -59,7 +59,7 @@ export const adminDesignerVerificationFilter:Joi.ObjectSchema<AdminDesignerVerif
       "string.base": "Name must be a string",
     }),
 
- 
+
   status: Joi.string()
     .valid("All", "Pending", "Approved", "Rejected")
     .required()

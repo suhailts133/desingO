@@ -77,7 +77,7 @@ const CustomerSidebar = memo(({ name, email }: { name: string, email: string }) 
                     {!collapsed && <span className="flex-1">Dashboard</span>}
                 </Link>
 
-                <Link to="/customer/profile" onClick={() => setActive("profile")} className={linkClass("profile")}>
+                <Link to="/profile/customer" onClick={() => setActive("profile")} className={linkClass("profile")}>
                     {active === "Users" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
                     <User size={18} strokeWidth={active === "profile" ? 2.2 : 1.8} className={iconClass("Users")} />
                     {!collapsed && <span className="flex-1">Profile</span>}

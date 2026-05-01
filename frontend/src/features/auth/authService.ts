@@ -24,7 +24,7 @@ export const useAuthService = () => {
         try {
             const result = await signUpMutation(payload).unwrap();
             return result
-        } catch (error: any) {
+        } catch (error: any) { 
             return error.data
         }
     }

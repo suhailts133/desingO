@@ -1,7 +1,7 @@
 import { Router } from "express";
 import multer from "multer";
 import designerAuthentication from "../middlewares/designerAuth.js";
-import { DesignController } from "../controllers/designController.js";
+import { DesignController } from "../controllers/designer/designController.js";
 import { DesignService } from "../services/designer/designService.js";
 import { DesignRepository } from "../repositories/designer/designRepository.js";
 import { CloudinaryService } from "../services/common/cloudinaryService.js";
@@ -18,13 +18,16 @@ router.post("/add-design", designerAuthentication, upload.fields([
     { name: "coverImage", maxCount: 1 },
     { name: "gallery", maxCount: 10 },
 ]), designController.addDesign)
+
+router.get("/my", designerAuthentication, designController.getMyDesigns)
+
+router.get("/all-designs", designController.getAllDesigns)
+
 router.patch("/edit-design/:id", designerAuthentication, upload.fields([
     { name: "coverImage", maxCount: 1 },
     { name: "gallery", maxCount: 10 },
 ]), designController.editDesign)
-router.get("/my", designerAuthentication, designController.getAllDesigns)
+router.get("/gallary/:id", designController.getDesignGallery)
+router.delete("/:id", designerAuthentication, designController.deleteDesign)
 router.get("/:id", designController.getDesignDetail)
-router.get("/all-designs", designController.getAllDesignsCommon)
-router.delete("/:id", designerAuthentication, designController.deleteADesign)
-router.get("/gallary/:id", designController.getDesignGallary)
 export default router

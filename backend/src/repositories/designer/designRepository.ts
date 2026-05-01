@@ -92,6 +92,7 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
     }
 
     async getAllDesignCommon(designFilter?: DesignFilter): Promise<{ data: GetAllDesignCommonResponseDTO[]; pagination: Pagination; }> {
+        console.log("hit")
         const page = designFilter?.page ? Number(designFilter?.page) : 1;
         const limit = 9;
         const query: QueryFilter<IDesign> = {}

@@ -2,14 +2,22 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/mongodb.js";
-import authRoutes from "./routes/authRoutes.js"
 import connectRedis from "./config/redis.js";
-import adminRoutes from "./routes/adminRoutes.js"
+
+import authRoutes from "./routes/authRoutes.js"
+// admin routes
+import userRoutes from "./routes/admin/userRoutes.js"
+import designerVerificationRoutes from "./routes/admin/designerVerificationRoutes.js"
+// designer routes
 import designerRoutes from "./routes/designerRoutes.js"
-import jobRoutes from "./routes/jobRoutes.js"
 import designRoutes from "./routes/designRoutes.js"
+// user routes
+import jobRoutes from "./routes/jobRoutes.js"
 import jobApplicationRoutes from "./routes/jobApplicationRoutes.js"
+
+// common routes
 import profileRoutes from "./routes/profileRoutes.js"
+
 import { globalErrorHandler } from "./middlewares/globalErrorHandler.js";
 // import passport from "passport";
 dotenv.config();
@@ -21,8 +29,13 @@ app.use(cors({
 }))
 
 app.use(express.json());
+
+// admin
+app.use("/api/admin/users", userRoutes)
+app.use("/api/admin/designer-application", designerVerificationRoutes)
+
+
 app.use("/api/auth", authRoutes)
-app.use("/api/admin", adminRoutes)
 app.use("/api/designer", designerRoutes)
 app.use("/api/job", jobRoutes)
 app.use("/api/design", designRoutes)

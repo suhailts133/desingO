@@ -1,14 +1,14 @@
 import type { Request, Response } from "express"
-import { designerVeificationDataValidator } from "../validators/designers/designerVerificationValidator.js"
-import { RespsonseHelper } from "../helpers/responseHelper.js"
-import { RESPONSE_CODE } from "../helpers/enums/statusCode.js"
-import type { DesignerVerificationBodyDTO } from "../DTO/designer/designerVerificationDTOs.js"
-import type { DesignerVerificationFiles } from "../interfaces/designer/IDesigner.js"
-import type { IDesignerService } from "../interfaces/designer/IDesignerService.js"
+import { designerVeificationDataValidator } from "../../validators/designers/designerVerificationValidator.js"
+import { RespsonseHelper } from "../../shared/helpers/responseHelper.js"
+import { RESPONSE_CODE } from "../../shared/enums/statusCode.js"
+import type { DesignerVerificationBodyDTO } from "../../DTO/designer/designerVerificationDTOs.js"
+import type { DesignerVerificationFiles } from "../../interfaces/designer/IDesigner.js"
+import type { IDesignerService } from "../../interfaces/designer/IDesignerService.js"
 import asyncHandler from "express-async-handler";
-import { AppError } from "../helpers/errors/appError.js"
-import { DesignerQueryFilter } from "../validators/designers/designerValidations.js"
-import { MESSAGES } from "../helpers/enums/messages.js"
+import { AppError } from "../../shared/errors/appError.js"
+import { DesignerQueryFilter } from "../../validators/designers/designerValidations.js"
+import { MESSAGES } from "../../shared/messages/messages.js"
 
 export class DesignerController {
 

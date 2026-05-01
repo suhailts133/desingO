@@ -2,7 +2,7 @@ import { Router } from "express";
 import { JobApplicationRepository } from "../repositories/common/jobApplicationRepository.js";
 import { JobApplicationService } from "../services/common/JobApplicationServices.js";
 import { JobRequestRepository } from "../repositories/customer/jobRequestRepository.js";
-import { JobApplicationController } from "../controllers/jobApplicationController.js";
+import { JobApplicationController } from "../controllers/designer/jobApplicationController.js";
 import designerAuthentication from "../middlewares/designerAuth.js";
 import authenticate from "../middlewares/auth.js";
 
@@ -14,9 +14,9 @@ const jobApplicationservice = new JobApplicationService(jobApplicationRepo, jobR
 const jobApplicationController = new JobApplicationController(jobApplicationservice);
 
 
+router.get("/", authenticate, jobApplicationController.getAllJobApplications)
 router.post("/apply", designerAuthentication, jobApplicationController.applyForJob)
+router.get("/my", designerAuthentication, jobApplicationController.getMyJobApplications)
 router.patch("/approve-reject/:id", authenticate, jobApplicationController.approveOrRejectJobApplication)
 router.delete("/:id", designerAuthentication, jobApplicationController.deleteJobApplication)
-router.get("/my", designerAuthentication, jobApplicationController.getMyJobApplications)
-router.get("/", authenticate, jobApplicationController.getAllJobApplications)
 export default router

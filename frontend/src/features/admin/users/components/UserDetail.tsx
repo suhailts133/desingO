@@ -1,18 +1,27 @@
 import { useParams, useNavigate } from "react-router-dom"
 import { useGetUserQuery } from "../adminUsersEndpoints"
 import { useToggleStatus } from "../hooks/useToggleStatus"
+import { useState } from "react"
+import ConfirmModal from "../../../../shared/modals/ConfirmModal"
 
 export default function UserDetail() {
     const { id } = useParams<{ id: string }>()
     const navigate = useNavigate()
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
     const { data, isLoading, error } = useGetUserQuery(id!, { skip: !id })
     const { handleToggling, isToggling, error: toggleError, toggle } = useToggleStatus()
     const user = data?.data
+
     if (isLoading) return <div className="p-6 text-gray-500">Loading user...</div>
     if (error || !user) return <div className="p-6 text-red-500">Failed to load user.</div>
+
     const isBlocked = toggle !== null ? toggle : user.is_blocked
-    const onToggle = () => handleToggling({ id: user.id, is_blocked: !isBlocked })
+
+    const onConfirm = () => {
+        handleToggling({ id: user.id, is_blocked: !isBlocked })
+        setIsModalOpen(false)
+    }
 
     return (
         <div className="max-w-2xl mx-auto p-6">
@@ -20,7 +29,7 @@ export default function UserDetail() {
                 ← Back
             </button>
 
-            <div className="bg-white shadow rounded-xl p-6 space-y-4 border border-gray-100 ">
+            <div className="bg-white shadow rounded-xl p-6 space-y-4 border border-gray-100">
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-semibold text-gray-800">{user.full_name}</h1>
                     <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${isBlocked ? "bg-red-100 text-red-600" : "bg-green-100 text-green-600"}`}>
@@ -40,7 +49,7 @@ export default function UserDetail() {
                 )}
 
                 <button
-                    onClick={onToggle}
+                    onClick={() => setIsModalOpen(true)}
                     disabled={isToggling}
                     className={`w-full py-2 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${isBlocked
                         ? "bg-green-50 text-green-600 border border-green-200 hover:bg-green-100"
@@ -50,6 +59,20 @@ export default function UserDetail() {
                     {isToggling ? "Updating..." : isBlocked ? "Unblock User" : "Block User"}
                 </button>
             </div>
+
+            <ConfirmModal
+                isOpen={isModalOpen}
+                onConfirm={onConfirm}
+                onClose={() => setIsModalOpen(false)}
+                isLoading={isToggling}
+                heading={isBlocked ? "Unblock this user?" : "Block this user?"}
+                text={isBlocked
+                    ? `${user.full_name} will regain access to the platform.`
+                    : `${user.full_name} will lose access to the platform.`
+                }
+                buttonText={isBlocked ? "Yes, Unblock" : "Yes, Block"}
+                buttonLoadingText={isBlocked ? "Unblocking..." : "Blocking..."}
+            />
         </div>
     )
 }

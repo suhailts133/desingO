@@ -1,13 +1,13 @@
-import type { IJobRequestService } from "../interfaces/customer/ICustomerService.js";
+import type { IJobRequestService } from "../../interfaces/customer/ICustomerService.js";
 import type { Request, Response } from "express";
-import { EditjobRequestValidation, jobRequestValidation } from "../validators/user/jobValidator.js";
-import { RespsonseHelper } from "../helpers/responseHelper.js";
-import { RESPONSE_CODE } from "../helpers/enums/statusCode.js";
-import type { ICreateJobRequest } from "../interfaces/customer/ICustomer.js";
+import { EditjobRequestValidation, jobRequestValidation } from "../../validators/user/jobValidator.js";
+import { RespsonseHelper } from "../../shared/helpers/responseHelper.js";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
+import type { ICreateJobRequest } from "../../interfaces/customer/ICustomer.js";
 import asyncHandler from "express-async-handler";
-import { AppError } from "../helpers/errors/appError.js";
-import { MESSAGES } from "../helpers/enums/messages.js";
-import type { EditJobRequest } from "../DTO/user/jobsDTO.js";
+import { AppError } from "../../shared/errors/appError.js";
+import { MESSAGES } from "../../shared/messages/messages.js";
+import type { EditJobRequest } from "../../DTO/user/jobsDTO.js";
 export class JobController {
     constructor(private _jobRequestService: IJobRequestService) { }
 

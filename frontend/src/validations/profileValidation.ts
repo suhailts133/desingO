@@ -1,5 +1,6 @@
 import Joi from "joi";
 import type { DesignerProfileDTO, IProfileImage } from "../features/designer/profile/designerProfileInterface";
+import type { UserProfileUpdateDTO } from "../features/user/profile/customerProfileInterfaces";
 
 
 
@@ -107,3 +108,26 @@ const imageValidation = (fieldName: string, isOptional = false) => {
 export const profileImageValidation: Joi.ObjectSchema<IProfileImage> = Joi.object<IProfileImage>({
     profileImage: imageValidation("Cover image"),
 });
+
+
+
+
+
+
+export const CustomerprofileUpdationValidations: Joi.ObjectSchema<UserProfileUpdateDTO> = Joi.object<UserProfileUpdateDTO>({
+
+    full_name: Joi.string()
+        .min(3)
+        .max(50)
+        .trim()
+        .pattern(/^[a-zA-Z\s]+$/)
+        .required()
+        .messages({
+            "string.empty": "Full name is required",
+            "string.min": "Full name must be at least 3 characters",
+            "string.max": "Full name must be less than 50 characters",
+            "string.pattern.base": "Full name must contain only letters and spaces"
+        }),
+
+});
+

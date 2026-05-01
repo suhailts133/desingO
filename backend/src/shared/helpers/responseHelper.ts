@@ -1,6 +1,6 @@
-import type { IApiResponse, IApiResponseWithPagination } from "../interfaces/base/IApiResponse.js";
+import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
 import type { Response } from "express";
-import { RESPONSE_CODE } from "./enums/statusCode.js";
+import { RESPONSE_CODE } from "../enums/statusCode.js";
 
 
 export class RespsonseHelper {

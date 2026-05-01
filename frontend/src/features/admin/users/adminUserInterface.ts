@@ -1,5 +1,5 @@
 export interface AdminUserFilter {
-  name?: string;
+  debouncedName?: string;
   role: "All" | "Customer" | "Designer";
   status: "All" | "Active" | "Blocked";
 }
@@ -8,13 +8,22 @@ export interface AdminUserQueryParams extends AdminUserFilter {
   page: number;
 }
 
+export interface AdminUserManagementFilter {
+  name?: string;
+  role: "All" | "Customer" | "Designer";
+  status: "All" | "Active" | "Blocked";
+}
+
+
 
 export interface AdminDesignerVerificationFilter {
   name?: string,
   status: "All" | "Pending" | "Approved" | "Rejected"
 }
 
-export interface AdminDesignerQueryParams extends AdminDesignerVerificationFilter {
+export interface AdminDesignerQueryParams {
+  debouncedName?: string,
+  status: "All" | "Pending" | "Approved" | "Rejected"
   page: number;
 }
 
@@ -33,6 +42,6 @@ export interface ToggleStatusPayload extends AdminUserToggleStatusResposne {
   id: string,
 }
 
-export interface AdminUserToggleStatusResposne{
-  is_blocked:boolean
+export interface AdminUserToggleStatusResposne {
+  is_blocked: boolean
 }

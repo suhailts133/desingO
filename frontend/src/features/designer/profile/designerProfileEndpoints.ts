@@ -1,7 +1,7 @@
 import { API_ROUTES } from "../../../api/apiRoutes";
 import { baseApi } from "../../../api/baseApi";
 import type { IApiResponse } from "../../../api/responseType";
-import type { DesignerProfileDTO, DesignerProfileResponseDTO, DesignerUpdateResponseDTO } from "./designerProfileInterface";
+import type {  DesignerProfileResponseDTO, DesignerUpdateResponseDTO } from "./designerProfileInterface";
 
 export const designerProfileApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({

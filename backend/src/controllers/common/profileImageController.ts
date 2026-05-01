@@ -1,10 +1,10 @@
 import asyncHandler from "express-async-handler";
 import type { Request, Response } from 'express'
-import type { IProfileImage, IProfileImageService } from "../interfaces/base/IProfile.js";
-import { AppError } from "../helpers/errors/appError.js";
-import { MESSAGES } from "../helpers/enums/messages.js";
-import { RESPONSE_CODE } from "../helpers/enums/statusCode.js";
-import { RespsonseHelper } from "../helpers/responseHelper.js";
+import type { IProfileImage, IProfileImageService } from "../../interfaces/base/IProfile.js";
+import { AppError } from "../../shared/errors/appError.js";
+import { MESSAGES } from "../../shared/messages/messages.js";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
+import { RespsonseHelper } from "../../shared/helpers/responseHelper.js";
 
 
 export class ProfileImageController {

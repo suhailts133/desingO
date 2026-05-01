@@ -13,6 +13,9 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
         super(JobRequestModel)
     }
 
+
+
+
     async createJobRequest(userId: string, data: ICreateJobRequest, referenceImages?: ImageUploadResult[]): Promise<boolean> {
         const result = await this.create({
             ...data,

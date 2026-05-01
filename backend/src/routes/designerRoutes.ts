@@ -1,7 +1,7 @@
 import { Router } from "express"
 
 import multer from "multer"
-import { DesignerController } from "../controllers/designerController.js";
+import { DesignerController } from "../controllers/designer/designerController.js";
 import { DesignerService } from "../services/designer/designerService.js";
 import { DesignerRepository } from "../repositories/designer/designerRepository.js";
 import { UserRepository } from "../repositories/auth/userRepository.js";

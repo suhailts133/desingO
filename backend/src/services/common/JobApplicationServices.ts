@@ -1,7 +1,7 @@
 import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO.js";
-import { MESSAGES } from "../../helpers/enums/messages.js";
-import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
-import { AppError } from "../../helpers/errors/appError.js";
+import { MESSAGES } from "../../shared/messages/messages.js";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
+import { AppError } from "../../shared/errors/appError.js";
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
 import type { IJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
 import type { IJobApplicationRepository } from "../../interfaces/designer/IDesignerRepository.js";
@@ -15,6 +15,11 @@ export class JobApplicationService implements IJobApplicationService {
         if (!jobExists) {
             throw new AppError(MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
+        // let count = 0;
+
+  
+        
+
 
         const alreadyApplied = await this._jobApplicationRepo.checkUserJobApplication(data.userId, data.jobId)
         if (alreadyApplied) {

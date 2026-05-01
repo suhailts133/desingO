@@ -3,15 +3,15 @@ import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
 import type { DesignerVerificationFiles, IEducation, IWorkExperience } from "../../interfaces/designer/IDesigner.js";
 import type { IDesignerService } from "../../interfaces/designer/IDesignerService.js";
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
-import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
 import type { IDesignerRepository } from "../../interfaces/designer/IDesignerRepository.js";
-import { sendDesignerVerificationEmail } from "../../helpers/emails/designerVerificationEmail.js";
+import { sendDesignerVerificationEmail } from "../../shared/emails/designerVerificationEmail.js";
 
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
-import { CLOUDINARY_FOLDER_NAME, DESIGNER_STATUS, USER_ROLES } from "../../helpers/enums/commonEnums.js";
+import { CLOUDINARY_FOLDER_NAME, DESIGNER_STATUS, USER_ROLES } from "../../shared/enums/commonEnums.js";
 import type { DesignerFilter, DesignerCardDTO } from "../../DTO/designer/designerDTO.js";
-import { MESSAGES } from "../../helpers/enums/messages.js";
-import { AppError } from "../../helpers/errors/appError.js";
+import { MESSAGES } from "../../shared/messages/messages.js";
+import { AppError } from "../../shared/errors/appError.js";
 
 export class DesignerService implements IDesignerService {
     constructor(

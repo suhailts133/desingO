@@ -8,25 +8,25 @@ import type { AdminUserQueryParams, AdminUsersResponseDTO, AdminUserToggleStatus
 export const adminUsersApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getAllusers: builder.query<IApiResponseWithPagination<AdminUsersResponseDTO[]>, AdminUserQueryParams>({
-            query: ({ page, name, role, status }) => ({
+            query: ({ page, debouncedName, role, status }) => ({
                 url: API_ROUTES.ADMIN.GET_ALL_USERS,
                 method: "GET",
                 params: {
                     page,
-                    ...(name && { name }),
+                    ...(debouncedName && { debouncedName }),
                     ...(role && role !== "All" && { role }),
-                    ...(status && status !== "All" && { is_blocked:status=== "Blocked" })
+                    ...(status && status !== "All" && { is_blocked: status === "Blocked" })
                 }
             }),
-            providesTags:["users"]
+            providesTags: ["users"]
         }),
-        
+
         getUser: builder.query<IApiResponse<AdminUsersResponseDTO>, string>({
             query: (id) => ({
                 url: `${API_ROUTES.ADMIN.GET_ALL_USER}/${id}`,
                 method: "GET",
             }),
-            providesTags:(_result, _error, arg) => [{ type: 'users', id: arg }]
+            providesTags: (_result, _error, arg) => [{ type: 'users', id: arg }]
         }),
         toggleStatus: builder.mutation<IApiResponse<AdminUserToggleStatusResposne>, ToggleStatusPayload>({
             query: ({ id, is_blocked }) => ({
@@ -34,7 +34,7 @@ export const adminUsersApi = baseApi.injectEndpoints({
                 method: "PATCH",
                 body: { is_blocked },
             }),
-            invalidatesTags:["users"]
+            invalidatesTags: ["users"]
         })
     })
 })

@@ -1,13 +1,13 @@
 import type { EditJobRepoData, EditJobRequest, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO.js";
-import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
 import type { ICreateJobRequest } from "../../interfaces/customer/ICustomer.js";
 import type { IJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
 import type { IJobRequestService } from "../../interfaces/customer/ICustomerService.js";
-import { AppError } from "../../helpers/errors/appError.js";
-import { MESSAGES } from "../../helpers/enums/messages.js";
+import { AppError } from "../../shared/errors/appError.js";
+import { MESSAGES } from "../../shared/messages/messages.js";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
-import { CLOUDINARY_FOLDER_NAME } from "../../helpers/enums/commonEnums.js";
+import { CLOUDINARY_FOLDER_NAME } from "../../shared/enums/commonEnums.js";
 
 export class JobRequestService implements IJobRequestService {
     constructor(private _jobRequestRepo: IJobRepository, private _imageUploder: IImageUploaderService) { }

@@ -1,45 +1,48 @@
 // Types
 import type { Request, Response } from "express";
-import type { IAuthService } from "../interfaces/auth/IAuthService.js";
-import type { RegisterUserDTO } from "../DTO/auth/authDTO.js";
-
+import type { RegisterUserDTO } from "../../DTO/auth/authDTO.js";
+import type { IAuthService } from "../../interfaces/auth/IAuthService.js";
 // Validators
-import {
-    registerDataValidator,
-    otpValidator,
-    emailValidator,
-    emailAndPasswordValidator
-} from "../validators/auth/authDataValidators.js";
+import { registerDataValidator, otpValidator, emailValidator, emailAndPasswordValidator } from "../../validators/auth/authDataValidators.js";
 
 // Helpers
-import { RespsonseHelper } from "../helpers/responseHelper.js";
-import { RESPONSE_CODE } from "../helpers/enums/statusCode.js";
+import { RespsonseHelper } from "../../shared/helpers/responseHelper.js";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
 
 import asyncHandler from "express-async-handler";
-import { AppError } from "../helpers/errors/appError.js";
-import { MESSAGES } from "../helpers/enums/messages.js";
+import { AppError } from "../../shared/errors/appError.js";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
+
 
 /**
- * AuthController handles all authentication-related endpoints.
- * all methods follow same pattern:
- * 1. Validate request data using Joi validators.
- * 2. Call the corresponding service method.
- * 3. Return standardized success or error response using ResponseHelper.
- * Errors in async operations are captured and normalized with ensureError.
+ * Handle all authentication based routes
  */
 export class AuthController {
     constructor(private _authService: IAuthService) { }
 
 
+    /**
+     * for getting refresh token if the token is expired
+     * @route GET auth/refresh
+     * @param req.body.refreshToken
+     * @throws {AppError} 401 if there is no refresh token
+     */
     refreshToken = asyncHandler(async (req: Request, res: Response) => {
         const { refreshToken } = req.body;
         if (!refreshToken) {
-            throw new AppError(MESSAGES.AUTH.EXPIRED, RESPONSE_CODE.UNAUTHORIZED)
+            throw new AppError(AUTH_MESSAGES.AUTH.EXPIRED, RESPONSE_CODE.UNAUTHORIZED)
         }
         const reuslt = await this._authService.refreshToken(refreshToken)
         RespsonseHelper.success(res, reuslt)
     })
 
+
+    /**
+     * For regestring new User
+     * @route POST auth/signup
+     * @param req.body {@link RegisterUserDTO}
+     * @throws {AppError} 400 if there is any issue withr req.body
+     */
     register = asyncHandler(async (req: Request, res: Response) => {
         const { error, value } = registerDataValidator.validate(req.body, { stripUnknown: true })
         if (error) {
@@ -51,6 +54,14 @@ export class AuthController {
         RespsonseHelper.success(res, result)
     })
 
+
+    /**
+     * Verify otp for signup
+     * @route POST auth/verify-otp
+     * @param req.body.email - user's email
+     * @param req.body.otp - the otp 
+     * @throws {AppError} 400 if there is any issue with req.body
+     */
     verifyOTP = asyncHandler(async (req: Request, res: Response) => {
         const { error, value } = otpValidator.validate(req.body)
         if (error) {
@@ -62,6 +73,13 @@ export class AuthController {
         RespsonseHelper.success(res, result)
     })
 
+
+    /**
+     * resend otp for signup
+     * @route POST auth/resend-otp
+     * @param req.body.email - user's email
+     * @throws {AppError} 400 if there is any issue with req.body
+    */
     resendOTP = asyncHandler(async (req: Request, res: Response) => {
         const { error, value } = emailValidator.validate(req.body);
         if (error) {
@@ -72,6 +90,13 @@ export class AuthController {
         RespsonseHelper.success(res, result)
     })
 
+
+    /**
+     * email verification for forget password
+     * @route POST auth/forgetPassword
+     * @param req.body.email - user's email
+     * @throws {AppError} 400 if there is any issue with req.body
+    */
     forgetPassword = asyncHandler(async (req: Request, res: Response) => {
         const { error, value } = emailValidator.validate(req.body);
         if (error) {
@@ -82,6 +107,14 @@ export class AuthController {
         RespsonseHelper.success(res, result)
     })
 
+
+    /**
+     * otp verification for forget password
+     * @route POST auth/forgetPassword-verify-otp
+     * @param req.body.email - user's email
+     * @param req.body.otp - otp user have entered
+     * @throws {AppError} 400 if there is any issue with req.body
+    */
     forgetPasswordOTPVerification = asyncHandler(async (req: Request, res: Response) => {
         const { error, value } = otpValidator.validate(req.body)
         if (error) {
@@ -92,6 +125,13 @@ export class AuthController {
         RespsonseHelper.success(res, result)
     })
 
+
+    /**
+     * resend otp  for forget password
+     * @route POST auth/forgetPassword-resend-otp
+     * @param req.body.email - user's email
+     * @throws {AppError} 400 if there is any issue with req.body
+    */
     forgetPasswordResentOTP = asyncHandler(async (req: Request, res: Response) => {
         const { error, value } = emailValidator.validate(req.body);
         if (error) {
@@ -102,6 +142,14 @@ export class AuthController {
         RespsonseHelper.success(res, result)
     })
 
+
+    /**
+     * change password if user forget's it
+     * @route POST auth/forgetPassword-change-password
+     * @param req.body.email - user's email
+     * @param req.body.password - new password
+     * @throws {AppError} 400 if there is any issue with req.body
+    */
     forgetPasswordChangePassword = asyncHandler(async (req: Request, res: Response) => {
         const { error, value } = emailAndPasswordValidator.validate(req.body)
         if (error) {
@@ -112,6 +160,14 @@ export class AuthController {
         RespsonseHelper.success(res, result)
     })
 
+    
+    /**
+     *for login
+     * @route POST auth/login
+     * @param req.body.email - user's email
+     * @param req.body.password - new password
+     * @throws {AppError} 400 if there is any issue with req.body
+    */
     login = asyncHandler(async (req: Request, res: Response) => {
         const { error, value } = emailAndPasswordValidator.validate(req.body)
         if (error) {
@@ -122,6 +178,14 @@ export class AuthController {
         RespsonseHelper.success(res, result)
     })
 
+
+    /**
+     * for logging in as admin
+     * @route POST auth/admin-login
+     * @param req.body.email - user's email
+     * @param req.body.password - new password
+     * @throws {AppError} 400 if there is any issue with req.body
+    */
     adminLogin = asyncHandler(async (req: Request, res: Response) => {
         const { error, value } = emailAndPasswordValidator.validate(req.body)
         if (error) {
@@ -132,9 +196,16 @@ export class AuthController {
         RespsonseHelper.success(res, result)
     })
 
+
+    /**
+     * for login using google
+     * @route POST auth/google
+     * @param req.body.code - the token user recived from google
+     * @throws {AppError} 400 if there is any issue with req.body
+    */
     googleLogin = asyncHandler(async (req: Request, res: Response) => {
         if (!req.body.code) {
-            throw new AppError(MESSAGES.AUTH.TOKEN_NOT_FOUND, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(AUTH_MESSAGES.AUTH.TOKEN_NOT_FOUND, RESPONSE_CODE.BAD_REQUEST)
         }
         const result = await this._authService.googleLogin(req.body.code)
         RespsonseHelper.success(res, result)

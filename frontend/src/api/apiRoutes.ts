@@ -16,9 +16,9 @@ export const API_ROUTES = {
         GET_ALL_USERS: "/admin/users",
         GET_ALL_USER: "/admin/users",
         TOGGLE_USER_STATUS: '/admin/users/toggle-status',
-        GET_ALL_DESIGNER_REQUESTS: "/admin/designer-requests",
-        GET_DESIGNER_REQUEST: "/admin/designer-requests",
-        CHANGE_DESISNER_VERIFICATION_STATUS: "/admin/designer-requests/status"
+        GET_ALL_DESIGNER_REQUESTS: "/admin/designer-application",
+        GET_DESIGNER_REQUEST: "/admin/designer-application",
+        CHANGE_DESISNER_VERIFICATION_STATUS: "/admin/designer-application/status"
     },
     DESIGNER: {
         DESIGNER_VERIFICATION: "/designer/designer-verification",
@@ -53,7 +53,9 @@ export const API_ROUTES = {
     },
     PROIFILE: {
         GET_DESIGNER_PROFILE: "/profile/designer",
+        UPDATE_DESIGNER_DATA: "/profile/designer",
+        GET_CUSTOMER_PROFILE: "/profile/user",
+        UPDATE_CUSTOMER_DATA: "/profile/user",
         CHANGE_PROFILE_IMAGE: "/profile/change-profile-image",
-        UPDATE_DESIGNER_DATA: "/profile/designer"
     }
 } as const

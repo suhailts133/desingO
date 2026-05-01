@@ -1,26 +1,36 @@
-import { ChevronLeft, ChevronRight, Eye, Search } from "lucide-react";
+import {  Eye, Search } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import type { AdminUserFilter } from "../adminUserInterface";
+import type { AdminUserManagementFilter } from "../adminUserInterface";
 import { adminUserFilter } from "../../../../validations/adminValidations";
 import type { AdminUsersResponseDTO } from "../adminUserInterface";
 import { useNavigate } from "react-router-dom";
 import { useGetAllusersQuery } from "../adminUsersEndpoints";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Pagination from "../../../../shared/common/Pagination";
 
 export default function UsersTable() {
   const [page, setPage] = useState(1);
-
-  const { register, watch, formState: { errors } } = useForm<AdminUserFilter>({
+  const [debouncedName, setDebouncedName] = useState("");
+  console.log(debouncedName)
+  const { register, watch, formState: { errors } } = useForm<AdminUserManagementFilter>({
     resolver: joiResolver(adminUserFilter),
     defaultValues: { role: "All", status: "All", name: "" },
   });
 
   const { role, status, name } = watch();
+  const { data, isLoading, error } = useGetAllusersQuery({ page, debouncedName, role, status });
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedName(name ?? "")
+      setPage(1)
+    }, 500);
+    return () => clearTimeout(timer)
+  },[name])
+  
   const navigate = useNavigate();
 
-  const { data, isLoading, error } = useGetAllusersQuery({ page, name, role, status });
+
 
   const users = data?.data;
   const totalUsers = data?.total ?? 0;

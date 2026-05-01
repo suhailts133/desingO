@@ -12,4 +12,6 @@ export interface IJobRepository {
     deleteAJob(id: string): Promise<boolean>;
     getJobRequest(id: string): Promise<IJobRequest | null>
     editJobRequest(id: string, data: EditJobRepoData, referenceImages?: ImageUploadResult[]): Promise<boolean>
+
+
 }

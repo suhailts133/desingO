@@ -1,6 +1,6 @@
 import { useState } from "react"
 import DesignerInfo from "../components/DesignerInfo"
-import ProfileImage from "../components/ProfileImage"
+import ProfileImage from "../../../../shared/common/ProfileImage"
 import { useGetDesignerProfileQuery } from "../designerProfileEndpoints"
 import ProfileImageUploadForm from "../../../../shared/profile/ProfileImageUploadForm"
 import DesignerUpdationForm from "../components/DesignerUpdateForm"

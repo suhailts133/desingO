@@ -1,4 +1,4 @@
-import type { DesignerProfileDTO, DesignerProfileResponseDTO, DesignerUpdateResponseDTO } from "../designerProfileInterface";
+import type {  DesignerProfileResponseDTO, DesignerUpdateResponseDTO } from "../designerProfileInterface";
 import { MapPin, Phone, Pencil, Link } from "lucide-react";
 
 interface Props {

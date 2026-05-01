@@ -1,6 +1,6 @@
-import { oAuth2Client } from "../config/oAuth.js"
+import { oAuth2Client } from "../../config/oAuth.js"
 import axios from "axios";
-import type { GoogleLoginResponseDTO } from "../DTO/auth/authDTO.js";
+import type { GoogleLoginResponseDTO } from "../../DTO/auth/authDTO.js";
 
 
 
@@ -22,8 +22,8 @@ export const googleLoginResponse = async (code: string): Promise<GoogleLoginResp
         if (axios.isAxiosError(error)) {
             const status = error.status;
             const message = error.message
-              throw new Error(`Google API error [${status}]: ${message}`, {cause:error});
-        } 
+            throw new Error(`Google API error [${status}]: ${message}`, { cause: error });
+        }
         throw error
     }
 }

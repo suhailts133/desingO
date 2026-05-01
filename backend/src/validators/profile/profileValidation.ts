@@ -75,7 +75,6 @@ export const designerProfileUpdateValidation: Joi.ObjectSchema<DesignerUpdateRes
 });
 
 export const userProfileUpdateValidation: Joi.ObjectSchema<UserProfileUpdateDTO> = Joi.object<UserProfileUpdateDTO>({
-
     full_name: Joi.string()
         .min(2)
         .max(50)

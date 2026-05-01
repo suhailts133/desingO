@@ -7,12 +7,12 @@ import type { AdminDesignerApprovalPayload, AdminDesignerRequestResponseDTO, Adm
 export const adminDesignerVerificationApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getAllDesignerRequests: builder.query<IApiResponseWithPagination<AdminDesignersResponseDTO[]>, AdminDesignerQueryParams>({
-            query: ({ name, status, page }) => ({
+            query: ({ debouncedName, status, page }) => ({
                 url: API_ROUTES.ADMIN.GET_ALL_DESIGNER_REQUESTS,
                 method: "GET",
                 params: {
                     page,
-                    ...(name && { name }),
+                    ...(debouncedName && { debouncedName }),
                     ...(status && status !== "All" && { status }),
                 }
             }),

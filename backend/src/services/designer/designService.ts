@@ -1,13 +1,13 @@
-import { RESPONSE_CODE } from "../../helpers/enums/statusCode.js";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
 import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository.js";
 import type { IDesignService } from "../../interfaces/designer/IDesignerService.js";
 import type { AddDesignRequestDTO, createDesignDTO, DesignDetailResponseDTO, DesignFiles, DesignFilter, DesignGallaryDTO, EditDesign, EditDesignFiles, EditDesignRepoData, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO.js";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
-import { CLOUDINARY_FOLDER_NAME } from "../../helpers/enums/commonEnums.js";
-import { ensureError } from "../../helpers/errors/ensureError.js";
-import { MESSAGES } from "../../helpers/enums/messages.js";
-import { AppError } from "../../helpers/errors/appError.js";
+import { CLOUDINARY_FOLDER_NAME } from "../../shared/enums/commonEnums.js";
+import { ensureError } from "../../shared/errors/ensureError.js";
+import { MESSAGES } from "../../shared/messages/messages.js";
+import { AppError } from "../../shared/errors/appError.js";
 
 export class DesignService implements IDesignService {
 

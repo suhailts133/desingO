@@ -3,25 +3,6 @@ export interface ImageUploadResult {
     path:string,
 }
 
-
-
-export interface UserProfileResponseDTO extends UserProfileDTO {
-    profileImage?: ImageUploadResult
-    profile_image_url?: string;
-}
-
-export interface UserProfileDTO {
-    full_name: string
-    isGoogle: boolean
-}
-
-export type UserProfileUpdateDTO = Omit<UserProfileDTO, "isGoogle">
-
-export interface DesignerProfileResponseDTO extends DesignerProfileDTO {
-    profileImage?: string
-    profile_image_url?: string;
-}
-
 export interface DesignerProfileDTO {
     isGoogle: boolean
     full_name: string;
@@ -32,6 +13,14 @@ export interface DesignerProfileDTO {
     district: string;
     portfolioUrl:string
 }
+
+
+export interface DesignerProfileResponseDTO extends DesignerProfileDTO {
+    profileImage?: string
+    profile_image_url?: string;
+}
+
+
 
 export type DesignerUpdateRequestDTO = Omit<DesignerProfileDTO, "full_name" | "isGoogle">;
 export type DesignerUpdateResponseDTO = Omit<DesignerProfileDTO, "isGoogle">;
