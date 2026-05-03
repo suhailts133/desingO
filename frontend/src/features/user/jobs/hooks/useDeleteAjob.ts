@@ -1,8 +1,6 @@
 import { useState } from "react"
 import { useJobRequestServices } from "../jobService"
 
-import type { IApiResponse } from "../../../../api/responseType"
-
 export const useDeleteAJob = () => {
     const {deleteAJob, isDeleting} = useJobRequestServices()
     const [deleteError, setDeleteError] = useState<string | null>(null)
@@ -10,7 +8,7 @@ export const useDeleteAJob = () => {
     const handleDeletion  = async (id:string) => {
         setDeleteSuccess(null)
         setDeleteError(null)
-        const result:IApiResponse = await deleteAJob(id);
+        const result = await deleteAJob(id);
         if(result.success){
             setDeleteSuccess(result.message as string);
             setTimeout(() => {

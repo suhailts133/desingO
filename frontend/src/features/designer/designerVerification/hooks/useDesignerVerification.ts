@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { useDesignerVerificationService } from "../designerVerificationService"
 import { useState } from "react"
-import type { IApiResponse } from "../../../../api/responseType"
 
 export const useDesignerVerification = () => {
     const { designerVerification, isLoading } = useDesignerVerificationService()
@@ -12,7 +11,7 @@ export const useDesignerVerification = () => {
     const handleVerification = async (formData: FormData) => {
         setDesignerError("")
         setDesignerSuccess("")
-        const result: IApiResponse = await designerVerification(formData);
+        const result = await designerVerification(formData);
         
         if (result.success) {
             setDesignerSuccess(result.message as string)

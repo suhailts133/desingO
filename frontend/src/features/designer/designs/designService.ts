@@ -1,3 +1,4 @@
+import { isApiError, UNKNOWN_ERROR } from "../../../helpers/errorhandler";
 import { useAddDesignMutation, useDeleteADesignMutation, useEditDesignMutation } from "./designEndpoints"
 
 export const useDesignServices = () => {
@@ -11,8 +12,11 @@ export const useDesignServices = () => {
             const result = await editDesignMutation({ formdata, id }).unwrap()
 
             return result
-        } catch (error: any) {
-            return error.data
+        } catch (error) {
+             if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
     const addDesign = async (formData: FormData) => {
@@ -20,16 +24,22 @@ export const useDesignServices = () => {
             const result = await addDesignMutation(formData).unwrap()
             console.log(result)
             return result
-        } catch (error: any) {
-            return error.data
+        } catch (error) {
+             if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
     const deleteADesign = async (id: string) => {
         try {
             const result = await deleteDesignMutation(id).unwrap()
             return result
-        } catch (error: any) {
-            return error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
 

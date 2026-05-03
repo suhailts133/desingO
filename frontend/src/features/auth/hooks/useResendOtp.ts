@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuthService } from "../authService"
 import type { ResendOtpPayload } from "../authInterfaces";
-import type { IApiResponse } from "../../../api/responseType";
 
 export const useResendOtp = () => {
     const { resendOtp, isSending } = useAuthService();
@@ -11,7 +10,7 @@ export const useResendOtp = () => {
     const handleResendOtp = async (data: ResendOtpPayload) => {
         setResendOTPError("")
         setResendOtpSuccessMessage("")
-        const result: IApiResponse = await resendOtp(data);
+        const result = await resendOtp(data);
         if (result.success) {
             setResendOtpSuccessMessage(result.message as string)
             setTimeout(() => {

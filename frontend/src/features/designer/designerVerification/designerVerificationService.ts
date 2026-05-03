@@ -1,3 +1,4 @@
+import { isApiError, UNKNOWN_ERROR } from "../../../helpers/errorhandler";
 import { useDesignerVerificationMutation } from "./designerVerificationEndpoints"
 
 export const  useDesignerVerificationService = () => {
@@ -7,10 +8,12 @@ export const  useDesignerVerificationService = () => {
     const designerVerification = async (formData:FormData) => {
         try {
             const result = await designerVerificationMutation(formData).unwrap()
-            console.log(result)
             return result
-        } catch (error:any) {
-            return error.data
+        } catch (error) {
+             if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
 

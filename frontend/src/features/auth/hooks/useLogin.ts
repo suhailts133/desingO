@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useAuthService } from "../authService"
 import type { LoginPayload } from "../authInterfaces";
-import type { IApiResponse } from "../../../api/responseType";
 import { useNavigate } from "react-router-dom";
-import type { JwtResponse } from "../../../api/apiInterface";
 
 export const useLogin = () => {
     const {login,isLogging} = useAuthService();
@@ -11,7 +9,7 @@ export const useLogin = () => {
     const navigate = useNavigate();
     const handleLogin = async (data:LoginPayload) =>{
         setLoginError(null)
-        const result:IApiResponse<JwtResponse> = await login(data)
+        const result = await login(data)
         if(result.success){
             navigate("/"); 
         }else{

@@ -2,7 +2,6 @@ import { useState } from "react"
 import { useAuthService } from "../authService"
 import type { VerifyOTPPayload } from "../authInterfaces";
 import { useNavigate } from "react-router-dom";
-import type { IApiResponse } from "../../../api/responseType";
 
 export const useForgetPasswordOtpVerification = () => {
     const [forgetPasswordError, setforgetPasswordError] = useState<string | null>(null)
@@ -11,7 +10,7 @@ export const useForgetPasswordOtpVerification = () => {
 
     const  handleForgetpasswordOtpVerification = async (data:VerifyOTPPayload) => {
         setforgetPasswordError(null)
-        const result:IApiResponse = await forgetPasswordOTPVerification(data);
+        const result = await forgetPasswordOTPVerification(data);
         if(result.success){
             navigate("/auth/change-password", {state:{where:"forgetpasswordOtpVerification",email:data.email}})
         }else{

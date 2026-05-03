@@ -2,7 +2,6 @@ import {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthService } from "../authService";
 import type { SignUpPayload } from "../authInterfaces";
-import type { IApiResponse } from "../../../api/responseType";
 
 export const useSignUp = () => {
     const navigate = useNavigate();
@@ -11,7 +10,7 @@ export const useSignUp = () => {
 
     const handleSignUp = async (data:SignUpPayload) => {
         setError(null)
-        const result:IApiResponse = await signUp(data);
+        const result = await signUp(data);
         if(result.success){
             navigate("/auth/verify-otp",{ state:{where:"signup", email:data.email}})
         }else{

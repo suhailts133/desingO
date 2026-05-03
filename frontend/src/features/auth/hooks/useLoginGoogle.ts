@@ -1,8 +1,6 @@
 import { useState } from "react"
 import type { GoogleLoginPayload } from "../authInterfaces"
 import { useAuthService } from "../authService"
-import type { IApiResponse } from "../../../api/responseType"
-import type { JwtResponse } from "../../../api/apiInterface"
 import { useNavigate } from "react-router-dom"
 
 export const useLoginGoogle = () => {
@@ -11,7 +9,7 @@ export const useLoginGoogle = () => {
     const navigate = useNavigate();
     const handleGoogleLogin = async (payload: GoogleLoginPayload) => {
         setGoogleError(null)
-        const result: IApiResponse<JwtResponse> = await googleLogin(payload);
+        const result = await googleLogin(payload);
         
         if (result.success) {
             navigate("/");

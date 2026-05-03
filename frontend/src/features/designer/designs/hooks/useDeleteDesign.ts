@@ -1,5 +1,4 @@
 import { useState } from "react"
-import type { IApiResponse } from "../../../../api/responseType"
 import { useDesignServices } from "../designService"
 
 export const useDeleteADesign = () => {
@@ -9,7 +8,7 @@ export const useDeleteADesign = () => {
     const handleDeletion = async (id: string) => {
         setDeleteSuccess(null)
         setDeleteError(null)
-        const result: IApiResponse = await deleteADesign(id);
+        const result = await deleteADesign(id);
         if (result.success) {
             setDeleteSuccess(result.message as string);
             setTimeout(() => {

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuthService } from "../authService"
 import type { LoginPayload } from "../authInterfaces";
-import type { IApiResponse } from "../../../api/responseType";
 import { useNavigate } from "react-router-dom";
 
 export const useAdminLogin = () => {
@@ -10,7 +9,7 @@ export const useAdminLogin = () => {
     const navigate = useNavigate();
     const handleAdminLogin = async (data:LoginPayload) =>{
         setLoginError(null)
-        const result:IApiResponse = await adminLogin(data)
+        const result = await adminLogin(data)
         if(result.success){
             navigate("/admin/dashboard"); 
         }else{

@@ -3,6 +3,7 @@ import { useAdminLoginMutation, useForgetPasswordChangePasswordMutation, useForg
 import type { AppDispatch } from "../../app/store";
 import type { changePasswordPayload, EmailPayload, GoogleLoginPayload, LoginPayload, ResendOtpPayload, SignUpPayload, VerifyOTPPayload } from "./authInterfaces";
 import { setCredentials } from "../../app/authSlice";
+import { isApiError, UNKNOWN_ERROR } from "../../helpers/errorhandler";
 
 
 
@@ -17,15 +18,18 @@ export const useAuthService = () => {
     const [forgetPasswordResendOTPMutation, { isLoading: isForgetPasswordResend }] = useForgetPasswordResendOTPMutation();
     const [forgetPasswordChangePasswordMutation, { isLoading: isChangePassword }] = useForgetPasswordChangePasswordMutation();
     const [adminLoginMutation, { isLoading: isAdminLogging }] = useAdminLoginMutation()
-    const [googleLoginMutation,{isLoading:isGoogle}] = useGoogleLoginMutation()
+    const [googleLoginMutation, { isLoading: isGoogle }] = useGoogleLoginMutation()
 
 
     const signUp = async (payload: SignUpPayload) => {
         try {
             const result = await signUpMutation(payload).unwrap();
             return result
-        } catch (error: any) { 
-            return error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
 
@@ -33,12 +37,15 @@ export const useAuthService = () => {
         try {
             const result = await verifyOtpMutaion(payload).unwrap();
             if (!result.data) {
-                return result.message = "Jwt token not found";
+                return { success: false, message: "JWT token not found" }
             }
             dispatch(setCredentials(result.data))
             return result
-        } catch (error: any) {
-            return error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
 
@@ -46,8 +53,11 @@ export const useAuthService = () => {
         try {
             const result = await resendOtpMutaion(payload).unwrap();
             return result
-        } catch (error: any) {
-            return error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
 
@@ -55,13 +65,16 @@ export const useAuthService = () => {
         try {
             const result = await loginMutation(payload).unwrap()
             if (!result.data) {
-                return result.message = "Jwt token not found";
+                return { success: false, message: "JWT token not found" }
             }
-         
+
             dispatch(setCredentials(result.data))
             return result
-        } catch (error: any) {
-            return error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
 
@@ -70,8 +83,11 @@ export const useAuthService = () => {
         try {
             const result = await forgetPasswordMutation(payload).unwrap()
             return result
-        } catch (error: any) {
-            return error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
 
@@ -80,16 +96,22 @@ export const useAuthService = () => {
         try {
             const result = await forgetPasswordOTPVerificationMutation(payload).unwrap();
             return result
-        } catch (error: any) {
-            return error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
     const forgetPasswordResendOtp = async (payload: ResendOtpPayload) => {
         try {
             const result = await forgetPasswordResendOTPMutation(payload).unwrap();
             return result
-        } catch (error: any) {
-            return error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
 
@@ -97,9 +119,11 @@ export const useAuthService = () => {
         try {
             const result = await forgetPasswordChangePasswordMutation(payload).unwrap();
             return result
-        } catch (error: any) {
-            console.log(error)
-            return error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
 
@@ -107,29 +131,34 @@ export const useAuthService = () => {
         try {
             const result = await adminLoginMutation(payload).unwrap()
             if (!result.data) {
-                return result.message = "Jwt token not found";
+                return { success: false, message: "JWT token not found" }
             }
             dispatch(setCredentials(result.data))
             return result
-        } catch (error: any) {
-            return error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
 
 
-    const googleLogin = async(payload:GoogleLoginPayload) => {
+    const googleLogin = async (payload: GoogleLoginPayload) => {
         try {
             const result = await googleLoginMutation(payload).unwrap()
-            console.log("data from the backend: ",result)
-            if(!result.data){
-                return result.message = "JWT token not found"
+            console.log("data from the backend: ", result)
+            if (!result.data) {
+                return { success: false, message: "JWT token not found" }
             }
             dispatch(setCredentials(result.data))
             return result
-        } catch (error:any) {
-            console.log("erorr while calling the google mutaion: ",error.data)
-            return error.data
-            
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
+
         }
     }
 

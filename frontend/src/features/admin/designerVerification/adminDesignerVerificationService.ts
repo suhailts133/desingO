@@ -1,3 +1,4 @@
+import { isApiError, UNKNOWN_ERROR } from "../../../helpers/errorhandler"
 import { useApproveOrRejectDesignerMutation } from "./adminDesignerVerificationEndpoints"
 import type { AdminDesignerApprovalPayload } from "./adminDesignerVerificationInterfaces"
 
@@ -7,8 +8,11 @@ export const useAdminDesignerVerificationService = () => {
         try {
             const result = await approveOrRejectDesignerMutation(payload).unwrap()
             return result
-        } catch (error: any) {
-            error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
 

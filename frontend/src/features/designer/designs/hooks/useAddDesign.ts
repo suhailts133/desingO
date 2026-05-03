@@ -1,7 +1,5 @@
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
-import type { IApiResponse } from "../../../../api/responseType"
-// import { useDesignServices } from "../../designerVerification/designService"
 import { useDesignServices } from "../designService"
 export const useAddDesign = () => {
     const { addDesign, isLoading } = useDesignServices()
@@ -12,7 +10,7 @@ export const useAddDesign = () => {
     const handleSubmission = async (formData: FormData) => {
         setDesignError(null)
         setDesignSuccess(null)
-        const result: IApiResponse = await addDesign(formData);
+        const result = await addDesign(formData);
         
         if (result.success) {
             setDesignSuccess(result.message as string)

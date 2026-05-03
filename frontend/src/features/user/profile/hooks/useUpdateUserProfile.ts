@@ -1,5 +1,4 @@
 import { useState } from "react"
-import type { IApiResponse } from "../../../../api/responseType"
 import { useCustomerProfileService } from "../CustomerProfileService"
 import type { UserProfileUpdateDTO } from "../customerProfileInterfaces"
 
@@ -12,7 +11,7 @@ export const useUpdateUserProfile = () => {
         setDataError(null)
         setDataSuccess(null)
         setNewData(null)
-        const result: IApiResponse<UserProfileUpdateDTO> = await updateProfileData(body);
+        const result = await updateProfileData(body);
         if (result.success) {
             setDataSuccess(result.message as string);
             setNewData(result.data as UserProfileUpdateDTO)

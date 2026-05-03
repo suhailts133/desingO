@@ -1,3 +1,4 @@
+import { isApiError, UNKNOWN_ERROR } from "../../../helpers/errorhandler"
 import { useUpdateUserProfileDataMutation } from "./customerProfileEndpoints"
 import type { UserProfileUpdateDTO } from "./customerProfileInterfaces"
 
@@ -9,8 +10,11 @@ export const useCustomerProfileService = () => {
         try {
             const result = await updateUserProfileDataMutation(body).unwrap()
             return result
-        } catch (error: any) {
-            return error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
 

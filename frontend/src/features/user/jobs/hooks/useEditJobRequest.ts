@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useJobRequestServices } from "../jobService"
 
-import type { IApiResponse } from "../../../../api/responseType"
+
 import { useNavigate } from "react-router-dom"
 
 export const useEditJobRequest = () => {
@@ -14,7 +14,7 @@ export const useEditJobRequest = () => {
         setUpdateSuccess(null)
         setUpdateError(null)
 
-        const result: IApiResponse = await editJob({ formdata, id });
+        const result = await editJob({ formdata, id });
         if (result.success) {
             setUpdateSuccess(result.message as string);
             setTimeout(() => {

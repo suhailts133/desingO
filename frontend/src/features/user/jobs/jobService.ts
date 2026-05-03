@@ -1,3 +1,4 @@
+import { isApiError, UNKNOWN_ERROR } from "../../../helpers/errorhandler";
 import { useApplyForAJobMutation, useDeleteAJobMutation, usePostJobMutation, useEditJobMutation } from "./jobEndpoints";
 
 export const useJobRequestServices = () => {
@@ -10,32 +11,44 @@ export const useJobRequestServices = () => {
         try {
             const result = await editJobMutation({ formdata, id }).unwrap();
             return result;
-        } catch (error: any) {
-            return error.data;
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     };
     const postJob = async (payload: FormData) => {
         try {
             const result = await postJobMutation(payload).unwrap()
             return result
-        } catch (error: any) {
-            return error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
     const deleteAJob = async (id: string) => {
         try {
             const result = await deleteAJobMutation(id).unwrap()
             return result
-        } catch (error: any) {
-            return error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
     const applyForAJob = async (jobId: string) => {
         try {
             const result = await applyForAJobMutation(jobId).unwrap()
             return result
-        } catch (error: any) {
-            return error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
 

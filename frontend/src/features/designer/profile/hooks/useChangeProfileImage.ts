@@ -1,5 +1,5 @@
 import { useState } from "react"
-import type { IApiResponse } from "../../../../api/responseType"
+
 import {  useDesignerProfileService} from "../designerProfileService"
 
 export const useChangeProfileImage = () => {
@@ -11,7 +11,7 @@ export const useChangeProfileImage = () => {
         setUpdateError(null)
         setUpdateSuccess(null)
         setNewImage(null)
-        const result: IApiResponse<string> = await updateProfileImage(formData);
+        const result = await updateProfileImage(formData);
         if (result.success) {
             setUpdateSuccess(result.message as string);
             setNewImage(result.data as string)

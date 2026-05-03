@@ -1,3 +1,4 @@
+import { isApiError, UNKNOWN_ERROR } from "../../../helpers/errorhandler"
 import { useDeleteMyJobApplicationMutation } from "./myJobApplicationEndpoints"
 
 export const useMyJobApplicationServices = () => {
@@ -7,8 +8,11 @@ export const useMyJobApplicationServices = () => {
         try {
             const result = await deleteMyJobApplicationMutation(id).unwrap()
             return result
-        } catch (error: any) {
-            return error.data
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
         }
     }
 
