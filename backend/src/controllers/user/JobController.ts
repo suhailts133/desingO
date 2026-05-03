@@ -7,7 +7,9 @@ import type { ICreateJobRequest } from "../../interfaces/customer/ICustomer.js";
 import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError.js";
 import { MESSAGES } from "../../shared/messages/messages.js";
+import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
 import type { EditJobRequest } from "../../DTO/user/jobsDTO.js";
+import { isObjectId } from "../../shared/helpers/extraFunctions.js";
 export class JobController {
     constructor(private _jobRequestService: IJobRequestService) { }
 
@@ -34,20 +36,23 @@ export class JobController {
     editJobRequest = asyncHandler(async (req: Request, res: Response) => {
         const { error, value } = EditjobRequestValidation.validate(req.body, { stripUnknown: true, convert: true })
         if (error) {
-         
+
             throw new AppError(error.details[0]?.message || "Missing fields or Invalid Data", RESPONSE_CODE.BAD_REQUEST)
         }
-        const { id } = req.params;
-        if (!id) {
-            throw new AppError(MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        const jobRequestId = req.params.id as string;
+        if (jobRequestId) {
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        if (!isObjectId(jobRequestId)) {
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         const validatedData = value as EditJobRequest
-        console.log("from controlelr: ", validatedData)
+        
         const files = req.files as {
             referenceImages?: Express.Multer.File[]
         }
         const referenceImages: Express.Multer.File[] = files?.referenceImages ?? []
-        const result = await this._jobRequestService.editJobRequest(id as string, validatedData, referenceImages)
+        const result = await this._jobRequestService.editJobRequest(jobRequestId, validatedData, referenceImages)
         RespsonseHelper.success(res, result)
     })
 
@@ -63,11 +68,14 @@ export class JobController {
 
 
     getJobDetails = asyncHandler(async (req: Request, res: Response) => {
-        const { id } = req.params;
-        if (!id) {
-            throw new AppError(MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        const jobRequestId = req.params.id as string;
+        if (jobRequestId) {
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
-        const result = await this._jobRequestService.getAJobRequest(id as string)
+        if (!isObjectId(jobRequestId)) {
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        const result = await this._jobRequestService.getAJobRequest(jobRequestId)
         RespsonseHelper.success(res, result)
     })
 
@@ -78,11 +86,14 @@ export class JobController {
 
     deleteAJob = asyncHandler(async (req: Request, res: Response) => {
 
-        const { id } = req.params;
-        if (!id) {
-            throw new AppError(MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+       const jobRequestId = req.params.id as string;
+        if (jobRequestId) {
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
-        const result = await this._jobRequestService.deleteAJob(id as string)
+        if (!isObjectId(jobRequestId)) {
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        const result = await this._jobRequestService.deleteAJob(jobRequestId)
         RespsonseHelper.success(res, result)
     })
 }

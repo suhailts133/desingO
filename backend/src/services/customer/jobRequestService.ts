@@ -5,9 +5,9 @@ import type { ICreateJobRequest } from "../../interfaces/customer/ICustomer.js";
 import type { IJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
 import type { IJobRequestService } from "../../interfaces/customer/ICustomerService.js";
 import { AppError } from "../../shared/errors/appError.js";
-import { MESSAGES } from "../../shared/messages/messages.js";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
 import { CLOUDINARY_FOLDER_NAME } from "../../shared/enums/commonEnums.js";
+import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
 
 export class JobRequestService implements IJobRequestService {
     constructor(private _jobRequestRepo: IJobRepository, private _imageUploder: IImageUploaderService) { }
@@ -18,9 +18,9 @@ export class JobRequestService implements IJobRequestService {
 
         const result = await this._jobRequestRepo.createJobRequest(userId, data, reference);
         if (!result) {
-            throw new AppError(MESSAGES.JOB_REQUEST.JOB_REQUEST_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.JOB_REQUEST_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
-        return { message: "Job request posted successfully." }
+        return { message: JOB_MESSAGES.JOB_REQUEST.JOB_REQUEST_SUCCESS }
 
     }
 
@@ -33,7 +33,7 @@ export class JobRequestService implements IJobRequestService {
         };
         const jobRequest = await this._jobRequestRepo.getJobRequest(jobId);
         if (!jobRequest) {
-            throw new AppError(MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
         if (!oldReferences && jobRequest.referenceImages) {
             await this._imageUploder.deleteMany(jobRequest.referenceImages.map(e => e.filename));
@@ -60,9 +60,9 @@ export class JobRequestService implements IJobRequestService {
         ];
         const result = await this._jobRequestRepo.editJobRequest(jobId, jobRepoData, finalRefrenceImages)
         if (!result) {
-            throw new AppError(MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
-        return { message: MESSAGES.JOB_REQUEST.UPDATION_SUCCESS }
+        return { message: JOB_MESSAGES.JOB_REQUEST.UPDATION_SUCCESS }
 
     }
 
@@ -74,7 +74,7 @@ export class JobRequestService implements IJobRequestService {
             total: result.pagination.total,
             totalPages: result.pagination.totalPages,
             data: result.data,
-            message: MESSAGES.JOB_REQUEST.MY_JOB_REQUEST
+            message: JOB_MESSAGES.JOB_REQUEST.MY_JOB_REQUEST
         }
 
     }
@@ -83,9 +83,9 @@ export class JobRequestService implements IJobRequestService {
     async getAJobRequest(jobId: string): Promise<IApiResponse<JobDetailResponseDTO>> {
         const result = await this._jobRequestRepo.getAJobRequest(jobId);
         if (!result) {
-            throw new AppError(MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NO_CONTENT)
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NO_CONTENT)
         }
-        return { message: MESSAGES.JOB_REQUEST.JOB_REQUEST, data: result };
+        return { message: JOB_MESSAGES.JOB_REQUEST.JOB_REQUEST, data: result };
 
     }
 
@@ -94,7 +94,7 @@ export class JobRequestService implements IJobRequestService {
 
         const result = await this._jobRequestRepo.getAllJobsCommon(JobFilter)
         return {
-            message: MESSAGES.JOB_REQUEST.ALL_JOB_REQUEST,
+            message: JOB_MESSAGES.JOB_REQUEST.ALL_JOB_REQUEST,
             data: result.data,
             total: result.pagination.total,
             totalPages: result.pagination.totalPages
@@ -107,7 +107,7 @@ export class JobRequestService implements IJobRequestService {
     async deleteAJob(id: string): Promise<IApiResponse> {
         const jobRequest = await this._jobRequestRepo.getJobRequest(id);
         if (!jobRequest) {
-            throw new AppError(MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
         if (jobRequest.referenceImages && jobRequest.referenceImages.length > 0) {
             await this._imageUploder.deleteMany(jobRequest.referenceImages.map(e => e.filename))
@@ -115,9 +115,9 @@ export class JobRequestService implements IJobRequestService {
 
         const result = await this._jobRequestRepo.deleteAJob(id);
         if (!result) {
-            throw new AppError(MESSAGES.JOB_REQUEST.DELETION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.DELETION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
-        return { message: MESSAGES.JOB_REQUEST.DELETION_SUCCESS };
+        return { message: JOB_MESSAGES.JOB_REQUEST.DELETION_SUCCESS };
 
     }
 }

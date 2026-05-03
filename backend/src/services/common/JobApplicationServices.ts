@@ -6,6 +6,7 @@ import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/
 import type { IJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
 import type { IJobApplicationRepository } from "../../interfaces/designer/IDesignerRepository.js";
 import type { IJobApplicationService } from "../../interfaces/designer/IDesignerService.js";
+import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
 
 export class JobApplicationService implements IJobApplicationService {
     constructor(private _jobApplicationRepo: IJobApplicationRepository, private _jobRequestRepo: IJobRepository) { }
@@ -15,12 +16,6 @@ export class JobApplicationService implements IJobApplicationService {
         if (!jobExists) {
             throw new AppError(MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
-        // let count = 0;
-
-  
-        
-
-
         const alreadyApplied = await this._jobApplicationRepo.checkUserJobApplication(data.userId, data.jobId)
         if (alreadyApplied) {
             throw new AppError(MESSAGES.JOB_APPLICATION.ALREADY_APPLIED, RESPONSE_CODE.CONFILT)
@@ -65,9 +60,13 @@ export class JobApplicationService implements IJobApplicationService {
     }
 
 
-    async getAllJobApplications(userId: string, filters?: JobApplicationFilter): Promise<IApiResponseWithPagination<AllJobApplicationsDTO[]>> {
-     
-        const { data, pagination } = await this._jobApplicationRepo.getAllJobApplications(userId, filters);
+    async getJobApplications(jobId: string, filters?: JobApplicationFilter): Promise<IApiResponseWithPagination<AllJobApplicationsDTO[]>> {
+
+        const jobRequestExists = await this._jobRequestRepo.getJobRequest(jobId)
+        if(!jobRequestExists){
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+        }
+        const { data, pagination } = await this._jobApplicationRepo.getJobApplications(jobId, filters);
      
         return {
             message: MESSAGES.JOB_APPLICATION.ALL_JOB_APPLICATIONS,
@@ -78,6 +77,9 @@ export class JobApplicationService implements IJobApplicationService {
             totalPages: pagination.totalPages
         }
     }
+
+
+
     async getMyJobApplications(userId: string, filters?: JobApplicationFilter): Promise<IApiResponseWithPagination<MyJobApplicationsDTO[]>> {
         const result = await this._jobApplicationRepo.getMyJobApplications(userId, filters);
         return {

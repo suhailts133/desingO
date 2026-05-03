@@ -1,6 +1,7 @@
 export interface JobApplicationQueryParms {
     page?: number,
-    status?:JobApplicationStatus
+    status?:JobApplicationStatus,
+    id:string
 }
 
 

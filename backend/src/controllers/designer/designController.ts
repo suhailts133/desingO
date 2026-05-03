@@ -6,8 +6,11 @@ import { designValidation, editDesignValidation } from "../../validators/designe
 import type { AddDesignRequestDTO, DesignFiles, EditDesign, EditDesignFiles } from "../../DTO/designer/designDTO.js"
 import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError.js"
-import { MESSAGES } from "../../shared/messages/messages.js"
+
+
 import { isObjectId } from "../../shared/helpers/extraFunctions.js"
+import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages.js"
+import { MESSAGES } from "../../shared/messages/messages.js"
 
 
 
@@ -43,12 +46,12 @@ export class DesignController {
         }
 
         if (!files.coverImage?.[0]) {
-            throw new AppError(MESSAGES.DESIGNS.COVER_IMAGE_NOT_FOUND, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.COVER_IMAGE_NOT_FOUND, RESPONSE_CODE.BAD_REQUEST)
         }
         const coverImage = files.coverImage[0];
 
         if (!files.gallery || files.gallery.length <= 0) {
-            throw new AppError(MESSAGES.DESIGNS.GALLERY_NOT_FOUND, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.GALLERY_NOT_FOUND, RESPONSE_CODE.BAD_REQUEST)
         }
         const gallery = files.gallery
 
@@ -79,10 +82,10 @@ export class DesignController {
         }
         const designId = req.params.id as string;
         if (designId) {
-            throw new AppError(MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         if (!isObjectId(designId)) {
-            throw new AppError(MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         const validatedData = value as EditDesign
         const files = req.files as {
@@ -129,10 +132,10 @@ export class DesignController {
     getDesignDetail = asyncHandler(async (req: Request, res: Response) => {
         const designId = req.params.id as string;
         if (!designId) {
-            throw new AppError(MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         if (!isObjectId(designId)) {
-            throw new AppError(MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         const result = await this._designService.getDesignDetail(designId)
         RespsonseHelper.success(res, result)
@@ -159,10 +162,10 @@ export class DesignController {
     deleteDesign = asyncHandler(async (req: Request, res: Response) => {
         const designId = req.params.id as string;
         if (!designId) {
-            throw new AppError(MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         if (!isObjectId(designId)) {
-            throw new AppError(MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         const result = await this._designService.deleteADesign(designId)
         RespsonseHelper.success(res, result)
@@ -179,10 +182,10 @@ export class DesignController {
     getDesignGallery = asyncHandler(async (req: Request, res: Response) => {
         const designerId = req.params.id as string;
         if (!designerId) {
-            throw new AppError(MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         if (!isObjectId(designerId)) {
-            throw new AppError(MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         const { page } = req.query;
         const result = await this._designService.getDesignGallary(designerId, page as string)

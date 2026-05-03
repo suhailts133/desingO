@@ -99,7 +99,7 @@ const router = createBrowserRouter([
             { path: "designs", Component: Designs },
             { path: "add-design", Component: DesignForm },
             { path: "job-applications/my", Component: MyJobApplications },
-            { path: "designs/edit/:id", Component: EditDesignForm}
+            { path: "designs/edit/:id", Component: EditDesignForm }
 
         ]
     },
@@ -111,17 +111,23 @@ const router = createBrowserRouter([
             { path: "jobs", Component: Jobs },
             { path: "add-job", Component: JobRequestForm },
             { path: "jobs/edit/:id", Component: EditJobRequestForm },
-            { path: "job-applications", Component: JobApplications }
+            { path: "job-applications/:id", Component: JobApplications }
         ]
     },
     {
         path: "profile",
         Component: DesignerLayout,
         children: [
-            { path: "designer", Component: DesignerProfilePage },
+            { path: "designer", Component: DesignerProfilePage }
+        ]
+    },
+    {
+        path: "profile",
+        Component: CustomerLayout,
+        children: [
             { path: "customer", Component: CustomerProfilePage }
         ]
-    }
+    },
 
 ])
 

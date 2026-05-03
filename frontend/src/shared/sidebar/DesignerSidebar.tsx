@@ -30,7 +30,7 @@ const DesignerSidebar = memo(({ name, email }: { name: string, email: string }) 
 
   const iconClass = (label: string) =>
     `shrink-0 transition-colors duration-200 ${active === label ? "text-blush-deep" : "text-soft-black/50 group-hover:text-soft-black"}`
-
+  console.log("designer sidebar")
   return (
     <aside
       className={`
@@ -79,7 +79,7 @@ const DesignerSidebar = memo(({ name, email }: { name: string, email: string }) 
 
         <Link to="/profile/designer" onClick={() => setActive("profile")} className={linkClass("profile")}>
           {active === "Users" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
-          <User size={18} strokeWidth={active === "profile" ? 2.2 : 1.8} className={iconClass("Users")} />
+          <User size={18} strokeWidth={active === "profile" ? 2.2 : 1.8} className={iconClass("profile")} />
           {!collapsed && <span className="flex-1">Profile</span>}
         </Link>
 

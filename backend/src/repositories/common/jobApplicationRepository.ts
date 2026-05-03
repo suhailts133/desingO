@@ -107,12 +107,12 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
         return { data: output, pagination }
     }
 
-    async getAllJobApplications(userId: string, filters?: JobApplicationFilter): Promise<{ data: AllJobApplicationsDTO[]; pagination: Pagination; }> {
+    async getJobApplications(jobId: string, filters?: JobApplicationFilter): Promise<{ data: AllJobApplicationsDTO[]; pagination: Pagination; }> {
    
         const page = filters?.page ? Number(filters.page) : 1;
         const limit =1;
         const skip = (page - 1) * limit;
-        const query: QueryFilter<IJobApplication> = { customerId: userId };
+        const query: QueryFilter<IJobApplication> = { jobId: jobId };
         if (filters) {
             if (filters.status) {
                 query.status = filters.status

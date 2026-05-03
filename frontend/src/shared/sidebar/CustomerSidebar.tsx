@@ -1,8 +1,7 @@
 import { useState, memo } from "react"
 import {
     LayoutDashboard, User, Briefcase,
-    CircleDollarSign, ChevronRight, LogOut,
-    ScrollText
+    CircleDollarSign, ChevronRight, LogOut 
 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import type { AppDispatch } from "../../app/store"
@@ -30,7 +29,7 @@ const CustomerSidebar = memo(({ name, email }: { name: string, email: string }) 
 
     const iconClass = (label: string) =>
         `shrink-0 transition-colors duration-200 ${active === label ? "text-blush-deep" : "text-soft-black/50 group-hover:text-soft-black"}`
-
+console.log("customer sidebar")
     return (
         <aside
             className={`
@@ -79,7 +78,7 @@ const CustomerSidebar = memo(({ name, email }: { name: string, email: string }) 
 
                 <Link to="/profile/customer" onClick={() => setActive("profile")} className={linkClass("profile")}>
                     {active === "Users" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
-                    <User size={18} strokeWidth={active === "profile" ? 2.2 : 1.8} className={iconClass("Users")} />
+                    <User size={18} strokeWidth={active === "profile" ? 2.2 : 1.8} className={iconClass("profile")} />
                     {!collapsed && <span className="flex-1">Profile</span>}
                 </Link>
 
@@ -90,12 +89,7 @@ const CustomerSidebar = memo(({ name, email }: { name: string, email: string }) 
                     {!collapsed && <span className="flex-1">Jobs</span>}
                 </Link>
 
-                {/* disputes */}
-                  <Link to="/customer/job-applications" onClick={() => setActive("jobApplications")} className={linkClass("jobApplications")}>
-          {active === "jobApplications" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
-          <ScrollText size={18} strokeWidth={active === "jobApplications" ? 2.2 : 1.8} className={iconClass("jobApplications")} />
-          {!collapsed && <span className="flex-1">Job applications</span>}
-        </Link>
+            
 
                 {/* bids */}
                 <a onClick={() => setActive("Analytics")} className={linkClass("Analytics")}>

@@ -6,6 +6,7 @@ import type { JobApplicationRejection, JobApplicationStatus } from "../jobApplic
 import ConfirmModal from "../../../../shared/modals/ConfirmModal";
 import { useApproveOrRejectJobApplication } from "../hooks/useApproveOrRejectionJobApplication";
 import RejectJobApplicationModal from "../components/RejectJobApplicationModal";
+import { useParams } from "react-router-dom";
 
 export default function JobApplications() {
     const [page, setPage] = useState(1)
@@ -13,10 +14,12 @@ export default function JobApplications() {
     const [approveJobApplication, setApproveJobApplication] = useState<{ id: string, jobId: string } | null>(null)
     const [rejectJobApplication, setRejectJobApplication] = useState<{ id: string, jobId: string } | null>(null)
     const { handleApproveOrReject, approvalError, approvalSuccess, isApproving } = useApproveOrRejectJobApplication()
+    const { id } = useParams<{ id: string }>();
     const { data, isLoading, error } = useGetAllJobApplicationsQuery({
         page,
-        status: status === "All" ? undefined : status
-    })
+        status: status === "All" ? undefined : status,
+        id:id as string
+    }, { skip: !id })
 
     const jobApplications = data?.data
 
@@ -134,7 +137,7 @@ export default function JobApplications() {
                 onClose={() => setRejectJobApplication(null)}
                 onConfirm={handleRejection}
             />
-          
+
         </div>
     );
 }

@@ -71,14 +71,14 @@ export const DesignerprofileUpdationValidations: Joi.ObjectSchema<DesignerProfil
         }),
     bio: Joi.string()
         .min(15)
-        .max(400)
+        .max(1000)
         .trim()
         .required()
         .messages({
             "string.base": "Bio must be a string",
             "string.empty": "Bio cannot be empty",
             "string.min": "Bio should have at least 15 characters",
-            "string.max": "Bio should not exceed 400 characters"
+            "string.max": "Bio should not exceed 1000 characters"
         })
 });
 

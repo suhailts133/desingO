@@ -15,7 +15,7 @@ export const designerProfileUpdateValidation: Joi.ObjectSchema<DesignerUpdateRes
 
     bio: Joi.string()
         .min(10)
-        .max(300)
+        .max(1000)
         .required()
         .messages({
             "any.required": "Bio is required",

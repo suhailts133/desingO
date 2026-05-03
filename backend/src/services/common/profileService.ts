@@ -1,11 +1,11 @@
 import type {  DesignerProfileResponseDTO, DesignerUpdateResponseDTO, UserProfileDTO, UserProfileResponseDTO, UserProfileUpdateDTO, } from "../../DTO/profile/profileDTO.js";
-import { MESSAGES } from "../../shared/messages/messages.js";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
 import { AppError } from "../../shared/errors/appError.js";
 import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
 import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
 import type { IProfileService } from "../../interfaces/base/IProfile.js";
 import type { IDesignerRepository } from "../../interfaces/designer/IDesignerRepository.js";
+import { PROFILE_MESSAGES } from "../../shared/messages/profileMessages.js";
 
 export class ProfileService implements IProfileService {
     constructor(private _DesignerRepo: IDesignerRepository, private _userRepo: IUserRepository) { };
@@ -14,7 +14,7 @@ export class ProfileService implements IProfileService {
     async getUserProfile(userId: string): Promise<IApiResponse<UserProfileResponseDTO>> {
         const result = await this._userRepo.findUserById(userId);
         if (!result) {
-            throw new AppError(MESSAGES.PROFILE.USER_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+            throw new AppError(PROFILE_MESSAGES.PROFILE.USER_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
         const data: UserProfileResponseDTO = {
             isGoogle: !!result.google_profile_id,
@@ -25,7 +25,7 @@ export class ProfileService implements IProfileService {
         return {
             statuscode: RESPONSE_CODE.OK,
             success: true,
-            message: MESSAGES.PROFILE.USER_FOUND,
+            message: PROFILE_MESSAGES.PROFILE.USER_FOUND,
             data
 
         }
@@ -35,7 +35,7 @@ export class ProfileService implements IProfileService {
     async updateUserProfile(userId: string, data: UserProfileUpdateDTO): Promise<IApiResponse<UserProfileDTO>> {
         const result = await this._userRepo.updateUser(userId, data);
         if (!result) {
-            throw new AppError(MESSAGES.PROFILE.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+            throw new AppError(PROFILE_MESSAGES.PROFILE.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
         const output: UserProfileDTO = {
             full_name: result.full_name,
@@ -43,7 +43,7 @@ export class ProfileService implements IProfileService {
         }
         return {
             success: true,
-            message: MESSAGES.PROFILE.UPDATE_SUCCESS,
+            message: PROFILE_MESSAGES.PROFILE.UPDATE_SUCCESS,
             statuscode: RESPONSE_CODE.OK,
             data: output
 
@@ -53,11 +53,11 @@ export class ProfileService implements IProfileService {
     async getDesignerProfile(designerId: string): Promise<IApiResponse<DesignerProfileResponseDTO>> {
         const designerData = await this._DesignerRepo.getDesigner(designerId)
         if (!designerData) {
-            throw new AppError(MESSAGES.PROFILE.USER_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+            throw new AppError(PROFILE_MESSAGES.PROFILE.USER_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
         const userData = await this._userRepo.findUserById(designerId)
         if (!userData) {
-            throw new AppError(MESSAGES.PROFILE.USER_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+            throw new AppError(PROFILE_MESSAGES.PROFILE.USER_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
 
         const data: DesignerProfileResponseDTO = {
@@ -73,7 +73,7 @@ export class ProfileService implements IProfileService {
             ...(userData.profile_image_url !== undefined && { profile_image_url: userData.profile_image_url }),
         }
         console.log(data)
-        return { statuscode: RESPONSE_CODE.OK, message: MESSAGES.PROFILE.USER_FOUND, data, success: true }
+        return { statuscode: RESPONSE_CODE.OK, message: PROFILE_MESSAGES.PROFILE.USER_FOUND, data, success: true }
     }
 
     async updateDesignerProfile(designerId: string, data: DesignerUpdateResponseDTO): Promise<IApiResponse<DesignerUpdateResponseDTO>> {
@@ -83,19 +83,19 @@ export class ProfileService implements IProfileService {
         const updatedDesigner = await this._DesignerRepo.updateDesigner(designerId, designerData);
         console.log(updatedDesigner, "updated desinger")
         if (!updatedDesigner) {
-            throw new AppError(MESSAGES.PROFILE.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+            throw new AppError(PROFILE_MESSAGES.PROFILE.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
         }
 
         const currentUser = await this._userRepo.findUserById(designerId);
         if (!currentUser) {
-            throw new AppError(MESSAGES.PROFILE.USER_NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+            throw new AppError(PROFILE_MESSAGES.PROFILE.USER_NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
         }
 
         let finalUser = currentUser;
         if (full_name !== currentUser.full_name) {
             const updatedUser = await this._userRepo.updateUser(designerId, { full_name });
             if (!updatedUser) {
-                throw new AppError(MESSAGES.PROFILE.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+                throw new AppError(PROFILE_MESSAGES.PROFILE.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
             }
             finalUser = updatedUser;
         }
@@ -111,7 +111,7 @@ export class ProfileService implements IProfileService {
         };
 
         return {
-            success: true, statuscode: RESPONSE_CODE.OK, message: MESSAGES.PROFILE.UPDATE_SUCCESS, data: output
+            success: true, statuscode: RESPONSE_CODE.OK, message: PROFILE_MESSAGES.PROFILE.UPDATE_SUCCESS, data: output
         };
     }
 }

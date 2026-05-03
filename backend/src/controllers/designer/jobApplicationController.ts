@@ -7,12 +7,14 @@ import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
 import { jobApplicationApprovalOrRejectionValidation, JobApplicationsQueryFilter, jobApplicationValidation } from "../../validators/designers/jobApplicationValidations.js";
 import type { IJobApplicationRequestDTO, JobApplicationApprovalOrRejectionRequestDTO } from "../../DTO/designer/jobsDTO.js";
 import { RespsonseHelper } from "../../shared/helpers/responseHelper.js";
+import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
+import { isObjectId } from "../../shared/helpers/extraFunctions.js";
 
 export class JobApplicationController {
     constructor(private _jobApplicationService: IJobApplicationService) { }
 
     applyForJob = asyncHandler(async (req: Request, res: Response) => {
-     
+
         const { error, value } = jobApplicationValidation.validate(req.body, { stripUnknown: true })
         if (error) {
             throw new AppError(error.details[0]?.message || "Missing fields or Invalid Data", RESPONSE_CODE.BAD_REQUEST)
@@ -71,19 +73,21 @@ export class JobApplicationController {
         RespsonseHelper.success(res, result)
     })
 
-    getAllJobApplications = asyncHandler(async (req: Request, res: Response) => {
+    getJobApplications = asyncHandler(async (req: Request, res: Response) => {
 
         const { error, value } = JobApplicationsQueryFilter.validate(req.query, { stripUnknown: true })
         if (error) {
-            console.log("qeuery error")
             throw new AppError(error.details[0]?.message || "Invalid query parameters", RESPONSE_CODE.BAD_REQUEST)
         }
-        const userId = req.user?.userId
-        if (!userId) {
-            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
+        const jobId = req.params.id as string
+        if (!jobId) {
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        if (!isObjectId(jobId)) {
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
 
-        const result = await this._jobApplicationService.getAllJobApplications(userId,value)
+        const result = await this._jobApplicationService.getJobApplications(jobId, value)
         RespsonseHelper.successWithPagination(res, result)
     })
 }

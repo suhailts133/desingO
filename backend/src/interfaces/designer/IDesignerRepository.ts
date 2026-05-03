@@ -33,6 +33,6 @@ export interface IJobApplicationRepository {
     deleteJobApplication(id: string): Promise<boolean>
     changeStatusForPendingUser(id: string, jobId: string): Promise<void>
     approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRejectionRequestDTO): Promise<JobApplicationApprovalOrRejectionResponseDTO | null>
-    getMyJobApplications(userId: string, filters?: JobApplicationFilter): Promise<{ data: MyJobApplicationsDTO[], pagination: Pagination }>
-    getAllJobApplications(userId: string, filters?: JobApplicationFilter): Promise<{ data: AllJobApplicationsDTO[], pagination: Pagination }>
+    getMyJobApplications(jobId: string, filters?: JobApplicationFilter): Promise<{ data: MyJobApplicationsDTO[], pagination: Pagination }>
+    getJobApplications(userId: string, filters?: JobApplicationFilter): Promise<{ data: AllJobApplicationsDTO[], pagination: Pagination }>
 }

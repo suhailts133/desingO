@@ -1,5 +1,5 @@
 import { useState } from "react"
-import type { IApiResponse } from "../../../../api/responseType"
+// import type { IApiResponse } from "../../../../api/responseType"
 import { useDesignerProfileService } from "../designerProfileService"
 import type { DesignerUpdateResponseDTO } from "../designerProfileInterface"
 
@@ -12,7 +12,7 @@ export const useUpdateDesignerProfileData = () => {
         setDataError(null)
         setDataSuccess(null)
         setNewData(null)
-        const result: IApiResponse<DesignerUpdateResponseDTO> = await updateProfileData(body);
+        const result = await updateProfileData(body);
         if (result.success) {
             setDataSuccess(result.message as string);
             setNewData(result.data as DesignerUpdateResponseDTO)

@@ -8,7 +8,7 @@ export const jobsApi = baseApi.injectEndpoints({
     
         getAllJobApplications:builder.query<IApiResponseWithPagination<AllJobApplicationsDTO[]>, JobApplicationQueryParms>({
             query:(args) => ({
-                url:API_ROUTES.JOB_APPLICATION.ALL_APPLICATIONS,
+                url:`${API_ROUTES.JOB_APPLICATION.JOB_APPLICATIONS}/${args.id}`,
                 method:"GET",
                 params:{
                     page:args.page,

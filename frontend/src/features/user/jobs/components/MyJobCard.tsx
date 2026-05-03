@@ -1,4 +1,4 @@
-import { Eye, Trash, Pencil, MapPin, Clock, Wallet, BedDouble } from "lucide-react"
+import { Eye, Trash, Pencil, MapPin, Clock, Wallet, BedDouble, ScrollText } from "lucide-react"
 import type { JobsResponseDTO, JobStatus } from "../jobInterface"
 import { useNavigate } from "react-router-dom"
 
@@ -26,6 +26,9 @@ export default function MyJobCard({ jobRequest, onDeleteClick }: Props) {
     const updateJobRequestPage = (id: string) => {
         navigate(`/customer/jobs/edit/${id}`)
     }
+    const jobApplications = (id: string) => {
+        navigate(`/customer/job-applications/${id}`)
+    }
     return (
         <div className="group bg-off-white w-full rounded-xl border border-blush-light/40 overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
 
@@ -42,11 +45,22 @@ export default function MyJobCard({ jobRequest, onDeleteClick }: Props) {
             <div className="px-5 pt-4 pb-5">
 
                 {/* Title */}
-                <a href="#">
-                    <h5 className="font-Jost-Semibold mt-1 mb-1 text-lg font-semibold text-soft-black leading-snug hover:text-blush-deep transition-colors duration-200">
+                <div className="flex items-start justify-between gap-3 mt-1 mb-1">
+                    <h5 className="font-Jost-Semibold text-lg font-semibold text-soft-black leading-snug hover:text-blush-deep transition-colors duration-200 cursor-pointer"
+                        onClick={() => getJobDetail(jobRequest.id)}
+                    >
                         {jobRequest.projectTitle}
                     </h5>
-                </a>
+
+                    <button
+                        onClick={() => jobApplications(jobRequest.id)}
+                        title="Job Applications"
+                        className="shrink-0 inline-flex items-center gap-1.5 bg-soft-black text-off-white hover:bg-blush-deep px-3.5 py-1.5 rounded-full text-[11px] font-semibold tracking-wide transition-all duration-200 shadow-sm hover:shadow-md"
+                    >
+                        <ScrollText className="w-3.5 h-3.5" />
+                        <span>Job Applications</span>
+                    </button>
+                </div>
 
                 {/* Location */}
                 <div className="flex items-center gap-1 mb-3">
@@ -89,6 +103,7 @@ export default function MyJobCard({ jobRequest, onDeleteClick }: Props) {
                         <Eye className="w-3.5 h-3.5" />
                         <span>View</span>
                     </button>
+
                     <button
                         onClick={() => updateJobRequestPage(jobRequest.id)}
                         title="Edit"

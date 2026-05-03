@@ -7,7 +7,6 @@ import CustomerUpdateForm from "../components/CustomerUpdateForm"
 import { useChangeProfileImage } from "../../../designer/profile/hooks/useChangeProfileImage"
 import { useUpdateUserProfile } from "../hooks/useUpdateUserProfile"
 import type { UserProfileUpdateDTO } from "../customerProfileInterfaces"
-// import type { DesignerUpdateResponseDTO } from "../designerProfileInterface"
 
 export default function CustomerProfilePage() {
     const [changeImage, setChangeImage] = useState<boolean>(false)
@@ -25,17 +24,15 @@ export default function CustomerProfilePage() {
     }
 
     const handleProfileDataUpdation = async (data: UserProfileUpdateDTO) => {
-
-        console.log(data)
         await handleUpdateData(data)
     }
-
+    console.log(profile)
     return (
         <div className="flex flex-col items-center w-full max-w-xl gap-8 py-10">
             <ProfileImage
                 newProfileImage={newImage ?? undefined}
                 isGoogle={profile.isGoogle}
-                profileImage={profile.profileImage}
+                profileImage={profile.profileImage?.path}
                 profile_image_url={profile.profile_image_url}
                 onChangeImage={() => setChangeImage(true)}
             />

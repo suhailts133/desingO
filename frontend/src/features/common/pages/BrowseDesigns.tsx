@@ -6,10 +6,7 @@ import { useGetAllDesignsCommonQuery } from "../../designer/designs/designEndpoi
 import { SORT_OPTIONS } from "../baseData";
 import Pagination from "../../../shared/common/Pagination";
 import DesignFilter from "../components/filters/DesignFilter";
-
-
-
-
+import DesignCardSkeleton from "../skeltons/DesignCardSkeleton";
 
 export default function BrowseDesigns() {
     const [filtersVisible, setFiltersVisible] = useState(true);
@@ -25,7 +22,6 @@ export default function BrowseDesigns() {
     });
 
     const watchedFilters = watch();
-    console.log("yello")
     const { data, isLoading, error } = useGetAllDesignsCommonQuery({
         ...watchedFilters,
         page
@@ -40,8 +36,7 @@ export default function BrowseDesigns() {
         setPage(1);
     };
 
-    if (isLoading) return <div className="p-10 text-center animate-pulse text-gray-400">Loading Designs...</div>;
-    if (error || !data?.data) return <div className="p-10 text-center text-red-500">Error loading designs.</div>;
+    if (error) return <div className="p-10 text-center text-red-500">Error loading designs.</div>;
 
     return (
         <div className="min-h-screen bg-gray-50/60 font-Jost">
@@ -54,17 +49,22 @@ export default function BrowseDesigns() {
 
             <div className="max-w-7xl mx-auto px-6 py-8">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {data.data.map(item => (
-                        <DesignCard design={item} key={item.id} />
-                    ))}
+                    {isLoading
+                        ? Array.from({ length: 8 }).map((_, i) => (
+                            <DesignCardSkeleton key={i}/>
+                        ))
+                        : data?.data?.map(item => (
+                            <DesignCard design={item} key={item.id} />
+                        ))
+                    }
                 </div>
             </div>
 
             <Pagination
                 page={page}
-                totalItem={data.total ?? 0}
+                totalItem={data?.total ?? 0}
                 whichItem="designs"
-                totalPages={data.totalPages ?? 1}
+                totalPages={data?.totalPages ?? 1}
                 onDecrease={() => setPage(p => p - 1)}
                 onIncrease={() => setPage(p => p + 1)}
             />

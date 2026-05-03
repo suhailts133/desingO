@@ -7,6 +7,7 @@ import type { Pagination } from "../../DTO/admin/adminDTO.js";
 import type { EditJobRepoData, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO.js";
 import type { IUser } from "../../interfaces/auth/IUser.js";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
+import { JOB_REQUEST_FILTERS } from "../../shared/enums/filterEnums.js";
 
 export class JobRequestRepository extends BaseRepository<IJobRequest> implements IJobRepository {
     constructor() {
@@ -40,7 +41,7 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
         const result = await this._model.find({ userId })
             .skip((pageNo - 1) * limit)
             .limit(limit)
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: 1 })
             .exec()
         const total = await this._model.countDocuments({ userId });
         const output: JobsResponseDTO[] = result.map(data => {
@@ -115,30 +116,36 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
 
         }
         query.status = "Pending"
-        console.log(query)
-
-        let sortOrder: { [key: string]: SortOrder } = { createdAt: -1 };
+        
+        let sortOrder: { [key: string]: SortOrder } = {}
         if (JobFilter?.sortBy) {
-            if (JobFilter.sortBy === "price_asc") {
-                sortOrder = { budget: -1 }
+            if (JobFilter.sortBy === JOB_REQUEST_FILTERS.PRICE_INCREASING) {
+                sortOrder.minBudget = 1
             }
-            if (JobFilter.sortBy === "price_desc") {
-                sortOrder = { budget: 1 }
+            if (JobFilter.sortBy === JOB_REQUEST_FILTERS.LATEST) {
+                sortOrder.createdAt = -1
             }
-            if (JobFilter.sortBy === "az") {
-                sortOrder = { projectTitle: 1 }
+            if (JobFilter.sortBy === JOB_REQUEST_FILTERS.OLDEST) {
+                sortOrder.createdAt = 1
             }
-            if (JobFilter.sortBy === "za") {
-                sortOrder = { projectTitle: -1 }
+            if (JobFilter.sortBy === JOB_REQUEST_FILTERS.PRICE_DECREASING) {
+                sortOrder.minBudget = -1
+            }
+            if (JobFilter.sortBy === JOB_REQUEST_FILTERS.AZ) {
+                sortOrder.projectTitle = 1 
+            }
+            if (JobFilter.sortBy === JOB_REQUEST_FILTERS.ZA) {
+                sortOrder.projectTitle = -1 
             }
         }
+      
         const result = await this._model.find(query)
             .populate<{ userId: IUser }>("userId")
-            .sort(sortOrder)
             .skip((page - 1) * limit)
             .limit(limit)
+            .sort(sortOrder)
             .exec()
-
+        console.log(result)
         const total = await this._model.countDocuments(query)
         const pagination: Pagination = {
             total,
@@ -162,8 +169,6 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
                 rooms: data.rooms.length
             }
         })
-        console.log(output)
-
         return { data: output, pagination }
     }
 

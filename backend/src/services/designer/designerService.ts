@@ -10,8 +10,10 @@ import { sendDesignerVerificationEmail } from "../../shared/emails/designerVerif
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
 import { CLOUDINARY_FOLDER_NAME, DESIGNER_STATUS, USER_ROLES } from "../../shared/enums/commonEnums.js";
 import type { DesignerFilter, DesignerCardDTO } from "../../DTO/designer/designerDTO.js";
-import { MESSAGES } from "../../shared/messages/messages.js";
+
 import { AppError } from "../../shared/errors/appError.js";
+import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages.js";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
 
 export class DesignerService implements IDesignerService {
     constructor(
@@ -24,16 +26,16 @@ export class DesignerService implements IDesignerService {
     async designerVerification(userId: string, email: string, data: DesignerVerificationBodyDTO, files: DesignerVerificationFiles): Promise<IApiResponse> {
         const user = await this._userRepository.findUser(email)
         if (!user) {
-            throw new AppError(MESSAGES.USER.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+            throw new AppError(AUTH_MESSAGES.USER.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
         if (user.role === USER_ROLES.DESIGNER) {
-            throw new AppError(MESSAGES.DESIGNER_VERIFICATION.ALREADY_A_DESIGNER, RESPONSE_CODE.CONFILT)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNER_VERIFICATION.ALREADY_A_DESIGNER, RESPONSE_CODE.CONFILT)
         }
         const alreadyAppliedForDesigner = await this._designerRepository.getDesigner(userId);
 
 
         if (alreadyAppliedForDesigner && alreadyAppliedForDesigner.status === DESIGNER_STATUS.PENDING) {
-            throw new AppError(MESSAGES.DESIGNER_VERIFICATION.ALREADY_APPLIED, RESPONSE_CODE.CONFILT)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNER_VERIFICATION.ALREADY_APPLIED, RESPONSE_CODE.CONFILT)
         }
 
         const governmentIdImage: ImageUploadResult = await this._imageUploder.upload(files.governmentIdImageFile, CLOUDINARY_FOLDER_NAME.GOVT);
@@ -60,15 +62,15 @@ export class DesignerService implements IDesignerService {
         await this._designerRepository.createDesignerRequest(designerData)
         const emailSent = await sendDesignerVerificationEmail(user.email, user.full_name)
         if (!emailSent) {
-            return { message: MESSAGES.EMAIL.NOT_SEND }
+            return { message: AUTH_MESSAGES.EMAIL.NOT_SEND }
         }
-        return { message: MESSAGES.DESIGNER_VERIFICATION.SUCCESS }
+        return { message: DESIGNER_MESSAGES.DESIGNER_VERIFICATION.SUCCESS }
 
     }
 
     async getAllDesigners(designerFilter?: DesignerFilter): Promise<IApiResponseWithPagination<DesignerCardDTO[]>> {
         const { data, pagination } = await this._designerRepository.getAllDesigners(designerFilter)
-        return { success: true, statuscode: RESPONSE_CODE.OK, message: MESSAGES.DESIGNER.GET_ALL_DESIGNERS, data, total: pagination.total, totalPages: pagination.totalPages }
+        return { success: true, statuscode: RESPONSE_CODE.OK, message: DESIGNER_MESSAGES.DESIGNER.GET_ALL_DESIGNERS, data, total: pagination.total, totalPages: pagination.totalPages }
     }
 
     async getDesigner(designerId: string): Promise<IApiResponse<DesignerCardDTO>> {
@@ -78,7 +80,7 @@ export class DesignerService implements IDesignerService {
         ])
 
         if (!designerData || !designerDetatils) {
-            throw new AppError(MESSAGES.DESIGNER.DESIGNER_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNER.DESIGNER_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
         const data: DesignerCardDTO = {
             designerId: designerData.id,
@@ -90,7 +92,7 @@ export class DesignerService implements IDesignerService {
             state: designerDetatils.state,
             district: designerDetatils.district,
         }
-        return { message: MESSAGES.DESIGNER.DESIGNER_FOUND, data }
+        return { message: DESIGNER_MESSAGES.DESIGNER.DESIGNER_FOUND, data }
     }
 
 }

@@ -6,8 +6,8 @@ import type { AddDesignRequestDTO, createDesignDTO, DesignDetailResponseDTO, Des
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
 import { CLOUDINARY_FOLDER_NAME } from "../../shared/enums/commonEnums.js";
 import { ensureError } from "../../shared/errors/ensureError.js";
-import { MESSAGES } from "../../shared/messages/messages.js";
 import { AppError } from "../../shared/errors/appError.js";
+import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages.js";
 
 export class DesignService implements IDesignService {
 
@@ -16,7 +16,7 @@ export class DesignService implements IDesignService {
     async editDesign(designId: string, data: EditDesign, files?: EditDesignFiles): Promise<IApiResponse> {
         const design = await this._designRepository.getDesign(designId);
         if (!design) {
-            throw new AppError(MESSAGES.DESIGNS.DESIGN_NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.DESIGN_NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
         }
 
         let coverImage: ImageUploadResult | undefined = undefined;
@@ -61,10 +61,10 @@ export class DesignService implements IDesignService {
 
         const result = await this._designRepository.editDesign(designId, designRepoData, coverImage, finalGallery);
         if (!result) {
-            throw new AppError(MESSAGES.DESIGNS.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
         }
 
-        return { message: MESSAGES.DESIGNS.UPDATION_SUCCESS };
+        return { message: DESIGNER_MESSAGES.DESIGNS.UPDATION_SUCCESS };
     }
 
     async getDesignGallary(designerId: string, page?: string): Promise<IApiResponseWithPagination<DesignGallaryDTO[]>> {
@@ -75,7 +75,7 @@ export class DesignService implements IDesignService {
                 designId: d.id
             }
         })
-        return { message: MESSAGES.DESIGNS.GET_ALL_DESIGNS, data: output, total: pagination.total, totalPages: pagination.totalPages }
+        return { message: DESIGNER_MESSAGES.DESIGNS.GET_ALL_DESIGNS, data: output, total: pagination.total, totalPages: pagination.totalPages }
     }
 
     async addDesign(userId: string, data: AddDesignRequestDTO, files: DesignFiles): Promise<IApiResponse> {
@@ -91,71 +91,55 @@ export class DesignService implements IDesignService {
         }
         const result = await this._designRepository.createDesign(designData)
         if (!result) {
-            throw new AppError(MESSAGES.DESIGNS.DESIGN_CREATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.DESIGN_CREATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
-        return { message: MESSAGES.DESIGNS.DESIGN_CREATE_SUCCESS }
+        return { message: DESIGNER_MESSAGES.DESIGNS.DESIGN_CREATE_SUCCESS }
     }
 
     async getMyDesigns(userId: string, page?: string): Promise<IApiResponseWithPagination<getAllDesignsResponseDTO[]>> {
-        try {
             const { data, pagination } = await this._designRepository.getAllDesigns(userId, page)
-            // console.log(result, "cls")
             return {
-                success: true,
-                message: "Designs fetching sucessfull",
-                statuscode: RESPONSE_CODE.OK,
+              
+                message: DESIGNER_MESSAGES.DESIGNS.GET_ALL_DESIGNS,
+  
                 data: data,
                 total: pagination.total,
                 totalPages: pagination.totalPages
 
             }
-        } catch (error) {
-            const err = ensureError(error)
-            console.log(err)
-            return { statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR, message: "Something went wrong while fetching designs. Please try again or contact support", success: false, total: 0, totalPages: 0 }
-        }
+       
     }
 
     async getDesignDetail(designId: string): Promise<IApiResponse<DesignDetailResponseDTO>> {
-        try {
+
             const result = await this._designRepository.getDesignDetail(designId);
             if (!result) {
-                return { statuscode: RESPONSE_CODE.NOT_FOUND, message: "Design not found", success: false }
+                throw new AppError(DESIGNER_MESSAGES.DESIGNS.DESIGN_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+               
             }
-            return { statuscode: RESPONSE_CODE.OK, message: "Design detail fetched successfully", success: true, data: result }
-        } catch (error) {
-            const err = ensureError(error)
-            console.log(err)
-            return { statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR, message: "Something went wrong while fetching design detail. Please try again or contact support", success: false }
-        }
+            return { message: DESIGNER_MESSAGES.DESIGNS.DESIGN_DETAIL_SUCCESS,  data: result }
+        
     }
 
 
     async getAllDesigns(designFilter?: DesignFilter): Promise<IApiResponseWithPagination<GetAllDesignCommonResponseDTO[]>> {
-        try {
             const result = await this._designRepository.getAllDesignCommon(designFilter)
 
             return {
-                success: true,
-                message: "Designs fetching sucessfull",
-                statuscode: RESPONSE_CODE.OK,
+                message: DESIGNER_MESSAGES.DESIGNS.GET_ALL_DESIGNS,
                 data: result.data,
                 total: result.pagination.total,
                 totalPages: result.pagination.totalPages
 
             }
-        } catch (error) {
-            const err = ensureError(error)
-            console.log(err)
-            return { statuscode: RESPONSE_CODE.INTERNAL_SERVER_ERROR, message: "Something went wrong while fetching designs. Please try again or contact support", success: false, total: 0, totalPages: 0 }
-        }
+      
     }
 
 
     async deleteADesign(id: string): Promise<IApiResponse> {
         const design = await this._designRepository.getDesign(id);
         if (!design) {
-            throw new AppError(MESSAGES.DESIGNS.DESIGN_NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.DESIGN_NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
         await Promise.all([
             this._imageUploder.delete(design.coverImage.filename),
@@ -164,8 +148,8 @@ export class DesignService implements IDesignService {
 
         const result = await this._designRepository.deleteADesign(id);
         if (!result) {
-            throw new AppError(MESSAGES.DESIGNS.DELETION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.DELETION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
-        return { message: MESSAGES.DESIGNS.DELETION_SUCCESS };
+        return { message: DESIGNER_MESSAGES.DESIGNS.DELETION_SUCCESS };
     }
 }

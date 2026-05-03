@@ -9,7 +9,8 @@ import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError.js"
 import { DesignerQueryFilter } from "../../validators/designers/designerValidations.js"
 import { MESSAGES } from "../../shared/messages/messages.js"
-
+import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages.js"
+import { isObjectId } from "../../shared/helpers/extraFunctions.js"
 export class DesignerController {
 
     constructor(private _designerService: IDesignerService) { }
@@ -27,12 +28,14 @@ export class DesignerController {
 
 
     getADesigner = asyncHandler(async (req: Request, res: Response) => {
-        const { id } = req.params
-        if (!id) {
-            throw new AppError(MESSAGES.DESIGNER.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        const designerId = req.params.id as string
+        if (!designerId) {
+            throw new AppError(DESIGNER_MESSAGES.DESIGNER.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
-        console.log(id)
-        const result = await this._designerService.getDesigner(id as string);
+        if (!isObjectId(designerId)) {
+            throw new AppError(DESIGNER_MESSAGES.DESIGNER.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        const result = await this._designerService.getDesigner(designerId);
         RespsonseHelper.success(res, result)
     })
 
@@ -57,13 +60,13 @@ export class DesignerController {
         }
 
         if (!files.governmentIdImage?.[0]) {
-            throw new AppError(MESSAGES.DESIGNER_VERIFICATION.GOVT_IMAGE_NOT_FOUND, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNER_VERIFICATION.GOVT_IMAGE_NOT_FOUND, RESPONSE_CODE.BAD_REQUEST)
         }
 
         const governmentIdImageFile = files.governmentIdImage[0];
 
         if (!files.educationImages || files.educationImages.length !== validatedData.education.length) {
-            throw new AppError(MESSAGES.DESIGNER_VERIFICATION.CERTIFICATE_NOT_FOUND, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(DESIGNER_MESSAGES.DESIGNER_VERIFICATION.CERTIFICATE_NOT_FOUND, RESPONSE_CODE.BAD_REQUEST)
         }
 
         const educationImagesFiles = files.educationImages
@@ -71,7 +74,7 @@ export class DesignerController {
 
         if (validatedData.workExperience && validatedData.workExperience.length > 0) {
             if (!files.workExperienceImages || files.workExperienceImages.length !== validatedData.workExperience.length) {
-                throw new AppError(MESSAGES.DESIGNER_VERIFICATION.PROOF_NOT_fOUND, RESPONSE_CODE.BAD_REQUEST)
+                throw new AppError(DESIGNER_MESSAGES.DESIGNER_VERIFICATION.PROOF_NOT_fOUND, RESPONSE_CODE.BAD_REQUEST)
             }
         }
 

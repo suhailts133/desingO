@@ -42,12 +42,12 @@ export default function DesignDetail() {
 
 
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                        <div className="relative w-full aspect-video overflow-hidden">
+                        <div className="relative w-full overflow-hidden">
                             <Zoom>
                                 <img
                                     src={activeImage || design.coverImage.path}
                                     alt={design.designName}
-                                    className="w-full h-full object-cover transition-all duration-500"
+                                    className="w-full h-auto object-contain transition-all duration-500"
                                 />
                             </Zoom>
 

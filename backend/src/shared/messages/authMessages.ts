@@ -23,5 +23,12 @@ export const AUTH_MESSAGES = {
         NOT_ADMIN: "You are not an admin.",
         LOGIN_SUCCESS: "Login successful.",
         GOOGLE_DATA_ACCESS_FAIL: "Failed to retrieve data from Google."
-    }
+    },
+    USER: {
+        NOT_FOUND: "User does not exist. Please sign up."
+    },
+ EMAIL: {
+        NOT_SEND: "Email failed to send, but the application was saved successfully."
+    },
+
 } as const

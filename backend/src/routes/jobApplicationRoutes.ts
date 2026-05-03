@@ -14,9 +14,9 @@ const jobApplicationservice = new JobApplicationService(jobApplicationRepo, jobR
 const jobApplicationController = new JobApplicationController(jobApplicationservice);
 
 
-router.get("/", authenticate, jobApplicationController.getAllJobApplications)
 router.post("/apply", designerAuthentication, jobApplicationController.applyForJob)
 router.get("/my", designerAuthentication, jobApplicationController.getMyJobApplications)
 router.patch("/approve-reject/:id", authenticate, jobApplicationController.approveOrRejectJobApplication)
+router.get("/:id", authenticate, jobApplicationController.getJobApplications)
 router.delete("/:id", designerAuthentication, jobApplicationController.deleteJobApplication)
 export default router

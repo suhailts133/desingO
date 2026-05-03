@@ -1,6 +1,7 @@
+import type { ImageUploadResult } from "../../designer/profile/designerProfileInterface";
 
 export interface UserProfileResponseDTO extends UserProfileDTO {
-    profileImage?: string
+    profileImage?: ImageUploadResult
     profile_image_url?: string;
 }
 
