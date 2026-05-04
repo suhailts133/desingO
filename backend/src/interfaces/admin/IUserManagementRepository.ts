@@ -1,9 +1,10 @@
-import type { AdminUsersResponseDTO, UserFilterDTO,Pagination, AdminUserToggleStatusDTO } from "../../DTO/admin/adminDTO.js";
+import type {UserFilterDTO,Pagination } from "../../DTO/admin/adminDTO.js";
+import type { IUser } from "../auth/IUser.js";
 
 
 export interface IUserManagementRepository{
-    getAllUsers(filter?:UserFilterDTO):Promise<{data: AdminUsersResponseDTO[], pagination:Pagination}>
-    getUser(id:string):Promise<AdminUsersResponseDTO | null>
-    toggleUser(id:string, is_blocked:boolean):Promise<AdminUserToggleStatusDTO | null>
+    getAllUsers(filter?:UserFilterDTO):Promise<{data: IUser[], pagination:Pagination}>
+    getUser(id:string):Promise<IUser | null>
+    toggleUser(id:string, is_blocked:boolean):Promise<IUser | null>
 
 }

@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import type { ImageUploadResult } from "../base/IImageUpload.js";
+import type { IUser } from "../auth/IUser.js";
+import type { IJobRequest } from "../customer/ICustomer.js";
 
 
 export interface DesignerVerificationFiles {
@@ -44,6 +46,13 @@ export interface IDesigner {
     bio: string
 }
 
+export type IDesignerPopulated = Omit<IDesigner, 'userId'> & {
+  userId: IUser;
+}
+export type IDesignPopulated = Omit<IDesign, 'userId'> & {
+  userId: IUser;
+}
+
 export interface IDesign {
     id: string;
     userId: mongoose.Types.ObjectId;
@@ -62,6 +71,8 @@ export interface IDesign {
 
 export type JobApplicationStatus = "Pending" | "Completed" | "Rejected" | "Ongoing"
 
+export type JobApplicationApprovalOrRejectionStatus = "Ongoing" | "Rejected"
+
 export interface IJobApplication {
     id:string
     customerId: mongoose.Types.ObjectId
@@ -72,5 +83,11 @@ export interface IJobApplication {
     createdAt: Date
 }
 
-
+export type IJobApplicationPopulated = Omit<IJobApplication, 'jobId'> & {
+  jobId: IJobRequest;
+}
+export type IJobApplicationPopulatedWithJobAndUser = Omit<IJobApplication, 'jobId' | "designerId"> & {
+  jobId: IJobRequest;
+  designerId:IUser
+}
 

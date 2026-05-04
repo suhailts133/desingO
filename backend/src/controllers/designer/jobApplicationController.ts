@@ -2,13 +2,13 @@ import { type Request, type Response } from "express";
 import type { IJobApplicationService } from "../../interfaces/designer/IDesignerService.js";
 import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError.js";
-import { MESSAGES } from "../../shared/messages/messages.js";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
 import { jobApplicationApprovalOrRejectionValidation, JobApplicationsQueryFilter, jobApplicationValidation } from "../../validators/designers/jobApplicationValidations.js";
 import type { IJobApplicationRequestDTO, JobApplicationApprovalOrRejectionRequestDTO } from "../../DTO/designer/jobsDTO.js";
 import { RespsonseHelper } from "../../shared/helpers/responseHelper.js";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
 import { isObjectId } from "../../shared/helpers/extraFunctions.js";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
 
 export class JobApplicationController {
     constructor(private _jobApplicationService: IJobApplicationService) { }
@@ -22,7 +22,7 @@ export class JobApplicationController {
 
         const userId = req.user?.userId
         if (!userId) {
-            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
+            throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
         const data: IJobApplicationRequestDTO = {
             userId,
@@ -33,11 +33,14 @@ export class JobApplicationController {
     })
 
     deleteJobApplication = asyncHandler(async (req: Request, res: Response) => {
-        const jobApplicationId = req.params.id;
+        const jobApplicationId = req.params.id as string;
         if (!jobApplicationId) {
-            throw new AppError(MESSAGES.JOB_APPLICATION.CHECK_JOB_APPLICATION_ID, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(JOB_MESSAGES.JOB_APPLICATION.CHECK_JOB_APPLICATION_ID, RESPONSE_CODE.BAD_REQUEST)
         }
-        const result = await this._jobApplicationService.deleteJobApplication(jobApplicationId as string);
+        if (!isObjectId(jobApplicationId)) {
+            throw new AppError(JOB_MESSAGES.JOB_APPLICATION.CHECK_JOB_APPLICATION_ID, RESPONSE_CODE.BAD_REQUEST)
+        }
+        const result = await this._jobApplicationService.deleteJobApplication(jobApplicationId);
         RespsonseHelper.success(res, result)
     })
 
@@ -50,7 +53,7 @@ export class JobApplicationController {
 
         const jobApplicationId = req.params.id
         if (!jobApplicationId) {
-            throw new AppError(MESSAGES.JOB_APPLICATION.CHECK_JOB_APPLICATION_ID, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(JOB_MESSAGES.JOB_APPLICATION.CHECK_JOB_APPLICATION_ID, RESPONSE_CODE.BAD_REQUEST)
         }
 
         const result = await this._jobApplicationService.approveOrRejectJobApplication(jobApplicationId as string, value as JobApplicationApprovalOrRejectionRequestDTO)
@@ -66,7 +69,7 @@ export class JobApplicationController {
 
         const userId = req.user?.userId
         if (!userId) {
-            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
+            throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
 
         const result = await this._jobApplicationService.getMyJobApplications(userId, value)

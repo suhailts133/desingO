@@ -23,8 +23,14 @@ export enum CLOUDINARY_FOLDER_NAME {
 }
 
 
-export enum JOB_REQUEST_STATUS{
-    PENDING="Pending",
-    ONGOING="Ongoing",
-    CLOSED="Closed",
+export enum JOB_REQUEST_STATUS {
+    PENDING = "Pending",
+    ONGOING = "Ongoing",
+    CLOSED = "Closed",
+}
+export enum JOB_APPLICATION_STATUS {
+    PENDING = "Pending",
+    ONGOING = "Ongoing",
+    COMPLETED = "Completed",
+    REJECTED = "Rejected"
 }

@@ -6,10 +6,10 @@ import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
 import type { ICreateJobRequest } from "../../interfaces/customer/ICustomer.js";
 import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError.js";
-import { MESSAGES } from "../../shared/messages/messages.js";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
 import type { EditJobRequest } from "../../DTO/user/jobsDTO.js";
 import { isObjectId } from "../../shared/helpers/extraFunctions.js";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
 export class JobController {
     constructor(private _jobRequestService: IJobRequestService) { }
 
@@ -21,7 +21,7 @@ export class JobController {
         const validatedData = value as ICreateJobRequest
         const user = req.user?.userId;
         if (!user) {
-            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
+            throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
         const files = req.files as {
             refrenceImages?: Express.Multer.File[]
@@ -59,10 +59,10 @@ export class JobController {
     getMyJobs = asyncHandler(async (req: Request, res: Response) => {
         const userId = req.user?.userId
         if (!userId) {
-            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
+            throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
         const { page } = req.query;
-        const result = await this._jobRequestService.getAllJobs(userId as string, page as string)
+        const result = await this._jobRequestService.getMyJobs(userId as string, page as string)
         RespsonseHelper.successWithPagination(res, result)
     })
 
@@ -75,17 +75,16 @@ export class JobController {
         if (!isObjectId(jobRequestId)) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
-        const result = await this._jobRequestService.getAJobRequest(jobRequestId)
+        const result = await this._jobRequestService.getJobRequestDetail(jobRequestId)
         RespsonseHelper.success(res, result)
     })
 
     getAllJobs = asyncHandler(async (req: Request, res: Response) => {
-        const result = await this._jobRequestService.getJobRequestcommon(req.query)
+        const result = await this._jobRequestService.getAllJobs(req.query)
         RespsonseHelper.successWithPagination(res, result)
     })
 
     deleteAJob = asyncHandler(async (req: Request, res: Response) => {
-
        const jobRequestId = req.params.id as string;
         if (jobRequestId) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)

@@ -8,9 +8,9 @@ import type { IDesignerService } from "../../interfaces/designer/IDesignerServic
 import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError.js"
 import { DesignerQueryFilter } from "../../validators/designers/designerValidations.js"
-import { MESSAGES } from "../../shared/messages/messages.js"
 import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages.js"
 import { isObjectId } from "../../shared/helpers/extraFunctions.js"
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js"
 export class DesignerController {
 
     constructor(private _designerService: IDesignerService) { }
@@ -51,7 +51,7 @@ export class DesignerController {
         const userId = req.user?.userId as string;
 
         if (!email || !userId) {
-            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.BAD_REQUEST)
         }
         const files = req.files as {
             governmentIdImage?: Express.Multer.File[]

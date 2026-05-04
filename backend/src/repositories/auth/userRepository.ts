@@ -1,4 +1,4 @@
-import type { CreateUserDTO, UserRepsonseDTO } from "../../DTO/auth/authDTO.js";
+import type { CreateUserDTO } from "../../DTO/auth/authDTO.js";
 import type { IUser } from "../../interfaces/auth/IUser.js";
 import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
 import { UserModel } from "../../models/user/userModel.js";
@@ -41,14 +41,8 @@ export class UserRepository extends BaseRepository<IUser> implements IUserReposi
     }
 
 
-    async createNewUser(data: CreateUserDTO): Promise<UserRepsonseDTO> {
-        const result = await this.create(data);
-        return {
-            id: result._id.toString(),
-            email: result.email,
-            full_name: result.full_name,
-            role: result.role
-        }
+    async createNewUser(data: CreateUserDTO): Promise<IUser> {
+        return await this.create(data);
     }
 
 

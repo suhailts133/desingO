@@ -14,6 +14,7 @@ import type { DesignerFilter, DesignerCardDTO } from "../../DTO/designer/designe
 import { AppError } from "../../shared/errors/appError.js";
 import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages.js";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
+import { DesignerMapper } from "../../dtoMappers/designer/designerMapper.js";
 
 export class DesignerService implements IDesignerService {
     constructor(
@@ -70,7 +71,8 @@ export class DesignerService implements IDesignerService {
 
     async getAllDesigners(designerFilter?: DesignerFilter): Promise<IApiResponseWithPagination<DesignerCardDTO[]>> {
         const { data, pagination } = await this._designerRepository.getAllDesigners(designerFilter)
-        return { success: true, statuscode: RESPONSE_CODE.OK, message: DESIGNER_MESSAGES.DESIGNER.GET_ALL_DESIGNERS, data, total: pagination.total, totalPages: pagination.totalPages }
+        const designerData = DesignerMapper.toDesignerCardDTOlist(data)
+        return { success: true, statuscode: RESPONSE_CODE.OK, message: DESIGNER_MESSAGES.DESIGNER.GET_ALL_DESIGNERS, data: designerData, total: pagination.total, totalPages: pagination.totalPages }
     }
 
     async getDesigner(designerId: string): Promise<IApiResponse<DesignerCardDTO>> {

@@ -10,7 +10,8 @@ import { AppError } from "../../shared/errors/appError.js"
 
 import { isObjectId } from "../../shared/helpers/extraFunctions.js"
 import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages.js"
-import { MESSAGES } from "../../shared/messages/messages.js"
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js"
+
 
 
 
@@ -37,7 +38,7 @@ export class DesignController {
         const validatedData = value as AddDesignRequestDTO
         const userId = req.user?.userId as string;
         if (!userId) {
-            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
+            throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
         const files = req.files as {
             coverImage?: Express.Multer.File[]
@@ -114,7 +115,7 @@ export class DesignController {
     getMyDesigns = asyncHandler(async (req: Request, res: Response) => {
         const userId = req.user?.userId
         if (!userId) {
-            throw new AppError(MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
+            throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
         const { page } = req.query;
         const result = await this._designService.getMyDesigns(userId as string, page as string)

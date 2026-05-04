@@ -1,12 +1,12 @@
 import mongoose, { type QueryFilter } from "mongoose";
 import type { DesignerVerificationDTO } from "../../DTO/designer/designerVerificationDTOs.js";
-import type { IDesigner } from "../../interfaces/designer/IDesigner.js";
+import type { IDesigner, IDesignerPopulated } from "../../interfaces/designer/IDesigner.js";
 import type { IDesignerRepository } from "../../interfaces/designer/IDesignerRepository.js";
 import { DesignerModel } from "../../models/designer/designerModel.js";
 import { BaseRepository } from "../baseRepository.js";
 import type { DesignerUpdateRequestDTO } from "../../DTO/profile/profileDTO.js";
 import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { DesignerCardDTO, DesignerFilter } from "../../DTO/designer/designerDTO.js";
+import type { DesignerFilter } from "../../DTO/designer/designerDTO.js";
 import { UserModel } from "../../models/user/userModel.js";
 import type { IUser } from "../../interfaces/auth/IUser.js";
 
@@ -25,12 +25,11 @@ export class DesignerRepository extends BaseRepository<IDesigner> implements IDe
 
 
     async getDesigner(userId: string): Promise<IDesigner | null> {
-        console.log(userId, "from repo")
         const result = await this.findOne({ userId });
         if (!result) {
             return null
         }
-        console.log(result, "d data")
+       
         return result
     }
 
@@ -41,7 +40,7 @@ export class DesignerRepository extends BaseRepository<IDesigner> implements IDe
         return result ?? null
     }
 
-    async getAllDesigners(designerFilter: DesignerFilter): Promise<{ data: DesignerCardDTO[], pagination: Pagination, }> {
+    async getAllDesigners(designerFilter: DesignerFilter): Promise<{ data: IDesignerPopulated[], pagination: Pagination, }> {
         const PageNo = designerFilter.page ? Number(designerFilter.page) : 1;
         const limit = 1;
         const skip = (PageNo - 1) * limit
@@ -68,19 +67,7 @@ export class DesignerRepository extends BaseRepository<IDesigner> implements IDe
             total,
             totalPages: Math.ceil(total / limit)
         }
-        const data: DesignerCardDTO[] = designers.map(d => {
-            return {
-                designerId: d.userId.id,
-                full_name: d.userId.full_name,
-                ...(d.userId.profileImage?.path && { profileImg: d.userId.profileImage.path }),
-                ...(d.userId.profile_image_url && { google_profil_img: d.userId.profile_image_url }),
-                bio: d.bio,
-                joinedAt: d.createdAt.toDateString(),
-                state:d.state,
-                district:d.district,
-            }
-        })
-        console.log(data, "from repo")
-        return { data, pagination }
+
+        return { data:designers, pagination }
     }
 }

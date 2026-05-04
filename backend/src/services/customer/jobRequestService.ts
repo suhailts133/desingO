@@ -8,6 +8,7 @@ import { AppError } from "../../shared/errors/appError.js";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
 import { CLOUDINARY_FOLDER_NAME } from "../../shared/enums/commonEnums.js";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
+import { JobRequestMapper } from "../../dtoMappers/user/jobRequestMapper.js";
 
 export class JobRequestService implements IJobRequestService {
     constructor(private _jobRequestRepo: IJobRepository, private _imageUploder: IImageUploaderService) { }
@@ -67,35 +68,38 @@ export class JobRequestService implements IJobRequestService {
     }
 
 
-    async getAllJobs(userId: string, page?: string): Promise<IApiResponseWithPagination<JobsResponseDTO[]>> {
+    async getMyJobs(userId: string, page?: string): Promise<IApiResponseWithPagination<JobsResponseDTO[]>> {
 
-        const result = await this._jobRequestRepo.getAllJobs(userId, page);
+        const result = await this._jobRequestRepo.getMyJobs(userId, page);
+        const jobsData = JobRequestMapper.toMyJobRequestsDTOlist(result.data)
         return {
             total: result.pagination.total,
             totalPages: result.pagination.totalPages,
-            data: result.data,
+            data: jobsData,
             message: JOB_MESSAGES.JOB_REQUEST.MY_JOB_REQUEST
         }
 
     }
 
 
-    async getAJobRequest(jobId: string): Promise<IApiResponse<JobDetailResponseDTO>> {
-        const result = await this._jobRequestRepo.getAJobRequest(jobId);
+    async getJobRequestDetail(jobId: string): Promise<IApiResponse<JobDetailResponseDTO>> {
+        const result = await this._jobRequestRepo.getJobRequest(jobId);
         if (!result) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NO_CONTENT)
         }
-        return { message: JOB_MESSAGES.JOB_REQUEST.JOB_REQUEST, data: result };
+        const jobData = JobRequestMapper.toJobRequestDTO(result)
+        return { message: JOB_MESSAGES.JOB_REQUEST.JOB_REQUEST, data: jobData };
 
     }
 
 
-    async getJobRequestcommon(JobFilter?: JobFilter): Promise<IApiResponseWithPagination<JobsCommonResponseDTO[]>> {
+    async getAllJobs(JobFilter?: JobFilter): Promise<IApiResponseWithPagination<JobsCommonResponseDTO[]>> {
 
-        const result = await this._jobRequestRepo.getAllJobsCommon(JobFilter)
+        const result = await this._jobRequestRepo.getAllJobs(JobFilter)
+        const jobsData = JobRequestMapper.toJobRequestsDTOlist(result.data)
         return {
             message: JOB_MESSAGES.JOB_REQUEST.ALL_JOB_REQUEST,
-            data: result.data,
+            data: jobsData,
             total: result.pagination.total,
             totalPages: result.pagination.totalPages
 

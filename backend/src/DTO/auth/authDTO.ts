@@ -7,7 +7,7 @@ export interface CreateUserDTO{
 export interface UserRepsonseDTO{
     id:string,
     email:string
-    full_name:string,
+    name:string,
     role:string
 }
 

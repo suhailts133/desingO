@@ -5,9 +5,9 @@ import type { IBid, ICreateJobRequest } from "./ICustomer.js";
 export interface IJobRequestService {
     addJobRequest(userId: string, data: ICreateJobRequest, refrenceImages?: Express.Multer.File[]): Promise<IApiResponse>
     editJobRequest(jobId: string, data: EditJobRequest, refrenceImages?: Express.Multer.File[]): Promise<IApiResponse>
-    getAllJobs(userId: string, page?: string): Promise<IApiResponseWithPagination<JobsResponseDTO[]>>
-    getAJobRequest(jobId: string): Promise<IApiResponse<JobDetailResponseDTO>>
-    getJobRequestcommon(JobFilter?: JobFilter): Promise<IApiResponseWithPagination<JobsCommonResponseDTO[]>>
+    getMyJobs(userId: string, page?: string): Promise<IApiResponseWithPagination<JobsResponseDTO[]>>
+    getJobRequestDetail(jobId: string): Promise<IApiResponse<JobDetailResponseDTO>>
+    getAllJobs(JobFilter?: JobFilter): Promise<IApiResponseWithPagination<JobsCommonResponseDTO[]>>
     deleteAJob(id: string): Promise<IApiResponse>
 }
 

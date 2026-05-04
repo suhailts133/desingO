@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO.js";
-import type { IJobApplication } from "../../interfaces/designer/IDesigner.js";
+import type { IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO } from "../../DTO/designer/jobsDTO.js";
+import type { IJobApplication, IJobApplicationPopulated, IJobApplicationPopulatedWithJobAndUser } from "../../interfaces/designer/IDesigner.js";
 import type { IJobApplicationRepository } from "../../interfaces/designer/IDesignerRepository.js";
 import { JobApplicationModel } from "../../models/designer/jobApplicationModel.js";
 import { BaseRepository } from "../baseRepository.js";
@@ -53,21 +53,16 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
         return this.delete(id)
     }
 
-    async approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRejectionRequestDTO): Promise<JobApplicationApprovalOrRejectionResponseDTO | null> {
+    async approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRejectionRequestDTO): Promise<IJobApplication | null> {
         const result = await this._model.findByIdAndUpdate(id, data, { returnDocument: "after" }).exec();
 
         if (!result) {
             return null
         }
-        const output: JobApplicationApprovalOrRejectionResponseDTO = {
-            status: result.status as "Ongoing" | "Rejected",
-            ...(result.rejectionReason && { rejectionReason: result.rejectionReason }),
-            jobId: result._id.toString()
-        }
-        return output
+        return result
     }
 
-    async getMyJobApplications(userId: string, filters?: JobApplicationFilter): Promise<{ data: MyJobApplicationsDTO[]; pagination: Pagination; }> {
+    async getMyJobApplications(userId: string, filters?: JobApplicationFilter): Promise<{ data: IJobApplicationPopulated[]; pagination: Pagination; }> {
         const page = filters?.page ? Number(filters.page) : 1;
         const limit = 9;
         const skip = (page - 1) * limit;
@@ -90,24 +85,11 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
             totalPages: Math.ceil(total / limit)
         }
 
-        const output: MyJobApplicationsDTO[] = result.map(data => {
-            return {
-                id: data.id,
-                status: data.status,
-                ...(data.rejectionReason && { rejectionReason: data.rejectionReason }),
-                jobId: data.jobId.id,
-                jobTitle: data.jobId.projectTitle,
-                propertyType: data.jobId.propertyType,
-                timeLine: data.jobId.timeline,
-                numberOfRooms: data.jobId.rooms.length,
-                description: data.jobId.description,
-                createdOn: data.createdAt.toDateString()
-            }
-        })
-        return { data: output, pagination }
+    
+        return { data: result, pagination }
     }
 
-    async getJobApplications(jobId: string, filters?: JobApplicationFilter): Promise<{ data: AllJobApplicationsDTO[]; pagination: Pagination; }> {
+    async getJobApplications(jobId: string, filters?: JobApplicationFilter): Promise<{ data: IJobApplicationPopulatedWithJobAndUser[]; pagination: Pagination; }> {
    
         const page = filters?.page ? Number(filters.page) : 1;
         const limit =1;
@@ -132,19 +114,7 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
             total,
             totalPages: Math.ceil(total / limit)
         }
-        const output: AllJobApplicationsDTO[] = result.map(data => ({
-            status: data.status,
-            jobId: data.jobId.id,
-            jobTitle: data.jobId.projectTitle,
-            designerId: data.designerId.id,
-            designerName: data.designerId.full_name,
-            ...(data.rejectionReason && { rejectionReason: data.rejectionReason }),
-            propertyType: data.jobId.propertyType,
-            timeLine: data.jobId.timeline,
-            id: data.id
-        }))
-
-       
-        return { data: output, pagination }
+    
+        return { data: result, pagination }
     }
 }

@@ -1,8 +1,9 @@
-import type { AdminUsersResponseDTO, AdminUserToggleStatusDTO, Pagination, UserFilterDTO } from "../../DTO/admin/adminDTO.js";
+import type {   Pagination, UserFilterDTO } from "../../DTO/admin/adminDTO.js";
 
 import type { IUserManagementRepository } from "../../interfaces/admin/IUserManagementRepository.js";
 import type { IUser } from "../../interfaces/auth/IUser.js";
 import { UserModel } from "../../models/user/userModel.js";
+import { USER_ROLES } from "../../shared/enums/commonEnums.js";
 import { BaseRepository } from "../baseRepository.js";
 import type { QueryFilter } from "mongoose"
 export class UserManagementRepository extends BaseRepository<IUser> implements IUserManagementRepository {
@@ -11,38 +12,27 @@ export class UserManagementRepository extends BaseRepository<IUser> implements I
     }
 
 
-    async getUser(id: string): Promise<AdminUsersResponseDTO | null> {
+    async getUser(id: string): Promise<IUser | null> {
         const result = await this.findById(id);
         if (!result) return null;
-
-        const data: AdminUsersResponseDTO = {
-            id: result._id.toString(),
-            full_name: result.full_name,
-            email: result.email,
-            role: result.role,
-            is_blocked: result.is_blocked,
-            joinedAt: result.createdAt.toISOString()
-        };
-        return data;
+        return result
     }
 
-    async toggleUser(id: string, is_blocked: boolean): Promise<AdminUserToggleStatusDTO | null> {
+    async toggleUser(id: string, is_blocked: boolean): Promise<IUser | null> {
         const result = await this.update(id, { is_blocked })
         if (!result) {
             return null
         }
-        console.log("toggle: ",result)
-        return {
-            is_blocked: result.is_blocked,
-        }
+
+        return result
     }
 
-    async getAllUsers(filter?: UserFilterDTO): Promise<{ data: AdminUsersResponseDTO[]; pagination: Pagination; }> {
+    async getAllUsers(filter?: UserFilterDTO): Promise<{ data: IUser[]; pagination: Pagination; }> {
         const page = filter?.page ? Number(filter.page) : 1;
         const limit = 10;
-        console.log("filters: ", filter)
+
         const query: QueryFilter<IUser> = {};
-        query.role = { "$ne": "Admin" };
+        query.role = { "$ne": USER_ROLES.ADMIN };
         if (filter) {
             if (filter.name) {
                 query.full_name = { $regex: `${filter.name}`, $options: 'i' };
@@ -54,24 +44,17 @@ export class UserManagementRepository extends BaseRepository<IUser> implements I
                 query.role = filter.role;
             }
         }
-        console.log("from repo: ",query)
+ 
         const result = await this.find(query, { skip: (page - 1) * limit, limit });
         const total = await this._model.countDocuments(query);
 
-        const data: AdminUsersResponseDTO[] = result.map(data => ({
-            full_name: data.full_name,
-            id: data._id.toString(),
-            role: data.role,
-            is_blocked: data.is_blocked,
-            joinedAt: data.createdAt.toISOString(),
-            email: data.email
-        }));
+
         const pagination:Pagination={
             total,
             totalPages:Math.ceil(total/limit)
         }
         return {
-            data,
+            data:result,
             pagination
         }
     }

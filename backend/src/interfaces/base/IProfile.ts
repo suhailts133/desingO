@@ -1,6 +1,5 @@
 import type {  DesignerProfileResponseDTO, DesignerUpdateResponseDTO, UserProfileDTO, UserProfileResponseDTO, UserProfileUpdateDTO } from "../../DTO/profile/profileDTO.js"
 import type { IApiResponse } from "./IApiResponse.js"
-import type { ImageUploadResult } from "./IImageUpload.js"
 
 export interface IProfileImage {
     profileImageFile: Express.Multer.File
@@ -12,15 +11,8 @@ export interface ChangeProfileImageResponseDTO {
 }
 
 
-
-
 export interface IProfileImageService {
     changeProfileImage(userId: string, file: IProfileImage): Promise<IApiResponse<string>>
-}
-
-export interface IProfileImageRepository {
-    changeProfilImage(userId: string, data: ImageUploadResult): Promise<string | null>
-    getProfileImageId(userId: string): Promise<string | null>
 }
 
 

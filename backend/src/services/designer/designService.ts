@@ -5,9 +5,9 @@ import type { IDesignService } from "../../interfaces/designer/IDesignerService.
 import type { AddDesignRequestDTO, createDesignDTO, DesignDetailResponseDTO, DesignFiles, DesignFilter, DesignGallaryDTO, EditDesign, EditDesignFiles, EditDesignRepoData, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO.js";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
 import { CLOUDINARY_FOLDER_NAME } from "../../shared/enums/commonEnums.js";
-import { ensureError } from "../../shared/errors/ensureError.js";
 import { AppError } from "../../shared/errors/appError.js";
 import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages.js";
+import { DesignMapper } from "../../dtoMappers/designer/designMapper.js";
 
 export class DesignService implements IDesignService {
 
@@ -68,13 +68,8 @@ export class DesignService implements IDesignService {
     }
 
     async getDesignGallary(designerId: string, page?: string): Promise<IApiResponseWithPagination<DesignGallaryDTO[]>> {
-        const { data, pagination } = await this._designRepository.getAllDesigns(designerId, page)
-        const output: DesignGallaryDTO[] = data?.map(d => {
-            return {
-                coverImage: d.coverImage,
-                designId: d.id
-            }
-        })
+        const { data, pagination } = await this._designRepository.getMyDesigns(designerId, page)
+        const output: DesignGallaryDTO[] = data.map(d => ({ coverImage: d.coverImage.path, designId: d.id }))
         return { message: DESIGNER_MESSAGES.DESIGNS.GET_ALL_DESIGNS, data: output, total: pagination.total, totalPages: pagination.totalPages }
     }
 
@@ -97,42 +92,42 @@ export class DesignService implements IDesignService {
     }
 
     async getMyDesigns(userId: string, page?: string): Promise<IApiResponseWithPagination<getAllDesignsResponseDTO[]>> {
-            const { data, pagination } = await this._designRepository.getAllDesigns(userId, page)
-            return {
-              
-                message: DESIGNER_MESSAGES.DESIGNS.GET_ALL_DESIGNS,
-  
-                data: data,
-                total: pagination.total,
-                totalPages: pagination.totalPages
+        const { data, pagination } = await this._designRepository.getMyDesigns(userId, page)
+        const designData = DesignMapper.toMyDesignsDTOlist(data)
+        return {
+            message: DESIGNER_MESSAGES.DESIGNS.GET_ALL_DESIGNS,
+            data: designData,
+            total: pagination.total,
+            totalPages: pagination.totalPages
 
-            }
-       
+        }
+
     }
 
     async getDesignDetail(designId: string): Promise<IApiResponse<DesignDetailResponseDTO>> {
 
-            const result = await this._designRepository.getDesignDetail(designId);
-            if (!result) {
-                throw new AppError(DESIGNER_MESSAGES.DESIGNS.DESIGN_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
-               
-            }
-            return { message: DESIGNER_MESSAGES.DESIGNS.DESIGN_DETAIL_SUCCESS,  data: result }
-        
+        const result = await this._designRepository.getDesign(designId);
+        if (!result) {
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.DESIGN_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+
+        }
+        const designData = DesignMapper.toDesignDTO(result)
+        return { message: DESIGNER_MESSAGES.DESIGNS.DESIGN_DETAIL_SUCCESS, data: designData }
+
     }
 
 
     async getAllDesigns(designFilter?: DesignFilter): Promise<IApiResponseWithPagination<GetAllDesignCommonResponseDTO[]>> {
-            const result = await this._designRepository.getAllDesignCommon(designFilter)
+        const result = await this._designRepository.getAllDesigns(designFilter)
+        const designData = DesignMapper.toDesignsDTOlist(result.data)
+        return {
+            message: DESIGNER_MESSAGES.DESIGNS.GET_ALL_DESIGNS,
+            data: designData,
+            total: result.pagination.total,
+            totalPages: result.pagination.totalPages
 
-            return {
-                message: DESIGNER_MESSAGES.DESIGNS.GET_ALL_DESIGNS,
-                data: result.data,
-                total: result.pagination.total,
-                totalPages: result.pagination.totalPages
+        }
 
-            }
-      
     }
 
 

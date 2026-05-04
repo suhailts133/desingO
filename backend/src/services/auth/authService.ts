@@ -3,7 +3,6 @@ import generateOtp from "../../shared/jwt/generateOTP.js";
 import sendVerificationEmail from "../../shared/emails/sendOTP.js";
 import { comparePassword, hashPassword } from "../../shared/helpers/hashPassword.js";
 import { jwtAccessToken } from "../../shared/jwt/jsonTokenCreater.js";
-import { ensureError } from "../../shared/errors/ensureError.js";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
 import { jwtRefreshToken, refeshTokenVerificaion } from "../../shared/jwt/refreshToken.js";
 // Interfaces / Repositories
@@ -18,6 +17,7 @@ import { googleLoginResponse } from "../common/googleAuth.js";
 import { AppError } from "../../shared/errors/appError.js";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
 import { USER_ROLES } from "../../shared/enums/commonEnums.js";
+import { UserMapper } from "../../dtoMappers/user/userMapper.js";
 
 
 
@@ -106,20 +106,11 @@ export class AuthService implements IAuthService {
             password: result.password
         }
         if (result.otp === otp) {
-            const val = await this._userRepository.createNewUser(data)
-            const accessToken = jwtAccessToken(val.email, val.id, val.full_name, val.role)
-            const refreshToken = jwtRefreshToken(val.email, val.id, val.full_name, val.role)
-            const respnone: AuthResponseDTO = {
-                user: {
-                    id: val.id,
-                    name: val.full_name,
-                    email: val.email,
-                    role: val.role
-                },
-                refreshToken: refreshToken,
-                jwtToken: accessToken
-            }
-            await this._otpRepository.deleteUserData(val.email!)
+            const newUser = await this._userRepository.createNewUser(data)
+            const accessToken = jwtAccessToken(newUser.email, newUser.id, newUser.full_name, newUser.role)
+            const refreshToken = jwtRefreshToken(newUser.email, newUser.id, newUser.full_name, newUser.role)
+            const respnone = UserMapper.toAuthResponseDTO(newUser, accessToken, refreshToken)
+            await this._otpRepository.deleteUserData(newUser.email)
             return { message: AUTH_MESSAGES.LOGIN_SIGNUP.OTP_SUCCESS, data: respnone, statuscode: RESPONSE_CODE.CREATED }
         }
         throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.OTP_INCORRECT, RESPONSE_CODE.BAD_REQUEST)
@@ -282,16 +273,7 @@ export class AuthService implements IAuthService {
         }
         const accessToken = jwtAccessToken(user.email, user.id, user.full_name, user.role);
         const refreshToken = jwtRefreshToken(user.email, user.id, user.full_name, user.role)
-        const authResponse: AuthResponseDTO = {
-            user: {
-                id: user.id,
-                name: user.full_name,
-                email: user.email,
-                role: user.role
-            },
-            refreshToken: refreshToken,
-            jwtToken: accessToken
-        }
+        const authResponse = UserMapper.toAuthResponseDTO(user, accessToken, refreshToken)
         return { message: AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse }
 
     }
@@ -322,16 +304,7 @@ export class AuthService implements IAuthService {
         }
         const accessToken = jwtAccessToken(admin.email, admin.id, admin.full_name, admin.role);
         const refreshToken = jwtRefreshToken(admin.email, admin.id, admin.full_name, admin.role)
-        const authResponse: AuthResponseDTO = {
-            user: {
-                id: admin.id,
-                name: admin.full_name,
-                email: admin.email,
-                role: admin.role
-            },
-            refreshToken: refreshToken,
-            jwtToken: accessToken
-        }
+        const authResponse = UserMapper.toAuthResponseDTO(admin, accessToken, refreshToken)
         return { message: AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse, }
 
     }
@@ -346,73 +319,45 @@ export class AuthService implements IAuthService {
      */
     async googleLogin(code: string): Promise<IApiResponse<AuthResponseDTO>> {
 
-            const googleData = await googleLoginResponse(code);
+        const googleData = await googleLoginResponse(code);
 
-            if (!googleData) {
-                throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.GOOGLE_DATA_ACCESS_FAIL, RESPONSE_CODE.NOT_FOUND)
+        if (!googleData) {
+            throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.GOOGLE_DATA_ACCESS_FAIL, RESPONSE_CODE.NOT_FOUND)
 
-            }
-            const user = await this._userRepository.findUser(googleData.email);
+        }
+        const user = await this._userRepository.findUser(googleData.email);
 
-            if (user) {
-                if (user.google_profile_id === googleData.google_profile_id) {
-                    const access_token = jwtAccessToken(user.email, user.id, user.full_name, user.role)
-                    const refreshToken = jwtRefreshToken(user.email, user.id, user.full_name, user.role)
-                    const authResponse: AuthResponseDTO = {
-                        user: {
-                            name: user.full_name,
-                            email: user.email,
-                            role: user.role,
-                            id: user.id
-                        },
-                        refreshToken: refreshToken,
-                        jwtToken: access_token,
-                    }
+        if (user) {
+            if (user.google_profile_id === googleData.google_profile_id) {
+                const access_token = jwtAccessToken(user.email, user.id, user.full_name, user.role)
+                const refreshToken = jwtRefreshToken(user.email, user.id, user.full_name, user.role)
+                const authResponse = UserMapper.toAuthResponseDTO(user, access_token, refreshToken)
 
-                    return { message: AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse, }
-                }
-
-
-                const data = await this._userRepository.updateUser(user.id, {
-                    google_profile_id: googleData.google_profile_id,
-                    profile_image_url: googleData.profile_image_url,
-                    full_name: googleData.full_name
-                })
-                if (data) {
-                    const access_token = jwtAccessToken(data.email, data.id, data.full_name, data.role)
-                    const refreshToken = jwtRefreshToken(data.email, data.id, data.full_name, data.role)
-                    const authResponse: AuthResponseDTO = {
-                        user: {
-                            name: data.full_name,
-                            email: data.email,
-                            role: data.role,
-                            id: data.id
-                        },
-                        refreshToken: refreshToken,
-                        jwtToken: access_token,
-                    }
-
-                    return { message: AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse, }
-                }
-
-            }
-            const result = await this._userRepository.createNewUser(googleData);
-
-
-            const access_token = jwtAccessToken(result.email, result.id, result.full_name, result.role)
-            const refreshToken = jwtRefreshToken(result.email, result.id, result.full_name, result.role)
-            const authResponse: AuthResponseDTO = {
-                user: {
-                    name: result.full_name,
-                    email: result.email,
-                    role: result.role,
-                    id: result.id
-                },
-                jwtToken: access_token,
-                refreshToken: refreshToken,
+                return { message: AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse, }
             }
 
-            return { message: AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse }
-       
+
+            const data = await this._userRepository.updateUser(user.id, {
+                google_profile_id: googleData.google_profile_id,
+                profile_image_url: googleData.profile_image_url,
+                full_name: googleData.full_name
+            })
+            if (data) {
+                const access_token = jwtAccessToken(data.email, data.id, data.full_name, data.role)
+                const refreshToken = jwtRefreshToken(data.email, data.id, data.full_name, data.role)
+                const authResponse =  UserMapper.toAuthResponseDTO(data, access_token, refreshToken)
+                return { message: AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse, }
+            }
+
+        }
+        const result = await this._userRepository.createNewUser(googleData);
+
+
+        const access_token = jwtAccessToken(result.email, result.id, result.full_name, result.role)
+        const refreshToken = jwtRefreshToken(result.email, result.id, result.full_name, result.role)
+        const authResponse =  UserMapper.toAuthResponseDTO(result, access_token, refreshToken)
+
+        return { message: AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse }
+
     }
 }

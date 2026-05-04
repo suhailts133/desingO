@@ -1,11 +1,10 @@
 import mongoose, { type SortOrder } from "mongoose";
-import type { createDesignDTO, DesignDetailResponseDTO, DesignFilter, EditDesignRepoData, GetAllDesignCommonResponseDTO } from "../../DTO/designer/designDTO.js";
-import type { IDesign } from "../../interfaces/designer/IDesigner.js";
+import type { createDesignDTO, DesignFilter, EditDesignRepoData } from "../../DTO/designer/designDTO.js";
+import type { IDesign, IDesignPopulated } from "../../interfaces/designer/IDesigner.js";
 import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository.js";
 import { DesignModel } from "../../models/designer/designModel.js";
 import { BaseRepository } from "../baseRepository.js";
 import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { getAllDesignsResponseDTO } from "../../DTO/designer/designDTO.js";
 import type { IUser } from "../../interfaces/auth/IUser.js";
 import type { QueryFilter } from "mongoose"
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
@@ -23,11 +22,6 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
         return !!result
     }
 
-    async getDesign(id: string): Promise<IDesign | null> {
-        const result = await this.findById(id);
-        return result
-    }
-
     async editDesign(id: string, data: EditDesignRepoData, coverImage?: ImageUploadResult, gallery?: ImageUploadResult[]): Promise<boolean> {
         const updateData = {
             ...data,
@@ -38,7 +32,7 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
         return !!result
     }
 
-    async getAllDesigns(userId: string, page?: string): Promise<{ data: getAllDesignsResponseDTO[], pagination: Pagination }> {
+    async getMyDesigns(userId: string, page?: string): Promise<{ data: IDesign[], pagination: Pagination }> {
         const pageNO = page ? Number(page) : 1;
         const limit = 6
 
@@ -48,51 +42,29 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
             .sort({ createdAt: -1 })
             .exec()
         const total = await this._model.countDocuments({ userId })
-        const output: getAllDesignsResponseDTO[] = result.map(data => {
-            return {
-                id: data.id,
-                name: data.name,
-                coverImage: data.coverImage.path,
-                description: data.description,
-                price: data.startingPrice
-            }
-        })
         const pagination: Pagination = {
             total,
             totalPages: Math.ceil(total / limit)
         }
         return {
-            data: output,
+            data: result,
             pagination
         }
     }
 
-    async getDesignDetail(designId: string): Promise<DesignDetailResponseDTO | null> {
+    async getDesign(designId: string): Promise<IDesignPopulated | null> {
         const result = await this._model.findById(designId)
             .populate<{ userId: IUser }>("userId")
             .exec()
         if (!result) {
             return null
         }
+        return result
 
-        return {
-            id: result.id,
-            designerName: result.userId.full_name,
-            designName: result.name,
-            propertyType: result.propertyType,
-            spaceType: result.spaceType,
-            startingPrice: result.startingPrice,
-            services: result.services,
-            description: result.description,
-            designStyles: result.designStyles,
-            coverImage: result.coverImage,
-            gallery: result.gallery,
-            createdAt: result.createdAt.toDateString()
-        }
+       
     }
 
-    async getAllDesignCommon(designFilter?: DesignFilter): Promise<{ data: GetAllDesignCommonResponseDTO[]; pagination: Pagination; }> {
-        console.log("hit")
+    async getAllDesigns(designFilter?: DesignFilter): Promise<{ data: IDesignPopulated[]; pagination: Pagination; }> {
         const page = designFilter?.page ? Number(designFilter?.page) : 1;
         const limit = 9;
         const query: QueryFilter<IDesign> = {}
@@ -136,19 +108,9 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
             total,
             totalPages: Math.ceil(total / limit)
         }
-        const output: GetAllDesignCommonResponseDTO[] = result.map(data => {
-            return {
-                id: data.id,
-                name: data.name,
-                spaceType: data.spaceType,
-                designStyles: data.designStyles,
-                coverImage: data.coverImage.path,
-                budget: data.startingPrice,
-                designerName: data.userId.full_name
-            }
-        })
 
-        return { data: output, pagination }
+
+        return { data: result, pagination }
     }
 
     async deleteADesign(id: string): Promise<boolean> {

@@ -6,7 +6,6 @@ import { ProfileService } from "../services/common/profileService.js";
 import { ProfileController } from "../controllers/common/profileController.js";
 import { ProfileImageController } from "../controllers/common/profileImageController.js";
 import { ProfileImageService } from "../services/common/profileImageService.js";
-import { ProfileImageRepository } from "../repositories/common/profileImageRepository.js";
 import { CloudinaryService } from "../services/common/cloudinaryService.js";
 import multer from "multer";
 const upload = multer({ storage: multer.memoryStorage() });
@@ -15,11 +14,11 @@ const router = Router()
 
 const desingerRepo = new DesignerRepository()
 const userRepo = new UserRepository()
-const profileImageRepository = new ProfileImageRepository()
+
 
 const profileService  = new ProfileService(desingerRepo, userRepo)
 const imageUploadService = new CloudinaryService()
-const profileImageService = new ProfileImageService(profileImageRepository, imageUploadService)
+const profileImageService = new ProfileImageService(userRepo, imageUploadService)
 
 const profileController = new ProfileController(profileService)
 const profileImageController = new ProfileImageController(profileImageService)
