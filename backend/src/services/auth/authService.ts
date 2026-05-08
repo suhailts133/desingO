@@ -19,7 +19,8 @@ import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
 import { USER_ROLES } from "../../shared/enums/commonEnums.js";
 import { UserMapper } from "../../dtoMappers/user/userMapper.js";
 
-
+import { v4 as uuidv4 } from "uuid"
+import type { IBlackListRepository, IRefreshTokenRepository, RefreshTokenPayload } from "../../interfaces/auth/IRefreshToken.js";
 
 /**
 * Auth Service handle all the authentication based operations.
@@ -32,12 +33,21 @@ import { UserMapper } from "../../dtoMappers/user/userMapper.js";
 
 export class AuthService implements IAuthService {
 
-    constructor(private _otpRepository: IOTPRepository, private _userRepository: IUserRepository) { }
+    constructor(
+        private _otpRepository: IOTPRepository,
+        private _userRepository: IUserRepository,
+        private _refreshTokenRepo: IRefreshTokenRepository,
+        private _blackListRepo: IBlackListRepository
+    ) { }
 
 
     async refreshToken(refreshToken: string): Promise<IApiResponse<RefreshTokenDTO>> {
 
         const verifiedRefreshToken = refeshTokenVerificaion(refreshToken)
+        const storedToken = await this._refreshTokenRepo.getRefreshToken(refreshToken);
+        if (!storedToken) {
+            throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.EXPIRED_TOKEN, RESPONSE_CODE.UNAUTHORIZED)
+        }
         if (!verifiedRefreshToken) {
             throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.EXPIRED_TOKEN, RESPONSE_CODE.UNAUTHORIZED)
         }
@@ -45,7 +55,8 @@ export class AuthService implements IAuthService {
             verifiedRefreshToken.email,
             verifiedRefreshToken.userId,
             verifiedRefreshToken.name,
-            verifiedRefreshToken.role
+            verifiedRefreshToken.role,
+            uuidv4()
         )
         return {
             message: AUTH_MESSAGES.LOGIN_SIGNUP.NEW_TOKEN_CREATED, data: {
@@ -107,14 +118,19 @@ export class AuthService implements IAuthService {
         }
         if (result.otp === otp) {
             const newUser = await this._userRepository.createNewUser(data)
-            const accessToken = jwtAccessToken(newUser.email, newUser.id, newUser.full_name, newUser.role)
+            const accessToken = jwtAccessToken(newUser.email, newUser.id, newUser.full_name, newUser.role, uuidv4())
             const refreshToken = jwtRefreshToken(newUser.email, newUser.id, newUser.full_name, newUser.role)
-            const respnone = UserMapper.toAuthResponseDTO(newUser, accessToken, refreshToken)
+            await this._refreshTokenRepo.storeToken({
+                token: refreshToken,
+                userId: newUser.id,
+                expiresAt: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000)
+            })
             await this._otpRepository.deleteUserData(newUser.email)
+            const respnone = UserMapper.toAuthResponseDTO(newUser, accessToken, refreshToken)
+
             return { message: AUTH_MESSAGES.LOGIN_SIGNUP.OTP_SUCCESS, data: respnone, statuscode: RESPONSE_CODE.CREATED }
         }
         throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.OTP_INCORRECT, RESPONSE_CODE.BAD_REQUEST)
-
     }
 
 
@@ -231,16 +247,22 @@ export class AuthService implements IAuthService {
      * @returns {message, boolean}
      */
 
-    async forgetPasswordChangePassword(email: string, password: string): Promise<IApiResponse> {
+    async forgetPasswordChangePassword(email: string, password: string, jti: string, exp: number): Promise<IApiResponse> {
         const findEmail = await this._userRepository.findEmail(email);
         if (!findEmail) {
             throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.EMAIL_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
         const hashedPassword = await hashPassword(password);
-        const value = await this._userRepository.changePassword(email, hashedPassword)
-        if (!value) {
+        const passwordChanged = await this._userRepository.changePassword(email, hashedPassword)
+        if (!passwordChanged) {
             throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.PASSWORD_CHANGE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
+        const ttl = exp - Math.floor(Date.now() / 1000)
+
+        if (ttl > 0) {
+            await this._blackListRepo.storeToken(jti, ttl)
+        }
+        await this._refreshTokenRepo.deleteAllTokens(passwordChanged.id)
         return { message: AUTH_MESSAGES.LOGIN_SIGNUP.PASSWORD_CHANGE_SUCCESS }
     }
 
@@ -271,9 +293,20 @@ export class AuthService implements IAuthService {
             throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.INVALID_CREDENTIALS, RESPONSE_CODE.BAD_REQUEST)
 
         }
-        const accessToken = jwtAccessToken(user.email, user.id, user.full_name, user.role);
+        const accessToken = jwtAccessToken(user.email, user.id, user.full_name, user.role, uuidv4());
         const refreshToken = jwtRefreshToken(user.email, user.id, user.full_name, user.role)
+        const storeTokenPayload: RefreshTokenPayload = {
+            token: refreshToken,
+            userId: user.id,
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        }
+
+        const storeToken = await this._refreshTokenRepo.storeToken(storeTokenPayload)
+        if (!storeToken) {
+            throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
         const authResponse = UserMapper.toAuthResponseDTO(user, accessToken, refreshToken)
+
         return { message: AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse }
 
     }
@@ -302,8 +335,18 @@ export class AuthService implements IAuthService {
         if (!checkPassword) {
             throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.NOT_ADMIN, RESPONSE_CODE.BAD_REQUEST)
         }
-        const accessToken = jwtAccessToken(admin.email, admin.id, admin.full_name, admin.role);
+        const accessToken = jwtAccessToken(admin.email, admin.id, admin.full_name, admin.role, uuidv4());
         const refreshToken = jwtRefreshToken(admin.email, admin.id, admin.full_name, admin.role)
+        const storeTokenPayload: RefreshTokenPayload = {
+            token: refreshToken,
+            userId: admin.id,
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        }
+
+        const storeToken = await this._refreshTokenRepo.storeToken(storeTokenPayload)
+        if (!storeToken) {
+            throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
         const authResponse = UserMapper.toAuthResponseDTO(admin, accessToken, refreshToken)
         return { message: AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse, }
 
@@ -329,10 +372,18 @@ export class AuthService implements IAuthService {
 
         if (user) {
             if (user.google_profile_id === googleData.google_profile_id) {
-                const access_token = jwtAccessToken(user.email, user.id, user.full_name, user.role)
+                const access_token = jwtAccessToken(user.email, user.id, user.full_name, user.role, uuidv4())
                 const refreshToken = jwtRefreshToken(user.email, user.id, user.full_name, user.role)
+                const storeTokenPayload: RefreshTokenPayload = {
+                    token: refreshToken,
+                    userId: user.id,
+                    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                }
+                const storeToken = await this._refreshTokenRepo.storeToken(storeTokenPayload)
+                if (!storeToken) {
+                    throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+                }
                 const authResponse = UserMapper.toAuthResponseDTO(user, access_token, refreshToken)
-
                 return { message: AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse, }
             }
 
@@ -343,9 +394,19 @@ export class AuthService implements IAuthService {
                 full_name: googleData.full_name
             })
             if (data) {
-                const access_token = jwtAccessToken(data.email, data.id, data.full_name, data.role)
+                const access_token = jwtAccessToken(data.email, data.id, data.full_name, data.role, uuidv4())
                 const refreshToken = jwtRefreshToken(data.email, data.id, data.full_name, data.role)
-                const authResponse =  UserMapper.toAuthResponseDTO(data, access_token, refreshToken)
+                const storeTokenPayload: RefreshTokenPayload = {
+                    token: refreshToken,
+                    userId: data.id,
+                    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                }
+
+                const storeToken = await this._refreshTokenRepo.storeToken(storeTokenPayload)
+                if (!storeToken) {
+                    throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+                }
+                const authResponse = UserMapper.toAuthResponseDTO(data, access_token, refreshToken)
                 return { message: AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse, }
             }
 
@@ -353,9 +414,19 @@ export class AuthService implements IAuthService {
         const result = await this._userRepository.createNewUser(googleData);
 
 
-        const access_token = jwtAccessToken(result.email, result.id, result.full_name, result.role)
+        const access_token = jwtAccessToken(result.email, result.id, result.full_name, result.role, uuidv4())
         const refreshToken = jwtRefreshToken(result.email, result.id, result.full_name, result.role)
-        const authResponse =  UserMapper.toAuthResponseDTO(result, access_token, refreshToken)
+        const storeTokenPayload: RefreshTokenPayload = {
+            token: refreshToken,
+            userId: result.id,
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        }
+
+        const storeToken = await this._refreshTokenRepo.storeToken(storeTokenPayload)
+        if (!storeToken) {
+            throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
+        const authResponse = UserMapper.toAuthResponseDTO(result, access_token, refreshToken)
 
         return { message: AUTH_MESSAGES.LOGIN_SIGNUP.LOGIN_SUCCESS, data: authResponse }
 

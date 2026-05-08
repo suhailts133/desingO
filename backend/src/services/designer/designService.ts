@@ -8,10 +8,11 @@ import { CLOUDINARY_FOLDER_NAME } from "../../shared/enums/commonEnums.js";
 import { AppError } from "../../shared/errors/appError.js";
 import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages.js";
 import { DesignMapper } from "../../dtoMappers/designer/designMapper.js";
+import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
 
 export class DesignService implements IDesignService {
 
-    constructor(private _designRepository: IDesignRepository, private _imageUploder: IImageUploaderService,) { }
+    constructor(private _designRepository: IDesignRepository, private _imageUploder: IImageUploaderService, private _userRepo: IUserRepository) { }
 
     async editDesign(designId: string, data: EditDesign, files?: EditDesignFiles): Promise<IApiResponse> {
         const design = await this._designRepository.getDesign(designId);
@@ -104,30 +105,35 @@ export class DesignService implements IDesignService {
 
     }
 
-    async getDesignDetail(designId: string): Promise<IApiResponse<DesignDetailResponseDTO>> {
-
-        const result = await this._designRepository.getDesign(designId);
-        if (!result) {
+    async getDesignDetail(designId: string, userId?: string): Promise<IApiResponse<DesignDetailResponseDTO>> {
+        const [design, user] = await Promise.all([
+            this._designRepository.getDesign(designId),
+            userId ? this._userRepo.findUserById(userId) : null
+        ])
+        if (!design) {
             throw new AppError(DESIGNER_MESSAGES.DESIGNS.DESIGN_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
 
         }
-        const designData = DesignMapper.toDesignDTO(result)
+        const savedDesignsSet = new Set(user?.savedDesigns.map(id => id.toString()) ?? [])
+        const designData = DesignMapper.toDesignDTO(design,savedDesignsSet)
         return { message: DESIGNER_MESSAGES.DESIGNS.DESIGN_DETAIL_SUCCESS, data: designData }
 
     }
 
 
-    async getAllDesigns(designFilter?: DesignFilter): Promise<IApiResponseWithPagination<GetAllDesignCommonResponseDTO[]>> {
-        const result = await this._designRepository.getAllDesigns(designFilter)
-        const designData = DesignMapper.toDesignsDTOlist(result.data)
+    async getAllDesigns(userId?: string, designFilter?: DesignFilter): Promise<IApiResponseWithPagination<GetAllDesignCommonResponseDTO[]>> {
+        const [designs, user] = await Promise.all([
+            this._designRepository.getAllDesigns(designFilter),
+            userId ? this._userRepo.findUserById(userId) : null
+        ])
+        const savedDesignsSet = new Set(user?.savedDesigns.map(id => id.toString()) ?? [])
+        const designData = DesignMapper.toDesignsDTOlist(designs.data, savedDesignsSet)
         return {
             message: DESIGNER_MESSAGES.DESIGNS.GET_ALL_DESIGNS,
             data: designData,
-            total: result.pagination.total,
-            totalPages: result.pagination.totalPages
-
+            total: designs.pagination.total,
+            totalPages: designs.pagination.totalPages
         }
-
     }
 
 

@@ -2,7 +2,13 @@ export const AUTH_MESSAGES = {
     AUTH: {
         UNAUTHORIZED: "Unauthorized access.",
         TOKEN_NOT_FOUND: "Token not found.",
-        EXPIRED: "Token expired. Please login again"
+        TOKEN_INVALID: "Invalid token or token is expired.",
+        TOKEN_REVOKED: "Your token has been revoked.",
+        EXPIRED: "Token expired. Please login again.",
+        NOT_ADMIN: "You are not an Admin.",
+        NOT_DESIGNER: "You are not a Designer.",
+        NOT_CUSTOMER: "You are not a Customer.",
+
     },
 
     LOGIN_SIGNUP: {
@@ -22,12 +28,13 @@ export const AUTH_MESSAGES = {
         INVALID_CREDENTIALS: "Invalid credentials.",
         NOT_ADMIN: "You are not an admin.",
         LOGIN_SUCCESS: "Login successful.",
+        LOGIN_FAILED: "Login failed.",
         GOOGLE_DATA_ACCESS_FAIL: "Failed to retrieve data from Google."
     },
     USER: {
         NOT_FOUND: "User does not exist. Please sign up."
     },
- EMAIL: {
+    EMAIL: {
         NOT_SEND: "Email failed to send, but the application was saved successfully."
     },
 

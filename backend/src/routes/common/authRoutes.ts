@@ -1,15 +1,19 @@
 import { Router } from "express";
-import { OtpRepository } from "../repositories/auth/OTPRepository.js";
-import { AuthService } from "../services/auth/authService.js";
-import { AuthController } from "../controllers/common/AuthController.js";
-import { UserRepository } from "../repositories/auth/userRepository.js";
+import { OtpRepository } from "../../repositories/auth/OTPRepository.js";
+import { AuthService } from "../../services/auth/authService.js";
+import { AuthController } from "../../controllers/common/AuthController.js";
+import { UserRepository } from "../../repositories/auth/userRepository.js";
+import { RefreshTokenRepositoy } from "../../repositories/auth/refreshTokenRepository.js";
+import { BlackListRepository } from "../../repositories/auth/blacklistRepository.js";
 
 const router = Router()
 
 
 const otpRepository = new OtpRepository()
 const userRepository = new UserRepository()
-const authService = new AuthService(otpRepository, userRepository);
+const refreshTokenRepo = new RefreshTokenRepositoy()
+const blackListRepo = new BlackListRepository()
+const authService = new AuthService(otpRepository, userRepository, refreshTokenRepo, blackListRepo);
 const authController = new AuthController(authService)
 
 router.post("/signup", authController.register)

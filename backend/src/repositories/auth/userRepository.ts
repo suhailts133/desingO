@@ -8,7 +8,7 @@ import { BaseRepository } from "../baseRepository.js";
 
 
 export class UserRepository extends BaseRepository<IUser> implements IUserRepository {
-    
+
     constructor() {
         super(UserModel)
     }
@@ -45,15 +45,13 @@ export class UserRepository extends BaseRepository<IUser> implements IUserReposi
         return await this.create(data);
     }
 
+    async changePassword(email: string, password: string): Promise<IUser | null> {
 
-    async changePassword(email: string, password: string): Promise<boolean> {
-        const result = await this._model.updateOne({ email }, { $set: { password } }).exec()
-        return result.matchedCount > 0;
+        return await this._model.findOneAndUpdate({ email }, { $set: { password } }, { returnDocument: "after" });
     }
-
     async findUserById(id: string): Promise<IUser | null> {
         const result = await this.findById(id);
-        if(!result){
+        if (!result) {
             return null
         }
         return result

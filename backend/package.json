@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "predev":"npm run lint",
+    "predev": "npm run lint",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js"
@@ -32,6 +32,7 @@
     "multer": "^2.0.2",
     "nodemailer": "^8.0.1",
     "redis": "^5.11.0",
+    "uuid": "^14.0.0",
     "winston": "^3.19.0",
     "winston-daily-rotate-file": "^5.0.0"
   },

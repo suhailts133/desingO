@@ -4,19 +4,20 @@ import dotenv from "dotenv";
 import connectDB from "./config/mongodb.js";
 import connectRedis from "./config/redis.js";
 
-import authRoutes from "./routes/authRoutes.js"
+import authRoutes from "./routes/common/authRoutes.js"
 // admin routes
 import userRoutes from "./routes/admin/userRoutes.js"
 import designerVerificationRoutes from "./routes/admin/designerVerificationRoutes.js"
 // designer routes
-import designerRoutes from "./routes/designerRoutes.js"
-import designRoutes from "./routes/designRoutes.js"
+import designerRoutes from "./routes/designer/designerRoutes.js"
+import designRoutes from "./routes/designer/designRoutes.js"
+import jobApplicationRoutes from "./routes/designer/jobApplicationRoutes.js"
 // user routes
-import jobRoutes from "./routes/jobRoutes.js"
-import jobApplicationRoutes from "./routes/jobApplicationRoutes.js"
+import jobRoutes from "./routes/user/jobRoutes.js"
+import savedDesignRoutes from "./routes/user/savedDesignRoutes.js"
 
 // common routes
-import profileRoutes from "./routes/profileRoutes.js"
+import profileRoutes from "./routes/common/profileRoutes.js"
 
 import { globalErrorHandler } from "./middlewares/globalErrorHandler.js";
 // import passport from "passport";
@@ -41,6 +42,7 @@ app.use("/api/job", jobRoutes)
 app.use("/api/design", designRoutes)
 app.use("/api/job-application", jobApplicationRoutes)
 app.use("/api/profile", profileRoutes)
+app.use("/api/saved-designs", savedDesignRoutes)
 app.use(globalErrorHandler)
 
 

@@ -108,8 +108,6 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
             total,
             totalPages: Math.ceil(total / limit)
         }
-
-
         return { data: result, pagination }
     }
 

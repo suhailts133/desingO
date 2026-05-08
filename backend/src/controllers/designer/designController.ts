@@ -82,7 +82,7 @@ export class DesignController {
             throw new AppError(error.details[0]?.message || "Missing fields or Invalid Data", RESPONSE_CODE.BAD_REQUEST)
         }
         const designId = req.params.id as string;
-        if (designId) {
+        if (!designId) {
             throw new AppError(DESIGNER_MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         if (!isObjectId(designId)) {
@@ -132,13 +132,14 @@ export class DesignController {
     */
     getDesignDetail = asyncHandler(async (req: Request, res: Response) => {
         const designId = req.params.id as string;
+        const userId = req.user?.userId;
         if (!designId) {
             throw new AppError(DESIGNER_MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         if (!isObjectId(designId)) {
             throw new AppError(DESIGNER_MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
-        const result = await this._designService.getDesignDetail(designId)
+        const result = await this._designService.getDesignDetail(designId,userId)
         RespsonseHelper.success(res, result)
     })
 
@@ -149,7 +150,8 @@ export class DesignController {
      * @param req.query {@link DesignFilter}
     */
     getAllDesigns = asyncHandler(async (req: Request, res: Response) => {
-        const result = await this._designService.getAllDesigns(req.query)
+        const userId = req.user?.userId;
+        const result = await this._designService.getAllDesigns(userId, req.query)
         RespsonseHelper.successWithPagination(res, result)
     })
 

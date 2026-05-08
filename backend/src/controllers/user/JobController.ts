@@ -40,7 +40,7 @@ export class JobController {
             throw new AppError(error.details[0]?.message || "Missing fields or Invalid Data", RESPONSE_CODE.BAD_REQUEST)
         }
         const jobRequestId = req.params.id as string;
-        if (jobRequestId) {
+        if (!jobRequestId) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         if (!isObjectId(jobRequestId)) {
@@ -69,7 +69,8 @@ export class JobController {
 
     getJobDetails = asyncHandler(async (req: Request, res: Response) => {
         const jobRequestId = req.params.id as string;
-        if (jobRequestId) {
+        console.log(jobRequestId)
+        if (!jobRequestId) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         if (!isObjectId(jobRequestId)) {
@@ -86,7 +87,7 @@ export class JobController {
 
     deleteAJob = asyncHandler(async (req: Request, res: Response) => {
        const jobRequestId = req.params.id as string;
-        if (jobRequestId) {
+        if (!jobRequestId) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         if (!isObjectId(jobRequestId)) {

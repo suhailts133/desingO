@@ -69,6 +69,7 @@ export interface DesignDetailResponseDTO {
     coverImage: ImageUploadResult;
     gallery: ImageUploadResult[];
     createdAt: string;
+    isSaved:boolean
 }
 
 
@@ -97,5 +98,6 @@ export interface GetAllDesignCommonResponseDTO {
     designStyles: string[]
     coverImage: string,
     budget: string,
-    designerName: string
+    designerName: string,
+    isSaved:boolean
 }

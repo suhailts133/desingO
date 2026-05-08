@@ -11,7 +11,7 @@ export class DesignMapper {
             price: data.startingPrice
         }))
     }
-    static toDesignsDTOlist(designs: IDesignPopulated[]): GetAllDesignCommonResponseDTO[] {
+    static toDesignsDTOlist(designs: IDesignPopulated[], saved: Set<string>): GetAllDesignCommonResponseDTO[] {
         return designs.map(data => ({
             id: data.id,
             name: data.name,
@@ -19,10 +19,13 @@ export class DesignMapper {
             designStyles: data.designStyles,
             coverImage: data.coverImage.path,
             budget: data.startingPrice,
-            designerName: data.userId.full_name
+            designerName: data.userId.full_name,
+            isSaved: saved.has(data.id)
+
         }))
     }
-    static toDesignDTO(data: IDesignPopulated): DesignDetailResponseDTO {
+
+    static toDesignDTO(data: IDesignPopulated, saved: Set<string>): DesignDetailResponseDTO {
         return {
             id: data.id,
             designerName: data.userId.full_name,
@@ -35,7 +38,8 @@ export class DesignMapper {
             designStyles: data.designStyles,
             coverImage: data.coverImage,
             gallery: data.gallery,
-            createdAt: data.createdAt.toDateString()
+            createdAt: data.createdAt.toDateString(),
+            isSaved: saved.has(data.id)
         }
     }
 }

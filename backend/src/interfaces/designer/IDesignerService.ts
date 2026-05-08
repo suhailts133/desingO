@@ -17,8 +17,8 @@ export interface IDesignService {
     addDesign(userId: string, data: AddDesignRequestDTO, files: DesignFiles): Promise<IApiResponse>
     editDesign(designId: string, data: EditDesign, files?: EditDesignFiles): Promise<IApiResponse>
     getMyDesigns(userId: string, page?: string): Promise<IApiResponseWithPagination<getAllDesignsResponseDTO[]>>
-    getDesignDetail(designId: string): Promise<IApiResponse<DesignDetailResponseDTO>>
-    getAllDesigns(designFilter?: DesignFilter): Promise<IApiResponseWithPagination<GetAllDesignCommonResponseDTO[]>>
+    getDesignDetail(designId: string, userId?: string): Promise<IApiResponse<DesignDetailResponseDTO>>
+    getAllDesigns(userId?: string, designFilter?: DesignFilter): Promise<IApiResponseWithPagination<GetAllDesignCommonResponseDTO[]>>
     deleteADesign(id: string): Promise<IApiResponse>
     getDesignGallary(designerId: string, page?: string): Promise<IApiResponseWithPagination<DesignGallaryDTO[]>>
 }

@@ -1,14 +1,14 @@
 import { Router } from "express";
-import authenticate from "../middlewares/auth.js";
-import { JobController } from "../controllers/user/JobController.js";
-import { JobRequestService } from "../services/customer/jobRequestService.js";
-import { JobRequestRepository } from "../repositories/customer/jobRequestRepository.js";
+import authenticate from "../../middlewares/auth.js";
+import { JobController } from "../../controllers/user/JobController.js";
+import { JobRequestService } from "../../services/customer/jobRequestService.js";
+import { JobRequestRepository } from "../../repositories/customer/jobRequestRepository.js";
 import multer from "multer";
-import { CloudinaryService } from "../services/common/cloudinaryService.js";
+import { CloudinaryService } from "../../services/common/cloudinaryService.js";
 const upload = multer({ storage: multer.memoryStorage() });
 
 
-// refrenceImages
+
 const router = Router()
 
 const jobRequestRepo = new JobRequestRepository()

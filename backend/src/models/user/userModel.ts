@@ -31,6 +31,7 @@ const UserSchema = new Schema<IUser>(
     on_investigation: { type: Boolean, default: false },
     is_verified: { type: Boolean, default: false },
     profileImage: { type: imageFormatSchema },
+    savedDesigns: { type: [mongoose.Schema.Types.ObjectId], ref: "Design", default: [] }
   },
   { timestamps: true }
 );

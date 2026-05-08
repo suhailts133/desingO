@@ -49,7 +49,6 @@ export class ProfileController {
 
 
     updateUserProfile = asyncHandler(async (req: Request, res: Response) => {
-        console.log(req.body)
         const { error, value } = userProfileUpdateValidation.validate(req.body, { stripUnknown: true })
         if (error) {
             throw new AppError(error.details[0]?.message || "Invalid query parameters", RESPONSE_CODE.BAD_REQUEST)

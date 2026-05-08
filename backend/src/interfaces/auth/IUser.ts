@@ -1,3 +1,4 @@
+import type mongoose from "mongoose";
 import type { ImageUploadResult } from "../base/IImageUpload.js";
 
 export type UserRole = "Admin" | "Customer" | "Designer";
@@ -18,6 +19,7 @@ export interface IUser {
   phone?: string;
   profileImage?:ImageUploadResult
   landmark?: string;
+  savedDesigns:mongoose.Types.ObjectId[]
 }
 
 export interface IUserTemp {

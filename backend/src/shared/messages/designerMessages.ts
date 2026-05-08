@@ -1,5 +1,5 @@
 export const DESIGNER_MESSAGES = {
-    
+
     DESIGNS: {
         ID_REQUIRED: "Design ID is required.",
         DESIGN_NOT_FOUND: "Design not found. Please contact support.",
@@ -12,15 +12,21 @@ export const DESIGNER_MESSAGES = {
         UPDATION_SUCCESS: "Design updated successfully.",
         DELETION_FAILED: "Failed to delete your design. Please contact support.",
         DELETION_SUCCESS: "Design deleted successfully.",
-        DESIGN_DETAIL_SUCCESS:"Design detail fetched successfully."
+        DESIGN_DETAIL_SUCCESS: "Design detail fetched successfully.",
+
     },
-       DESIGNER: {
+    SAVED_DEIGN: {
+        SAVED_DESIGN: "Saved design fetched successfully.",
+        UPATE_FAIL: "Failed to save design",
+        UPATE_SUCCESS: "Design saved successfully",
+    },
+    DESIGNER: {
         GET_ALL_DESIGNERS: "Designers fetched successfully.",
         DESIGNER_NOT_FOUND: "Designer not found.",
         DESIGNER_FOUND: "Designer data fetched successfully.",
         ID_REQUIRED: "Designer ID is required.",
     },
-       DESIGNER_VERIFICATION: {
+    DESIGNER_VERIFICATION: {
         PROOF_NOT_fOUND: "Proof image is required for each work experience entry.",
         GOVT_IMAGE_NOT_FOUND: "Government ID image is required.",
         CERTIFICATE_NOT_FOUND: "Certificate image is required for each education entry.",
