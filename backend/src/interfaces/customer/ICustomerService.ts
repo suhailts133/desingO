@@ -1,3 +1,4 @@
+import type { ActiveJobFilter, ActiveJobResponseDTO } from "../../DTO/user/activeJobDTO.js";
 import type { getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO.js";
 import type { EditJobRequest, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO.js";
 import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse.js";
@@ -15,10 +16,13 @@ export interface IJobRequestService {
 
 
 export interface IHireDesignerService {
-    createHireDesigner(userId:string,data: HireDesignerPayload): Promise<IApiResponse<WarningDTO>>
+    createHireDesigner(userId: string, data: HireDesignerPayload): Promise<IApiResponse<WarningDTO>>
     getMyHireDesignerRequests(userId: string, filters?: HireDesignerFilter): Promise<IApiResponseWithPagination<getMyHireDesignerRequestResponseDTO[]>>
     getHireRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<IApiResponseWithPagination<getHireDesignerPerDesignResponseDTO[]>>
 }
 
 
-// export interface IActiveJobServ
+export interface IActiveJobService {
+    getCustomerActiveJobs(id: string, filter?: ActiveJobFilter): Promise<IApiResponseWithPagination<ActiveJobResponseDTO[]>>
+    getDesignerActiveJobs(id: string, filter?: ActiveJobFilter): Promise<IApiResponseWithPagination<ActiveJobResponseDTO[]>>
+}

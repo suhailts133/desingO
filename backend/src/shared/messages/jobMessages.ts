@@ -36,7 +36,8 @@ export const JOB_MESSAGES = {
 
     },
     ACTIVE_JOB: {
-        NOT_FOUND: "Active job not found. "
+        NOT_FOUND: "Active job not found.",
+        FETCH_ALL:"Fetched all active jobs."
     }
 
 } as const

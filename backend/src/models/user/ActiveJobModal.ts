@@ -14,6 +14,7 @@ const activeJobSchema = new Schema<IActiveJob>(
             required: true
         },
         sourceId: { type: mongoose.Schema.Types.ObjectId },
+        sourceName: { type: String, required: true },
         status: {
             type: String,
             enum: ["Active", "Completed", "Cancelled"],

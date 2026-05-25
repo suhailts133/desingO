@@ -77,12 +77,14 @@ export interface IActiveJob {
     designerId: mongoose.Types.ObjectId
     sourceType: 'jobRequest' | 'direct_hire'
     sourceId: mongoose.Types.ObjectId
+    sourceName:string
     status: 'Active' | 'Completed' | 'Cancelled'
     startedAt: Date
     completedAt?: Date
     cancelledAt?: Date
     createdAt: Date
 }
+
 
 export type HireDesignerPayload = Omit<IHireDesigner, "id" | "userId" | "designId" | "designerId" | "spaceType"> & {
     designId: string

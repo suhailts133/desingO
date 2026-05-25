@@ -18,7 +18,7 @@ export class ProposalController {
 
 
     /**
-   * for posting new design
+   * for create new PRoposal
    * @route POST proposal/create
    * @param req.body {@link CreateProposalDTO}
    * @throws {AppError} 400 if there is any issue with req.body

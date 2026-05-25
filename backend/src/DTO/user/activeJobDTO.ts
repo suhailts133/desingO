@@ -21,4 +21,24 @@ export interface CreateActiveJobDTO {
     designerId: string
     sourceType: 'jobRequest' | 'direct_hire'
     sourceId: string
+    sourceName:string
+}
+
+
+export interface ActiveJobFilter {
+    sourceType: 'jobRequest' | 'direct_hire'
+    page?:string
+}
+
+
+
+export interface ActiveJobResponseDTO {
+    id: string,
+    sourceType: 'jobRequest' | 'direct_hire'
+    sourceName: string,
+    sourceId: string,
+    userName: string,
+    profileImage?: string,
+    status: 'Active' | 'Completed' | 'Cancelled'
+    startedAt: string
 }

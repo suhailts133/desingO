@@ -16,6 +16,7 @@ import jobApplicationRoutes from "./routes/designer/jobApplicationRoutes.js"
 import jobRoutes from "./routes/user/jobRoutes.js"
 import savedDesignRoutes from "./routes/user/savedDesignRoutes.js"
 import hireDesignerRoute from "./routes/user/hireDesignerRoutes.js"
+import activeJobsRoute from "./routes/user/activeJobRoutes.js"
 // common routes
 import profileRoutes from "./routes/common/profileRoutes.js"
 //benchmark routes
@@ -51,6 +52,8 @@ app.use("/api/direct-hire", hireDesignerRoute)
 app.use("/api/direct-hire", hireDesignerRoute)
 app.use("/api/design-bm", designBMRoutes)
 app.use("/api/proposal", profileRoutes)
+app.use("/api/proposal", profileRoutes)
+app.use("/api/active-job", activeJobsRoute)
 app.use(globalErrorHandler)
 
 
