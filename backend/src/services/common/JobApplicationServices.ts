@@ -2,7 +2,7 @@ import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFi
 import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
 import { AppError } from "../../shared/errors/appError.js";
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
-import type { IJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
+import type { IActiveJobRepository, IJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
 import type { IJobApplicationRepository } from "../../interfaces/designer/IDesignerRepository.js";
 import type { IJobApplicationService } from "../../interfaces/designer/IDesignerService.js";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
@@ -11,9 +11,11 @@ import { JOB_APPLICATION_STATUS } from "../../shared/enums/commonEnums.js";
 
 
 export class JobApplicationService implements IJobApplicationService {
-    constructor(private _jobApplicationRepo: IJobApplicationRepository, private _jobRequestRepo: IJobRepository) { }
+    constructor(private _jobApplicationRepo: IJobApplicationRepository, private _jobRequestRepo: IJobRepository, private _activeJobRepo: IActiveJobRepository) { }
 
     async applyForJob(data: IJobApplicationRequestDTO): Promise<IApiResponse> {
+        console.log(data)
+
         const jobExists = await this._jobRequestRepo.getJobRequest(data.jobId)
         if (!jobExists) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
@@ -22,7 +24,7 @@ export class JobApplicationService implements IJobApplicationService {
         if (alreadyApplied) {
             throw new AppError(JOB_MESSAGES.JOB_APPLICATION.ALREADY_APPLIED, RESPONSE_CODE.CONFILT)
         }
-        await this._jobApplicationRepo.applyForJob(jobExists.userId.toString(), data);
+        await this._jobApplicationRepo.applyForJob(jobExists.userId.id, data);
         return {
             message: JOB_MESSAGES.JOB_APPLICATION.APPLIED_SUCCESS,
             success: true,
@@ -50,6 +52,21 @@ export class JobApplicationService implements IJobApplicationService {
         const result = await this._jobApplicationRepo.approveOrRejectJobApplication(id, data);
         if (!result) {
             throw new AppError(JOB_MESSAGES.JOB_APPLICATION.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+        }
+        if (result.status === JOB_APPLICATION_STATUS.ONGOING) {
+            const jobStatusUpdated = await this._jobRequestRepo.changeStatus(result.jobId.toString(), result.status);
+            if (!jobStatusUpdated) {
+                throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+            }
+            const activeJob = await this._activeJobRepo.createActiveJOb({
+                userId: jobStatusUpdated.userId.toString(),
+                designerId: result.designerId.toString(),
+                sourceId: jobStatusUpdated.id,
+                sourceType: "jobRequest"
+            })
+            if (!activeJob) {
+                throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+            }
         }
 
         const jobApplicationData = JobApplicationMapper.toJobApplicationApprovalOrRejectionDTO(result)

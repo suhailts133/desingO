@@ -6,7 +6,7 @@ import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { joiResolver } from '@hookform/resolvers/joi';
 import { editJobRequestValidation } from '../../../../validations/customerValidation';
 import type { EditJobRequestFields, EditRoomMeasurement } from '../jobInterface';
-import { STYLE_OPTIONS, PROPERTY_OPTIONS, SPACE_OPTIONS } from '../../../designer/designs/designData';
+import { STYLE_OPTIONS, PROPERTY_OPTIONS, SPACE_OPTIONS, SERVICE_OPTIONS } from '../../../designer/designs/designData';
 import { TIMELINE_OPTIONS, UNIT_OPTIONS } from '../jobData';
 import { INDIAN_STATES } from '../../../designer/designerVerification/indianStates';
 import Select from 'react-select';
@@ -65,6 +65,7 @@ export default function EditJobRequestForm() {
             minBudget: Number(defaultData.minBudget),
             maxBudget: Number(defaultData.maxBudget),
             designStyles: labelsToOptions(defaultData.designStyles, STYLE_OPTIONS),
+            services: labelsToOptions(defaultData.services, SERVICE_OPTIONS),
             propertyType: labelToOption(defaultData.propertyType, PROPERTY_OPTIONS),
             timeline: labelToOption(defaultData.timeline, TIMELINE_OPTIONS),
             rooms: defaultData.rooms.map((room: EditRoomMeasurement) => ({
@@ -178,6 +179,9 @@ export default function EditJobRequestForm() {
         fields.designStyles.forEach(({ label }, i) =>
             formData.append(`designStyles[${i}]`, label)
         );
+        fields.services.forEach(({ label }, i) =>
+            formData.append(`services[${i}]`, label)
+        );
 
         fields.rooms.forEach((room, i) => {
             formData.append(`rooms[${i}][spaceType]`, room.spaceType.label);
@@ -208,8 +212,7 @@ export default function EditJobRequestForm() {
 
     };
 
-
-    return (
+return (
         <div className="min-h-screen w-full flex justify-center items-start py-10 px-4">
             <div className="w-full max-w-2xl bg-white/50 backdrop-blur-2xl shadow-blush/30 rounded-xl shadow-2xl p-8">
 
@@ -218,29 +221,15 @@ export default function EditJobRequestForm() {
 
                 <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
 
-                    {/* Project Title & Property Type */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="md:col-span-2">
-                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Project Title</label>
-                            <input
-                                {...register('projectTitle')}
-                                className="auth-input w-full"
-                                placeholder="e.g. Modern Living Room Redesign"
-                            />
-                            {errors.projectTitle && <p className="text-xs text-red-500 mt-1">{errors.projectTitle.message}</p>}
-                        </div>
-
-                        <div className="md:col-span-2">
-                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Property Type</label>
-                            <Controller
-                                name="propertyType"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select {...field} isMulti={false} options={PROPERTY_OPTIONS} components={animatedComponents} className="text-sm" placeholder="Select property type..." />
-                                )}
-                            />
-                            {errors.propertyType && <p className="text-xs text-red-500 mt-1">{errors.propertyType.message}</p>}
-                        </div>
+                    {/* Project Title */}
+                    <div>
+                        <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Project Title</label>
+                        <input
+                            {...register('projectTitle')}
+                            className="auth-input w-full"
+                            placeholder="e.g. Modern Living Room Redesign"
+                        />
+                        {errors.projectTitle && <p className="text-xs text-red-500 mt-1">{errors.projectTitle.message}</p>}
                     </div>
 
                     {/* Description */}
@@ -255,17 +244,43 @@ export default function EditJobRequestForm() {
                         {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>}
                     </div>
 
-                    {/* Design Styles */}
+                    {/* Property Type */}
                     <div>
-                        <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Design Styles</label>
+                        <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Property Type</label>
                         <Controller
-                            name="designStyles"
+                            name="propertyType"
                             control={control}
                             render={({ field }) => (
-                                <Select {...field} isMulti options={STYLE_OPTIONS} components={animatedComponents} className="text-sm" placeholder="Select preferred styles..." />
+                                <Select {...field} isMulti={false} options={PROPERTY_OPTIONS} components={animatedComponents} className="text-sm" placeholder="Select property type..." />
                             )}
                         />
-                        {errors.designStyles && <p className="text-xs text-red-500 mt-1">{errors.designStyles.message}</p>}
+                        {errors.propertyType && <p className="text-xs text-red-500 mt-1">{errors.propertyType.message}</p>}
+                    </div>
+
+                    {/* Design Styles & Services */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Design Styles</label>
+                            <Controller
+                                name="designStyles"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select {...field} isMulti options={STYLE_OPTIONS} components={animatedComponents} className="text-sm" placeholder="Select preferred styles..." />
+                                )}
+                            />
+                            {errors.designStyles && <p className="text-xs text-red-500 mt-1">{errors.designStyles.message}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Services</label>
+                            <Controller
+                                name="services"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select {...field} isMulti options={SERVICE_OPTIONS} components={animatedComponents} className="text-sm" />
+                                )}
+                            />
+                            {errors.services && <p className="text-xs text-red-500 mt-1">{errors.services.message}</p>}
+                        </div>
                     </div>
 
                     {/* State, District, City */}
@@ -476,7 +491,6 @@ export default function EditJobRequestForm() {
                             </div>
                         )}
                     </div>
-
 
                     {!isEditing ? (
                         <div className="flex gap-3">

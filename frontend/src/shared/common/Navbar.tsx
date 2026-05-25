@@ -17,7 +17,6 @@ export default function Navbar() {
 
   const isLoggedIn = !!accessToken
   const { role } = useDecodeAccessToken()
-  console.log(role, "From nav")
   const handleLogout = () => {
     dispatch(logOut())
     navigate("/auth/login")

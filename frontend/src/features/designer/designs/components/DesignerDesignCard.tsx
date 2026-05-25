@@ -42,7 +42,7 @@ export default function DesignerDesignCard({ design, onDeleteClick }: props) {
                 </a>
                 {/* price */}
                 <span className="text-xs font-medium tracking-widest uppercase text-blush-deep/70">
-                    Starting - {design.price}
+                    Budget - {Number(design.minPrice).toLocaleString("en-IN")} - {Number(design.maxPrice).toLocaleString("en-IN")}
                 </span>
 
 

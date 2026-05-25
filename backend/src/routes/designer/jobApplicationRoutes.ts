@@ -5,12 +5,14 @@ import { JobRequestRepository } from "../../repositories/customer/jobRequestRepo
 import { JobApplicationController } from "../../controllers/designer/jobApplicationController.js";
 import designerAuthentication from "../../middlewares/designerAuth.js";
 import authenticate from "../../middlewares/auth.js";
+import { ActiveJobRepository } from "../../repositories/common/activeJobRepository.js";
 
 const router = Router()
 
 const jobApplicationRepo = new JobApplicationRepository()
 const jobRequestRepo = new JobRequestRepository()
-const jobApplicationservice = new JobApplicationService(jobApplicationRepo, jobRequestRepo)
+const activeJobRepo = new ActiveJobRepository()
+const jobApplicationservice = new JobApplicationService(jobApplicationRepo, jobRequestRepo, activeJobRepo)
 const jobApplicationController = new JobApplicationController(jobApplicationservice);
 
 

@@ -4,6 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useGetDesignDetailQuery } from "../designEndpoints";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css"
+import HireDesignerForm from "./HireDesignerForm";
+import type { DirectHireFields } from "../../../user/jobs/jobInterface";
 
 
 export default function DesignDetail() {
@@ -12,6 +14,7 @@ export default function DesignDetail() {
     const { data, isLoading, error } = useGetDesignDetailQuery(id!, { skip: !id })
     const [servicesOpen, setServicesOpen] = useState(false);
     const [activeImage, setActiveImage] = useState<string | null>(null);
+    const [hireDesigner, setHireDesigner] = useState<boolean>(false)
     const design = data?.data;
     useEffect(() => {
         if (design?.coverImage) {
@@ -24,7 +27,10 @@ export default function DesignDetail() {
     if (error || !design) {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Design not found.</div>;
     }
-    console.log(design)
+    const handleDirectHire = async (data: DirectHireFields) => {
+        console.log(data)
+    }
+
     const allImages = [design.coverImage.path, ...design.gallery.map(e => e.path)];
     return (
         <div className="max-w-5xl mx-auto px-4 py-10">
@@ -187,7 +193,7 @@ export default function DesignDetail() {
                                     <p className="text-xs text-gray-400">Rating</p>
                                 </div>
                             </div> */}
-                            <button className="auth-button w-full">
+                            <button className="auth-button w-full" onClick={() => setHireDesigner(true)}>
                                 Hire this Designer
                             </button>
                         </div>
@@ -213,6 +219,7 @@ export default function DesignDetail() {
 
                 </div>
             </div>
+            <HireDesignerForm isOpen={hireDesigner} onClose={() => setHireDesigner(false)} hireDesigner={handleDirectHire} />
         </div>
     );
 }

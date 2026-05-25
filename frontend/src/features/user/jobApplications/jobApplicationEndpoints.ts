@@ -5,28 +5,30 @@ import type { AllJobApplicationsDTO, JobApplicationApprovalOrRejectionPayload, J
 
 export const jobsApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-    
-        getAllJobApplications:builder.query<IApiResponseWithPagination<AllJobApplicationsDTO[]>, JobApplicationQueryParms>({
-            query:(args) => ({
-                url:`${API_ROUTES.JOB_APPLICATION.JOB_APPLICATIONS}/${args.id}`,
-                method:"GET",
-                params:{
-                    page:args.page,
-                  ...(args.status && {status:args.status}),
+
+        getAllJobApplications: builder.query<IApiResponseWithPagination<AllJobApplicationsDTO[]>, JobApplicationQueryParms>({
+            query: (args) => ({
+                url: `${API_ROUTES.JOB_APPLICATION.JOB_APPLICATIONS}/${args.id}`,
+                method: "GET",
+                params: {
+                    page: args.page,
+                    ...(args.status && { status: args.status }),
+                    ...(args.sort && { sort: args.sort }),                          
+                    ...(args.startDate && { startDate: args.startDate }),          
+                    ...(args.endDate && { endDate: args.endDate }),                
                 }
             }),
-            providesTags:["jobApplications"]
+            providesTags: ["jobApplications"]
         }),
 
-       
 
         approveOrRejectJobApplication: builder.mutation<IApiResponse, JobApplicationApprovalOrRejectionPayload>({
-            query:({id,status, rejectionReason,jobId}) => ({
-                url:`${API_ROUTES.JOB_APPLICATION.UPDATE_STATUS}/${id}`,
-                method:"PATCH",
-                body:{status,rejectionReason,jobId}
+            query: ({ id, status, rejectionReason, jobId }) => ({
+                url: `${API_ROUTES.JOB_APPLICATION.UPDATE_STATUS}/${id}`,
+                method: "PATCH",
+                body: { status, rejectionReason, jobId }
             }),
-            invalidatesTags:["jobApplications"]
+            invalidatesTags: ["jobApplications"]
         })
     })
 })

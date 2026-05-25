@@ -38,17 +38,56 @@ export const designValidation: Joi.ObjectSchema<AddDesignRequestDTO> = Joi.objec
         .messages(
             { "string.empty": "Room type is required" }
         ),
-    startingPrice: Joi.number()
+
+    minPrice: Joi.number()
+        .positive()
+        .precision(2)
         .required()
-        .messages(
-            { "string.empty": "Price is required" }
-        )
+        .messages({
+            "number.base": "Minimum budget is required",
+            "number.positive": "Minimum budget must be a positive number",
+            "any.required": "Minimum budget is required",
+        }),
+
+    maxPrice: Joi.number()
+        .positive()
+        .precision(2)
+        .greater(Joi.ref("minPrice"))
+        .required()
+        .messages({
+            "number.base": "Maximum budget is required",
+            "number.positive": "Maximum budget must be a positive number",
+            "number.greater": "Maximum budget must be greater than minimum budget",
+            "any.required": "Maximum budget is required",
+        }),
+
+    length: Joi.string()
+        .trim()
+        .required()
+        .messages({
+            "string.empty": "Length is required",
+            "any.required": "Length is required",
+        }),
+    width: Joi.string()
+        .trim()
+        .required()
+        .messages({
+            "string.empty": "Width is required",
+            "any.required": "Width is required",
+        }),
+
+    unit: Joi.string()
+        .required()
+        .messages({
+            "object.base": "Unit is required",
+            "any.required": "Unit is required",
+        }),
 
 });
 
 
 
-export const editDesignValidation:Joi.ObjectSchema<EditDesign> = Joi.object<EditDesign>({
+export const editDesignValidation: Joi.ObjectSchema<EditDesign> = Joi.object<EditDesign>({
     name: Joi.string()
         .min(3)
         .required()

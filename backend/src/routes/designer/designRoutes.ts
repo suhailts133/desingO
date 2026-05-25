@@ -7,6 +7,7 @@ import { DesignRepository } from "../../repositories/designer/designRepository.j
 import { CloudinaryService } from "../../services/common/cloudinaryService.js";
 import optionalAuth from "../../middlewares/optionalAuth.js";
 import { UserRepository } from "../../repositories/auth/userRepository.js";
+import { DesignBenchMarkRepository } from "../../repositories/benchmarks/designBenchMarkRepository.js";
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router()
@@ -14,8 +15,9 @@ const router = Router()
 const designRepo = new DesignRepository()
 const imageUpload = new CloudinaryService()
 const userRepository = new UserRepository()
+const designBenchMarkRepo = new DesignBenchMarkRepository()
 
-const designService = new DesignService(designRepo, imageUpload, userRepository)
+const designService = new DesignService(designRepo, imageUpload, userRepository,designBenchMarkRepo)
 const designController = new DesignController(designService)
 
 router.post("/add-design", designerAuthentication, upload.fields([

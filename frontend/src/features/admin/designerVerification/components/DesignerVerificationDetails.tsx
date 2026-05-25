@@ -20,7 +20,7 @@ export default function DesignerVerificationDetails() {
     resolver: joiResolver(adminDesignerReject),
     mode: "onBlur"
   });
-const navigate = useNavigate()
+  const navigate = useNavigate()
   const designerRequest = data?.data;
   if (isLoading) return <div className="p-10 text-center animate-pulse text-gray-400">Loading Application...</div>;
   if (error || !designerRequest) return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Application not found.</div>;
@@ -237,7 +237,7 @@ const navigate = useNavigate()
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="auth-disabled-button">
+                    className="auth-disabled-button flex items-center justify-center gap-2">
 
                     <svg className="mr-2 size-5 animate-spin" viewBox="0 0 24 24" fill="none">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />

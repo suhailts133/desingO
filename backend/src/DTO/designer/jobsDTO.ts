@@ -9,7 +9,7 @@ export interface IJobApplicationRequestDTO {
 export interface JobApplicationApprovalOrRejectionRequestDTO {
     status: "Ongoing" | "Rejected",
     rejectionReason?: string,
-    jobId:string
+    jobId: string
 }
 
 export interface JobApplicationApprovalOrRejectionResponseDTO extends JobApplicationApprovalOrRejectionRequestDTO {
@@ -22,11 +22,11 @@ export interface MyJobApplicationsDTO {
     jobId: string,
     jobTitle: string
     id: string
-    propertyType:string,
-    timeLine:string,
-    numberOfRooms:number,
-    description:string
-    createdOn:string
+    propertyType: string,
+    timeLine: string,
+    numberOfRooms: number,
+    description: string
+    createdOn: string
 
 }
 
@@ -37,12 +37,15 @@ export interface AllJobApplicationsDTO {
     jobTitle: string
     designerId: string,
     designerName: string
-    propertyType:string,
-    timeLine:string
-    id:string
+    propertyType: string,
+    timeLine: string
+    id: string
+    createdOn: string
 }
-
 export interface JobApplicationFilter {
     page?: string,
     status?: JobApplicationStatus,
+    sort?: "asc" | "desc",
+    startDate?: string,
+    endDate?: string,
 }

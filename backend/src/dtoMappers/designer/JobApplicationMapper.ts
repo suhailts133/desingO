@@ -33,7 +33,8 @@ export class JobApplicationMapper {
             ...(data.rejectionReason && { rejectionReason: data.rejectionReason }),
             propertyType: data.jobId.propertyType,
             timeLine: data.jobId.timeline,
-            id: data.id
+            id: data.id,
+            createdOn:data.createdAt.toDateString()
         }))
     }
 }

@@ -1,9 +1,9 @@
 import Joi from "joi";
-import type { ICreateJobRequest, IRoomMeasurement } from "../../interfaces/customer/ICustomer.js";
+import type { HireDesignerPayload, ICreateJobRequest, IRoomMeasurement } from "../../interfaces/customer/ICustomer.js";
 import type { EditJobRequest } from "../../DTO/user/jobsDTO.js";
 
 
-const roomMeasurementValidation: Joi.ObjectSchema<IRoomMeasurement> = Joi.object<IRoomMeasurement>({
+export const roomMeasurementValidation: Joi.ObjectSchema<IRoomMeasurement> = Joi.object<IRoomMeasurement>({
     spaceType: Joi.string()
         .required()
         .messages({
@@ -44,6 +44,28 @@ const roomMeasurementValidation: Joi.ObjectSchema<IRoomMeasurement> = Joi.object
         }),
 });
 
+export const directHireValidation = roomMeasurementValidation
+    .fork(
+        ['spaceType'],
+        (schema) => schema.strip().optional()
+    )
+    .append({
+        services: Joi.array()
+            .items(Joi.string())
+            .required()
+            .messages({
+                "array.base": "Services must be an array",
+                "any.required": "Services is required",
+            }),
+        timeLine: Joi.string()
+            .trim()
+            .required()
+            .messages({
+                "string.empty": "Timeline is required",
+                "any.required": "Timeline is required",
+            }),
+    }) as Joi.ObjectSchema<HireDesignerPayload>
+
 
 
 
@@ -66,6 +88,12 @@ export const jobRequestValidation: Joi.ObjectSchema<ICreateJobRequest> = Joi.obj
             "object.base": "Property type is required",
             "any.required": "Property type is required",
         }),
+    services: Joi.array()
+        .min(1)
+        .required()
+        .messages(
+            { "array.min": "Select at least one service" }
+        ),
 
     description: Joi.string()
         .trim()
@@ -187,6 +215,12 @@ export const EditjobRequestValidation: Joi.ObjectSchema<EditJobRequest> = Joi.ob
             "string.max": "Project title must not exceed 100 characters",
             "any.required": "Project title is required",
         }),
+    services: Joi.array()
+        .min(1)
+        .required()
+        .messages(
+            { "array.min": "Select at least one service" }
+        ),
 
     propertyType: Joi.string()
         .required()

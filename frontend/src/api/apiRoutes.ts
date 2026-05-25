@@ -33,7 +33,7 @@ export const API_ROUTES = {
         DESIGN_DETAIL: "/design",
         DESIGNS: "/design/all-designs",
         DESIGN_DELETE: "/design",
-        DESIGN_GALLARY:"/design/gallary"
+        DESIGN_GALLARY: "/design/gallary"
     },
     JOB: {
         POST_JOB: "/job/post-job",
@@ -57,5 +57,10 @@ export const API_ROUTES = {
         GET_CUSTOMER_PROFILE: "/profile/user",
         UPDATE_CUSTOMER_DATA: "/profile/user",
         CHANGE_PROFILE_IMAGE: "/profile/change-profile-image",
+    },
+    HIRE_DESIGNER: {
+        REQUEST: "/direct-hire/request",
+        MY_REQUESTS: "/direct-hire/my",
+        REQUEST_PER_DESIGN: "/direct-hire/design/requests",
     }
 } as const

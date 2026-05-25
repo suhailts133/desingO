@@ -37,7 +37,7 @@ export default function UsersTable() {
   const totalPages = data?.totalPages ?? 1;
 
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error loading users</p>;
+  if (error || !users) return <p>Error loading users</p>;
 
   return (
     <div className="max-h-screen">

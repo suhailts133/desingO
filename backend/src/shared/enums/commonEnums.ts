@@ -34,3 +34,14 @@ export enum JOB_APPLICATION_STATUS {
     COMPLETED = "Completed",
     REJECTED = "Rejected"
 }
+export enum ACTIVE_JOB_STATUS {
+    ACTIVE = "Active",
+    CANCELLED = "Cancelled",
+    COMPLETED = "Completed",
+}
+
+
+export enum AVG_PRICE {
+    UPPER = 1.50,
+    LOWER = 0.60,
+} 

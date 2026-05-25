@@ -19,6 +19,7 @@ export class JobApplicationController {
         if (error) {
             throw new AppError(error.details[0]?.message || "Missing fields or Invalid Data", RESPONSE_CODE.BAD_REQUEST)
         }
+        console.log(value)
 
         const userId = req.user?.userId
         if (!userId) {

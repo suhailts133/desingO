@@ -3,6 +3,7 @@ import type { DesignerCardDTO, DesignerFilter } from "../../DTO/designer/designe
 import type { DesignerVerificationBodyDTO } from "../../DTO/designer/designerVerificationDTOs.js";
 import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO.js";
 import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse.js";
+import type { WarningDTO } from "../benchmark/IBenchMark.js";
 import type { DesignerVerificationFiles } from "./IDesigner.js";
 
 export interface IDesignerService {
@@ -14,7 +15,7 @@ export interface IDesignerService {
 
 
 export interface IDesignService {
-    addDesign(userId: string, data: AddDesignRequestDTO, files: DesignFiles): Promise<IApiResponse>
+    addDesign(userId: string, data: AddDesignRequestDTO, files: DesignFiles): Promise<IApiResponse<WarningDTO>>
     editDesign(designId: string, data: EditDesign, files?: EditDesignFiles): Promise<IApiResponse>
     getMyDesigns(userId: string, page?: string): Promise<IApiResponseWithPagination<getAllDesignsResponseDTO[]>>
     getDesignDetail(designId: string, userId?: string): Promise<IApiResponse<DesignDetailResponseDTO>>
@@ -31,5 +32,7 @@ export interface IJobApplicationService {
     getMyJobApplications(userId: string, filters?: JobApplicationFilter): Promise<IApiResponseWithPagination<MyJobApplicationsDTO[]>>
     getJobApplications(jobId: string, filters?: JobApplicationFilter): Promise<IApiResponseWithPagination<AllJobApplicationsDTO[]>>
 }
+
+
 
 

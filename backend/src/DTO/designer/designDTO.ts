@@ -14,12 +14,16 @@ export interface EditDesignFiles {
 export interface AddDesignRequestDTO {
     name: string;
     propertyType: string
-    startingPrice: string;
+    minPrice: number;
+    maxPrice: number;
     district: string;
     services: string[];
     designStyles: string[]
     description: string,
-    spaceType: string
+    spaceType: string,
+    length: string,
+    unit: "ft" | "m",
+    width: string
 }
 
 
@@ -49,7 +53,8 @@ export interface createDesignDTO extends AddDesignRequestDTO {
 export interface getAllDesignsResponseDTO {
     name: string
     coverImage: string,
-    price: string,
+    minPrice: string,
+    maxPrice: string,
     description: string
     id: string
 }
@@ -62,14 +67,15 @@ export interface DesignDetailResponseDTO {
     designName: string;
     propertyType: string;
     spaceType: string;
-    startingPrice: string;
+    minPrice: string;
+    maxPrice: string;
     services: string[];
     designStyles: string[];
     description: string;
     coverImage: ImageUploadResult;
     gallery: ImageUploadResult[];
     createdAt: string;
-    isSaved:boolean
+    isSaved: boolean
 }
 
 
@@ -97,7 +103,8 @@ export interface GetAllDesignCommonResponseDTO {
     spaceType: string,
     designStyles: string[]
     coverImage: string,
-    budget: string,
+    minPrice: string,
+    maxPrice: string,
     designerName: string,
-    isSaved:boolean
+    isSaved: boolean
 }

@@ -19,6 +19,7 @@ export interface JobsResponseDTO {
 }
 
 export interface EditJobRequest {
+    services: string[]
     projectTitle: string;
     propertyType: string;
     designStyles: string[];
@@ -35,7 +36,7 @@ export interface EditJobRequest {
 }
 
 
-export type EditJobRepoData = Omit<EditJobRequest, "EditJobRequest">
+export type EditJobRepoData = Omit<EditJobRequest, "oldReferences">
 
 
 export type JobsCommonResponseDTO = Omit<JobsResponseDTO, "status"> & {

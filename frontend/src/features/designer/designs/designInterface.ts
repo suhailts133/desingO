@@ -9,7 +9,11 @@ export interface IDesign {
   services: { value: string; label: string }[];
   customServices?: string;
   spaceType: { value: string; label: string };
-  startingPrice: string;
+  minPrice: number;
+  maxPrice: number;
+  length: number;
+  width: number;
+  unit: { value: string; label: string };
   coverImage: FileList;
   gallery: {
     file: File[];
@@ -20,7 +24,8 @@ export interface IDesign {
 export interface DesignResponseDTO {
   name: string
   coverImage: string,
-  price: string,
+  minPrice: string,
+  maxPrice: string,
   description: string,
   id: string
 }

@@ -33,6 +33,7 @@ const jobequestSchema = new Schema<IJobRequest>({
     minBudget: { type: Number, required: true },
     maxBudget: { type: Number, required: true },
     rooms: { type: [roomSchema], required: true },
+    services: { type: [String], required: true, default: [] },
     referenceImages: { type: [imageFormatSchema], required: true, default: [] },
     status: { type: String, enum: ["Pending", "Closed", "Ongoing"], default: "Pending" },
 

@@ -15,9 +15,13 @@ import jobApplicationRoutes from "./routes/designer/jobApplicationRoutes.js"
 // user routes
 import jobRoutes from "./routes/user/jobRoutes.js"
 import savedDesignRoutes from "./routes/user/savedDesignRoutes.js"
-
+import hireDesignerRoute from "./routes/user/hireDesignerRoutes.js"
 // common routes
 import profileRoutes from "./routes/common/profileRoutes.js"
+//benchmark routes
+import designBMRoutes from "./routes/benchmark/designBMRoutes.js"
+// proposalRoutes
+import proposalRoutes from "./routes/proposal/proposalRoutes.js"
 
 import { globalErrorHandler } from "./middlewares/globalErrorHandler.js";
 // import passport from "passport";
@@ -43,6 +47,10 @@ app.use("/api/design", designRoutes)
 app.use("/api/job-application", jobApplicationRoutes)
 app.use("/api/profile", profileRoutes)
 app.use("/api/saved-designs", savedDesignRoutes)
+app.use("/api/direct-hire", hireDesignerRoute)
+app.use("/api/direct-hire", hireDesignerRoute)
+app.use("/api/design-bm", designBMRoutes)
+app.use("/api/proposal", profileRoutes)
 app.use(globalErrorHandler)
 
 

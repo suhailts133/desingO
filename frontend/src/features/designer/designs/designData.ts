@@ -98,10 +98,6 @@ export const SERVICE_OPTIONS = [
     { value: "material_finish_selection", label: "Material & Finish Specification" },
     { value: "procurement_styling", label: "Sourcing, Procurement & Styling" },
 
-    // Execution & Handover
-    { value: "site_supervision", label: "On-site Project Supervision" },
-    { value: "styling_staging", label: "Final Styling & Staging" },
-    { value: "post_handover_support", label: "Post Handover Support" },
 ];
 
 

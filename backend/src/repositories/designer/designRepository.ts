@@ -8,6 +8,7 @@ import type { Pagination } from "../../DTO/admin/adminDTO.js";
 import type { IUser } from "../../interfaces/auth/IUser.js";
 import type { QueryFilter } from "mongoose"
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
+import type { SpaceTypeAvg } from "../../interfaces/benchmark/IBenchMark.js";
 
 export class DesignRepository extends BaseRepository<IDesign> implements IDesignRepository {
     constructor() {
@@ -61,7 +62,7 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
         }
         return result
 
-       
+
     }
 
     async getAllDesigns(designFilter?: DesignFilter): Promise<{ data: IDesignPopulated[]; pagination: Pagination; }> {
@@ -113,6 +114,30 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
 
     async deleteADesign(id: string): Promise<boolean> {
         return await this.delete(id);
+    }
+
+    async computeAvgPriceBySpaceType(): Promise<SpaceTypeAvg[]> {
+        const result = await this._model.aggregate([
+            {
+                $group: {
+                    _id: "$spaceType",
+                    averageMinPrice: { $avg: "$minPrice" },
+                    averageMaxPrice: { $avg: "$maxPrice" },
+                    noOfDesigns: { $sum: 1 },
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    spaceType: "$_id",
+                    averageMinPrice: 1,
+                    averageMaxPrice: 1,
+                    noOfDesigns: 1,
+                }
+            }
+        ]);
+
+        return result;
     }
 
 }

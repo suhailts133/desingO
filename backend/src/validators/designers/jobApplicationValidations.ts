@@ -50,5 +50,8 @@ export const jobApplicationApprovalOrRejectionValidation: Joi.ObjectSchema<JobAp
 
 export const JobApplicationsQueryFilter: Joi.ObjectSchema<JobApplicationFilter> = Joi.object<JobApplicationFilter>({
     page: Joi.string().pattern(/^[0-9]+$/),
-    status: Joi.string().valid("Pending", "Approved", "Rejected", "Ongoing")
+    status: Joi.string().valid("Pending", "Approved", "Rejected", "Ongoing"),
+    sort: Joi.string().valid("asc", "desc"),                                
+    startDate: Joi.string().isoDate(),                                      
+    endDate: Joi.string().isoDate()                                                                         
 })

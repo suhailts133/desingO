@@ -2,9 +2,10 @@ import type { Pagination } from "../../DTO/admin/adminDTO.js";
 import type { createDesignDTO, DesignFilter, EditDesignRepoData } from "../../DTO/designer/designDTO.js";
 import type { DesignerFilter } from "../../DTO/designer/designerDTO.js";
 import type { DesignerVerificationDTO } from "../../DTO/designer/designerVerificationDTOs.js";
-import type {  IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO } from "../../DTO/designer/jobsDTO.js";
+import type { IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO } from "../../DTO/designer/jobsDTO.js";
 import type { DesignerUpdateRequestDTO } from "../../DTO/profile/profileDTO.js";
 import type { ImageUploadResult } from "../base/IImageUpload.js";
+import type { SpaceTypeAvg } from "../benchmark/IBenchMark.js";
 import type { IDesign, IDesigner, IDesignerPopulated, IDesignPopulated, IJobApplication, IJobApplicationPopulated, IJobApplicationPopulatedWithJobAndUser } from "./IDesigner.js";
 
 
@@ -24,6 +25,7 @@ export interface IDesignRepository {
     deleteADesign(id: string): Promise<boolean>;
 
     editDesign(id: string, data: EditDesignRepoData, coverImage?: ImageUploadResult, gallery?: ImageUploadResult[]): Promise<boolean>
+    computeAvgPriceBySpaceType(): Promise<SpaceTypeAvg[]>
 }
 
 

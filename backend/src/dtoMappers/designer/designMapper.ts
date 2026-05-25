@@ -8,7 +8,8 @@ export class DesignMapper {
             name: data.name,
             coverImage: data.coverImage.path,
             description: data.description,
-            price: data.startingPrice
+            minPrice: data.minPrice.toString(),
+            maxPrice: data.maxPrice.toString()
         }))
     }
     static toDesignsDTOlist(designs: IDesignPopulated[], saved: Set<string>): GetAllDesignCommonResponseDTO[] {
@@ -18,7 +19,8 @@ export class DesignMapper {
             spaceType: data.spaceType,
             designStyles: data.designStyles,
             coverImage: data.coverImage.path,
-            budget: data.startingPrice,
+            minPrice:data.minPrice.toString(),
+            maxPrice:data.maxPrice.toString(),
             designerName: data.userId.full_name,
             isSaved: saved.has(data.id)
 
@@ -32,7 +34,8 @@ export class DesignMapper {
             designName: data.name,
             propertyType: data.propertyType,
             spaceType: data.spaceType,
-            startingPrice: data.startingPrice,
+            minPrice: data.minPrice.toString(),
+            maxPrice: data.maxPrice.toString(),
             services: data.services,
             description: data.description,
             designStyles: data.designStyles,

@@ -155,7 +155,7 @@ export default function DesignerUpdationForm({ data, isOpen, onClose, dataError,
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="auth-disabled-button">
+                          className="auth-disabled-button flex items-center justify-center gap-2">
 
                             <svg className="mr-2 size-5 animate-spin" viewBox="0 0 24 24" fill="none">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />

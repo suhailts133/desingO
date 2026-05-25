@@ -2,7 +2,7 @@ import { useForm, Controller, useFieldArray } from "react-hook-form";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { ImageIcon, Plus, Ruler, Trash, X } from "lucide-react";
-import { STYLE_OPTIONS, PROPERTY_OPTIONS, SPACE_OPTIONS } from "../../../designer/designs/designData";
+import { STYLE_OPTIONS, PROPERTY_OPTIONS, SPACE_OPTIONS, SERVICE_OPTIONS } from "../../../designer/designs/designData";
 import { TIMELINE_OPTIONS, UNIT_OPTIONS } from "../jobData";
 import type { IJobRequest } from "../jobInterface";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -12,6 +12,7 @@ import { usePostJob } from "../hooks/usePostJob";
 import { useEffect, useState, type ChangeEvent } from "react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+import SubmitButton from "../../../../shared/common/SubmitButton";
 const animatedComponents = makeAnimated();
 
 
@@ -56,44 +57,47 @@ export default function JobRequestForm() {
 
 
     const { handleSubmission, isLoading, jobError, jobSuccess } = usePostJob()
- const onSubmit = async (data: IJobRequest) => {
-    const formData = new FormData();
+    const onSubmit = async (data: IJobRequest) => {
+        const formData = new FormData();
 
-    formData.append("projectTitle", data.projectTitle);
-    formData.append("propertyType", data.propertyType.label);
-    formData.append("city", data.city);
-    formData.append("district", data.district);
-    formData.append("phone", data.phone);
-    formData.append("state", data.state);
-    formData.append("timeline", data.timeline.label);
-    formData.append("minBudget", String(data.minBudget));
-    formData.append("maxBudget", String(data.maxBudget));
-    formData.append("description", data.description);
+        formData.append("projectTitle", data.projectTitle);
+        formData.append("propertyType", data.propertyType.label);
+        formData.append("city", data.city);
+        formData.append("district", data.district);
+        formData.append("phone", data.phone);
+        formData.append("state", data.state);
+        formData.append("timeline", data.timeline.label);
+        formData.append("minBudget", String(data.minBudget));
+        formData.append("maxBudget", String(data.maxBudget));
+        formData.append("description", data.description);
 
-    data.designStyles.forEach(({ label }, i) => {
-        formData.append(`designStyles[${i}]`, label);
-    });
+        data.designStyles.forEach(({ label }, i) => {
+            formData.append(`designStyles[${i}]`, label);
+        });
+        data.services.forEach(({ label }, i) => {
+            formData.append(`services[${i}]`, label);
+        });
 
-    data.rooms.forEach((room, i) => {
-        formData.append(`rooms[${i}][spaceType]`, room.spaceType.label);
-        formData.append(`rooms[${i}][length]`, String(room.length));
-        formData.append(`rooms[${i}][width]`, String(room.width));
-        formData.append(`rooms[${i}][unit]`, room.unit.label);
-        if (room.ceilingHeight) formData.append(`rooms[${i}][ceilingHeight]`, String(room.ceilingHeight));
-        if (room.notes) formData.append(`rooms[${i}][notes]`, room.notes);
-    });
+        data.rooms.forEach((room, i) => {
+            formData.append(`rooms[${i}][spaceType]`, room.spaceType.label);
+            formData.append(`rooms[${i}][length]`, String(room.length));
+            formData.append(`rooms[${i}][width]`, String(room.width));
+            formData.append(`rooms[${i}][unit]`, room.unit.label);
+            if (room.ceilingHeight) formData.append(`rooms[${i}][ceilingHeight]`, String(room.ceilingHeight));
+            if (room.notes) formData.append(`rooms[${i}][notes]`, room.notes);
+        });
 
-    data.refrenceImages?.forEach((item) => {
-          const file = item.file?.[0]
+        data.refrenceImages?.forEach((item) => {
+            const file = item.file?.[0]
             if (file) {
                 formData.append("refrenceImages", file)
 
             }
-    });
+        });
 
-    console.log([...formData.entries()])
-    await handleSubmission(formData);
-};
+        console.log([...formData.entries()])
+        await handleSubmission(formData);
+    };
     const addRoom = () => {
         roomAppend({
             spaceType: SPACE_OPTIONS[0],
@@ -105,15 +109,15 @@ export default function JobRequestForm() {
         });
     };
 
-        const handleRefrenceImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
-            const selectedFiles = Array.from(e.target.files || []);
-            selectedFiles.forEach(file => {
-                refrenceAppend({
-                    file: [file]
-                });
+    const handleRefrenceImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+        const selectedFiles = Array.from(e.target.files || []);
+        selectedFiles.forEach(file => {
+            refrenceAppend({
+                file: [file]
             });
-            e.target.value = "";
-        };
+        });
+        e.target.value = "";
+    };
 
     return (
         <div className="min-h-screen w-full flex justify-center items-start py-10 px-4">
@@ -124,36 +128,15 @@ export default function JobRequestForm() {
 
                 <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
 
-                    {/* Project Title & Property Type */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="md:col-span-2">
-                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Project Title</label>
-                            <input
-                                {...register("projectTitle")}
-                                className="auth-input w-full"
-                                placeholder="e.g. Modern Living Room Redesign"
-                            />
-                            {errors.projectTitle && <p className="text-xs text-red-500 mt-1">{errors.projectTitle.message}</p>}
-                        </div>
-
-                        <div className="md:col-span-2">
-                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Property Type</label>
-                            <Controller
-                                name="propertyType"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select
-                                        {...field}
-                                        isMulti={false}
-                                        options={PROPERTY_OPTIONS}
-                                        components={animatedComponents}
-                                        className="text-sm"
-                                        placeholder="Select property type..."
-                                    />
-                                )}
-                            />
-                            {errors.propertyType && <p className="text-xs text-red-500 mt-1">{errors.propertyType.message}</p>}
-                        </div>
+                    {/* Project Title */}
+                    <div>
+                        <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Project Title</label>
+                        <input
+                            {...register("projectTitle")}
+                            className="auth-input w-full"
+                            placeholder="e.g. Modern Living Room Redesign"
+                        />
+                        {errors.projectTitle && <p className="text-xs text-red-500 mt-1">{errors.projectTitle.message}</p>}
                     </div>
 
                     {/* Description */}
@@ -168,27 +151,60 @@ export default function JobRequestForm() {
                         {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>}
                     </div>
 
-                    {/* Design Styles */}
+                    {/* Property Type */}
                     <div>
-                        <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Design Styles</label>
+                        <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Property Type</label>
                         <Controller
-                            name="designStyles"
+                            name="propertyType"
                             control={control}
                             render={({ field }) => (
                                 <Select
                                     {...field}
-                                    isMulti
-                                    options={STYLE_OPTIONS}
+                                    isMulti={false}
+                                    options={PROPERTY_OPTIONS}
                                     components={animatedComponents}
                                     className="text-sm"
-                                    placeholder="Select preferred styles..."
+                                    placeholder="Select property type..."
                                 />
                             )}
                         />
-                        {errors.designStyles && <p className="text-xs text-red-500 mt-1">{errors.designStyles.message}</p>}
+                        {errors.propertyType && <p className="text-xs text-red-500 mt-1">{errors.propertyType.message}</p>}
                     </div>
 
-                    {/* City, District, state */}
+                    {/* Design Styles & Services */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Design Styles</label>
+                            <Controller
+                                name="designStyles"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        isMulti
+                                        options={STYLE_OPTIONS}
+                                        components={animatedComponents}
+                                        className="text-sm"
+                                        placeholder="Select preferred styles..."
+                                    />
+                                )}
+                            />
+                            {errors.designStyles && <p className="text-xs text-red-500 mt-1">{errors.designStyles.message}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Services</label>
+                            <Controller
+                                name="services"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select {...field} isMulti options={SERVICE_OPTIONS} components={animatedComponents} className="text-sm" />
+                                )}
+                            />
+                            {errors.services && <p className="text-xs text-red-500 mt-1">{errors.services.message}</p>}
+                        </div>
+                    </div>
+
+                    {/* Location */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">State</label>
@@ -209,7 +225,6 @@ export default function JobRequestForm() {
                             />
                             {errors.district && <p className="text-xs text-red-500 mt-1">{errors.district.message}</p>}
                         </div>
-
                         <div>
                             <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">City</label>
                             <input
@@ -219,11 +234,9 @@ export default function JobRequestForm() {
                             />
                             {errors.city && <p className="text-xs text-red-500 mt-1">{errors.city.message}</p>}
                         </div>
-
-
                     </div>
 
-                    {/* Timeline & phone */}
+                    {/* Phone & Timeline */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Phone</label>
@@ -234,13 +247,11 @@ export default function JobRequestForm() {
                             />
                             {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone.message}</p>}
                         </div>
-
                         <div>
                             <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Project Timeline</label>
                             <Controller
                                 name="timeline"
                                 control={control}
-
                                 render={({ field }) => (
                                     <Select
                                         {...field}
@@ -254,13 +265,10 @@ export default function JobRequestForm() {
                             />
                             {errors.timeline && <p className="text-xs text-red-500 mt-1">{errors.timeline.message}</p>}
                         </div>
-
                     </div>
 
-
-                    {/**budget */}
+                    {/* Budget */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
                         <div>
                             <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Minimum Budget (₹)</label>
                             <input
@@ -271,7 +279,6 @@ export default function JobRequestForm() {
                             />
                             {errors.minBudget && <p className="text-xs text-red-500 mt-1">{errors.minBudget.message}</p>}
                         </div>
-
                         <div>
                             <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Maximum Budget (₹)</label>
                             <input
@@ -290,7 +297,6 @@ export default function JobRequestForm() {
                     <div className="space-y-4">
                         <label className="block text-sm font-Jost-Semibold text-gray-700">Room Measurements</label>
 
-                        {/* Add Room Button */}
                         <button
                             type="button"
                             onClick={addRoom}
@@ -310,7 +316,7 @@ export default function JobRequestForm() {
                         {errors.rooms && (
                             <p className="text-xs text-red-500 mt-1">{errors.rooms.message}</p>
                         )}
-                        {/* Room Cards */}
+
                         {roomFields.length > 0 && (
                             <div className="space-y-4">
                                 {roomFields.map((field, index) => (
@@ -318,7 +324,6 @@ export default function JobRequestForm() {
                                         key={field.id}
                                         className="relative p-4 bg-gray-50 rounded-xl border border-dashed border-gray-200 space-y-3"
                                     >
-                                        {/* Remove button */}
                                         <button
                                             type="button"
                                             onClick={() => roomRemove(index)}
@@ -327,7 +332,6 @@ export default function JobRequestForm() {
                                             <Trash size={12} className="text-error" />
                                         </button>
 
-                                        {/* Space type selector */}
                                         <div>
                                             <label className="block text-xs font-Jost-Semibold text-gray-600 mb-1">Space Type</label>
                                             <Controller
@@ -349,7 +353,6 @@ export default function JobRequestForm() {
                                             )}
                                         </div>
 
-                                        {/* Dimensions row */}
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                                             <div>
                                                 <label className="block text-xs font-Jost-Semibold text-gray-600 mb-1">Length</label>
@@ -402,7 +405,6 @@ export default function JobRequestForm() {
                                             </div>
                                         </div>
 
-                                        {/* Notes */}
                                         <div>
                                             <label className="block text-xs font-Jost-Semibold text-gray-600 mb-1">Notes <span className="text-gray-400 font-normal">(optional)</span></label>
                                             <input
@@ -416,17 +418,15 @@ export default function JobRequestForm() {
                                         </div>
                                     </div>
                                 ))}
-
                             </div>
                         )}
                     </div>
 
-
+                    {/* Reference Images */}
                     <div className="space-y-4">
                         <label className="block text-sm font-Jost-Semibold text-gray-700">Refrence images (Optional)</label>
 
                         {refrenceFields.length < 10 && (
-
                             <>
                                 <label
                                     htmlFor="refrence"
@@ -444,7 +444,6 @@ export default function JobRequestForm() {
                                     <Plus className="h-5 w-5 text-gray-400 ml-auto shrink-0" />
                                 </label>
 
-
                                 <input
                                     type="file"
                                     id="refrence"
@@ -453,9 +452,8 @@ export default function JobRequestForm() {
                                     onChange={handleRefrenceImageUpload}
                                 />
                             </>
-
                         )}
-                        {/* refrence images */}
+
                         {refrenceFields.length > 0 && (
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-xl border border-dashed border-gray-200">
                                 {refrenceFields.map((field, index) => (
@@ -483,19 +481,9 @@ export default function JobRequestForm() {
                             </div>
                         )}
                         {errors.refrenceImages && <p className="text-xs text-red-500 mt-1">{errors.refrenceImages.message}</p>}
-
                     </div>
-                    {!isLoading ? (
-                        <button type="submit" className="auth-button">Post Job Request</button>
-                    ) : (
-                        <button type="submit" disabled={isLoading} className="auth-disabled-button">
-                            <svg className="mr-2 size-5 animate-spin" viewBox="0 0 24 24" fill="none">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                            </svg>
-                            Posting
-                        </button>
-                    )}
+
+                    <SubmitButton isLoading={isLoading} label="Post Job Request" loadingLabel="Posting" type="submit" />
                 </form>
                 {jobError && <p className="text-sm text-error text-center">{jobError}</p>}
                 {jobSuccess && <p className="text-sm text-success text-center">{jobSuccess}</p>}

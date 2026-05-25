@@ -4,18 +4,23 @@ import type { IJobRepository } from "../../interfaces/customer/ICustomerReposito
 import { JobRequestModel } from "../../models/user/jobModel.js";
 import { BaseRepository } from "../baseRepository.js";
 import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { EditJobRepoData,JobFilter } from "../../DTO/user/jobsDTO.js";
+import type { EditJobRepoData, JobFilter } from "../../DTO/user/jobsDTO.js";
 import type { IUser } from "../../interfaces/auth/IUser.js";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
 import { JOB_REQUEST_FILTERS } from "../../shared/enums/filterEnums.js";
+import { JOB_REQUEST_STATUS } from "../../shared/enums/commonEnums.js";
 
 export class JobRequestRepository extends BaseRepository<IJobRequest> implements IJobRepository {
     constructor() {
         super(JobRequestModel)
     }
 
+    async changeStatus(id: string, status: string): Promise<IJobRequest | null> {
 
-
+        const res = await this._model.findByIdAndUpdate(id, { $set: { status } }, { returnDocument: "after" }).exec()
+        console.log(res)
+        return res
+    }
 
     async createJobRequest(userId: string, data: ICreateJobRequest, referenceImages?: ImageUploadResult[]): Promise<boolean> {
         const result = await this.create({
@@ -72,7 +77,7 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
             }
 
         }
-        query.status = "Pending"
+        query.status = JOB_REQUEST_STATUS.PENDING
 
         const sortOrder: { [key: string]: SortOrder } = {}
         if (JobFilter?.sortBy) {
@@ -102,7 +107,7 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
             .limit(limit)
             .sort(sortOrder)
             .exec()
-        console.log(result)
+       
         const total = await this._model.countDocuments(query)
         const pagination: Pagination = {
             total,

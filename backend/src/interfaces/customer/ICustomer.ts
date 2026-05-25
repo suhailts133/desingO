@@ -31,11 +31,12 @@ export interface IJobRequest {
     rooms: IRoomMeasurement[];
     status: JobStatus
     createdAt: Date,
-    referenceImages:ImageUploadResult[]
+    services: string[]
+    referenceImages: ImageUploadResult[]
 }
 
 export type IJobRequestPopulated = Omit<IJobRequest, "userId"> & {
-    userId:IUser
+    userId: IUser
 }
 
 
@@ -47,4 +48,42 @@ export interface IBid {
     timeLine: string
     amount: number,
     description: string
+}
+
+
+export interface IHireDesigner {
+    id: string
+    userId: mongoose.Types.ObjectId
+    designerId: mongoose.Types.ObjectId
+    designId: mongoose.Types.ObjectId
+    spaceType: string,
+    length: string;
+    width: string;
+    ceilingHeight: string;
+    unit: string
+    notes: string;
+    status: "Accepted" | "Rejected" | "Pending",
+    rejectionReason?: string
+    services: string[]
+    timeLine: string,
+    createdAt: Date,
+    expiresAt: Date
+}
+
+
+export interface IActiveJob {
+    id: string
+    userId: mongoose.Types.ObjectId
+    designerId: mongoose.Types.ObjectId
+    sourceType: 'jobRequest' | 'direct_hire'
+    sourceId: mongoose.Types.ObjectId
+    status: 'Active' | 'Completed' | 'Cancelled'
+    startedAt: Date
+    completedAt?: Date
+    cancelledAt?: Date
+    createdAt: Date
+}
+
+export type HireDesignerPayload = Omit<IHireDesigner, "id" | "userId" | "designId" | "designerId" | "spaceType"> & {
+    designId: string
 }

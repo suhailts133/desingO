@@ -1,5 +1,5 @@
 export const JOB_MESSAGES = {
-    
+
     JOB_APPLICATION: {
         ALREADY_APPLIED: "You have already applied for this job.",
         APPLIED_SUCCESS: "Job application submitted successfully.",
@@ -23,6 +23,20 @@ export const JOB_MESSAGES = {
         JOB_REQUEST: "Fetched  job request successfully.",
         DELETION_FAILED: "Failed to delete your job request. Please contact support.",
         DELETION_SUCCESS: "Job request deleted successfully.",
+
     },
 
- } as const
+    HIRE_DESIGNER: {
+        CREATED: "Your request has been submitted.",
+        FAIL: "you have already submitted a request.",
+        MY_REQUEST: "successfully fetched all you hire designer request.",
+        EXTRA_SERVICES: "You have selected some extra services that the designer is not providing.",
+        AREA_MISMATCH: "Your room dimensions differ significantly from the original design",
+        DESIGNER_BUSY: "This designer currently has more than 2 active jobs"
+
+    },
+    ACTIVE_JOB: {
+        NOT_FOUND: "Active job not found. "
+    }
+
+} as const

@@ -5,7 +5,7 @@ import type { IJobApplicationRepository } from "../../interfaces/designer/IDesig
 import { JobApplicationModel } from "../../models/designer/jobApplicationModel.js";
 import { BaseRepository } from "../baseRepository.js";
 import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { QueryFilter } from "mongoose";
+import type { QueryFilter, SortOrder } from "mongoose";
 import type { IJobRequest } from "../../interfaces/customer/ICustomer.js";
 import type { IUser } from "../../interfaces/auth/IUser.js";
 
@@ -15,10 +15,10 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
     }
 
 
-    
+
     async changeStatusForPendingUser(id: string, jobId: string): Promise<void> {
 
-        const res = await this._model.updateMany(
+        await this._model.updateMany(
             {
                 _id: { $ne: id },
                 jobId: jobId,
@@ -31,11 +31,12 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
                 }
             }
         )
-        console.log(res)
+
 
     }
 
     async applyForJob(customerId: string, data: IJobApplicationRequestDTO): Promise<void> {
+
         await this.create({
             designerId: new mongoose.Types.ObjectId(data.userId),
             customerId: new mongoose.Types.ObjectId(customerId),
@@ -45,7 +46,8 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
     }
 
     async checkUserJobApplication(userId: string, jobId: string): Promise<boolean> {
-        const result = await this.findOne({ userId: userId, jobId: jobId })
+        const result = await this.findOne({ designerId: userId, jobId: jobId })
+       
         return !!result
     }
 
@@ -84,37 +86,54 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
             total,
             totalPages: Math.ceil(total / limit)
         }
+        console.log(result)
 
-    
+
         return { data: result, pagination }
     }
 
     async getJobApplications(jobId: string, filters?: JobApplicationFilter): Promise<{ data: IJobApplicationPopulatedWithJobAndUser[]; pagination: Pagination; }> {
-   
+
         const page = filters?.page ? Number(filters.page) : 1;
-        const limit =1;
+        const limit = 1;
         const skip = (page - 1) * limit;
         const query: QueryFilter<IJobApplication> = { jobId: jobId };
+        const sortOrder: { [key: string]: SortOrder } = { createdAt: -1 }
+
         if (filters) {
             if (filters.status) {
                 query.status = filters.status
             }
+
+            if (filters.sort === "asc") {
+                sortOrder.createdAt = "asc"
+            } else if (filters.sort === "desc") {
+                sortOrder.createdAt = "desc"
+            }
+
+            if (filters.startDate && filters.endDate) {
+                query.createdAt = {
+                    $gte: new Date(filters.startDate),
+                    $lte: new Date(filters.endDate)
+                }
+
+            }
         }
+
         const result = await this._model.find(query)
             .populate<{ jobId: IJobRequest }>("jobId")
             .populate<{ designerId: IUser }>("designerId")
-            .sort({ createdAt: -1 })
+            .sort(sortOrder)
             .skip(skip)
             .limit(limit)
             .exec()
-
 
         const total = await this._model.countDocuments(query)
         const pagination: Pagination = {
             total,
             totalPages: Math.ceil(total / limit)
         }
-    
+
         return { data: result, pagination }
     }
 }

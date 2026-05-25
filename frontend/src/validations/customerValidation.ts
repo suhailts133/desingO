@@ -2,7 +2,7 @@ import Joi from "joi";
 import type { IBid, IJobRequest, RoomMeasurement } from "../features/user/jobs/jobInterface";
 import { imageValidation } from "../helpers/imageValidation";
 
-const selectOption = Joi.object({
+export const selectOption = Joi.object({
     value: Joi.string().required(),
     label: Joi.string().required(),
 });
@@ -76,6 +76,28 @@ const roomMeasurementValidation: Joi.ObjectSchema<RoomMeasurement> = Joi.object<
         }),
 });
 
+
+export const directHireValidation = roomMeasurementValidation.fork(
+    ['spaceType'],
+    (schema) => schema.strip().optional(),
+).append({
+    timeLine: selectOption.required().messages({
+        "object.base": "Timeline is required",
+        "any.required": "Timeline is required",
+    }),
+    services: Joi.array()
+        .items(selectOption)
+        .min(1)
+        .required()
+        .messages({
+            "array.base": "Services must be an array",
+            "array.min": "At least one service is required",
+            "any.required": "Services is required",
+        }),
+
+})
+
+
 export const jobRequestValidation: Joi.ObjectSchema<IJobRequest> = Joi.object<IJobRequest>({
     projectTitle: Joi.string()
         .trim()
@@ -88,6 +110,8 @@ export const jobRequestValidation: Joi.ObjectSchema<IJobRequest> = Joi.object<IJ
             "string.max": "Project title must not exceed 100 characters",
             "any.required": "Project title is required",
         }),
+
+
 
     propertyType: selectOption.required().messages({
         "object.base": "Property type is required",
@@ -104,6 +128,15 @@ export const jobRequestValidation: Joi.ObjectSchema<IJobRequest> = Joi.object<IJ
             "string.min": "Description must be at least 20 characters",
             "string.max": "Description must not exceed 1000 characters",
             "any.required": "Description is required",
+        }),
+    services: Joi.array()
+        .items(selectOption)
+        .min(1)
+        .required()
+        .messages({
+            "array.min": "Select at least one service",
+            "any.required": "Services are required",
+            "array.base": "Services must be an array",
         }),
 
     designStyles: Joi.array()

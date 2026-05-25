@@ -10,6 +10,8 @@ import type { IDesign } from "../designInterface";
 import { designValidation } from "../../../../validations/designValidation";
 import { STYLE_OPTIONS, SERVICE_OPTIONS, PROPERTY_OPTIONS, SPACE_OPTIONS } from "../designData";
 import { useAddDesign } from "../hooks/useAddDesign";
+import { UNIT_OPTIONS } from "../../../user/jobs/jobData";
+import SubmitButton from "../../../../shared/common/SubmitButton";
 const animatedComponents = makeAnimated();
 
 export default function DesignForm() {
@@ -59,7 +61,11 @@ export default function DesignForm() {
         formData.append("name", data.name);
         formData.append("spaceType", data.spaceType.label)
         formData.append("propertyType", data.propertyType.label)
-        formData.append("startingPrice", String(data.startingPrice))
+        formData.append("minPrice", String(data.minPrice))
+        formData.append("maxPrice", String(data.maxPrice))
+        formData.append("width", String(data.width))
+        formData.append("length", String(data.length))
+        formData.append("unit", String(data.unit.label))
         formData.append("description", data.description);
         data.designStyles.forEach(({ label }, i) => {
             formData.append(`designStyles[${i}]`, label)
@@ -93,23 +99,11 @@ export default function DesignForm() {
 
                 <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
 
-                    {/* design name */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="md:col-span-2">
-                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Design Name</label>
-                            <input {...register("name")} className="auth-input w-full" placeholder="e.g. Modern Japandi Living Room" />
-                            {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
-                        </div>
-
-                        {/* room type */}
-
-
-                        {/* starting price */}
-                        <div>
-                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Starting Price</label>
-                            <input type="number" {...register("startingPrice")} className="auth-input w-full" placeholder="0.00" />
-                            {errors.startingPrice && <p className="text-xs text-red-500 mt-1">{errors.startingPrice.message}</p>}
-                        </div>
+                    {/* Design Name */}
+                    <div>
+                        <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Design Name</label>
+                        <input {...register("name")} className="auth-input w-full" placeholder="e.g. Modern Japandi Living Room" />
+                        {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
                     </div>
 
                     {/* Description */}
@@ -144,10 +138,11 @@ export default function DesignForm() {
                             {errors.services && <p className="text-xs text-red-500 mt-1">{errors.services.message}</p>}
                         </div>
                     </div>
-                    {/* roomtype and properytype */}
+
+                    {/* Space Type & Property Type */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">space</label>
+                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Space</label>
                             <Controller
                                 name="spaceType"
                                 control={control}
@@ -158,7 +153,7 @@ export default function DesignForm() {
                             {errors.spaceType && <p className="text-xs text-red-500 mt-1">{errors.spaceType.message}</p>}
                         </div>
                         <div>
-                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">property</label>
+                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Property</label>
                             <Controller
                                 name="propertyType"
                                 control={control}
@@ -170,9 +165,80 @@ export default function DesignForm() {
                         </div>
                     </div>
 
+                    {/* Dimensions */}
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div>
+                            <label className="block text-xs font-Jost-Semibold text-gray-600 mb-1">Length</label>
+                            <input
+                                type="number"
+                                {...register("length")}
+                                className="auth-input w-full"
+                                placeholder="0"
+                            />
+                            {errors.length && (
+                                <p className="text-xs text-red-500 mt-1">{errors.length.message}</p>
+                            )}
+                        </div>
+                        <div>
+                            <label className="block text-xs font-Jost-Semibold text-gray-600 mb-1">Width</label>
+                            <input
+                                type="number"
+                                {...register("width")}
+                                className="auth-input w-full"
+                                placeholder="0"
+                            />
+                            {errors.width && (
+                                <p className="text-xs text-red-500 mt-1">{errors.width.message}</p>
+                            )}
+                        </div>
+                        <div className="col-span-2 md:col-span-1">
+                            <label className="block text-xs font-Jost-Semibold text-gray-600 mb-1">Unit</label>
+                            <Controller
+                                name={"unit"}
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        isMulti={false}
+                                        options={UNIT_OPTIONS}
+                                        components={animatedComponents}
+                                        className="text-sm"
+                                    />
+                                )}
+                            />
+                            {errors.unit && (
+                                <p className="text-xs text-red-500 mt-1">{errors.unit.message}</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Budget */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Minimum Budget (₹)</label>
+                            <input
+                                type="number"
+                                {...register("minPrice", { valueAsNumber: true })}
+                                className="auth-input w-full"
+                                placeholder="e.g. 50000"
+                            />
+                            {errors.minPrice && <p className="text-xs text-red-500 mt-1">{errors.minPrice.message}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Maximum Budget (₹)</label>
+                            <input
+                                type="number"
+                                {...register("maxPrice", { valueAsNumber: true })}
+                                className="auth-input w-full"
+                                placeholder="e.g. 50000"
+                            />
+                            {errors.maxPrice && <p className="text-xs text-red-500 mt-1">{errors.maxPrice.message}</p>}
+                        </div>
+                    </div>
+
                     <hr className="my-6 border-gray-100" />
 
-
+                    {/* Cover Image */}
                     <div>
                         <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Cover Image</label>
                         <label
@@ -212,7 +278,7 @@ export default function DesignForm() {
                         {errors.coverImage && <p className="text-xs text-red-500 mt-1">{errors.coverImage.message}</p>}
                     </div>
 
-
+                    {/* Gallery */}
                     <div className="space-y-4">
                         <label className="block text-sm font-Jost-Semibold text-gray-700">Gallery Portfolio</label>
 
@@ -277,17 +343,9 @@ export default function DesignForm() {
 
                     </div>
 
-                    {!isLoading ? (
-                        <button type="submit" className="auth-button">Submit</button>
-                    ) : (
-                        <button type="submit" disabled={isLoading} className="auth-disabled-button">
-                            <svg className="mr-2 size-5 animate-spin" viewBox="0 0 24 24" fill="none">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                            </svg>
-                            Verifying
-                        </button>
-                    )}
+
+                    <SubmitButton isLoading={isLoading} label="Submit" loadingLabel="verifying" type="submit" />
+               
                 </form>
                 {designError && <p className="text-sm text-error text-center">{designError}</p>}
                 {designSuccess && <p className="text-sm text-success text-center">{designSuccess}</p>}

@@ -1,11 +1,16 @@
 export interface JobApplicationQueryParms {
     page?: number,
-    status?:JobApplicationStatus,
-    id:string
+    status?: JobApplicationStatus,
+    id: string,
+    sort?: "asc" | "desc",        
+    startDate?: string,
+    endDate?: string,              
 }
 
-
 export type JobApplicationStatus = "Pending" | "Approved" | "Rejected" | "Ongoing"
+
+export type DateFilter = "Latest" | "Oldest" | "Today" | "Custom";
+
 
 export interface AllJobApplicationsDTO {
     status: JobApplicationStatus,
@@ -17,6 +22,7 @@ export interface AllJobApplicationsDTO {
     propertyType:string,
     timeLine:string,
     id:string
+    createdOn:string
 }
 
 export interface MyJobApplicationsDTO {

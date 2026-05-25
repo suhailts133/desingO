@@ -8,6 +8,12 @@ export interface RoomMeasurement {
     unit: { value: string; label: string };
     notes: string;
 }
+export type DirectHireFields = Omit<RoomMeasurement, "spaceType"> & {
+    timeLine: { value: string; label: string },
+    services: { value: string; label: string }[]
+}
+
+
 export interface EditRoomMeasurement {
     spaceType: string;
     length: string;
@@ -18,6 +24,7 @@ export interface EditRoomMeasurement {
 }
 
 export interface IJobRequest {
+    services: { value: string; label: string }[];
     projectTitle: string;
     propertyType: { value: string; label: string }
     designStyles: { value: string; label: string }[];
@@ -57,6 +64,7 @@ export interface IJobRequestPayload {
     projectTitle: string;
     propertyType: string;
     designStyles: string[];
+    services: string[];
     city: string;
     state: string;
     district: string;
@@ -65,7 +73,7 @@ export interface IJobRequestPayload {
     minBudget: number;
     maxBudget: number;
     description: string;
-    referenceImages:ImageUploadResult[]
+    referenceImages: ImageUploadResult[]
     rooms: RoomMeasurementPayload[];
 }
 

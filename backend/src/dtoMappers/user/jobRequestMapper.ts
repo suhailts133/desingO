@@ -55,6 +55,7 @@ export class JobRequestMapper {
             referenceImages: data.referenceImages,
             rooms: data.rooms,
             status: data.status,
+            services:data.services,
             name: data.userId.full_name,
             createdAt: data.createdAt.toDateString(),
             userCreatedAt: data.userId.createdAt.toDateString()

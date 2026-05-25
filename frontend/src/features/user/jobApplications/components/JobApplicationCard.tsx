@@ -1,11 +1,12 @@
 import { ArrowUpRight, User } from "lucide-react"
 import type { AllJobApplicationsDTO, JobApplicationStatus } from "../jobApplicationInterFace";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
     application: AllJobApplicationsDTO
     onApprove: () => void
     onReject: () => void
-    
+
 }
 
 const statusStyles: Record<JobApplicationStatus, string> = {
@@ -17,9 +18,10 @@ const statusStyles: Record<JobApplicationStatus, string> = {
 
 
 export default function JobApplicationCard({ application, onApprove, onReject }: Props) {
-    const { status, rejectionReason,  jobTitle, designerName, propertyType, timeLine } = application
+    const { status, rejectionReason, jobTitle, designerName, propertyType, timeLine, createdOn,designerId,jobId } = application
 
     const isActionable = status === "Pending"
+    const navigate = useNavigate()
 
     return (
         <div className="group bg-off-white w-full rounded-xl border border-blush-light/40 overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
@@ -40,9 +42,10 @@ export default function JobApplicationCard({ application, onApprove, onReject }:
                     </span>
                 </div>
 
-                <h3 className="text-md font-semibold leading-snug text-soft-black group-hover:text-blush-deep transition-colors duration-200 truncate">
+                <h3 onClick={() =>  navigate(`/jobs/${jobId}`)} className="text-md font-semibold leading-snug text-soft-black group-hover:text-blush-deep transition-colors duration-200 truncate">
                     {jobTitle}
                 </h3>
+                <p className="text-xxs text-soft-black">{createdOn}</p>
 
                 {status === "Rejected" && rejectionReason && (
                     <div className="bg-red-50 border-l-2 border-red-400 rounded px-3 py-2">
@@ -60,7 +63,10 @@ export default function JobApplicationCard({ application, onApprove, onReject }:
                         <div>
                             <p className="text-[12px] font-semibold text-soft-black leading-tight">{designerName}</p>
                         </div>
+                        <button     onClick={() => navigate(`/designers/${designerId}`)}>
+
                         <ArrowUpRight size={16} className="ml-auto text-soft-black/30 group-hover:text-blush-deep transition-colors duration-200" />
+                        </button>
                     </div>
 
                     {
