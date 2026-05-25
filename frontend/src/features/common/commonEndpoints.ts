@@ -1,7 +1,7 @@
 import { API_ROUTES } from "../../api/apiRoutes";
 import { baseApi } from "../../api/baseApi";
 import type { IApiResponse, IApiResponseWithPagination } from "../../api/responseType";
-import type { DesignerCardDTO, DesignerFilter, DesignGallaryDTO } from "./commonInterface";
+import type { DesignerCardDTO, DesignerFilter, DesignGallaryDTO, ISavedDesignDTO } from "./commonInterface";
 
 export const commonApis = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -30,6 +30,14 @@ export const commonApis = baseApi.injectEndpoints({
                 url:API_ROUTES.DESIGNER.GET_DESIGNER_DETAIL(designerId),
                 method:"GET"
             })
+        }),
+        saveDesign:builder.mutation<IApiResponse<boolean>,ISavedDesignDTO>({
+            query:(body) => ({
+                url:API_ROUTES.SAVE_DESIGNS.ADD_REMOVE,
+                method:"PATCH",
+                body:body
+            }),
+            invalidatesTags:["savedDesigns"]
         })
     })
 })
@@ -38,5 +46,6 @@ export const commonApis = baseApi.injectEndpoints({
 export const {
     useGetAllDesignersQuery,
     useGetDesignerDetailQuery,
-    useGetDesignGallaryQuery
+    useGetDesignGallaryQuery,
+    useSaveDesignMutation
 } = commonApis

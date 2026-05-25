@@ -23,3 +23,10 @@ export interface DesignGallaryDTO {
     coverImage:string,
     designId:string
 }
+
+
+export interface ISavedDesignDTO {
+    isSaved: boolean,
+    designId: string
+}
+

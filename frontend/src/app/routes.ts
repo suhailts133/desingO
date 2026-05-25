@@ -37,6 +37,7 @@ import DesignerDetail from "../features/common/components/DesignerDetail";
 import EditDesignForm from "../features/designer/designs/components/EditDesignForm";
 import EditJobRequestForm from "../features/user/jobs/components/EditJobRequestForm";
 import CustomerProfilePage from "../features/user/profile/pages/CustomerProfilePage";
+import SaveDesignPage from "../features/wishlist/page/saveDesignPage";
 
 
 const router = createBrowserRouter([
@@ -126,6 +127,20 @@ const router = createBrowserRouter([
         Component: CustomerLayout,
         children: [
             { path: "customer", Component: CustomerProfilePage }
+        ]
+    },
+    {
+        path: "customer/saved-design",
+        Component: CustomerLayout,
+        children: [
+            { path: "my", Component: SaveDesignPage }
+        ]
+    },
+    {
+        path: "designer/saved-design",
+        Component: DesignerLayout,
+        children: [
+            { path: "my", Component: SaveDesignPage }
         ]
     },
 

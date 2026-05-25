@@ -1,7 +1,8 @@
 import { useState, memo } from "react"
 import {
     LayoutDashboard, User, Briefcase,
-    CircleDollarSign, ChevronRight, LogOut 
+    CircleDollarSign, ChevronRight, LogOut,
+    Heart
 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import type { AppDispatch } from "../../app/store"
@@ -29,7 +30,7 @@ const CustomerSidebar = memo(({ name, email }: { name: string, email: string }) 
 
     const iconClass = (label: string) =>
         `shrink-0 transition-colors duration-200 ${active === label ? "text-blush-deep" : "text-soft-black/50 group-hover:text-soft-black"}`
-console.log("customer sidebar")
+    console.log("customer sidebar")
     return (
         <aside
             className={`
@@ -89,14 +90,14 @@ console.log("customer sidebar")
                     {!collapsed && <span className="flex-1">Jobs</span>}
                 </Link>
 
-            
 
-                {/* bids */}
-                <a onClick={() => setActive("Analytics")} className={linkClass("Analytics")}>
-                    {active === "Analytics" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
-                    <CircleDollarSign size={18} strokeWidth={active === "Analytics" ? 2.2 : 1.8} className={iconClass("Analytics")} />
-                    {!collapsed && <span className="flex-1">Bids</span>}
-                </a>
+
+                {/* savedDesign */}
+                <Link to="/customer/saved-design/my" onClick={() => setActive("savedDesign")} className={linkClass("savedDesign")}>
+                    {active === "savedDesign" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
+                    <Heart size={18} strokeWidth={active === "savedDesign" ? 2.2 : 1.8} className={iconClass("savedDesign")} />
+                    {!collapsed && <span className="flex-1">Saved Design</span>}
+                </Link>
 
 
 

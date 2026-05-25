@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { ChevronLeft, Tag, Wallet, Layers, Wrench, User, ChevronDown, Calendar } from "lucide-react";
+import { ChevronLeft, Tag, Wallet, Layers, Wrench, User, ChevronDown, Calendar, Heart } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetDesignDetailQuery } from "../designEndpoints";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css"
 import HireDesignerForm from "./HireDesignerForm";
 import type { DirectHireFields } from "../../../user/jobs/jobInterface";
+import { useToggleSaveDesign } from "../../../common/hooks/useToggleSaveDesign";
 
 
 export default function DesignDetail() {
@@ -15,23 +16,38 @@ export default function DesignDetail() {
     const [servicesOpen, setServicesOpen] = useState(false);
     const [activeImage, setActiveImage] = useState<string | null>(null);
     const [hireDesigner, setHireDesigner] = useState<boolean>(false)
+    const [isSaved, setIsSaved] = useState<boolean>(false)  // ✅ Moved up before early returns
+    const { isToggling, savedError, handleToggling } = useToggleSaveDesign()
+
     const design = data?.data;
+
     useEffect(() => {
-        if (design?.coverImage) {
+        if (design) {
             setActiveImage(design.coverImage.path)
+            setIsSaved(design.isSaved)
         }
     }, [design])
     if (isLoading) {
-        return <div className="p-10 text-center animate-pulse text-gray-400">Loading Design  Details...</div>;
+        return <div className="p-10 text-center animate-pulse text-gray-400">Loading Design Details...</div>;
     }
     if (error || !design) {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Design not found.</div>;
     }
+
     const handleDirectHire = async (data: DirectHireFields) => {
         console.log(data)
     }
 
+    const toggleSave = async (e: React.MouseEvent) => {
+        e.stopPropagation()
+        const result = await handleToggling({ designId: design.id, isSaved: !isSaved })
+        if (result !== undefined) {
+            setIsSaved(result)
+        }
+    }
+    console.log(savedError)
     const allImages = [design.coverImage.path, ...design.gallery.map(e => e.path)];
+
     return (
         <div className="max-w-5xl mx-auto px-4 py-10">
 
@@ -41,13 +57,13 @@ export default function DesignDetail() {
                 Back
             </button>
 
-
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                 <div className="lg:col-span-2 space-y-5">
 
-
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+
+
                         <div className="relative w-full overflow-hidden">
                             <Zoom>
                                 <img
@@ -57,6 +73,23 @@ export default function DesignDetail() {
                                 />
                             </Zoom>
 
+                            {/* wishlist icon*/}
+                            <button
+                                onClick={toggleSave}
+                                disabled={isToggling}
+                                aria-label={isSaved ? "Unsave design" : "Save design"}
+                                className={`absolute top-3 right-3 w-9 h-9 rounded-full bg-snow-white border border-blush-light/40
+                                    flex items-center justify-center transition-all duration-200 hover:bg-blush-pale shadow-sm
+                                    ${isSaved ? "opacity-100" : "opacity-70 hover:opacity-100"}`}
+                            >
+                                <Heart
+                                    size={16}
+                                    className={`transition-colors duration-200 ${isSaved
+                                            ? "fill-blush-deep text-blush-deep"
+                                            : "text-blush-deep"
+                                        }`}
+                                />
+                            </button>
                         </div>
 
                         {/* Thumbnail Strip */}
@@ -66,8 +99,8 @@ export default function DesignDetail() {
                                     key={i}
                                     onClick={() => setActiveImage(img)}
                                     className={`shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${activeImage === img
-                                        ? "border-soft-black shadow-md"
-                                        : "border-transparent opacity-60 hover:opacity-100"
+                                            ? "border-soft-black shadow-md"
+                                            : "border-transparent opacity-60 hover:opacity-100"
                                         }`}
                                 >
                                     <img src={img} alt={`Gallery ${i}`} className="w-full h-full object-cover" />
@@ -76,14 +109,10 @@ export default function DesignDetail() {
                         </div>
                     </div>
 
-
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-5">
                         <h1 className="font-Jost-Semibold text-2xl text-soft-black leading-snug mb-3">
-                            {design.designerName}
+                            {design.designName}
                         </h1>
-                        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400 mb-5">
-                            ``
-                        </div>
 
                         <div className="flex flex-wrap gap-2">
                             <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
@@ -124,9 +153,7 @@ export default function DesignDetail() {
                         <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-gray-400 mb-3">
                             Services Included
                         </h2>
-
                         <div className="border border-gray-200 rounded-xl overflow-hidden">
-                            {/* Toggle button */}
                             <button
                                 onClick={() => setServicesOpen(!servicesOpen)}
                                 className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-sm text-gray-700"
@@ -139,12 +166,9 @@ export default function DesignDetail() {
                                     </span>
                                 </div>
                                 <ChevronDown
-                                    className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${servicesOpen ? "rotate-180" : ""
-                                        }`}
+                                    className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${servicesOpen ? "rotate-180" : ""}`}
                                 />
                             </button>
-
-                            {/* Collapsible list */}
                             <div
                                 className={`transition-all duration-300 ease-in-out overflow-hidden ${servicesOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
                                     }`}
@@ -166,33 +190,19 @@ export default function DesignDetail() {
 
                 </div>
 
-                {/* ── RIGHT COLUMN ────────────────────────── */}
+                {/* RIGHT COLUMN */}
                 <div className="space-y-5">
 
                     {/* Designer Card */}
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-5">
                         <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-gray-400 mb-4">Designer</h2>
                         <div className="flex flex-col items-center text-center gap-3">
-
                             <div className="w-16 h-16 rounded-full bg-gray-100 border-2 border-gray-200 flex items-center justify-center">
                                 <User className="w-7 h-7 text-gray-400" />
                             </div>
-
                             <div>
                                 <p className="font-Jost-Semibold text-gray-800">{design.designerName}</p>
-
                             </div>
-                            {/* <div className="w-full h-px bg-gray-100" /> */}
-                            {/* <div className="flex justify-around w-full">
-                                <div className="text-center">
-                                    <p className="font-Jost-Semibold text-gray-800 text-lg">{mockDesigner.totalDesigns}</p>
-                                    <p className="text-xs text-gray-400">Designs</p>
-                                </div>
-                                <div className="text-center">
-                                    <p className="font-Jost-Semibold text-gray-800 text-lg">4.8</p>
-                                    <p className="text-xs text-gray-400">Rating</p>
-                                </div>
-                            </div> */}
                             <button className="auth-button w-full" onClick={() => setHireDesigner(true)}>
                                 Hire this Designer
                             </button>
@@ -219,6 +229,7 @@ export default function DesignDetail() {
 
                 </div>
             </div>
+
             <HireDesignerForm isOpen={hireDesigner} onClose={() => setHireDesigner(false)} hireDesigner={handleDirectHire} />
         </div>
     );

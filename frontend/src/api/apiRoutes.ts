@@ -62,5 +62,10 @@ export const API_ROUTES = {
         REQUEST: "/direct-hire/request",
         MY_REQUESTS: "/direct-hire/my",
         REQUEST_PER_DESIGN: "/direct-hire/design/requests",
+    },
+
+    SAVE_DESIGNS:{
+        ADD_REMOVE:"/saved-design/add-or-remove",
+        MY_DESIGNS:"/saved-design/my"
     }
 } as const

@@ -1,6 +1,8 @@
 import { Heart, IndianRupee, User } from "lucide-react"
 import type { GetAllDesignCommonResponseDTO } from "../../../designer/designs/designInterface"
 import { useNavigate } from "react-router-dom"
+import { useState } from "react"
+import { useToggleSaveDesign } from "../../hooks/useToggleSaveDesign"
 
 
 type Props = {
@@ -9,11 +11,19 @@ type Props = {
 
 export default function DesignCard({ design }: Props) {
     const navigate = useNavigate()
-
+    const [isSaved, setIsSaved] = useState(design.isSaved)
+    const {isToggling, savedError, handleToggling} = useToggleSaveDesign()
+    const toggleSave = async (e: React.MouseEvent) => {
+        e.stopPropagation()
+        const result = await handleToggling({designId:design.id, isSaved:!isSaved})
+        if(result !== undefined){
+            setIsSaved(result)
+        }
+    }
     const getDesignDetail = (id: string) => {
         navigate(`/designs/${id}`)
     }
-
+    console.log(savedError)
     return (
         <div className="group bg-off-white w-full rounded-xl border border-blush-light/40 overflow-hidden shadow-lg  hover:shadow-2xl transition-shadow duration-300 ">
 
@@ -36,10 +46,20 @@ export default function DesignCard({ design }: Props) {
                 </span>
 
                 <button
-                    aria-label="Save design"
-                    className="absolute top-3 right-3 w-8 h-8 rounded-full bg-snow-white border border-blush-light/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-blush-pale"
+                    onClick={toggleSave}
+                    disabled={isToggling}
+                    aria-label={isSaved ? "Unsave design" : "Save design"}
+                    className={`absolute top-3 right-3 w-8 h-8 rounded-full bg-snow-white border border-blush-light/40 
+               flex items-center justify-center transition-opacity duration-200 hover:bg-blush-pale
+               ${isSaved ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
                 >
-                    <Heart size={14} className="text-blush-deep" />
+                    <Heart
+                        size={14}
+                        className={`transition-colors duration-200 ${isSaved
+                            ? "fill-blush-deep text-blush-deep"
+                            : "text-blush-deep"
+                            }`}
+                    />
                 </button>
             </div>
 
@@ -64,7 +84,7 @@ export default function DesignCard({ design }: Props) {
                 <div className="flex items-center gap-1 text-blush-deep/75">
                     <IndianRupee size={11} strokeWidth={2.5} />
                     <span className="text-xs font-semibold tracking-widest uppercase">
-                        Starting {Number(design.budget).toLocaleString("es-IN")}
+                        budget {Number(design.minPrice).toLocaleString("eg-IN")} - {Number(design.maxPrice).toLocaleString("eg-IN")} 
                     </span>
                 </div>
 

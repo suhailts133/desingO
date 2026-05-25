@@ -3,7 +3,8 @@ import {
   LayoutDashboard, User,
   CircleDollarSign, ChevronRight, LogOut,
   ScrollText,
-  House
+  House,
+  Heart
 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import type { AppDispatch } from "../../app/store"
@@ -43,7 +44,7 @@ const DesignerSidebar = memo(({ name, email }: { name: string, email: string }) 
           ${collapsed ? "w-20" : "w-64"}
         `}
     >
-      
+
       <button
         onClick={() => setCollapsed(!collapsed)}
         className="absolute -right-3.5 top-6 z-10 flex items-center justify-center
@@ -62,7 +63,7 @@ const DesignerSidebar = memo(({ name, email }: { name: string, email: string }) 
         {!collapsed && <Link to="/" className="font-Dynalight-Regular font-semibold text-soft-black text-xl">designO</Link>}
       </div>
 
-  
+
       <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
         {!collapsed && (
           <p className="px-3 mb-2 text-xxs font-Jost-Semibold text-soft-black/40 uppercase tracking-widest">
@@ -70,7 +71,7 @@ const DesignerSidebar = memo(({ name, email }: { name: string, email: string }) 
           </p>
         )}
 
-       
+
         <Link to="/designer/dashboard" onClick={() => setActive("Dashboard")} className={linkClass("Dashboard")}>
           {active === "Dashboard" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
           <LayoutDashboard size={18} strokeWidth={active === "Dashboard" ? 2.2 : 1.8} className={iconClass("Dashboard")} />
@@ -99,18 +100,14 @@ const DesignerSidebar = memo(({ name, email }: { name: string, email: string }) 
 
 
 
+        <Link to="/designer/saved-design/my" onClick={() => setActive("savedDesign")} className={linkClass("savedDesign")}>
+          {active === "savedDesign" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
+          <Heart size={18} strokeWidth={active === "savedDesign" ? 2.2 : 1.8} className={iconClass("savedDesign")} />
+          {!collapsed && <span className="flex-1">Saved Designs</span>}
+        </Link>
 
-        {/* bids */}
-        <a onClick={() => setActive("Analytics")} className={linkClass("Analytics")}>
-          {active === "Analytics" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
-          <CircleDollarSign size={18} strokeWidth={active === "Analytics" ? 2.2 : 1.8} className={iconClass("Analytics")} />
-          {!collapsed && <span className="flex-1">Bids</span>}
-        </a>
 
-        {/* Jobs */}
-   
 
-        
 
 
       </nav>
