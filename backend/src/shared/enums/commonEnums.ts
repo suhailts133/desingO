@@ -44,4 +44,16 @@ export enum ACTIVE_JOB_STATUS {
 export enum AVG_PRICE {
     UPPER = 1.50,
     LOWER = 0.60,
-} 
+}
+
+
+
+export enum ACTIVE_JOB_PROPOSAL_STATUS {
+    NOT_CREATED = "NOT_CREATED",
+    CREATED = "CREATED",
+    REJECTED = "REJECTED"
+}
+export enum SOURCE_TYPE {
+    JOB_REQUEST = "jobRequest",
+    REJECTED = "direct_hire"
+}

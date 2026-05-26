@@ -21,6 +21,11 @@ const activeJobSchema = new Schema<IActiveJob>(
             required: true,
             default: "Active"
         },
+        proposalStatus: {
+            type: String,
+            enum: ["NOT_CREATED", "CREATED", "REJECTED"],
+            default: "NOT_CREATED"
+        },
         startedAt: { type: Date, default: Date.now },
         cancelledAt: { type: Date },
         completedAt: { type: Date }
@@ -28,7 +33,4 @@ const activeJobSchema = new Schema<IActiveJob>(
     { timestamps: true }
 );
 
-export const ActiveJobModel = mongoose.model<IActiveJob>(
-    "ActiveJob",
-    activeJobSchema
-);
+export const ActiveJobModel = mongoose.model<IActiveJob>("ActiveJob", activeJobSchema);

@@ -37,7 +37,9 @@ import DesignerDetail from "../features/common/components/DesignerDetail";
 import EditDesignForm from "../features/designer/designs/components/EditDesignForm";
 import EditJobRequestForm from "../features/user/jobs/components/EditJobRequestForm";
 import CustomerProfilePage from "../features/user/profile/pages/CustomerProfilePage";
-import SaveDesignPage from "../features/wishlist/page/saveDesignPage";
+import CustomerActiveJobPage from "../features/user/activeJobs/CustomerActiveJobPage";
+import SaveDesignPage from "../features/wishlist/page/SaveDesignPage";
+import DesignerActiveJobPage from "../features/designer/activeJobs/DesignerActiveJobPage";
 
 
 const router = createBrowserRouter([
@@ -100,7 +102,8 @@ const router = createBrowserRouter([
             { path: "designs", Component: Designs },
             { path: "add-design", Component: DesignForm },
             { path: "job-applications/my", Component: MyJobApplications },
-            { path: "designs/edit/:id", Component: EditDesignForm }
+            { path: "designs/edit/:id", Component: EditDesignForm },
+            { path: "active-jobs", Component: DesignerActiveJobPage }
 
         ]
     },
@@ -112,7 +115,8 @@ const router = createBrowserRouter([
             { path: "jobs", Component: Jobs },
             { path: "add-job", Component: JobRequestForm },
             { path: "jobs/edit/:id", Component: EditJobRequestForm },
-            { path: "job-applications/:id", Component: JobApplications }
+            { path: "job-applications/:id", Component: JobApplications },
+            { path: "active-jobs", Component: CustomerActiveJobPage }
         ]
     },
     {

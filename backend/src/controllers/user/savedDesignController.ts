@@ -17,11 +17,12 @@ export class SavedDesignController {
 
 
     addOrRemoveDesign = asyncHandler(async (req: Request, res: Response) => {
-        const { error, value } = SavedDesignValidators.validate(req.query, { stripUnknown: true })
+        const { error, value } = SavedDesignValidators.validate(req.body, { stripUnknown: true })
         if (error) {
             throw new AppError(error.details[0]?.message || "Invalid query parameters", RESPONSE_CODE.BAD_REQUEST)
         }
         const valiedData = value as ISavedDesignDTO
+
         if (!isObjectId(valiedData.designId)) {
             throw new AppError(DESIGNER_MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
@@ -39,7 +40,10 @@ export class SavedDesignController {
         if (!userId) {
             throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
-        const result = await this._savedDesignService.getSavedDesigns(page)
+        if (!isObjectId(userId)) {
+            throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
+        }
+        const result = await this._savedDesignService.getSavedDesigns(userId, page)
         RespsonseHelper.successWithPagination(res, result)
     })
 

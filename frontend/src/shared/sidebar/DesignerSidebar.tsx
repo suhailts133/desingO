@@ -1,10 +1,11 @@
 import { useState, memo } from "react"
 import {
   LayoutDashboard, User,
-  CircleDollarSign, ChevronRight, LogOut,
+  ChevronRight, LogOut,
   ScrollText,
   House,
-  Heart
+  Heart,
+  BriefcaseBusiness
 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import type { AppDispatch } from "../../app/store"
@@ -96,6 +97,14 @@ const DesignerSidebar = memo(({ name, email }: { name: string, email: string }) 
           {active === "jobApplications" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
           <ScrollText size={18} strokeWidth={active === "jobApplications" ? 2.2 : 1.8} className={iconClass("jobApplications")} />
           {!collapsed && <span className="flex-1">Job applications</span>}
+        </Link>
+
+
+        {/* active jobs */}
+        <Link to="/designer/active-jobs" onClick={() => setActive("activeJobs")} className={linkClass("activeJobs")}>
+          {active === "activeJobs" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
+          <BriefcaseBusiness size={18} strokeWidth={active === "activeJobs" ? 2.2 : 1.8} className={iconClass("activeJobs")} />
+          {!collapsed && <span className="flex-1">Active Jobs</span>}
         </Link>
 
 

@@ -14,6 +14,7 @@ export class SavedDesignService implements ISavedDesignService {
     constructor(private _savedDesignRepo: ISavedDesignRepository, private _userRepo: IUserRepository, private _DesignRepo: IDesignRepository) { }
 
     async addOrRemoveDesign(data: ISavedDesignDTO, userId: string): Promise<IApiResponse<boolean>> {
+        console.log(data)
         const user = await this._userRepo.findUserById(userId);
         if (!user) {
             throw new AppError(AUTH_MESSAGES.USER.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
@@ -33,6 +34,7 @@ export class SavedDesignService implements ISavedDesignService {
 
     
     async getSavedDesigns(userId: string, page?: string): Promise<IApiResponseWithPagination<GetAllDesignCommonResponseDTO[]>> {
+    
         const user = await this._userRepo.findUserById(userId)
         if (!user) {
             throw new AppError(AUTH_MESSAGES.USER.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)

@@ -1,4 +1,4 @@
-import type { CreateProposalDTO, ProposalTemplate } from "../../DTO/proposal/proposal.js";
+import type { CreateProposalDTO } from "../../DTO/proposal/proposal.js";
 import type { IApiResponse } from "../base/IApiResponse.js";
 
 export interface IProposalService{

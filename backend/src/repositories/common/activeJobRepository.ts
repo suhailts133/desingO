@@ -1,5 +1,5 @@
 import mongoose, { type QueryFilter } from "mongoose";
-import type { ActiveJobFilter, ActiveJobPopulateAll, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO.js";
+import type { ActiveJobFilter, ActiveJobPopulateAll, ActiveJobPopulated, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO.js";
 import type { IUser } from "../../interfaces/auth/IUser.js";
 import type { IActiveJob, IHireDesigner, IJobRequest } from "../../interfaces/customer/ICustomer.js";
 import type { IActiveJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
@@ -7,6 +7,8 @@ import { ActiveJobModel } from "../../models/user/ActiveJobModal.js";
 import { ACTIVE_JOB_STATUS } from "../../shared/enums/commonEnums.js";
 import { BaseRepository } from "../baseRepository.js";
 import type { Pagination } from "../../DTO/admin/adminDTO.js";
+import { HireDesignerModel } from "../../models/user/hireDesignerModel.js";
+import { JobRequestModel } from "../../models/user/jobModel.js";
 
 export class ActiveJobRepository extends BaseRepository<IActiveJob> implements IActiveJobRepository {
     constructor() {
@@ -38,21 +40,22 @@ export class ActiveJobRepository extends BaseRepository<IActiveJob> implements I
     async getActiveJobPopulated(id: string): Promise<ActiveJobPopulateAll | null> {
         const activeJob = await this.getActiveJob(id);
         if (!activeJob) return null;
+        const sourceModel = activeJob.sourceType === "jobRequest" ? JobRequestModel : HireDesignerModel;
 
         const populated = await this._model.findById(id).
             populate<{ userId: IUser }>("userId").
             populate<{ designerId: IUser }>("designerId").
             populate<{ sourceId: IJobRequest | IHireDesigner }>({
                 path: "sourceId",
-                model: activeJob.sourceType === "jobRequest" ? "jobRequest" : "HireDesigner"
+                model: sourceModel
             }).exec()
 
         return populated as ActiveJobPopulateAll | null
     }
 
-    async getCustomerActiveJobs(customerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulateAll[], pagination: Pagination }> {
+    async getCustomerActiveJobs(customerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulated[], pagination: Pagination }> {
         const query: QueryFilter<IActiveJob> = { sourceType: filter?.sourceType ?? "jobRequest", userId: customerId };
-        const sourceType = filter?.sourceType ?? "jobRequest";
+      
         const page = filter?.page ? Number(filter.page) : 1;
         const limit = 6
         const skip = (page - 1) * limit;
@@ -60,11 +63,7 @@ export class ActiveJobRepository extends BaseRepository<IActiveJob> implements I
         const [result, total] = await Promise.all([
             this._model.find(query).
                 populate<{ userId: IUser }>("userId").
-                populate<{ designerId: IUser }>("designerId").
-                populate<{ sourceId: IJobRequest | IHireDesigner }>({
-                    path: "sourceId",
-                    model: sourceType === "jobRequest" ? "jobRequest" : "HireDesigner"
-                })
+                populate<{ designerId: IUser }>("designerId")
                 .skip(skip)
                 .limit(limit)
                 .exec(),
@@ -76,14 +75,15 @@ export class ActiveJobRepository extends BaseRepository<IActiveJob> implements I
         };
 
 
-        return { data: result as ActiveJobPopulateAll[], pagination }
+        return { data: result as ActiveJobPopulated[], pagination }
     }
 
 
 
-    async getDesignerActiveJobs(designerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulateAll[], pagination: Pagination }> {
+    async getDesignerActiveJobs(designerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulated[], pagination: Pagination }> {
+
         const query: QueryFilter<IActiveJob> = { sourceType: filter?.sourceType ?? "jobRequest", designerId: designerId };
-        const sourceType = filter?.sourceType ?? "jobRequest";
+       
         const page = filter?.page ? Number(filter.page) : 1;
         const limit = 6
         const skip = (page - 1) * limit;
@@ -92,11 +92,7 @@ export class ActiveJobRepository extends BaseRepository<IActiveJob> implements I
             this._model.find(query).
                 populate<{ userId: IUser }>("userId").
                 populate<{ designerId: IUser }>("designerId").
-                populate<{ sourceId: IJobRequest | IHireDesigner }>({
-                    path: "sourceId",
-                    model: sourceType === "jobRequest" ? "jobRequest" : "HireDesigner"
-                })
-                .skip(skip)
+                skip(skip)
                 .limit(limit)
                 .exec(),
             this._model.countDocuments(query)
@@ -107,6 +103,6 @@ export class ActiveJobRepository extends BaseRepository<IActiveJob> implements I
         };
 
 
-        return { data: result as ActiveJobPopulateAll[], pagination }
+        return { data: result as ActiveJobPopulated[], pagination }
     }
 }

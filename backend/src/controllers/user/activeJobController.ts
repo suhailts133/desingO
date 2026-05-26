@@ -24,12 +24,14 @@ export class ActiveJobController {
    */
     getCustomerActiveJobs = asyncHandler(async (req: Request, res: Response) => {
         const userid = req.user?.userId;
+        
         if (!userid) {
             throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
         if (!isObjectId(userid)) {
             throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
+        console.log(userid)
         const { error, value } = activeJobFilterSchema.validate(req.query, { stripUnknown: true, convert: true })
         if (error) {
             throw new AppError(error.details[0]?.message || "Missing fields or Invalid Data", RESPONSE_CODE.BAD_REQUEST)
@@ -46,7 +48,7 @@ export class ActiveJobController {
     * @throws {AppError} 400 if there is any issue with req.query
     * @throws {AppError} 401 if user is authenticated
    */
-    getDesignerActiveJobs = asyncHandler(async (req: Request, res: Response) => {
+    getDesignerActiveJobs = asyncHandler(async (req: Request, res: Response) => {        
         const userid = req.user?.userId;
         if (!userid) {
             throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)

@@ -77,8 +77,9 @@ export interface IActiveJob {
     designerId: mongoose.Types.ObjectId
     sourceType: 'jobRequest' | 'direct_hire'
     sourceId: mongoose.Types.ObjectId
-    sourceName:string
+    sourceName: string
     status: 'Active' | 'Completed' | 'Cancelled'
+    proposalStatus: "NOT_CREATED" | "CREATED" | "REJECTED"
     startedAt: Date
     completedAt?: Date
     cancelledAt?: Date

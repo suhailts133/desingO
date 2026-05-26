@@ -2,7 +2,7 @@ import type { EditJobRepoData, EditJobRequest, JobDetailResponseDTO, JobFilter, 
 import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
 import type { ICreateJobRequest } from "../../interfaces/customer/ICustomer.js";
-import type { IJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
+import type {  IJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
 import type { IJobRequestService } from "../../interfaces/customer/ICustomerService.js";
 import { AppError } from "../../shared/errors/appError.js";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
@@ -11,7 +11,7 @@ import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
 import { JobRequestMapper } from "../../dtoMappers/user/jobRequestMapper.js";
 
 export class JobRequestService implements IJobRequestService {
-    constructor(private _jobRequestRepo: IJobRepository, private _imageUploder: IImageUploaderService) { }
+    constructor(private _jobRequestRepo: IJobRepository, private _imageUploder: IImageUploaderService, ) { }
 
     async addJobRequest(userId: string, data: ICreateJobRequest, refrenceImages?: Express.Multer.File[]): Promise<IApiResponse> {
 

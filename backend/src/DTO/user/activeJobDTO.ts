@@ -15,19 +15,24 @@ export type ActiveJobPopulateAll = Omit<IActiveJob, "userId" | "designerId" | "s
         }
     )
 
+export type ActiveJobPopulated= Omit<IActiveJob, "userId" | "designerId"> & {
+    userId: IUser
+    designerId: IUser
+}
+
 
 export interface CreateActiveJobDTO {
     userId: string
     designerId: string
     sourceType: 'jobRequest' | 'direct_hire'
     sourceId: string
-    sourceName:string
+    sourceName: string
 }
 
 
 export interface ActiveJobFilter {
     sourceType: 'jobRequest' | 'direct_hire'
-    page?:string
+    page?: string
 }
 
 
@@ -40,5 +45,6 @@ export interface ActiveJobResponseDTO {
     userName: string,
     profileImage?: string,
     status: 'Active' | 'Completed' | 'Cancelled'
+    proposalStatus: "NOT_CREATED" | "CREATED" | "REJECTED"
     startedAt: string
 }

@@ -86,7 +86,7 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
             total,
             totalPages: Math.ceil(total / limit)
         }
-        console.log(result)
+
 
 
         return { data: result, pagination }

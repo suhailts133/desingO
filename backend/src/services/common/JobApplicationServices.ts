@@ -7,7 +7,7 @@ import type { IJobApplicationRepository } from "../../interfaces/designer/IDesig
 import type { IJobApplicationService } from "../../interfaces/designer/IDesignerService.js";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
 import { JobApplicationMapper } from "../../dtoMappers/designer/JobApplicationMapper.js";
-import { JOB_APPLICATION_STATUS } from "../../shared/enums/commonEnums.js";
+import { JOB_APPLICATION_STATUS, SOURCE_TYPE } from "../../shared/enums/commonEnums.js";
 
 
 export class JobApplicationService implements IJobApplicationService {
@@ -62,8 +62,10 @@ export class JobApplicationService implements IJobApplicationService {
                 userId: jobStatusUpdated.userId.toString(),
                 designerId: result.designerId.toString(),
                 sourceId: jobStatusUpdated.id,
-                sourceType: "jobRequest"
+                sourceType: SOURCE_TYPE.JOB_REQUEST,
+                sourceName:jobStatusUpdated.projectTitle
             })
+           
             if (!activeJob) {
                 throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
             }

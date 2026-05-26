@@ -10,15 +10,16 @@ export class ActiveJobService implements IActiveJobService {
 
     async getCustomerActiveJobs(id: string, filter?: ActiveJobFilter): Promise<IApiResponseWithPagination<ActiveJobResponseDTO[]>> {
         const { data, pagination } = await this._activeJobRepo.getCustomerActiveJobs(id, filter)
-        const activeJobData = ActiveJobMapper.toCustomerActiveJobDTOlist(data);
+        const activeJobData = ActiveJobMapper.toCustomerActiveJobDTOlist(data , "Customer");
         return { message: JOB_MESSAGES.ACTIVE_JOB.FETCH_ALL, data: activeJobData, total: pagination.total, totalPages: pagination.totalPages }
 
     }
 
 
     async getDesignerActiveJobs(id: string, filter?: ActiveJobFilter): Promise<IApiResponseWithPagination<ActiveJobResponseDTO[]>> {
+        console.log(id, "from service")
         const { data, pagination } = await this._activeJobRepo.getDesignerActiveJobs(id, filter)
-        const activeJobData = ActiveJobMapper.toCustomerActiveJobDTOlist(data);
+        const activeJobData = ActiveJobMapper.toCustomerActiveJobDTOlist(data, "Designer");
         return { message: JOB_MESSAGES.ACTIVE_JOB.FETCH_ALL, data: activeJobData, total: pagination.total, totalPages: pagination.totalPages }
 
     }

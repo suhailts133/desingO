@@ -1,5 +1,5 @@
 import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { ActiveJobFilter, ActiveJobPopulateAll, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO.js";
+import type { ActiveJobFilter, ActiveJobPopulateAll, ActiveJobPopulated, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO.js";
 import type { CreateHireDesignerDTO, HireDesignerFilter, HireDesignerPopulatedALL, HireDesignerPopulateUser } from "../../DTO/user/hireDesignerDTO.js";
 
 import type { EditJobRepoData, JobFilter } from "../../DTO/user/jobsDTO.js";
@@ -32,6 +32,6 @@ export interface IActiveJobRepository {
     getActiveJobPopulated(id: string): Promise<ActiveJobPopulateAll | null>
     getAllActiveJobPerDesigner(designerId: string): Promise<IActiveJob[]>
     createActiveJOb(data: CreateActiveJobDTO): Promise<IActiveJob>
-    getCustomerActiveJobs(customerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulateAll[], pagination: Pagination }>
-    getDesignerActiveJobs(designerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulateAll[], pagination: Pagination }>
+    getCustomerActiveJobs(customerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulated[], pagination: Pagination }>
+    getDesignerActiveJobs(designerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulated[], pagination: Pagination }>
 }
