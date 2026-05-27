@@ -40,6 +40,7 @@ import CustomerProfilePage from "../features/user/profile/pages/CustomerProfileP
 import CustomerActiveJobPage from "../features/user/activeJobs/CustomerActiveJobPage";
 import SaveDesignPage from "../features/wishlist/page/SaveDesignPage";
 import DesignerActiveJobPage from "../features/designer/activeJobs/DesignerActiveJobPage";
+import ProposalPage from "../features/proposal/page/ProposalPage";
 
 
 const router = createBrowserRouter([
@@ -53,7 +54,8 @@ const router = createBrowserRouter([
             { path: "designs/:id", Component: DesignDetail },
             { path: "designs", Component: BrowseDesigns },
             { path: "designers", Component: BrowseDesigners },
-            { path: "designers/:id", Component: DesignerDetail }
+            { path: "designers/:id", Component: DesignerDetail },
+            {path:"proposal/:id", Component:ProposalPage}
         ]
     },
     {

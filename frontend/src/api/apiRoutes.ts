@@ -71,5 +71,9 @@ export const API_ROUTES = {
     ACTIVE_JOB: {
         CUSTOMER: "/active-job/customer",
         DESIGNER: "/active-job/designer"
+    },
+    PROPOSAL: {
+        CREATE: "/proposal/create",
+        MY_PROPOSAL: "/proposal"
     }
 } as const

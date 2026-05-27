@@ -11,7 +11,7 @@ export default function CustomerLayout() {
 
     const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
     const accessToken = useSelector((state: RootState) => state.auth.accessToken);
-    const { name, email } = useDecodeAccessToken();
+    const { name, email, } = useDecodeAccessToken();
 
     useEffect(() => {
         if (!name && !email) {
