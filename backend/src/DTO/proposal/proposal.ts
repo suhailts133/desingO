@@ -1,4 +1,6 @@
-import type { IServiceItem } from "../../interfaces/proposal/IProposal.js";
+
+import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
+import type { ContractStatus, IServiceItem, PaymentStatus, ServiceStatus } from "../../interfaces/proposal/IProposal.js";
 
 export interface ServiceItem {
     serviceName: string;
@@ -13,7 +15,7 @@ export interface ServiceItem {
 
 export interface CreateProposalDTO {
     sourceId: string
-    sourceType: "jobRequest" | "directHire"
+    sourceType: "jobRequest" | "direct_hire"
     drawingFeePerSqFt: number;
     advanceFee: number;
     expectedCompletionDate: Date;
@@ -27,6 +29,7 @@ export interface CreateProposalRepoDataDTO extends Omit<CreateProposalDTO, "serv
     totalDrawingFee: number
     totalExecutionFee: number
     totalContractValue: number
+    sourceName: string
     services: IServiceItem[]
 }
 
@@ -36,3 +39,56 @@ export interface ProposalTemplate {
     maxPrice: number
     services: string[]
 }
+
+
+
+export interface ProposalDetailDTO {
+    id: string
+    sourceId: string
+    sourceType: "jobRequest" | "direct_hire"
+    clientId: string
+    designerId: string
+    sourceName: string
+  
+
+    drawingFeePerSqFt: number
+    totalDrawingFee: number
+    totalExecutionFee: number
+    advanceFee: number
+    totalContractValue: number
+    advancePaid: boolean
+    advancePaidAt?: string
+
+
+    contractStatus: ContractStatus
+    overallRejectionReason?: string
+
+
+    clientAcceptedAt?: string
+
+    expectedCompletionDate: string
+    actualCompletionDate?: string
+    createdAt: string
+
+
+    services: ProposalServiceItemDTO[]
+}
+
+export interface ProposalServiceItemDTO {
+    serviceName: string
+    order: number
+    price: number
+    executionPrice: number
+    status: ServiceStatus
+    rejectionReason?: string
+    uploadedImages: ImageUploadResult[]
+    currentVersion: number
+    revisionLimit: number
+    revisionsUsed: number
+    expectedDeliveryDate: string
+    actualDeliveryDate?: string
+    paymentStatus: PaymentStatus
+    paidAt?: string
+}
+
+

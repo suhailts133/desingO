@@ -1,4 +1,5 @@
-import type { CreateProposalDTO, CreateProposalRepoDataDTO } from "../../DTO/proposal/proposal.js";
+import type { CreateProposalDTO, CreateProposalRepoDataDTO, ProposalDetailDTO } from "../../DTO/proposal/proposal.js";
+import { ProposalMapper } from "../../dtoMappers/proposal/proposalMapper.js";
 import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
 import type { IActiveJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
 import type { IServiceItem } from "../../interfaces/proposal/IProposal.js";
@@ -30,6 +31,7 @@ export class ProposalService implements IProposalService {
             totalDrawingFee,
             totalExecutionFee,
             totalContractValue,
+            sourceName: activeJob.sourceName,
             services: data.services as unknown as IServiceItem[]
         }
 
@@ -39,5 +41,14 @@ export class ProposalService implements IProposalService {
         }
 
         return { message: PROPOSAL_MESSAGES.PROPOSAL.CREATION_SUCCESS, statuscode: RESPONSE_CODE.CREATED }
+    }
+
+    async getProposal(sourceId: string): Promise<IApiResponse<ProposalDetailDTO | null>> {
+        const result = await this._proposalRepo.getProposal(sourceId)
+        if (!result) {
+            return { message: PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, data: null }
+        }
+        const proposalData = ProposalMapper.toProposalDetailDTO(result)
+        return { message: PROPOSAL_MESSAGES.PROPOSAL.FETCH_SUCCESS,  data:proposalData}
     }
 }

@@ -51,6 +51,7 @@ export interface IServiceItem {
     status: ServiceStatus;
     rejectionReason?: string;
     uploadedImages: ImageUploadResult[];
+    currentVersion: number;
     revisionLimit: number;
     revisionsUsed: number;
     expectedDeliveryDate: Date;
@@ -65,7 +66,8 @@ export interface IServiceItem {
 export interface IProposal {
     id: string;
     sourceId: mongoose.Types.ObjectId
-    sourceType: "jobRequest" | "directHire"
+    sourceType: "jobRequest" | "direct_hire",
+    sourceName:string
     clientId: mongoose.Types.ObjectId;
     designerId: mongoose.Types.ObjectId;
     drawingFeePerSqFt: number;
@@ -80,9 +82,21 @@ export interface IProposal {
     contractStatus: ContractStatus;
     overallRejectionReason?: string;
     clientAcceptedAt?: Date;
-    designerAcceptedAt?: Date;
     expectedCompletionDate: Date;
     actualCompletionDate?: Date;
     createdAt: Date;
     updatedAt: Date;
+}
+
+export type VersionStatus = "Pending_Review" | "Rejected" | "Approved"
+
+export interface IServiceVersion {
+    id: string;
+    proposalId: mongoose.Types.ObjectId;
+    serviceOrder: number;
+    version: number;
+    images: ImageUploadResult[];
+    status: VersionStatus;
+    rejectionReason?: string;
+    uploadedAt: Date;
 }

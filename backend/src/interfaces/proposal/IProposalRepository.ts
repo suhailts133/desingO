@@ -3,4 +3,5 @@ import type { IProposal } from "./IProposal.js";
 
 export interface IProposalRepository {
     createProposal(data: CreateProposalRepoDataDTO): Promise<IProposal>
+    getProposal(sourceId: string): Promise<IProposal | null>
 }

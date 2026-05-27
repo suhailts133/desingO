@@ -23,8 +23,14 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
             totalExecutionFee: data.totalExecutionFee,
             totalContractValue: data.totalContractValue,
             advanceFee: data.advanceFee,
+            sourceName:data.sourceName,
             expectedCompletionDate: data.expectedCompletionDate,
             services: data.services
         })
+    }
+
+
+    async getProposal(sourceId: string): Promise<IProposal | null> {
+        return await this.findOne({sourceId})
     }
 }

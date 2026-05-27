@@ -3,6 +3,8 @@ import { ProposalRepository } from "../../repositories/proposal/proposalReposito
 import { ProposalService } from "../../services/proposal/proposalService.js";
 import { ActiveJobRepository } from "../../repositories/common/activeJobRepository.js";
 import { ProposalController } from "../../controllers/proposal/proposalController.js";
+import designerAuthentication from "../../middlewares/designerAuth.js";
+import authenticate from "../../middlewares/auth.js";
 const router = Router()
 
 const proposalRepo = new ProposalRepository()
@@ -11,6 +13,7 @@ const proposalService = new ProposalService(proposalRepo, activeJobRepo)
 const proposalController = new ProposalController(proposalService)
 
 
-router.post("/create", proposalController.createProposal)
+router.post("/create", designerAuthentication, proposalController.createProposal)
+router.get("/:id", authenticate, proposalController.getProposal)
 
 export default router

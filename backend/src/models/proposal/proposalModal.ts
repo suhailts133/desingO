@@ -10,7 +10,7 @@ const proposalSchema = new Schema<IProposal>({
     },
     sourceType: {
         type: String,
-        enum: ["jobRequest", "directHire"],
+        enum: ["jobRequest", "direct_hire"],
         required: true
     },
     clientId: {
@@ -39,8 +39,8 @@ const proposalSchema = new Schema<IProposal>({
         required: true
     },
     overallRejectionReason: { type: String },
+    sourceName: { type: String, required:true },
     clientAcceptedAt: { type: Date },
-    designerAcceptedAt: { type: Date },
     expectedCompletionDate: { type: Date, required: true },
     actualCompletionDate: { type: Date },
 }, { timestamps: true })
