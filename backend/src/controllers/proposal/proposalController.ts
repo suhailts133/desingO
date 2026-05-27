@@ -2,13 +2,15 @@ import type { IProposalService } from "../../interfaces/proposal/IProposalServic
 import type { Request, Response } from "express"
 import { RespsonseHelper } from "../../shared/helpers/responseHelper.js"
 import { RESPONSE_CODE } from "../../shared/enums/statusCode.js"
-import type { CreateProposalDTO } from "../../DTO/proposal/proposal.js";
+import type { CreateProposalDTO, ProposalDetailDTO } from "../../DTO/proposal/proposal.js";
 
 import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError.js"
 import { createProposalValidation } from "../../validators/proposal/proposalValidator.js";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
 import { isObjectId } from "../../shared/helpers/extraFunctions.js";
+import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages.js";
+import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
 
 
 /**
@@ -51,6 +53,31 @@ export class ProposalController {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         const result = await this._proposalService.getProposal(jobId);
+        RespsonseHelper.success(res, result)
+    })
+    /**
+   * to get the proposal
+   * @route GET /proposal/prefill/:id
+   * @param req.params.id jobid
+   * @param req.body jobRequest | "DirectHire"
+   * @throws {AppError} 400 if there is no jobid or the format of job id is wrong
+   * @throws {AppError} 400 if there is any problem with req.body
+  */
+    getProposalTemplate = asyncHandler(async (req: Request, res: Response) => {
+        const jobId = req.params.id as string;
+        if (!jobId) {
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        if (!isObjectId(jobId)) {
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        const source = req.body.sourceType as
+            "JobRequest" | "DirectHire";
+
+        if (source !== "JobRequest" && source !== "DirectHire") {
+            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL_INPUT.UNKONW_DATA, RESPONSE_CODE.BAD_REQUEST)
+        }
+        const result = source === "JobRequest" ? await this._proposalService.getProposalInputForJobRequest(jobId) : await this._proposalService.getProposalTemplateForDirecHire(jobId)
         RespsonseHelper.success(res, result)
     })
 }

@@ -1,7 +1,25 @@
+import type { ProposalInputData } from "../../DTO/proposal/proposal.js";
 import type { JobDetailResponseDTO, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO.js";
 import type { IJobRequest, IJobRequestPopulated } from "../../interfaces/customer/ICustomer.js";
+import { toSqFt } from "../../shared/helpers/extraFunctions.js";
 
 export class JobRequestMapper {
+
+    static toJobRequestProposalInputDTO(jobRequest: IJobRequestPopulated): ProposalInputData {
+
+        let totalSqft = 0
+        for (let items of jobRequest.rooms) {
+            totalSqft += toSqFt(Number(items.length), Number(items.width), items.unit)
+        }
+        return {
+            jobId:jobRequest.id,
+            services: jobRequest.services,
+            maxPrice:jobRequest.maxBudget,
+            minPrice:jobRequest.maxBudget,
+            sqft:totalSqft
+        }
+    }
+
     static toMyJobRequestsDTOlist(jobRequests: IJobRequest[]): JobsResponseDTO[] {
         return jobRequests.map(data => ({
             id: data.id,
@@ -38,7 +56,7 @@ export class JobRequestMapper {
         }))
     }
 
-    static toJobRequestDTO(data:IJobRequestPopulated):JobDetailResponseDTO{
+    static toJobRequestDTO(data: IJobRequestPopulated): JobDetailResponseDTO {
         return {
             id: data.id,
             projectTitle: data.projectTitle,
@@ -55,7 +73,7 @@ export class JobRequestMapper {
             referenceImages: data.referenceImages,
             rooms: data.rooms,
             status: data.status,
-            services:data.services,
+            services: data.services,
             name: data.userId.full_name,
             createdAt: data.createdAt.toDateString(),
             userCreatedAt: data.userId.createdAt.toDateString()

@@ -5,15 +5,20 @@ import { ActiveJobRepository } from "../../repositories/common/activeJobReposito
 import { ProposalController } from "../../controllers/proposal/proposalController.js";
 import designerAuthentication from "../../middlewares/designerAuth.js";
 import authenticate from "../../middlewares/auth.js";
+import { JobRequestRepository } from "../../repositories/customer/jobRequestRepository.js";
+import { HireDesignerRepository } from "../../repositories/customer/hireDesignerRepository.js";
 const router = Router()
 
 const proposalRepo = new ProposalRepository()
 const activeJobRepo = new ActiveJobRepository()
-const proposalService = new ProposalService(proposalRepo, activeJobRepo)
+const jobRepo= new JobRequestRepository()
+const directHireRepo = new HireDesignerRepository()
+const proposalService = new ProposalService(proposalRepo, activeJobRepo,jobRepo, directHireRepo)
 const proposalController = new ProposalController(proposalService)
 
 
 router.post("/create", designerAuthentication, proposalController.createProposal)
 router.get("/:id", authenticate, proposalController.getProposal)
+router.get("prefill/:id", designerAuthentication, proposalController.getProposal)
 
 export default router

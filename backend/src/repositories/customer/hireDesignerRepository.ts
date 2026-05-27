@@ -29,6 +29,9 @@ export class HireDesignerRepository extends BaseRepository<IHireDesigner> implem
     async checkIfApplied(userId: string, designId: string): Promise<IHireDesigner | null> {
         return await this.findOne({ userId, designId })
     }
+    async getHireDesignerByJobId(jobId:string): Promise<IHireDesigner | null> {
+        return await this.findOne({ jobId })
+    }
     async getHireRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<{ data: HireDesignerPopulateUser[]; pagination: Pagination; }> {
         const page = filters?.page ? Number(filters.page) : 1;
         const limit = 6

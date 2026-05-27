@@ -78,7 +78,7 @@ export class DesignService implements IDesignService {
     }
 
     async addDesign(userId: string, data: AddDesignRequestDTO, files: DesignFiles): Promise<IApiResponse<WarningDTO>> {
-        console.log(data)
+        
         const coverImage: ImageUploadResult = await this._imageUploder.upload(files.coverImage, CLOUDINARY_FOLDER_NAME.COVER_IMAGES)
         const gallery: ImageUploadResult[] = await this._imageUploder.uploadMany(files.gallery, CLOUDINARY_FOLDER_NAME.GALLERY)
         const benchmark = await this._designBenchMarkRepo.getAvgPriceBySpaceType(data.spaceType);

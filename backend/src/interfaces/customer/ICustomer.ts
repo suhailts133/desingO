@@ -57,10 +57,12 @@ export interface IHireDesigner {
     designerId: mongoose.Types.ObjectId
     designId: mongoose.Types.ObjectId
     spaceType: string,
+    minPrice:number
+    maxPrice:number
     length: string;
     width: string;
     ceilingHeight: string;
-    unit: string
+    unit: "ft" | "m"
     notes: string;
     status: "Accepted" | "Rejected" | "Pending",
     rejectionReason?: string

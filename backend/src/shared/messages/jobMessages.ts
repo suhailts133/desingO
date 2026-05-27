@@ -28,6 +28,7 @@ export const JOB_MESSAGES = {
 
     HIRE_DESIGNER: {
         CREATED: "Your request has been submitted.",
+        NOT_FOUND: "Job request not found.",
         FAIL: "you have already submitted a request.",
         MY_REQUEST: "successfully fetched all you hire designer request.",
         EXTRA_SERVICES: "You have selected some extra services that the designer is not providing.",
@@ -37,7 +38,7 @@ export const JOB_MESSAGES = {
     },
     ACTIVE_JOB: {
         NOT_FOUND: "Active job not found.",
-        FETCH_ALL:"Fetched all active jobs."
+        FETCH_ALL: "Fetched all active jobs."
     }
 
 } as const

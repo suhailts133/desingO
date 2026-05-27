@@ -20,6 +20,7 @@ export interface IJobRepository {
 
 export interface IHireDesignerRepository {
     checkIfApplied(userId: string, designId: string): Promise<IHireDesigner | null>
+    getHireDesignerByJobId(jobId: string): Promise<IHireDesigner | null>
     createHireDesigner(data: CreateHireDesignerDTO): Promise<IHireDesigner>
     getMyHireDesignerRequests(userId: string, filters?: HireDesignerFilter): Promise<{ data: HireDesignerPopulatedALL[], pagination: Pagination }>
     getHireRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<{ data: HireDesignerPopulateUser[], pagination: Pagination }>

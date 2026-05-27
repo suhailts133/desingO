@@ -1,7 +1,21 @@
+import type { ProposalInputData } from "../../DTO/proposal/proposal.js";
 import type { getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerPopulatedALL, HireDesignerPopulateUser } from "../../DTO/user/hireDesignerDTO.js";
+import type { IHireDesigner } from "../../interfaces/customer/ICustomer.js";
+import { toSqFt } from "../../shared/helpers/extraFunctions.js";
 
 
 export class HireDesignerMapper {
+
+    static toDirectHireProposalInputDTO(data: IHireDesigner): ProposalInputData {
+        return {
+            jobId: data.id,
+            maxPrice: data.maxPrice,
+            minPrice: data.minPrice,
+            services: data.services,
+            sqft: toSqFt(Number(data.length), Number(data.width), data.unit)
+
+        }
+    }
     static toGetMyHireDesignerRequestDTOlist(hireDesigner: HireDesignerPopulatedALL[]): getMyHireDesignerRequestResponseDTO[] {
         return hireDesigner.map(data => ({
             id: data.id,
@@ -23,7 +37,7 @@ export class HireDesignerMapper {
 
         }))
     }
-    
+
     static toGetHireDesignerPerDesignDTOlist(hireDesigner: HireDesignerPopulateUser[]): getHireDesignerPerDesignResponseDTO[] {
         return hireDesigner.map(data => {
             const profileImage = data.userId.profileImage?.path ?? data.userId.profile_image_url;

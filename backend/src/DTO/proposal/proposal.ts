@@ -33,11 +33,12 @@ export interface CreateProposalRepoDataDTO extends Omit<CreateProposalDTO, "serv
     services: IServiceItem[]
 }
 
-export interface ProposalTemplate {
+export interface ProposalInputData {
     jobId: string
     minPrice: number
     maxPrice: number
-    services: string[]
+    services: string[];
+    sqft:number
 }
 
 

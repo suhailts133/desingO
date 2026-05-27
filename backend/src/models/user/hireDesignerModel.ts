@@ -15,14 +15,17 @@ const hireDesignerSchema = new Schema<IHireDesigner>(
             required: true,
             default: "Pending"
         },
+        unit: { type: String,        enum: ["m", "ft"], required: true },
         length: { type: String, required: true },
+        maxPrice:{type:Number, required:true},
+        minPrice:{type:Number, required:true},
         width: { type: String, required: true },
         timeLine: { type: String, required: true },
         ceilingHeight: { type: String },
         rejectionReason: { type: String },
         notes: { type: String },
         services: { type: [String], required: true, default: [] },
-        expiresAt:{type:Date}
+        expiresAt: { type: Date }
     },
     { timestamps: true }
 );
