@@ -1,24 +1,25 @@
 import { joiResolver } from '@hookform/resolvers/joi';
 import { useForm } from 'react-hook-form';
-import type { JobApplicationRejection } from '../jobApplicationInterFace';
-import { JobApplicationRejectionValidation } from '../../../../validations/jobApplicationValidation';
+import type { RejectionPayload } from '../jobApplicationInterFace';
+import { rejectionReasonValidaiton } from '../../../../validations/jobApplicationValidation';
 
 type props = {
     isOpen: boolean
     onClose: () => void
-    onConfirm: (data:JobApplicationRejection) => void
+    onConfirm: (data:RejectionPayload) => void,
+    isLoading?:boolean
 }
 
-export default function RejectJobApplicationModal({ onClose, isOpen,onConfirm }: props) {
+export default function RejectJobApplicationModal({ onClose, isOpen,onConfirm ,isLoading}: props) {
     if (!isOpen) {
         return null
     }
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<JobApplicationRejection>({
-        resolver: joiResolver(JobApplicationRejectionValidation),
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RejectionPayload>({
+        resolver: joiResolver(rejectionReasonValidaiton),
         mode: "onBlur"
     });
 
-    const onRejectSubmit = async (data: JobApplicationRejection) => {
+    const onRejectSubmit = async (data: RejectionPayload) => {
         onConfirm(data)
 
     };
@@ -40,7 +41,7 @@ export default function RejectJobApplicationModal({ onClose, isOpen,onConfirm }:
                     </div>
 
                     <div className="flex flex-col gap-3 pt-4">
-                        {!isSubmitting ? (<button
+                        {!isLoading ? (<button
                             type="submit"
                         
                             className="auth-button">
@@ -48,7 +49,7 @@ export default function RejectJobApplicationModal({ onClose, isOpen,onConfirm }:
                         </button>) : (
                             <button
                                 type="submit"
-                                disabled={isSubmitting}
+                                disabled={isLoading}
                                 className="auth-disabled-button">
 
                                 <svg className="mr-2 size-5 animate-spin" viewBox="0 0 24 24" fill="none">

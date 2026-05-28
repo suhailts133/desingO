@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import JobApplicationCard from "../../jobApplications/components/JobApplicationCard";
 import { useGetAllJobApplicationsQuery } from "../jobApplicationEndpoints";
-import type { DateFilter, JobApplicationRejection, JobApplicationStatus } from "../jobApplicationInterFace";
+import type { DateFilter, RejectionPayload, JobApplicationStatus } from "../jobApplicationInterFace";
 import ConfirmModal from "../../../../shared/modals/ConfirmModal";
 import { useApproveOrRejectJobApplication } from "../hooks/useApproveOrRejectionJobApplication";
 import RejectJobApplicationModal from "../components/RejectJobApplicationModal";
@@ -49,7 +49,7 @@ export default function JobApplications() {
         setApproveJobApplication(null)
     }
 
-    const handleRejection = async (data: JobApplicationRejection) => {
+    const handleRejection = async (data: RejectionPayload) => {
         if (!rejectJobApplication) return
         await handleApproveOrReject({
             id: rejectJobApplication.id,

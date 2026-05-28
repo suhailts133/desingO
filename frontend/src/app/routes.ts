@@ -41,6 +41,7 @@ import CustomerActiveJobPage from "../features/user/activeJobs/CustomerActiveJob
 import SaveDesignPage from "../features/wishlist/page/SaveDesignPage";
 import DesignerActiveJobPage from "../features/designer/activeJobs/DesignerActiveJobPage";
 import ProposalPage from "../features/proposal/page/ProposalPage";
+import ProposalForm from "../features/proposal/component/ProposalForm";
 
 
 const router = createBrowserRouter([
@@ -55,7 +56,7 @@ const router = createBrowserRouter([
             { path: "designs", Component: BrowseDesigns },
             { path: "designers", Component: BrowseDesigners },
             { path: "designers/:id", Component: DesignerDetail },
-            {path:"proposal/:id", Component:ProposalPage}
+
         ]
     },
     {
@@ -105,7 +106,9 @@ const router = createBrowserRouter([
             { path: "add-design", Component: DesignForm },
             { path: "job-applications/my", Component: MyJobApplications },
             { path: "designs/edit/:id", Component: EditDesignForm },
-            { path: "active-jobs", Component: DesignerActiveJobPage }
+            { path: "active-jobs", Component: DesignerActiveJobPage },
+            { path: "proposal/create/:id", Component: ProposalForm },
+            { path: "proposal/:id", Component: ProposalPage }
 
         ]
     },
@@ -118,7 +121,8 @@ const router = createBrowserRouter([
             { path: "add-job", Component: JobRequestForm },
             { path: "jobs/edit/:id", Component: EditJobRequestForm },
             { path: "job-applications/:id", Component: JobApplications },
-            { path: "active-jobs", Component: CustomerActiveJobPage }
+            { path: "active-jobs", Component: CustomerActiveJobPage },
+            { path: "proposal/:id", Component: ProposalPage }
         ]
     },
     {

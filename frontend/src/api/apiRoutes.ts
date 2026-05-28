@@ -74,6 +74,8 @@ export const API_ROUTES = {
     },
     PROPOSAL: {
         CREATE: "/proposal/create",
-        MY_PROPOSAL: "/proposal"
+        MY_PROPOSAL: "/proposal",
+        PREFILL_DATA:"/proposal/prefill",
+        APPROVE_REJECT:"/proposal/approve-reject"
     }
 } as const

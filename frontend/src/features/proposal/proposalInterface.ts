@@ -12,6 +12,52 @@ export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Escalated"
 
 
 
+export interface ServiceItem {
+    serviceName: string;
+    order: number;
+    price: number;
+    executionPrice: number;
+    expectedDeliveryDate: Date;
+    actualDeliveryDate?: Date;
+}
+
+
+export interface CreateProposalDTO {
+    sourceId: string
+    sourceType: "jobRequest" | "direct_hire"
+    drawingFeePerSqFt: number;
+    advanceFee: number;
+    expectedCompletionDate: Date;
+    services: ServiceItem[]
+
+}
+
+
+
+export interface ProposalInputData {
+    jobId: string
+    minPrice: number
+    maxPrice: number
+    services: string[];
+    sqft: number
+}
+
+
+export interface ProposalInputDataPayload {
+    jobId: string
+    sourceType: 'jobRequest' | 'direct_hire'
+}
+
+
+export interface ProposalAcceptOrRejectDTO {
+    contractStatus: "Accepted" | "Rejected",
+    overallRejectionReason?: string,
+    sourceId: string
+}
+
+
+
+
 
 export interface ProposalDetailDTO {
     id: string
@@ -20,7 +66,7 @@ export interface ProposalDetailDTO {
     clientId: string
     designerId: string
     sourceName: string
-  
+
 
     drawingFeePerSqFt: number
     totalDrawingFee: number
@@ -54,7 +100,6 @@ export interface ProposalServiceItemDTO {
     rejectionReason?: string
     uploadedImages: ImageUploadResult[]
     currentVersion: number
-    revisionLimit: number
     revisionsUsed: number
     expectedDeliveryDate: string
     actualDeliveryDate?: string
@@ -62,4 +107,8 @@ export interface ProposalServiceItemDTO {
     paidAt?: string
 }
 
-
+export interface ProposalAcceptOrRejectDTO {
+    contractStatus: "Accepted" | "Rejected",
+    overallRejectionReason?: string,
+    sourceId: string
+}

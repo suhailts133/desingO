@@ -46,6 +46,6 @@ export interface JobApplicationApprovalOrRejectionPayload {
 }
 
 
-export interface JobApplicationRejection{
+export interface RejectionPayload{
     rejectionReason:string
 }

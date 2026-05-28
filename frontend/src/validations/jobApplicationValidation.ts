@@ -1,7 +1,7 @@
 import Joi from "joi";
-import type { JobApplicationRejection } from "../features/user/jobApplications/jobApplicationInterFace";
+import type { RejectionPayload } from "../features/user/jobApplications/jobApplicationInterFace";
 
-export const JobApplicationRejectionValidation:Joi.ObjectSchema<JobApplicationRejection> = Joi.object<JobApplicationRejection>({
+export const rejectionReasonValidaiton:Joi.ObjectSchema<RejectionPayload> = Joi.object<RejectionPayload>({
    rejectionReason: Joi.string()
           .min(15)
           .max(400)

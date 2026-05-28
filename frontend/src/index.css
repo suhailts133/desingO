@@ -92,6 +92,9 @@
 .gradient-button {
     @apply flex items-center gap-2 mt-3 p-5 text-white font-Jost-Semibold py-2.5 rounded-lg bg-linear-to-r from-blush-deep via-blush to-peach transition-all duration-300 hover:brightness-110 hover:scale-110
 }
+.soft-black-button {
+    @apply  inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-soft-black text-off-white text-xs font-medium hover:bg-blush-deep transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed
+}
 
 @layer base {
 

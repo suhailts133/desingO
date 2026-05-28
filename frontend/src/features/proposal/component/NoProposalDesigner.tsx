@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom"
 import { FileX, FilePlus, MessageCircle } from "lucide-react"
 
 interface Props {
-    jobId: string
+    jobId: string,
+    sourceType: 'jobRequest' | 'direct_hire',
+    sourceId: string
 }
 
-export default function NoProposalDesigner({ jobId }: Props) {
+export default function NoProposalDesigner({ jobId, sourceType, sourceId }: Props) {
     const navigate = useNavigate()
 
     return (
@@ -18,7 +20,8 @@ export default function NoProposalDesigner({ jobId }: Props) {
             </p>
             <div className="flex items-center gap-3 mt-2">
                 <button
-                    onClick={() => navigate(`/designer/proposals/create/${jobId}`)}
+                    onClick={() => navigate(`/designer/proposal/create/${jobId}`, { state: { sourceType, sourceId } })
+                    }
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-soft-black text-off-white text-sm font-medium hover:bg-blush-deep transition-all duration-200"
                 >
                     <FilePlus className="w-4 h-4" />

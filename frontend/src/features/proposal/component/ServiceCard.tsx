@@ -28,22 +28,22 @@ const paymentStyle: Record<PaymentStatus, string> = {
     "Refunded": "bg-gray-100 text-gray-500 border-gray-200",
 }
 
-function RevisionDots({ used, limit }: { used: number; limit: number }) {
-    return (
-        <div className="flex items-center gap-1.5">
-            <span className="text-xs text-soft-black/50">Revisions</span>
-            <div className="flex gap-1">
-                {Array.from({ length: limit }).map((_, i) => (
-                    <span
-                        key={i}
-                        className={`w-2 h-2 rounded-full ${i < used ? "bg-red-400" : "bg-green-300"}`}
-                    />
-                ))}
-            </div>
-            <span className="text-xs text-soft-black/50">{used}/{limit}</span>
-        </div>
-    )
-}
+// function RevisionDots({ used, limit }: { used: number; limit: number }) {
+//     return (
+//         <div className="flex items-center gap-1.5">
+//             <span className="text-xs text-soft-black/50">Revisions</span>
+//             <div className="flex gap-1">
+//                 {Array.from({ length: limit }).map((_, i) => (
+//                     <span
+//                         key={i}
+//                         className={`w-2 h-2 rounded-full ${i < used ? "bg-red-400" : "bg-green-300"}`}
+//                     />
+//                 ))}
+//             </div>
+//             <span className="text-xs text-soft-black/50">{used}/{limit}</span>
+//         </div>
+//     )
+// }
 
 function ImageGrid({ images }: { images: ImageUploadResult[] }) {
     if (!images.length) return null
@@ -96,11 +96,11 @@ export default function ServiceCard({ service, role, onPay, onVerify, onRedo, on
             {/* Meta */}
             <div className="flex items-center justify-between gap-2 mb-3">
                 <span className="text-xs text-soft-black/50">Due {service.expectedDeliveryDate}</span>
-                <RevisionDots used={service.revisionsUsed} limit={service.revisionLimit} />
+                {/* <RevisionDots used={service.revisionsUsed} limit={service.revisionLimit} /> */}
             </div>
 
             {/* Pricing */}
-            <div className="text-xs text-soft-black/60 mb-3">
+            <div className="text-xs text-black mb-3">
                 ₹{service.price.toLocaleString("en-IN")} service &nbsp;+&nbsp; ₹{service.executionPrice.toLocaleString("en-IN")} execution
             </div>
 

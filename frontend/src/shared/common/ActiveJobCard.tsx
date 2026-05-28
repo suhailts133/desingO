@@ -1,6 +1,7 @@
 import { User, FileText, Hash, Calendar } from "lucide-react"
 import type { ActiveJobResponseDTO } from "../../features/designer/activeJobs/designerActiveJobsInterface"
 import { useNavigate } from "react-router-dom"
+import { useDecodeAccessToken } from "../../helpers/decodeAccessToken"
 
 const statusStyles: Record<ActiveJobResponseDTO["status"], string> = {
     Active: "bg-green-50 text-green-800 border border-green-200",
@@ -35,12 +36,21 @@ type Props = {
 }
 
 export default function ActiveJobCard({ data }: Props) {
+
     const navigate = useNavigate();
-    const viewProposal = (id:string) => {
-     navigate(`/proposal/${id}`)
-    }
+    const { role } = useDecodeAccessToken()
+    const viewProposal = (id: string) => {
+        const basePath = role === "Designer" ? "/designer/proposal" : "/customer/proposal";
+
+        navigate(`${basePath}/${id}`, {
+            state: {
+                sourceType: data.sourceType,
+                sourceId: data.sourceId,
+            },
+        });
+    };
     return (
-        <div onClick={() => viewProposal(data.id)} className="bg-off-white w-full rounded-xl border border-blush-light/40 shadow-lg hover:shadow-2xl transition-shadow duration-300 px-4 pt-4 pb-4 flex flex-col gap-0">
+        <div onClick={() => viewProposal(data.sourceId)} className="bg-off-white w-full rounded-xl border border-blush-light/40 shadow-lg hover:shadow-2xl transition-shadow duration-300 px-4 pt-4 pb-4 flex flex-col gap-0">
 
             {/* Header — avatar + name + status */}
             <div className="flex items-center gap-3">
