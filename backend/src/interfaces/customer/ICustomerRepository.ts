@@ -29,6 +29,7 @@ export interface IHireDesignerRepository {
 
 export interface IActiveJobRepository {
     getActiveJob(id: string): Promise<IActiveJob | null>
+    updateActiveJob(jobId: string, data: Partial<IActiveJob>): Promise<IActiveJob | null>
     getActiveJobBySource(id: string): Promise<IActiveJob | null>
     getActiveJobPopulated(id: string): Promise<ActiveJobPopulateAll | null>
     getAllActiveJobPerDesigner(designerId: string): Promise<IActiveJob[]>

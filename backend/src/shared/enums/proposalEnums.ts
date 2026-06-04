@@ -20,7 +20,7 @@ export enum EscrowStatus {
     DISPUTED = "Disputed"
 }
 
-export enum ContractStatus {
+export enum CONTRACT_STATUS {
     SENT      = "Sent",        
     ACCEPTED  = "Accepted",    
     REJECTED  = "Rejected",    

@@ -43,9 +43,6 @@ export class AdminDesignerVerificationservice implements IAdminDesignerVerificat
       if (!statusChanged) {
         throw new AppError(ADMIN_MESSAGES.DESIGNER_VERFICATION.STATUS_CHANGE_USER_NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
       }
-      if (statusChanged.role !== USER_ROLES.DESIGNER) {
-        throw new AppError(ADMIN_MESSAGES.DESIGNER_VERFICATION.STATUS_CHANGE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
-      }
     }
     await sendDesignerStatusEmail(userData.email, userData.name, userData.status, userData.rejectionReason);
     return { message: ADMIN_MESSAGES.DESIGNER_VERFICATION.STATUS_CHANGE_SUCCESS, data: { status: result.status } };

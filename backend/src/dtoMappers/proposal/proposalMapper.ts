@@ -14,8 +14,6 @@ export class ProposalMapper {
 
             uploadedImages: d.uploadedImages,
             currentVersion: d.currentVersion,
-            revisionLimit: d.revisionLimit,
-            revisionsUsed: d.revisionsUsed,
             expectedDeliveryDate: d.expectedDeliveryDate.toDateString(),
             ...(d.actualDeliveryDate && { actualCompletionDate: d.actualDeliveryDate.toDateString() }),
             paymentStatus: d.paymentStatus,

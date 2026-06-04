@@ -18,8 +18,7 @@ export const serviceItemSchema = new Schema<IServiceItem>({
     rejectionReason: { type: String },
     uploadedImages: { type: [imageFormatSchema], default: [] },
     currentVersion: { type: Number, default: 0 },
-    revisionLimit: { type: Number, default: 5 },
-    revisionsUsed: { type: Number, default: 0 },
+
     expectedDeliveryDate: { type: Date, required: true },
     actualDeliveryDate: { type: Date },
     paymentStatus: {

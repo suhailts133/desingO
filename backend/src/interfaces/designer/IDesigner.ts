@@ -44,6 +44,7 @@ export interface IDesigner {
   rejectionReason?: string;
   createdAt: Date,
   bio: string
+  attempt:number
 }
 
 export type IDesignerPopulated = Omit<IDesigner, 'userId'> & {

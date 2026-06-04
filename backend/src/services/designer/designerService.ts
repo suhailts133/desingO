@@ -58,7 +58,7 @@ export class DesignerService implements IDesignerService {
             ...data,
             govtIdImage: governmentIdImage,
             education,
-            workExperience
+            workExperience,
         }
         await this._designerRepository.createDesignerRequest(designerData)
         const emailSent = await sendDesignerVerificationEmail(user.email, user.full_name)

@@ -7,7 +7,6 @@ export interface ServiceItem {
     order: number;
     price: number;
     executionPrice: number;
-    revisionLimit: number;
     expectedDeliveryDate: Date;
     actualDeliveryDate?: Date;
 }
@@ -38,7 +37,7 @@ export interface ProposalInputData {
     minPrice: number
     maxPrice: number
     services: string[];
-    sqft:number
+    sqft: number
 }
 
 
@@ -50,7 +49,7 @@ export interface ProposalDetailDTO {
     clientId: string
     designerId: string
     sourceName: string
-  
+
 
     drawingFeePerSqFt: number
     totalDrawingFee: number
@@ -84,8 +83,6 @@ export interface ProposalServiceItemDTO {
     rejectionReason?: string
     uploadedImages: ImageUploadResult[]
     currentVersion: number
-    revisionLimit: number
-    revisionsUsed: number
     expectedDeliveryDate: string
     actualDeliveryDate?: string
     paymentStatus: PaymentStatus
@@ -93,3 +90,10 @@ export interface ProposalServiceItemDTO {
 }
 
 
+export interface ProposalAcceptOrRejectDTO {
+    contractStatus: "Accepted" | "Rejected",
+    overallRejectionReason?: string,
+    sourceId: string
+}
+
+export type ProposalStatusUpdateRepoDTO = Omit<ProposalAcceptOrRejectDTO, "sourceId">

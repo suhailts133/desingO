@@ -8,7 +8,7 @@ export class JobRequestMapper {
     static toJobRequestProposalInputDTO(jobRequest: IJobRequestPopulated): ProposalInputData {
 
         let totalSqft = 0
-        for (let items of jobRequest.rooms) {
+        for (const items of jobRequest.rooms) {
             totalSqft += toSqFt(Number(items.length), Number(items.width), items.unit)
         }
         return {

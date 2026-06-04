@@ -23,6 +23,7 @@ import profileRoutes from "./routes/common/profileRoutes.js"
 import designBMRoutes from "./routes/benchmark/designBMRoutes.js"
 // proposalRoutes
 import proposalRoutes from "./routes/proposal/proposalRoutes.js"
+import reviewRoutes from "./routes/proposal/reviewRoutes.js"
 
 import { globalErrorHandler } from "./middlewares/globalErrorHandler.js";
 // import passport from "passport";
@@ -54,6 +55,8 @@ app.use("/api/design-bm", designBMRoutes)
 app.use("/api/proposal", profileRoutes)
 app.use("/api/proposal", proposalRoutes)
 app.use("/api/active-job", activeJobsRoute)
+app.use("/api/active-job", activeJobsRoute)
+app.use("/api/review", reviewRoutes)
 app.use(globalErrorHandler)
 
 

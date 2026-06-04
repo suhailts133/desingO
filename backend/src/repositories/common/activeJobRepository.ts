@@ -19,6 +19,11 @@ export class ActiveJobRepository extends BaseRepository<IActiveJob> implements I
         return this.findOne({ sourceId: id })
     }
 
+    async updateActiveJob(jobId: string, data: Partial<IActiveJob>): Promise<IActiveJob | null> {
+        const result = await this.updateOne({sourceId:jobId}, data)
+        return result
+    }
+
     async createActiveJOb(data: CreateActiveJobDTO): Promise<IActiveJob> {
         return await this.create({
             designerId: new mongoose.Types.ObjectId(data.designerId),

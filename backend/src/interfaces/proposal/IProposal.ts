@@ -52,8 +52,6 @@ export interface IServiceItem {
     rejectionReason?: string;
     uploadedImages: ImageUploadResult[];
     currentVersion: number;
-    revisionLimit: number;
-    revisionsUsed: number;
     expectedDeliveryDate: Date;
     actualDeliveryDate?: Date;
     paymentStatus: PaymentStatus;
@@ -61,6 +59,19 @@ export interface IServiceItem {
     paidAt?: Date;
     escrow?: IEscrow;
     review?: IServiceReview;
+}
+
+
+export interface IReview{
+    id:string,
+    comment:string,
+    rating:number,
+    userId:mongoose.Types.ObjectId 
+    designerId:mongoose.Types.ObjectId
+    userName:string,
+    profileImage:string,
+    jobId:mongoose.Types.ObjectId
+    createdAt:Date,
 }
 
 export interface IProposal {

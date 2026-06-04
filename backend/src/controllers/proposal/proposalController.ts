@@ -2,7 +2,7 @@ import type { IProposalService } from "../../interfaces/proposal/IProposalServic
 import type { Request, Response } from "express"
 import { RespsonseHelper } from "../../shared/helpers/responseHelper.js"
 import { RESPONSE_CODE } from "../../shared/enums/statusCode.js"
-import type { CreateProposalDTO, ProposalDetailDTO } from "../../DTO/proposal/proposal.js";
+import type { CreateProposalDTO, ProposalAcceptOrRejectDTO } from "../../DTO/proposal/proposal.js";
 
 import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError.js"
@@ -10,7 +10,8 @@ import { createProposalValidation } from "../../validators/proposal/proposalVali
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
 import { isObjectId } from "../../shared/helpers/extraFunctions.js";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages.js";
-import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
+import { proposalApproveOrRejectionValidation } from "../../validators/proposal/proposalAcceptOrRejectValidation.js";
+
 
 
 /**
@@ -34,6 +35,23 @@ export class ProposalController {
         }
         const validated = value as CreateProposalDTO
         const result = await this._proposalService.createProposal(validated)
+        RespsonseHelper.success(res, result)
+    })
+
+    
+    /**
+   * for create new PRoposal
+   * @route PATCH /proposal/approve-reject
+   * @param req.body {@link ProposalAcceptOrRejectDTO}
+   * @throws {AppError} 400 if there is any issue with req.body
+  */
+    updateProposalStatus = asyncHandler(async (req: Request, res: Response) => {
+        const { error, value } = proposalApproveOrRejectionValidation.validate(req.body, { stripUnknown: true })
+        if (error) {
+            throw new AppError(error.details[0]?.message || "Missing fields or Invalid Data", RESPONSE_CODE.BAD_REQUEST)
+        }
+        const validated = value as ProposalAcceptOrRejectDTO
+        const result = await this._proposalService.approveOrRejectProposal(validated)
         RespsonseHelper.success(res, result)
     })
 
@@ -71,13 +89,12 @@ export class ProposalController {
         if (!isObjectId(jobId)) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
-        const source = req.body.sourceType as
-            "JobRequest" | "DirectHire";
+        const source = req.params.slug as 'jobRequest' | 'direct_hire';
 
-        if (source !== "JobRequest" && source !== "DirectHire") {
+        if (source !== "jobRequest" && source !== "direct_hire") {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL_INPUT.UNKONW_DATA, RESPONSE_CODE.BAD_REQUEST)
         }
-        const result = source === "JobRequest" ? await this._proposalService.getProposalInputForJobRequest(jobId) : await this._proposalService.getProposalTemplateForDirecHire(jobId)
+        const result = source === "jobRequest" ? await this._proposalService.getProposalInputForJobRequest(jobId) : await this._proposalService.getProposalTemplateForDirecHire(jobId)
         RespsonseHelper.success(res, result)
     })
 }

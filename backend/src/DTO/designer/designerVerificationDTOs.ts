@@ -1,12 +1,12 @@
-import type { CloudinaryImageFormat } from "../../interfaces/designer/IDesigner.js";
+import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
 
 
 export interface WorkExperienceWithImage extends WorkExperience {
-    proof: CloudinaryImageFormat
+    proof: ImageUploadResult
 }
 
 export interface EducationWithImage extends Education {
-    certification: CloudinaryImageFormat
+    certification: ImageUploadResult
 }
 
 
@@ -49,7 +49,7 @@ export interface DesignerVerificationDTO {
     city: string;
     district: string;
     governmentIdType: GovernmentIdType;
-    govtIdImage: CloudinaryImageFormat;
+    govtIdImage: ImageUploadResult;
     education: EducationWithImage[]
     workExperience?: WorkExperienceWithImage[]
     portfolioUrl: string

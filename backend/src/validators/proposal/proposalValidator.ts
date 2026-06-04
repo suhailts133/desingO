@@ -41,17 +41,6 @@ const serviceItemSchema = Joi.object({
             "any.required": "Execution price is required",
         }),
 
-    revisionLimit: Joi.number()
-        .integer()
-        .min(0)
-        .required()
-        .messages({
-            "number.base": "Revision limit must be a number",
-            "number.integer": "Revision limit must be an integer",
-            "number.min": "Revision limit cannot be negative",
-            "any.required": "Revision limit is required",
-        }),
-
     expectedDeliveryDate: Joi.date()
         .greater("now")
         .required()

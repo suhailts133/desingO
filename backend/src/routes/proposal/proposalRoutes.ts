@@ -7,6 +7,7 @@ import designerAuthentication from "../../middlewares/designerAuth.js";
 import authenticate from "../../middlewares/auth.js";
 import { JobRequestRepository } from "../../repositories/customer/jobRequestRepository.js";
 import { HireDesignerRepository } from "../../repositories/customer/hireDesignerRepository.js";
+import customerAuthentication from "../../middlewares/customerAuth.js";
 const router = Router()
 
 const proposalRepo = new ProposalRepository()
@@ -19,6 +20,7 @@ const proposalController = new ProposalController(proposalService)
 
 router.post("/create", designerAuthentication, proposalController.createProposal)
 router.get("/:id", authenticate, proposalController.getProposal)
-router.get("prefill/:id", designerAuthentication, proposalController.getProposal)
+router.get("/prefill/:id/:slug", designerAuthentication, proposalController.getProposalTemplate)
+router.patch("/approve-reject", customerAuthentication, proposalController.updateProposalStatus)
 
 export default router

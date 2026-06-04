@@ -27,7 +27,8 @@ const designerSchema = new Schema<IDesigner>({
         ref: "User",
         required: true
     },
-    phone: { type: String},
+    phone: { type: String },
+    attempt: { type: Number, default: 1 },
     state: { type: String, required: true },
     district: { type: String, required: true },
     city: { type: String, required: true },
