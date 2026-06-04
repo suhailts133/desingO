@@ -75,7 +75,11 @@ export const API_ROUTES = {
     PROPOSAL: {
         CREATE: "/proposal/create",
         MY_PROPOSAL: "/proposal",
-        PREFILL_DATA:"/proposal/prefill",
-        APPROVE_REJECT:"/proposal/approve-reject"
+        PREFILL_DATA: "/proposal/prefill",
+        APPROVE_REJECT: "/proposal/approve-reject"
+    },
+    REVIEW: {
+        CREATE: "/review/create",
+        MY_REVIEWS: "/review/my"
     }
 } as const

@@ -5,18 +5,24 @@ import { useGetDesignerDetailQuery, useGetDesignGallaryQuery } from "../commonEn
 import DesignerDetailCard from "./cards/DesignerDetailCard"
 import Gallary from "./Gallary"
 import { ChevronLeft } from "lucide-react"
+import { useGetMyReivewsQuery } from "../../proposal/wishlistEndpoints"
+import DesignerReviews from "../../proposal/page/DesignerReviews"
 
 export default function DesignerDetail() {
   const { id } = useParams<{ id: string }>()
   const [page, setPage] = useState(1)
+  const [reviewPage, setReviewPage] = useState(1)
   const navigate = useNavigate()
   const { data: designerData, isLoading: isDesignerDataLoading, error: designerDataError } = useGetDesignerDetailQuery(id!, { skip: !id })
   const { data: designData, isLoading: isDesignsLoading, error: designsError } = useGetDesignGallaryQuery({ id: id!, page }, { skip: !id })
-
+  const { data: reviewData, isLoading: isReviewLoading, error: reveiwError } = useGetMyReivewsQuery({ designerId: id!, page: reviewPage }, { skip: !id })
   const designer = designerData?.data
   const design = designData?.data
+  const review = reviewData?.data
+  const reviewTotalPage = reviewData?.totalPages
+  const reveiwTotal = reviewData?.total
 
-  if (isDesignerDataLoading || isDesignsLoading) {
+  if (isDesignerDataLoading || isDesignsLoading || isReviewLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
@@ -27,7 +33,7 @@ export default function DesignerDetail() {
     )
   }
 
-  if (designerDataError || designsError || !design || !designer) {
+  if (designerDataError || designsError || !design || !designer || reveiwError || !review) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-sm text-red-400 font-Jost">Failed to load designer.</p>
@@ -67,6 +73,22 @@ export default function DesignerDetail() {
 
       </div>
 
+      {review && (
+        <div className="flex flex-col gap-5">
+          <DesignerReviews
+            reviews={review}
+            total={reveiwTotal ?? 0}
+          />
+          <Pagination
+            page={reviewPage}
+            totalPages={reviewTotalPage ?? 1}
+            totalItem={reveiwTotal?? 0}
+            whichItem="reviews"
+            onDecrease={() => setReviewPage(p => p - 1)}
+            onIncrease={() => setReviewPage(p => p + 1)}
+          />
+        </div>
+      )}
     </div>
   )
 }

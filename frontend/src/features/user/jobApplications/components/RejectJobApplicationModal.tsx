@@ -14,7 +14,7 @@ export default function RejectJobApplicationModal({ onClose, isOpen,onConfirm ,i
     if (!isOpen) {
         return null
     }
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RejectionPayload>({
+    const { register, handleSubmit, formState: { errors } } = useForm<RejectionPayload>({
         resolver: joiResolver(rejectionReasonValidaiton),
         mode: "onBlur"
     });

@@ -112,3 +112,25 @@ export interface ProposalAcceptOrRejectDTO {
     overallRejectionReason?: string,
     sourceId: string
 }
+
+
+export interface ReviewsLIST {
+    comment: string,
+    rating: number
+    userName: string
+    profileImage?: string
+    createdAt: string,
+}
+
+export interface ReviewPayload {
+    rating: number;
+    comment: string;
+    sourceId: string
+}
+
+export interface ReviewFilters {
+    designerId: string,
+    page: number
+}
+
+export type ReviewPayloadFields = Omit<ReviewPayload, "sourceId">

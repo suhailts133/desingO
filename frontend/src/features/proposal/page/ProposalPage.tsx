@@ -4,7 +4,7 @@ import { MessageCircle, ChevronLeft, PencilLine } from "lucide-react"
 import { useGetProposalQuery } from "../proposalEndpoints"
 import { useDecodeAccessToken } from "../../../helpers/decodeAccessToken"
 
-import type { ContractStatus, ProposalAcceptOrRejectDTO } from "../proposalInterface"
+import type { ContractStatus, ProposalAcceptOrRejectDTO, ReviewPayload, ReviewPayloadFields } from "../proposalInterface"
 import NoProposalCustomer from "../component/NoProposalCustomer"
 import NoProposalDesigner from "../component/NoProposalDesigner"
 import ServiceCard from "../component/ServiceCard"
@@ -12,6 +12,8 @@ import ConfirmModal from "../../../shared/modals/ConfirmModal"
 import RejectJobApplicationModal from "../../user/jobApplications/components/RejectJobApplicationModal"
 import type { RejectionPayload } from "../../user/jobApplications/jobApplicationInterFace"
 import { useApproveOrReject } from "../hooks/useApproveOrReject"
+import ReviewForm from "../component/ReviewForm"
+import { useWriteReview } from "../hooks/useWriteReview"
 
 
 
@@ -34,6 +36,7 @@ export default function ProposalPage() {
     const { role } = useDecodeAccessToken()
     const { data, isLoading, error } = useGetProposalQuery(id!, { skip: !id })
     const { isChangingStatus, statusUpdateError, statusUpdateSuccess, newStatus, handleUpdateStatus } = useApproveOrReject()
+    const { isReviewing, reviewError, reivewSuccess, handleWriteReview } = useWriteReview()
     const location = useLocation()
 
     const sourceType = location.state?.sourceType as "jobRequest" | "direct_hire" | undefined
@@ -42,6 +45,7 @@ export default function ProposalPage() {
     // ── modal state ───────────────────────────────────────────────────────────
     const [approveProposal, setApproveProposal] = useState<{ sourceId: string } | null>(null)
     const [rejectProposal, setRejectProposal] = useState<{ sourceId: string } | null>(null)
+    const [review, setReview] = useState<{ sourceId: string } | null>(null)
 
     // ── handlers ──────────────────────────────────────────────────────────────
     const handleApproval = async () => {
@@ -64,6 +68,19 @@ export default function ProposalPage() {
         await handleUpdateStatus(payload)
 
         setRejectProposal(null)
+    }
+
+    const handleWriteReveiw = async (data: ReviewPayloadFields) => {
+        if (!review) return
+        const payload: ReviewPayload = {
+            sourceId: review.sourceId,
+            comment: data.comment,
+            rating: data.rating,
+        }
+        await handleWriteReview(payload)
+        // console.log(payload)
+
+        setReview(null)
     }
 
     if (role === "Designer" && (!sourceType || !sourceId)) {
@@ -119,7 +136,7 @@ export default function ProposalPage() {
     return (
         <div className="w-full flex flex-col gap-6">
 
-            {/* ── Modals ── */}
+
             <ConfirmModal
                 isOpen={!!approveProposal}
                 onConfirm={handleApproval}
@@ -138,6 +155,18 @@ export default function ProposalPage() {
                 isLoading={isChangingStatus}
             />
 
+            <ReviewForm
+                isOpen={!!review}
+                onClose={() => setReview(null)}
+                onConfirm={handleWriteReveiw}
+                isLoading={isReviewing}
+            />
+
+            <button onClick={() => setReview({ sourceId: proposal.sourceId })} className="soft-black-button">
+                Write Your Review
+            </button>
+            {reviewError && <p className="text-xs text-red-500">{reviewError}</p>}
+            {reivewSuccess && <p className="text-xs text-green-600">{reivewSuccess}</p>}
 
             <div className="flex items-center justify-between flex-wrap gap-3">
                 <div className="flex items-center gap-3">
@@ -202,6 +231,12 @@ export default function ProposalPage() {
                             Decline proposal
                         </button>
                     </div>
+                    {statusUpdateError && (
+                        <p className="text-xs text-red-500 mt-3">{statusUpdateError}</p>
+                    )}
+                    {statusUpdateSuccess && (
+                        <p className="text-xs text-green-600 mt-3">{statusUpdateSuccess}</p>
+                    )}
                 </div>
             )}
 
@@ -267,7 +302,7 @@ export default function ProposalPage() {
                         </span>
                         {showAdvancePay && (
                             <button
-                                onClick={() => {/* trigger stripe advance payment */ }}
+                                onClick={() => { }}
                                 className="soft-black-button"
                             >
                                 Pay advance
@@ -300,10 +335,10 @@ export default function ProposalPage() {
                                 key={service.order}
                                 service={service}
                                 role={role}
-                                onPay={() => {/* trigger stripe service payment */ }}
-                                onVerify={() => {/* trigger verify */ }}
-                                onRedo={() => {/* trigger redo */ }}
-                                onUpload={() => {/* trigger upload modal */ }}
+                                onPay={() => { }}
+                                onVerify={() => { }}
+                                onRedo={() => { }}
+                                onUpload={() => { }}
                             />
                         ))}
                 </div>
