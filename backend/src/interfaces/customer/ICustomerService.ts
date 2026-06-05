@@ -3,6 +3,7 @@ import type { getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestRespo
 import type { EditJobRequest, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO.js";
 import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse.js";
 import type { WarningDTO } from "../benchmark/IBenchMark.js";
+import type { MessageRole } from "../chat/IChat.js";
 import type { HireDesignerPayload, ICreateJobRequest } from "./ICustomer.js";
 
 export interface IJobRequestService {
@@ -25,4 +26,5 @@ export interface IHireDesignerService {
 export interface IActiveJobService {
     getCustomerActiveJobs(id: string, filter?: ActiveJobFilter): Promise<IApiResponseWithPagination<ActiveJobResponseDTO[]>>
     getDesignerActiveJobs(id: string, filter?: ActiveJobFilter): Promise<IApiResponseWithPagination<ActiveJobResponseDTO[]>>
+    validateJobForChat(activeJobId:string, userId:string):Promise<MessageRole>
 }

@@ -4,6 +4,9 @@ import dotenv from "dotenv";
 import connectDB from "./config/mongodb.js";
 import connectRedis from "./config/redis.js";
 
+import { createServer } from "http";
+import { initSocket } from "./socket/index.js";
+
 import authRoutes from "./routes/common/authRoutes.js"
 // admin routes
 import userRoutes from "./routes/admin/userRoutes.js"
@@ -66,8 +69,10 @@ const startServer = async () => {
     try {
         await connectDB();
         await connectRedis()
+        const httpServer = createServer(app)
+        initSocket(httpServer)
 
-        app.listen(PORT, () => console.log("Server running at the PORT: ", PORT))
+        httpServer.listen(PORT, () => console.log("Server running at the PORT: ", PORT))
     } catch (error) {
         console.error("failed to start the server: ", error)
     }
