@@ -46,6 +46,9 @@ export enum AVG_PRICE {
     LOWER = 0.60,
 }
 
+export enum CHAT_ENUM {
+    LIMIT = 50
+}
 
 
 export enum ACTIVE_JOB_PROPOSAL_STATUS {

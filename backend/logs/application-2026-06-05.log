@@ -1,0 +1,235 @@
+2026-06-05 21:33:48:3348 info: undefined
+2026-06-05 21:36:56:3656 info: undefined
+2026-06-05 21:39:29:3929 info: joinRoom payload {
+  "activeJobId":"6a195c42af6aa2439e8af419",
+  "skip":0
+}
+2026-06-05 21:39:29:3929 info: undefined
+2026-06-05 21:42:21:4221 info: joinRoom payload {
+  "activeJobId":"6a195c42af6aa2439e8af419",
+  "skip":0
+}
+2026-06-05 21:42:21:4221 info: jobid from get history undefined
+2026-06-05 21:42:21:4221 info: undefined
+2026-06-05 21:44:54:4454 info: joinRoom payload {
+  "activeJobId":"6a195c42af6aa2439e8af419",
+  "skip":0
+}
+2026-06-05 21:44:54:4454 info: userId [object Object]
+2026-06-05 21:44:54:4454 info: jobid from get history undefined
+2026-06-05 21:44:54:4454 info: undefined
+2026-06-05 21:47:21:4721 info: joinRoom payload {
+  "activeJobId":"6a195c42af6aa2439e8af419",
+  "skip":0
+}
+2026-06-05 21:47:21:4721 info: user: {"email":"suhailts.edu@gmail.com","userId":"69f60b928320a1a8926d6fac","name":"artemis","role":"Customer","jti":"b8c67d6a-e1f0-483b-9bb3-16ce73dc63c8","iat":1780676199,"exp":1780677099}
+2026-06-05 21:47:21:4721 info: jobid from get history undefined
+2026-06-05 21:47:21:4721 info: undefined
+2026-06-05 21:48:32:4832 info: joinRoom payload {
+  "activeJobId":"6a195c42af6aa2439e8af419",
+  "skip":0
+}
+2026-06-05 21:48:32:4832 info: user: "69f60b928320a1a8926d6fac"
+2026-06-05 21:48:32:4832 info: jobid from get history undefined
+2026-06-05 21:48:32:4832 info: undefined
+2026-06-05 21:53:13:5313 info: joinRoom payload undefined
+2026-06-05 21:53:13:5313 info: user: "69f60b928320a1a8926d6fac"
+2026-06-05 21:53:13:5313 info: jobid from get history undefined
+2026-06-05 21:53:13:5313 info: undefined
+2026-06-05 21:53:51:5351 info: joinRoom payload undefined
+2026-06-05 21:53:51:5351 info: user: "69f60b928320a1a8926d6fac"
+2026-06-05 21:53:51:5351 info: jobid from get history undefined
+2026-06-05 21:53:51:5351 info: undefined
+2026-06-05 21:54:13:5413 info: joinRoom payload undefined
+2026-06-05 21:54:13:5413 info: jobid from get history undefined
+2026-06-05 21:54:13:5413 info: undefined
+2026-06-05 21:54:33:5433 info: joinRoom payload {
+  "activeJobId":"6a195c42af6aa2439e8af419",
+  "skip":0
+}
+2026-06-05 21:54:33:5433 info: jobid from get history undefined
+2026-06-05 21:54:33:5433 info: undefined
+2026-06-05 21:58:31:5831 info: joinRoom payload {
+  "activeJobId":"6a195c42af6aa2439e8af419",
+  "skip":0
+}
+2026-06-05 21:58:31:5831 info: jobid from get history undefined
+2026-06-05 21:58:31:5831 info: undefined
+2026-06-05 21:59:15:5915 info: joinRoom payload {
+  "activeJobId":"6a195c42af6aa2439e8af419",
+  "skip":"0"
+}
+2026-06-05 21:59:15:5915 info: jobid from get history undefined
+2026-06-05 21:59:15:5915 info: undefined
+2026-06-05 22:00:57:057 info: Parsed activeJobId: 6a195c42af6aa2439e8af419
+2026-06-05 22:00:57:057 info: joinRoom payload [object Object]
+2026-06-05 22:00:57:057 info: jobid from get history 6a195c42af6aa2439e8af419
+2026-06-05 22:00:57:057 info: 6a195c42af6aa2439e8af419
+2026-06-05 22:00:57:057 info: {
+  _id: new ObjectId('6a195c42af6aa2439e8af419'),
+  userId: new ObjectId('69f60b928320a1a8926d6fac'),
+  designerId: new ObjectId('69f5e11d0c1493db4efcf8d4'),
+  sourceType: 'jobRequest',
+  sourceId: new ObjectId('6a195babaf6aa2439e8af3f0'),
+  sourceName: 'gym redesign',
+  status: 'Active',
+  proposalStatus: 'CREATED',
+  startedAt: 2026-05-29T09:28:34.307Z,
+  createdAt: 2026-05-29T09:28:34.308Z,
+  updatedAt: 2026-05-29T09:39:46.365Z,
+  __v: 0
+}
+2026-06-05 22:01:55:155 info: undefined
+2026-06-05 22:03:48:348 info: Parsed activeJobId: 6a195c42af6aa2439e8af419
+2026-06-05 22:03:48:348 info: joinRoom payload [object Object]
+2026-06-05 22:03:48:348 info: jobid from get history 6a195c42af6aa2439e8af419
+2026-06-05 22:03:48:348 info: 6a195c42af6aa2439e8af419
+2026-06-05 22:03:48:348 info: {
+  _id: new ObjectId('6a195c42af6aa2439e8af419'),
+  userId: new ObjectId('69f60b928320a1a8926d6fac'),
+  designerId: new ObjectId('69f5e11d0c1493db4efcf8d4'),
+  sourceType: 'jobRequest',
+  sourceId: new ObjectId('6a195babaf6aa2439e8af3f0'),
+  sourceName: 'gym redesign',
+  status: 'Active',
+  proposalStatus: 'CREATED',
+  startedAt: 2026-05-29T09:28:34.307Z,
+  createdAt: 2026-05-29T09:28:34.308Z,
+  updatedAt: 2026-05-29T09:39:46.365Z,
+  __v: 0
+}
+2026-06-05 22:04:17:417 info: 6a195c42af6aa2439e8af419
+2026-06-05 22:04:17:417 info: {
+  _id: new ObjectId('6a195c42af6aa2439e8af419'),
+  userId: new ObjectId('69f60b928320a1a8926d6fac'),
+  designerId: new ObjectId('69f5e11d0c1493db4efcf8d4'),
+  sourceType: 'jobRequest',
+  sourceId: new ObjectId('6a195babaf6aa2439e8af3f0'),
+  sourceName: 'gym redesign',
+  status: 'Active',
+  proposalStatus: 'CREATED',
+  startedAt: 2026-05-29T09:28:34.307Z,
+  createdAt: 2026-05-29T09:28:34.308Z,
+  updatedAt: 2026-05-29T09:39:46.365Z,
+  __v: 0
+}
+2026-06-05 22:04:46:446 info: Parsed activeJobId: 6a195c42af6aa2439e8af419
+2026-06-05 22:04:46:446 info: joinRoom payload [object Object]
+2026-06-05 22:04:46:446 info: jobid from get history 6a195c42af6aa2439e8af419
+2026-06-05 22:04:46:446 info: 6a195c42af6aa2439e8af419
+2026-06-05 22:04:46:446 info: {
+  _id: new ObjectId('6a195c42af6aa2439e8af419'),
+  userId: new ObjectId('69f60b928320a1a8926d6fac'),
+  designerId: new ObjectId('69f5e11d0c1493db4efcf8d4'),
+  sourceType: 'jobRequest',
+  sourceId: new ObjectId('6a195babaf6aa2439e8af3f0'),
+  sourceName: 'gym redesign',
+  status: 'Active',
+  proposalStatus: 'CREATED',
+  startedAt: 2026-05-29T09:28:34.307Z,
+  createdAt: 2026-05-29T09:28:34.308Z,
+  updatedAt: 2026-05-29T09:39:46.365Z,
+  __v: 0
+}
+2026-06-05 22:05:21:521 info: 6a195c42af6aa2439e8af419
+2026-06-05 22:05:21:521 info: {
+  _id: new ObjectId('6a195c42af6aa2439e8af419'),
+  userId: new ObjectId('69f60b928320a1a8926d6fac'),
+  designerId: new ObjectId('69f5e11d0c1493db4efcf8d4'),
+  sourceType: 'jobRequest',
+  sourceId: new ObjectId('6a195babaf6aa2439e8af3f0'),
+  sourceName: 'gym redesign',
+  status: 'Active',
+  proposalStatus: 'CREATED',
+  startedAt: 2026-05-29T09:28:34.307Z,
+  createdAt: 2026-05-29T09:28:34.308Z,
+  updatedAt: 2026-05-29T09:39:46.365Z,
+  __v: 0
+}
+2026-06-05 22:05:41:541 info: Parsed activeJobId: 6a195c42af6aa2439e8af419
+2026-06-05 22:05:41:541 info: joinRoom payload [object Object]
+2026-06-05 22:05:41:541 info: jobid from get history 6a195c42af6aa2439e8af419
+2026-06-05 22:05:41:541 info: 6a195c42af6aa2439e8af419
+2026-06-05 22:05:41:541 info: {
+  _id: new ObjectId('6a195c42af6aa2439e8af419'),
+  userId: new ObjectId('69f60b928320a1a8926d6fac'),
+  designerId: new ObjectId('69f5e11d0c1493db4efcf8d4'),
+  sourceType: 'jobRequest',
+  sourceId: new ObjectId('6a195babaf6aa2439e8af3f0'),
+  sourceName: 'gym redesign',
+  status: 'Active',
+  proposalStatus: 'CREATED',
+  startedAt: 2026-05-29T09:28:34.307Z,
+  createdAt: 2026-05-29T09:28:34.308Z,
+  updatedAt: 2026-05-29T09:39:46.365Z,
+  __v: 0
+}
+2026-06-05 22:08:55:855 info: Parsed activeJobId: 6a195c42af6aa2439e8af419
+2026-06-05 22:08:55:855 info: joinRoom payload [object Object]
+2026-06-05 22:08:55:855 info: jobid from get history 6a195c42af6aa2439e8af419
+2026-06-05 22:08:55:855 info: 6a195c42af6aa2439e8af419
+2026-06-05 22:08:55:855 info: {
+  _id: new ObjectId('6a195c42af6aa2439e8af419'),
+  userId: new ObjectId('69f60b928320a1a8926d6fac'),
+  designerId: new ObjectId('69f5e11d0c1493db4efcf8d4'),
+  sourceType: 'jobRequest',
+  sourceId: new ObjectId('6a195babaf6aa2439e8af3f0'),
+  sourceName: 'gym redesign',
+  status: 'Active',
+  proposalStatus: 'CREATED',
+  startedAt: 2026-05-29T09:28:34.307Z,
+  createdAt: 2026-05-29T09:28:34.308Z,
+  updatedAt: 2026-05-29T09:39:46.365Z,
+  __v: 0
+}
+2026-06-05 22:09:22:922 info: 6a195c42af6aa2439e8af419
+2026-06-05 22:09:22:922 info: {
+  _id: new ObjectId('6a195c42af6aa2439e8af419'),
+  userId: new ObjectId('69f60b928320a1a8926d6fac'),
+  designerId: new ObjectId('69f5e11d0c1493db4efcf8d4'),
+  sourceType: 'jobRequest',
+  sourceId: new ObjectId('6a195babaf6aa2439e8af3f0'),
+  sourceName: 'gym redesign',
+  status: 'Active',
+  proposalStatus: 'CREATED',
+  startedAt: 2026-05-29T09:28:34.307Z,
+  createdAt: 2026-05-29T09:28:34.308Z,
+  updatedAt: 2026-05-29T09:39:46.365Z,
+  __v: 0
+}
+2026-06-05 22:09:59:959 info: Parsed activeJobId: 6a195c42af6aa2439e8af419
+2026-06-05 22:09:59:959 info: joinRoom payload [object Object]
+2026-06-05 22:09:59:959 info: jobid from get history 6a195c42af6aa2439e8af419
+2026-06-05 22:09:59:959 info: 6a195c42af6aa2439e8af419
+2026-06-05 22:09:59:959 info: {
+  _id: new ObjectId('6a195c42af6aa2439e8af419'),
+  userId: new ObjectId('69f60b928320a1a8926d6fac'),
+  designerId: new ObjectId('69f5e11d0c1493db4efcf8d4'),
+  sourceType: 'jobRequest',
+  sourceId: new ObjectId('6a195babaf6aa2439e8af3f0'),
+  sourceName: 'gym redesign',
+  status: 'Active',
+  proposalStatus: 'CREATED',
+  startedAt: 2026-05-29T09:28:34.307Z,
+  createdAt: 2026-05-29T09:28:34.308Z,
+  updatedAt: 2026-05-29T09:39:46.365Z,
+  __v: 0
+}
+2026-06-05 22:10:50:1050 info: Parsed activeJobId: 6a195c42af6aa2439e8af419
+2026-06-05 22:10:50:1050 info: joinRoom payload [object Object]
+2026-06-05 22:10:50:1050 info: jobid from get history 6a195c42af6aa2439e8af419
+2026-06-05 22:10:50:1050 info: 6a195c42af6aa2439e8af419
+2026-06-05 22:10:50:1050 info: {
+  _id: new ObjectId('6a195c42af6aa2439e8af419'),
+  userId: new ObjectId('69f60b928320a1a8926d6fac'),
+  designerId: new ObjectId('69f5e11d0c1493db4efcf8d4'),
+  sourceType: 'jobRequest',
+  sourceId: new ObjectId('6a195babaf6aa2439e8af3f0'),
+  sourceName: 'gym redesign',
+  status: 'Active',
+  proposalStatus: 'CREATED',
+  startedAt: 2026-05-29T09:28:34.307Z,
+  createdAt: 2026-05-29T09:28:34.308Z,
+  updatedAt: 2026-05-29T09:39:46.365Z,
+  __v: 0
+}
