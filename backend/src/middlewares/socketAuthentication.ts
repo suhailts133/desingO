@@ -30,8 +30,12 @@ async function socketAuthenticate(socket: AuthSocket, next: (err?: Error) => voi
         socket.user = decoded;
         next();
     } catch (error) {
-        const err = ensureError(error).message;
-        console.log(err);
+        const err = ensureError(error);
+        console.log(err.message);
+        if (err.name === 'TokenExpiredError' || err.message === 'jwt expired') {
+
+            return next(new Error("jwt expired"));
+        }
         return next(new Error(AUTH_MESSAGES.AUTH.TOKEN_INVALID));
     }
 }

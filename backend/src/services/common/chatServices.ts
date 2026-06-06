@@ -28,6 +28,6 @@ export class ChatService implements IChatService {
         
         await this._activeJobService.validateJobForChat(activeJobId, userId);
         const messages = await this._messageRepo.findByActiveJob(activeJobId, before)
-        return MessageMapper.toMessageDTOlist(messages);
+        return MessageMapper.toMessageDTOlist(messages).reverse();
     }
 }

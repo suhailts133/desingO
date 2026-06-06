@@ -3,7 +3,6 @@ import type { AuthSocket } from "../SocketType.js";
 import type { IChatService } from "../../interfaces/chat/IChatService.js";
 import { handleSocketError } from "../../shared/errors/socketErrorHandler.js";
 import type { ChatRoomPayload, LeaveRoomPayload, SendMessagePayload, SendMessageRequestDTO } from "../../DTO/chat/chatDTO.js";
-
 export class ChatController {
 
     constructor(private _io: Server, private _socket: AuthSocket, private _chatService: IChatService) { }
@@ -23,8 +22,8 @@ export class ChatController {
             const history = await this._chatService.getHistory(
                 payload.activeJobId,
                 this._socket.user?.userId as string,
-                payload.before)
-
+                payload.before)       
+                
             this._socket.join(payload.activeJobId)
             this._socket.emit("message_history", history)
         } catch (error) {
@@ -65,7 +64,6 @@ export class ChatController {
     */
     fetchHistory = async (payload: ChatRoomPayload) => {
         try {
-    
             if (typeof payload === 'string') {
                 payload = JSON.parse(payload) as ChatRoomPayload;
             }

@@ -47,7 +47,7 @@ export enum AVG_PRICE {
 }
 
 export enum CHAT_ENUM {
-    LIMIT = 50
+    LIMIT = 10
 }
 
 
