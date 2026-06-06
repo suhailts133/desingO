@@ -19,9 +19,10 @@ interface ProposalHeaderProps {
     sourceId?: string;
     role: string;
     showUpdateProposal: boolean;
+    onChatOpen: () => void
 }
 
-export default function ProposalHeader({ id, status, sourceType, sourceId, role, showUpdateProposal }: ProposalHeaderProps) {
+export default function ProposalHeader({onChatOpen, id, status, sourceType, sourceId, role, showUpdateProposal }: ProposalHeaderProps) {
     const navigate = useNavigate()
 
     return (
@@ -52,7 +53,7 @@ export default function ProposalHeader({ id, status, sourceType, sourceId, role,
                     </button>
                 )}
                 <button
-                    onClick={() => navigate(`/chat/${id}`)}
+                    onClick={onChatOpen}
                     className="inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-lg border border-blush-light/50 bg-off-white hover:bg-blush-pale hover:text-blush-deep transition-all duration-200"
                 >
                     <MessageCircle className="w-4 h-4" />

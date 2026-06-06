@@ -7,7 +7,7 @@ import type { RefreshTokenResponse } from "./apiInterface";
 import type { IApiResponse } from "./responseType";
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: "http://localhost:3000/api",
+    baseUrl: import.meta.env.VITE_API_URL,
     prepareHeaders: (headers, { getState }) => {
         const token = (getState() as RootState).auth.accessToken;
         if (token) {

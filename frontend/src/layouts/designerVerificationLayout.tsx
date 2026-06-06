@@ -1,7 +1,4 @@
 import { Outlet } from "react-router-dom";
-// import { useAuthenticate } from "../helpers/authentication";
-// import { useEffect } from "react";
-
 export default function DesignerVerificationLayout() {
 
     return (

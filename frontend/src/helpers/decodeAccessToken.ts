@@ -10,6 +10,7 @@ export const useDecodeAccessToken = () => {
     }
     const decoded = jwtDecode(accessToken) as JwtAccessTokenPayload
     return {
+        id:decoded.userId,
         name:decoded.name,
         email:decoded.email,
         role:decoded.role

@@ -10,7 +10,8 @@ export interface JwtResponse {
 }
 
 export interface JwtAccessTokenPayload {
-  id: string;
+  exp: number
+  userId: string;
   name: string;
   email: string;
   role: "Designer" | "Admin" | "Customer";

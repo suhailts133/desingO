@@ -67,7 +67,6 @@ export interface ProposalDetailDTO {
     designerId: string
     sourceName: string
 
-
     drawingFeePerSqFt: number
     totalDrawingFee: number
     totalExecutionFee: number
@@ -134,3 +133,15 @@ export interface ReviewFilters {
 }
 
 export type ReviewPayloadFields = Omit<ReviewPayload, "sourceId">
+
+export type MessageRole = 'Customer' | 'Designer'
+
+export interface Message {
+    id: string,
+    activeJobId: string,
+    senderId: string,
+    senderRole: MessageRole,
+    content: string,
+    createdAt: string
+}
+

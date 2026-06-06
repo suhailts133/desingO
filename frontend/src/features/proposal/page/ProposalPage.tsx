@@ -21,6 +21,7 @@ import ProposalHeader from "../component/ProposalHeader"
 import ContractOverview from "../component/ContractOverview"
 import AdvancePaymentPanel from "../component/AdvancePaymentPanel"
 import CustomerActionPanel from "../component/CustomerActionPanel"
+import ChatPanel from "../chat/ChatPanel"
 
 export default function ProposalPage() {
     const { id } = useParams<{ id: string }>()
@@ -29,12 +30,13 @@ export default function ProposalPage() {
 
     const sourceType = location.state?.sourceType as "jobRequest" | "direct_hire" | undefined
     const sourceId = location.state?.sourceId as string | undefined
+    const activeJobId = location.state?.activeJobId as string | undefined
 
     const { data, isLoading, error } = useGetProposalQuery(id!, { skip: !id })
     const { isChangingStatus, statusUpdateError, statusUpdateSuccess, newStatus, handleUpdateStatus } = useApproveOrReject()
     const { isReviewing, reviewError, reivewSuccess, handleWriteReview } = useWriteReview()
 
-
+    const [chatOpen, setChatOpen] = useState(false)
     const [approveProposal, setApproveProposal] = useState<{ sourceId: string } | null>(null)
     const [rejectProposal, setRejectProposal] = useState<{ sourceId: string } | null>(null)
     const [review, setReview] = useState<{ sourceId: string } | null>(null)
@@ -63,7 +65,9 @@ export default function ProposalPage() {
 
     if (!role) {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Invalid proposal source.</div>
-
+    }
+    if(!activeJobId){
+        return <div className="p-10 text-center text-red-500 font-Jost-Semibold">No Active Job.</div>
     }
     if (role === "Designer" && (!sourceType || !sourceId)) {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Invalid proposal source.</div>
@@ -87,18 +91,18 @@ export default function ProposalPage() {
         )
     }
 
-   
+
     const advancePaid = proposal.advancePaid
     const contractStatus = newStatus ?? proposal.contractStatus
     const showAdvancePay = role === "Customer" && !advancePaid && (contractStatus === "Accepted")
     const showProposalActions = role === "Customer" && contractStatus === "Sent"
     const showUpdateProposal = role === "Designer" && contractStatus === "Rejected"
 
-    
+
     return (
         <div className="w-full flex flex-col gap-6">
 
-         
+
             <ConfirmModal
                 isOpen={!!approveProposal}
                 onConfirm={handleApproval}
@@ -124,7 +128,15 @@ export default function ProposalPage() {
                 isLoading={isReviewing}
             />
 
-         
+            <ChatPanel
+                isOpen={chatOpen}
+                onClose={() => setChatOpen(false)}
+                activeJobId={activeJobId}
+                otherPersonName={"other"}
+                role={role}
+            />
+
+
             <ProposalHeader
                 id={id!}
                 status={contractStatus}
@@ -132,9 +144,12 @@ export default function ProposalPage() {
                 sourceId={sourceId}
                 role={role}
                 showUpdateProposal={showUpdateProposal}
+                onChatOpen={() => setChatOpen(true)}
             />
 
-         
+
+
+
             <div>
                 <button onClick={() => setReview({ sourceId: proposal.sourceId })} className="soft-black-button">
                     Write Your Review
@@ -143,7 +158,7 @@ export default function ProposalPage() {
                 {reivewSuccess && <p className="text-xs text-green-600">{reivewSuccess}</p>}
             </div>
 
-          
+
             {showProposalActions && (
                 <CustomerActionPanel
                     onAccept={() => setApproveProposal({ sourceId: proposal.sourceId })}
@@ -153,19 +168,19 @@ export default function ProposalPage() {
                 />
             )}
 
-          
+
             <ContractOverview proposal={proposal} />
 
-        
+
             <AdvancePaymentPanel
                 advanceFee={proposal.advanceFee}
                 advancePaid={advancePaid}
                 advancePaidAt={proposal.advancePaidAt}
                 showAdvancePay={showAdvancePay}
-                onPayAdvance={() => {  }}
+                onPayAdvance={() => { }}
             />
 
-        
+
             {proposal.overallRejectionReason && (
                 <div className="bg-red-50 border border-red-200 rounded-2xl px-6 py-4">
                     <p className="text-xs font-Jost-Semibold text-red-700 uppercase tracking-widest mb-1">Rejection reason</p>
