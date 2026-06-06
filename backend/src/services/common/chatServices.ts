@@ -1,4 +1,4 @@
-import Logger from "../../config/logger.js";
+
 import type { SendMessageRequestDTO, MessageResponseDTO, CreateMessageDTO } from "../../DTO/chat/chatDTO.js";
 import { MessageMapper } from "../../dtoMappers/common/messageMapper.js";
 import type { IMessageRepository } from "../../interfaces/chat/IChatRepository.js";
@@ -24,10 +24,10 @@ export class ChatService implements IChatService {
         return MessageMapper.toMessageDTO(savedMessage);
     }
 
-    async getHistory(activeJobId: string, userId: string, skip: number): Promise<MessageResponseDTO[]> {
-        Logger.info(`jobid from get history ${activeJobId}`)
+    async getHistory(activeJobId: string, userId: string, before?: string): Promise<MessageResponseDTO[]> {
+        
         await this._activeJobService.validateJobForChat(activeJobId, userId);
-        const messages = await this._messageRepo.findByActiveJob(activeJobId, skip)
+        const messages = await this._messageRepo.findByActiveJob(activeJobId, before)
         return MessageMapper.toMessageDTOlist(messages);
     }
 }

@@ -2,8 +2,7 @@ import type { Server } from "socket.io";
 import type { AuthSocket } from "../SocketType.js";
 import type { IChatService } from "../../interfaces/chat/IChatService.js";
 import { handleSocketError } from "../../shared/errors/socketErrorHandler.js";
-import type { JoinRoomPayload, LeaveRoomPayload, SendMessagePayload, SendMessageRequestDTO } from "../../DTO/chat/chatDTO.js";
-import Logger from "../../config/logger.js";
+import type { ChatRoomPayload, LeaveRoomPayload, SendMessagePayload, SendMessageRequestDTO } from "../../DTO/chat/chatDTO.js";
 
 export class ChatController {
 
@@ -12,25 +11,19 @@ export class ChatController {
     /**
      * Joins a specific chat room for an active job and retrieves message history.
      * @event join_room
-     * @param {JoinRoomPayload} payload 
+     * @param {ChatRoomPayload} payload 
      * @emits message_history - Sends the array of previous messages to the requesting user.
      * @emits chat_error - If job validation fails or database error occurs.
      */
-    joinRoom = async (payload: JoinRoomPayload | string) => {
+    joinRoom = async (payload: ChatRoomPayload | string) => {
         try {
             if (typeof payload === 'string') {
-                payload = JSON.parse(payload) as JoinRoomPayload;
+                payload = JSON.parse(payload) as ChatRoomPayload;
             }
-
-            Logger.info(`Parsed activeJobId: ${payload.activeJobId}`);
-            const msg = `joinRoom payload ${payload}`
-            Logger.info(msg)
-
             const history = await this._chatService.getHistory(
-
                 payload.activeJobId,
                 this._socket.user?.userId as string,
-                payload.skip)
+                payload.before)
 
             this._socket.join(payload.activeJobId)
             this._socket.emit("message_history", history)
@@ -58,6 +51,31 @@ export class ChatController {
             }
             const newMessage = await this._chatService.saveMessage(msg)
             this._io.to(payload.activeJobId).emit("new_message", newMessage)
+        } catch (error) {
+            handleSocketError(error, this._socket)
+        }
+    }
+
+    /**
+    * Saves a new message  and send the message back to the room.
+    * @event fetch_history
+    * @param {ChatRoomPayload} payload 
+    * @emits history_chunk - Broadcasts the old messages .
+    * @emits chat_error - If the user lacks permission or job is inactive.
+    */
+    fetchHistory = async (payload: ChatRoomPayload) => {
+        try {
+    
+            if (typeof payload === 'string') {
+                payload = JSON.parse(payload) as ChatRoomPayload;
+            }
+          
+            const messages = await this._chatService.getHistory(
+                payload.activeJobId,
+                this._socket.user?.userId as string,
+                payload.before
+            )
+            this._socket.emit("history_chunk", messages)
         } catch (error) {
             handleSocketError(error, this._socket)
         }
