@@ -147,7 +147,6 @@ export const useAuthService = () => {
     const googleLogin = async (payload: GoogleLoginPayload) => {
         try {
             const result = await googleLoginMutation(payload).unwrap()
-            console.log("data from the backend: ", result)
             if (!result.data) {
                 return { success: false, message: "JWT token not found" }
             }

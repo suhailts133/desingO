@@ -10,14 +10,17 @@ export interface CreateMessageDTO {
 
 export type SendMessageRequestDTO = Omit<CreateMessageDTO, "senderRole">
 
-export interface JoinRoomPayload {
-    activeJobId: string,
-    skip: number
-}
+
 
 export interface SendMessagePayload {
     activeJobId: string
     content: string
+}
+
+
+export interface ChatRoomPayload {
+    activeJobId: string;
+    before?: string
 }
 
 export type LeaveRoomPayload = Omit<SendMessagePayload, "content">

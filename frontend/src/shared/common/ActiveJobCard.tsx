@@ -44,6 +44,7 @@ export default function ActiveJobCard({ data }: Props) {
 
         navigate(`${basePath}/${id}`, {
             state: {
+                activeJobId:data.id,
                 sourceType: data.sourceType,
                 sourceId: data.sourceId,
             },

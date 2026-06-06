@@ -8,7 +8,7 @@ export class MessageMapper {
             senderId: data.senderId.toString(),
             activeJobId: data.activeJobId.toString(),
             senderRole: data.senderRole,
-            createdAt: data.createdAt.toTimeString(),
+            createdAt: data.createdAt.toISOString(),
             content: data.content
         }
     }

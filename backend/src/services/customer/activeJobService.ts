@@ -1,5 +1,4 @@
-import { loggers } from "winston";
-import Logger from "../../config/logger.js";
+
 import type { ActiveJobFilter, ActiveJobResponseDTO } from "../../DTO/user/activeJobDTO.js";
 import { ActiveJobMapper } from "../../dtoMappers/common/activeJobMapper.js";
 import type { IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
@@ -17,19 +16,19 @@ export class ActiveJobService implements IActiveJobService {
 
     async getCustomerActiveJobs(id: string, filter?: ActiveJobFilter): Promise<IApiResponseWithPagination<ActiveJobResponseDTO[]>> {
         const { data, pagination } = await this._activeJobRepo.getCustomerActiveJobs(id, filter)
-        const activeJobData = ActiveJobMapper.toCustomerActiveJobDTOlist(data, "Customer");
+        const activeJobData = ActiveJobMapper.toCustomerActiveJobDTOlist(data, USER_ROLES.CUSTOMER);
         return { message: JOB_MESSAGES.ACTIVE_JOB.FETCH_ALL, data: activeJobData, total: pagination.total, totalPages: pagination.totalPages }
 
     }
     async validateJobForChat(activeJobId: string, userId: string): Promise<MessageRole> {
-      
+
         const job = await this._activeJobRepo.getActiveJob(activeJobId);
 
         if (!job) {
             throw new AppError(JOB_MESSAGES.ACTIVE_JOB.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
         }
 
-        
+
         if (job.status !== ACTIVE_JOB_STATUS.ACTIVE) {
             throw new AppError(CHAT_MESSAGES.CHAT.CANNOT_CHAT, RESPONSE_CODE.BAD_REQUEST);
         }
@@ -44,7 +43,7 @@ export class ActiveJobService implements IActiveJobService {
     async getDesignerActiveJobs(id: string, filter?: ActiveJobFilter): Promise<IApiResponseWithPagination<ActiveJobResponseDTO[]>> {
 
         const { data, pagination } = await this._activeJobRepo.getDesignerActiveJobs(id, filter)
-        const activeJobData = ActiveJobMapper.toCustomerActiveJobDTOlist(data, "Designer");
+        const activeJobData = ActiveJobMapper.toCustomerActiveJobDTOlist(data, USER_ROLES.DESIGNER);
         return { message: JOB_MESSAGES.ACTIVE_JOB.FETCH_ALL, data: activeJobData, total: pagination.total, totalPages: pagination.totalPages }
 
     }

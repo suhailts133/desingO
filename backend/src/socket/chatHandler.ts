@@ -10,4 +10,5 @@ export function registerChatHandlers(io: SocketServer, socket: AuthSocket, chatS
     socket.on("join_room", chatController.joinRoom)
     socket.on("send_message", chatController.sendMessage)
     socket.on("leave_room", chatController.leaveRoom)
+    socket.on("fetch_history", chatController.fetchHistory)
 }
