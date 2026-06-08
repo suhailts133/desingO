@@ -26,7 +26,6 @@ export interface CreateProposalDTO {
     sourceId: string
     sourceType: "jobRequest" | "direct_hire"
     drawingFeePerSqFt: number;
-    advanceFee: number;
     expectedCompletionDate: Date;
     services: ServiceItem[]
 

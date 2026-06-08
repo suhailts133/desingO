@@ -32,7 +32,6 @@ export default function ProposalForm() {
             sourceId: sourceId,
             sourceType: sourceType,
             drawingFeePerSqFt: 0,
-            advanceFee: 0,
             services: [],
         },
     })
@@ -64,6 +63,7 @@ export default function ProposalForm() {
     }
 
     const onSubmit = async (formData: CreateProposalDTO) => {
+        console.log(formData)
         const success = await handleSubmission(formData)
 
         if (success) {
@@ -194,7 +194,7 @@ export default function ProposalForm() {
                                 type="button"
                                 onClick={() => setDropdownOpen((v) => !v)}
                                 disabled={availableServices.length === 0}
-                                className="inline-flex items-center gap-2 pWx-4 py-2 rounded-xl bg-soft-black text-off-white text-xs font-medium hover:bg-blush-deep transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-soft-black text-off-white text-xs font-medium hover:bg-blush-deep transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
                             >
                                 <Plus className="w-3.5 h-3.5" />
                                 Add service
@@ -332,10 +332,7 @@ export default function ProposalForm() {
                                     label: "Total execution price",
                                     value: `₹${watch("services").reduce((acc, s) => acc + (s.executionPrice || 0), 0).toLocaleString("en-IN")}`
                                 },
-                                {
-                                    label: "Advance fee",
-                                    value: `₹${(watch("advanceFee") || 0).toLocaleString("en-IN")}`
-                                },
+                                
                             ].map(({ label, value }) => (
                                 <div key={label} className="flex items-center justify-between">
                                     <span className="text-soft-black/50">{label}</span>
