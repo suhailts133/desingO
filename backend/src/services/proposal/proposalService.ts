@@ -11,6 +11,7 @@ import type { IProposalService } from "../../interfaces/proposal/IProposalServic
 import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
 import { AppError } from "../../shared/errors/appError.js";
 import { toSqFt } from "../../shared/helpers/extraFunctions.js";
+import { calculatePlatformFee } from "../../shared/helpers/platformfeeCalculator.js";
 import { validateServiceOrders } from "../../shared/helpers/proposalOrderCheck.js";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages.js";
@@ -43,6 +44,7 @@ export class ProposalService implements IProposalService {
         if (expectedTotalDrawingFee !== totalDrawingFee) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.PRICE_MISMATCH(expectedTotalDrawingFee, totalDrawingFee), RESPONSE_CODE.BAD_REQUEST)
         }
+        const calculatedPlatformFee = calculatePlatformFee(totalDrawingFee)
 
         const totalExecutionFee = data.services.reduce((acc, cur) => acc + cur.executionPrice, 0)
         const totalContractValue = totalDrawingFee + totalExecutionFee
@@ -52,6 +54,8 @@ export class ProposalService implements IProposalService {
             clientId: activeJob.userId.toString(),
             designerId: activeJob.designerId.toString(),
             totalDrawingFee,
+            platformFee: calculatedPlatformFee,
+            remainingPlatformFee: calculatedPlatformFee,
             totalExecutionFee,
             totalContractValue,
             sourceName: activeJob.sourceName,
@@ -105,7 +109,7 @@ export class ProposalService implements IProposalService {
         if (!result) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
-   
+
         const updated = await this._proposalRepo.acceptOrRejectProposal(data.sourceId, data.contractStatus, data.overallRejectionReason)
         if (!updated) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.STATUS_UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)

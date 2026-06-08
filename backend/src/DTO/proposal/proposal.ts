@@ -35,6 +35,8 @@ export interface CreateProposalRepoDataDTO extends Omit<CreateProposalDTO, "serv
     totalExecutionFee: number
     totalContractValue: number
     sourceName: string
+    platformFee: number;
+    remainingPlatformFee: number;
     services: IServiceItem[]
 }
 

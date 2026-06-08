@@ -45,16 +45,16 @@ export interface IDispute {
 
 
 
-export interface IReview{
-    id:string,
-    comment:string,
-    rating:number,
-    userId:mongoose.Types.ObjectId 
-    designerId:mongoose.Types.ObjectId
-    userName:string,
-    profileImage:string,
-    jobId:mongoose.Types.ObjectId
-    createdAt:Date,
+export interface IReview {
+    id: string,
+    comment: string,
+    rating: number,
+    userId: mongoose.Types.ObjectId
+    designerId: mongoose.Types.ObjectId
+    userName: string,
+    profileImage: string,
+    jobId: mongoose.Types.ObjectId
+    createdAt: Date,
 }
 export interface IServiceItem {
     serviceName: string;
@@ -79,7 +79,7 @@ export interface IProposal {
     id: string;
     sourceId: mongoose.Types.ObjectId
     sourceType: "jobRequest" | "direct_hire",
-    sourceName:string
+    sourceName: string
     clientId: mongoose.Types.ObjectId;
     designerId: mongoose.Types.ObjectId;
     drawingFeePerSqFt: number;
@@ -89,6 +89,8 @@ export interface IProposal {
     totalExecutionFee: number;
     contractStatus: ContractStatus;
     overallRejectionReason?: string;
+    platformFee: number;
+    remainingPlatformFee: number;
     clientAcceptedAt?: Date;
     expectedCompletionDate: Date;
     actualCompletionDate?: Date;

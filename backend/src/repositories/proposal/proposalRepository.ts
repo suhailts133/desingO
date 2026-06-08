@@ -26,7 +26,9 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
             totalContractValue: data.totalContractValue,
             sourceName: data.sourceName,
             expectedCompletionDate: data.expectedCompletionDate,
-            services: data.services
+            services: data.services,
+            platformFee: data.platformFee,
+            remainingPlatformFee: data.remainingPlatformFee
         })
     }
     async acceptOrRejectProposal(sourceId: string, contractStatus: ContractStatus, overallRejectionReason?: string): Promise<IProposal | null> {
