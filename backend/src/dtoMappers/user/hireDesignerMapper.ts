@@ -12,6 +12,7 @@ export class HireDesignerMapper {
             maxPrice: data.maxPrice,
             minPrice: data.minPrice,
             services: data.services,
+            timeLine:data.timeLine,
             sqft: toSqFt(Number(data.length), Number(data.width), data.unit)
 
         }
