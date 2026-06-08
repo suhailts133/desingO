@@ -1,10 +1,11 @@
 
 import mongoose from "mongoose";
-import type { CreateProposalRepoDataDTO } from "../../DTO/proposal/proposal.js";
+import type { CreateProposalRepoDataDTO, GetProposalDTO } from "../../DTO/proposal/proposal.js";
 import type { IProposal } from "../../interfaces/proposal/IProposal.js";
 import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository.js";
 import { ProposalModel } from "../../models/proposal/proposalModal.js";
 import { BaseRepository } from "../baseRepository.js";
+import type { IUser } from "../../interfaces/auth/IUser.js";
 
 export class ProposalRepository extends BaseRepository<IProposal> implements IProposalRepository {
     constructor() {
@@ -22,7 +23,6 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
             totalDrawingFee: data.totalDrawingFee,
             totalExecutionFee: data.totalExecutionFee,
             totalContractValue: data.totalContractValue,
-            advanceFee: data.advanceFee,
             sourceName: data.sourceName,
             expectedCompletionDate: data.expectedCompletionDate,
             services: data.services
@@ -33,7 +33,9 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
     }
 
 
-    async getProposal(sourceId: string): Promise<IProposal | null> {
-        return await this.findOne({ sourceId })
+    async getProposal(sourceId: string): Promise<GetProposalDTO | null> {
+        return await this._model.findOne({ sourceId })
+            .populate<{ clientId: IUser }>("clientId")
+            .populate<{ designerId: IUser }>("designerId")
     }
 }

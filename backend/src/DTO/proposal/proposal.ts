@@ -1,6 +1,7 @@
 
+import type { IUser } from "../../interfaces/auth/IUser.js";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
-import type { ContractStatus, IServiceItem, PaymentStatus, ServiceStatus } from "../../interfaces/proposal/IProposal.js";
+import type { ContractStatus, IProposal, IServiceItem, PaymentStatus, ServiceStatus } from "../../interfaces/proposal/IProposal.js";
 
 export interface ServiceItem {
     serviceName: string;
@@ -16,10 +17,15 @@ export interface CreateProposalDTO {
     sourceId: string
     sourceType: "jobRequest" | "direct_hire"
     drawingFeePerSqFt: number;
-    advanceFee: number;
     expectedCompletionDate: Date;
     services: ServiceItem[]
 
+}
+
+
+export type GetProposalDTO = Omit<IProposal,  "clientId" | "designerId"> & {
+    clientId:IUser
+    designerId:IUser
 }
 
 export interface CreateProposalRepoDataDTO extends Omit<CreateProposalDTO, "services"> {
@@ -48,16 +54,17 @@ export interface ProposalDetailDTO {
     sourceType: "jobRequest" | "direct_hire"
     clientId: string
     designerId: string
+    clientName:string
+    designerName:string
+    clientProfile?:string
+    designerProfile?:string
     sourceName: string
 
 
     drawingFeePerSqFt: number
     totalDrawingFee: number
     totalExecutionFee: number
-    advanceFee: number
     totalContractValue: number
-    advancePaid: boolean
-    advancePaidAt?: string
 
 
     contractStatus: ContractStatus

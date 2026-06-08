@@ -27,10 +27,6 @@ const proposalSchema = new Schema<IProposal>({
     services: { type: [serviceItemSchema], required: true, default: [] },
     totalContractValue: { type: Number, required: true },
     totalExecutionFee: { type: Number, required: true },
-    advanceFee: { type: Number, required: true },
-    advancePaid: { type: Boolean, default: false },
-    advancePaidAt: { type: Date },
-    advanceStripePaymentIntentId: { type: String },
     contractStatus: {
         type: String,
         enum: ["Sent", "Accepted", "Rejected", "Ongoing", "Completed", "Disputed", "Expired"],

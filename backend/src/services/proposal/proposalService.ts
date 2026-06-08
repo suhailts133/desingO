@@ -38,12 +38,12 @@ export class ProposalService implements IProposalService {
 
 
         const totalDrawingFee = data.services.reduce((acc, cur) => acc + cur.price, 0)
-        if (expectedTotalDrawingFee !== (totalDrawingFee + data.advanceFee)) {
+        if (expectedTotalDrawingFee !== totalDrawingFee ) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.PRICE_MISMATCH(expectedTotalDrawingFee, totalDrawingFee), RESPONSE_CODE.BAD_REQUEST)
         }
 
         const totalExecutionFee = data.services.reduce((acc, cur) => acc + cur.executionPrice, 0)
-        const totalContractValue = totalDrawingFee + totalExecutionFee + data.advanceFee
+        const totalContractValue = totalDrawingFee + totalExecutionFee
 
         const repoData: CreateProposalRepoDataDTO = {
             ...data,

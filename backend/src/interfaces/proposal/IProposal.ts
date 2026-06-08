@@ -43,6 +43,19 @@ export interface IDispute {
     resolvedAt?: Date;
 }
 
+
+
+export interface IReview{
+    id:string,
+    comment:string,
+    rating:number,
+    userId:mongoose.Types.ObjectId 
+    designerId:mongoose.Types.ObjectId
+    userName:string,
+    profileImage:string,
+    jobId:mongoose.Types.ObjectId
+    createdAt:Date,
+}
 export interface IServiceItem {
     serviceName: string;
     order: number;
@@ -62,18 +75,6 @@ export interface IServiceItem {
 }
 
 
-export interface IReview{
-    id:string,
-    comment:string,
-    rating:number,
-    userId:mongoose.Types.ObjectId 
-    designerId:mongoose.Types.ObjectId
-    userName:string,
-    profileImage:string,
-    jobId:mongoose.Types.ObjectId
-    createdAt:Date,
-}
-
 export interface IProposal {
     id: string;
     sourceId: mongoose.Types.ObjectId
@@ -86,10 +87,6 @@ export interface IProposal {
     services: IServiceItem[];
     totalContractValue: number;
     totalExecutionFee: number;
-    advanceFee: number;
-    advancePaid: boolean;
-    advancePaidAt?: Date;
-    advanceStripePaymentIntentId?: string;
     contractStatus: ContractStatus;
     overallRejectionReason?: string;
     clientAcceptedAt?: Date;

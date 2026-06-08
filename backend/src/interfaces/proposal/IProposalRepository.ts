@@ -1,11 +1,11 @@
 import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { CreateProposalRepoDataDTO } from "../../DTO/proposal/proposal.js";
+import type { CreateProposalRepoDataDTO, GetProposalDTO } from "../../DTO/proposal/proposal.js";
 import type { ReviewRepoDTO } from "../../DTO/proposal/review.js";
 import type { IProposal, IReview } from "./IProposal.js";
 
 export interface IProposalRepository {
     createProposal(data: CreateProposalRepoDataDTO): Promise<IProposal>
-    getProposal(sourceId: string): Promise<IProposal | null>
+    getProposal(sourceId: string): Promise<GetProposalDTO | null>
     updateProposal(sourceId: string, data: Partial<IProposal>): Promise<IProposal | null>
 }
 

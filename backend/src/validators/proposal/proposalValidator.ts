@@ -84,16 +84,6 @@ export const createProposalValidation: Joi.ObjectSchema<CreateProposalDTO> = Joi
             "any.required": "Drawing fee per sq/ft is required",
         }),
 
-    advanceFee: Joi.number()
-        .min(0)
-        .precision(2)
-        .required()
-        .messages({
-            "number.base": "Advance fee must be a number",
-            "number.min": "Advance fee cannot be negative",
-            "any.required": "Advance fee is required",
-        }),
-
     expectedCompletionDate: Joi.date()
         .greater("now")
         .required()
