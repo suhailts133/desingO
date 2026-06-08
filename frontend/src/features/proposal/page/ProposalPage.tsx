@@ -19,7 +19,7 @@ import ServiceCard from "../component/ServiceCard"
 import ProposalHeader from "../component/ProposalHeader"
 
 import ContractOverview from "../component/ContractOverview"
-import AdvancePaymentPanel from "../component/AdvancePaymentPanel"
+
 import CustomerActionPanel from "../component/CustomerActionPanel"
 import ChatPanel from "../chat/ChatPanel"
 
@@ -92,9 +92,8 @@ export default function ProposalPage() {
     }
 
 
-    const advancePaid = proposal.advancePaid
+
     const contractStatus = newStatus ?? proposal.contractStatus
-    const showAdvancePay = role === "Customer" && !advancePaid && (contractStatus === "Accepted")
     const showProposalActions = role === "Customer" && contractStatus === "Sent"
     const showUpdateProposal = role === "Designer" && contractStatus === "Rejected"
 
@@ -172,13 +171,6 @@ export default function ProposalPage() {
             <ContractOverview proposal={proposal} />
 
 
-            <AdvancePaymentPanel
-                advanceFee={proposal.advanceFee}
-                advancePaid={advancePaid}
-                advancePaidAt={proposal.advancePaidAt}
-                showAdvancePay={showAdvancePay}
-                onPayAdvance={() => { }}
-            />
 
 
             {proposal.overallRejectionReason && (

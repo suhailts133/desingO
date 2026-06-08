@@ -1,9 +1,8 @@
-import type { ProposalDetailDTO, ProposalServiceItemDTO } from "../../DTO/proposal/proposal.js";
-import type { IProposal } from "../../interfaces/proposal/IProposal.js";
+import type { GetProposalDTO, ProposalDetailDTO, ProposalServiceItemDTO } from "../../DTO/proposal/proposal.js";
 
 export class ProposalMapper {
 
-    static toProposalDetailDTO(data: IProposal): ProposalDetailDTO {
+    static toProposalDetailDTO(data: GetProposalDTO): ProposalDetailDTO {
 
         const proposalServices: ProposalServiceItemDTO[] = data.services.map(d => ({
             serviceName: d.serviceName,
@@ -20,28 +19,35 @@ export class ProposalMapper {
             ...(d.paidAt && { paidAt: d.paidAt.toDateString() }),
             ...(d.rejectionReason && { rejectionReason: d.rejectionReason }),
         }))
+        const clientProfileImage = data.clientId.profileImage?.path ?? data.clientId.google_profile_id
+        const designerProfileImage = data.designerId.profileImage?.path ?? data.designerId.google_profile_id
 
         return {
             id: data.id,
             sourceId: data.sourceId.toString(),
             sourceType: data.sourceType,
-            clientId: data.clientId.toString(),
-            designerId: data.clientId.toString(),
+
+            clientId: data.clientId.id,
+            clientName: data.clientId.full_name,
+            ...(clientProfileImage && { clientProfile: clientProfileImage }),
+
+            designerId: data.designerId.id,
+            designerName: data.designerId.full_name,
+            ...(designerProfileImage && { designerProfile: designerProfileImage }),
             sourceName: data.sourceName,
-          
+
             drawingFeePerSqFt: data.drawingFeePerSqFt,
             totalDrawingFee: data.totalDrawingFee,
             totalExecutionFee: data.totalExecutionFee,
-            advanceFee: data.advanceFee,
             totalContractValue: data.totalContractValue,
-            advancePaid: data.advancePaid,
-            ...(data.advancePaidAt && { advancePaidAt: data.advancePaidAt.toDateString() }),
+
             contractStatus: data.contractStatus,
             ...(data.overallRejectionReason && { overallRejectionReason: data.overallRejectionReason }),
             ...(data.clientAcceptedAt && { clientAcceptedAt: data.clientAcceptedAt.toDateString() }),
             ...(data.expectedCompletionDate && { expectedCompletionDate: data.expectedCompletionDate.toDateString() }),
             ...(data.actualCompletionDate && { actualCompletionDate: data.actualCompletionDate.toDateString() }),
             createdAt: data.createdAt.toDateString(),
+
             services: proposalServices
 
         }

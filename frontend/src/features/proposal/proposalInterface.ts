@@ -26,7 +26,6 @@ export interface CreateProposalDTO {
     sourceId: string
     sourceType: "jobRequest" | "direct_hire"
     drawingFeePerSqFt: number;
-    advanceFee: number;
     expectedCompletionDate: Date;
     services: ServiceItem[]
 
@@ -38,6 +37,7 @@ export interface ProposalInputData {
     jobId: string
     minPrice: number
     maxPrice: number
+    timeLine:string
     services: string[];
     sqft: number
 }
@@ -70,10 +70,7 @@ export interface ProposalDetailDTO {
     drawingFeePerSqFt: number
     totalDrawingFee: number
     totalExecutionFee: number
-    advanceFee: number
     totalContractValue: number
-    advancePaid: boolean
-    advancePaidAt?: string
 
 
     contractStatus: ContractStatus

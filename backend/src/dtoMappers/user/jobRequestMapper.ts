@@ -16,6 +16,7 @@ export class JobRequestMapper {
             services: jobRequest.services,
             maxPrice:jobRequest.maxBudget,
             minPrice:jobRequest.maxBudget,
+            timeLine:jobRequest.timeline,
             sqft:totalSqft
         }
     }

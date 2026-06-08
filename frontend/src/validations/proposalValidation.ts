@@ -52,14 +52,6 @@ export const proposalValidation: Joi.ObjectSchema<CreateProposalDTO> = Joi.objec
             "number.positive": "Drawing fee must be positive",
             "any.required": "Drawing fee is required",
         }),
-    advanceFee: Joi.number()
-        .positive()
-        .required()
-        .messages({
-            "number.base": "Advance fee must be a number",
-            "number.positive": "Advance fee must be positive",
-            "any.required": "Advance fee is required",
-        }),
     expectedCompletionDate: Joi.date()
         .greater("now")
         .required()
