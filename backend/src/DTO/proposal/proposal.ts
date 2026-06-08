@@ -23,9 +23,9 @@ export interface CreateProposalDTO {
 }
 
 
-export type GetProposalDTO = Omit<IProposal,  "clientId" | "designerId"> & {
-    clientId:IUser
-    designerId:IUser
+export type GetProposalDTO = Omit<IProposal, "clientId" | "designerId"> & {
+    clientId: IUser
+    designerId: IUser
 }
 
 export interface CreateProposalRepoDataDTO extends Omit<CreateProposalDTO, "services"> {
@@ -42,7 +42,7 @@ export interface ProposalInputData {
     jobId: string
     minPrice: number
     maxPrice: number
-    timeLine:string
+    timeLine: string
     services: string[];
     sqft: number
 }
@@ -55,10 +55,10 @@ export interface ProposalDetailDTO {
     sourceType: "jobRequest" | "direct_hire"
     clientId: string
     designerId: string
-    clientName:string
-    designerName:string
-    clientProfile?:string
-    designerProfile?:string
+    clientName: string
+    designerName: string
+    clientProfile?: string
+    designerProfile?: string
     sourceName: string
 
 
@@ -104,4 +104,13 @@ export interface ProposalAcceptOrRejectDTO {
     sourceId: string
 }
 
-export type ProposalStatusUpdateRepoDTO = Omit<ProposalAcceptOrRejectDTO, "sourceId">
+export interface ProposalStatusUpdateRepoDTO {
+    contractStatus: ContractStatus;
+    overallRejectionReason?: string;
+    "services.$.status"?: ServiceStatus;
+}
+
+export interface ProposalStatusFilter {
+    sourceId: string;
+    "services.order"?: number;
+}

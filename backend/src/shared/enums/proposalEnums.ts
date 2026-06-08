@@ -36,3 +36,6 @@ export enum DisputeStatus {
     RESOLVED     = "Resolved",
     ESCALATED    = "Escalated"
 }
+
+
+export const FIRST_SERVICE_ORDER_NUMBER = 1

@@ -1,5 +1,4 @@
-
-import type { CreateProposalDTO, CreateProposalRepoDataDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData, ProposalStatusUpdateRepoDTO } from "../../DTO/proposal/proposal.js";
+import type { CreateProposalDTO, CreateProposalRepoDataDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData } from "../../DTO/proposal/proposal.js";
 import { ProposalMapper } from "../../dtoMappers/proposal/proposalMapper.js";
 import { HireDesignerMapper } from "../../dtoMappers/user/hireDesignerMapper.js";
 import { JobRequestMapper } from "../../dtoMappers/user/jobRequestMapper.js";
@@ -8,6 +7,7 @@ import type { IActiveJobRepository, IHireDesignerRepository, IJobRepository } fr
 import type { IServiceItem } from "../../interfaces/proposal/IProposal.js";
 import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository.js";
 import type { IProposalService } from "../../interfaces/proposal/IProposalService.js";
+
 import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
 import { AppError } from "../../shared/errors/appError.js";
 import { toSqFt } from "../../shared/helpers/extraFunctions.js";
@@ -105,14 +105,12 @@ export class ProposalService implements IProposalService {
         if (!result) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
-        const updateData: ProposalStatusUpdateRepoDTO = {
-            contractStatus: data.contractStatus,
-            ...(data.overallRejectionReason && { overallRejectionReason: data.overallRejectionReason })
-        }
-        const updated = await this._proposalRepo.updateProposal(data.sourceId, updateData)
+   
+        const updated = await this._proposalRepo.acceptOrRejectProposal(data.sourceId, data.contractStatus, data.overallRejectionReason)
         if (!updated) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.STATUS_UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
+
         return { message: PROPOSAL_MESSAGES.PROPOSAL.STATUS_CHANGED, data: data.contractStatus }
     }
 }
