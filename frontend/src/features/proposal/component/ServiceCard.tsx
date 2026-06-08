@@ -113,7 +113,7 @@ export default function ServiceCard({ service, role, onPay, onVerify, onRedo, on
                     {showPay && (
                         <button
                             onClick={onPay}
-                            className="flex-1 inline-flex items-center justify-center gap-1.5 bg-soft-black text-off-white hover:bg-blush-deep px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
+                            className="inline-flex items-center justify-center gap-1.5 bg-soft-black text-off-white hover:bg-blush-deep px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                         >
                             Pay
                         </button>
@@ -121,7 +121,7 @@ export default function ServiceCard({ service, role, onPay, onVerify, onRedo, on
                     {showVerify && (
                         <button
                             onClick={onVerify}
-                            className="flex-1 inline-flex items-center justify-center gap-1.5 bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
+                            className="inline-flex items-center justify-center gap-1.5 bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                         >
                             Verify
                         </button>
@@ -129,7 +129,7 @@ export default function ServiceCard({ service, role, onPay, onVerify, onRedo, on
                     {showRedo && (
                         <button
                             onClick={onRedo}
-                            className="flex-1 inline-flex items-center justify-center gap-1.5 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
+                            className=" inline-flex items-center justify-center gap-1.5 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                         >
                             Request redo
                         </button>
@@ -137,7 +137,7 @@ export default function ServiceCard({ service, role, onPay, onVerify, onRedo, on
                     {showUpload && (
                         <button
                             onClick={onUpload}
-                            className="flex-1 inline-flex items-center justify-center gap-1.5 bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
+                            className="inline-flex items-center justify-center gap-1.5 bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                         >
                             Upload result
                         </button>
