@@ -65,13 +65,12 @@ export default function ProposalForm() {
 
     const onSubmit = async (formData: CreateProposalDTO) => {
         const success = await handleSubmission(formData)
-        // console.log(formData)
+
         if (success) {
             setTimeout(() => navigate(-1), 2000)
         }
     }
 
-    // ---- Guards ----
 
     if (!sourceType || !sourceId) {
         return (
@@ -117,9 +116,9 @@ export default function ProposalForm() {
                 </button>
                 <div>
                     <h1 className="font-Jost-Semibold text-xl text-soft-black">Create proposal</h1>
-                    <p className="text-xs text-soft-black/40 mt-0.5">
+                    <p className="text-xs text-soft-black mt-0.5">
                         Budget range: ₹{prefill.minPrice.toLocaleString("en-IN")} – ₹{prefill.maxPrice.toLocaleString("en-IN")}
-                        &nbsp;·&nbsp; {prefill.sqft} sqft
+                        &nbsp;·&nbsp; {prefill.sqft} sqft  &nbsp;·&nbsp;{prefill.timeLine} time line
                     </p>
                 </div>
             </div>
@@ -157,21 +156,6 @@ export default function ProposalForm() {
                             </p>
                         </div>
 
-                        {/* Advance fee */}
-                        <div className="flex flex-col gap-1.5">
-                            <label className="text-xs font-medium text-soft-black/60">
-                                Advance fee (₹)
-                            </label>
-                            <input
-                                type="number"
-                                {...register("advanceFee", { valueAsNumber: true })}
-                                placeholder="e.g. 3000"
-                                className="w-full px-3 py-2.5 rounded-xl border border-blush-light/50 bg-off-white text-sm text-soft-black placeholder:text-soft-black/30 focus:outline-none focus:border-blush-deep transition-colors"
-                            />
-                            {errors.advanceFee && (
-                                <p className="text-xs text-red-500">{errors.advanceFee.message}</p>
-                            )}
-                        </div>
 
                         {/* Expected completion date */}
                         <div className="flex flex-col gap-1.5">

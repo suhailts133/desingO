@@ -38,6 +38,7 @@ export interface ProposalInputData {
     jobId: string
     minPrice: number
     maxPrice: number
+    timeLine:string
     services: string[];
     sqft: number
 }
