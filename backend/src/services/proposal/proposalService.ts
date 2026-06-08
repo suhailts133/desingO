@@ -11,6 +11,7 @@ import type { IProposalService } from "../../interfaces/proposal/IProposalServic
 import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
 import { AppError } from "../../shared/errors/appError.js";
 import { toSqFt } from "../../shared/helpers/extraFunctions.js";
+import { validateServiceOrders } from "../../shared/helpers/proposalOrderCheck.js";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages.js";
 
@@ -38,7 +39,8 @@ export class ProposalService implements IProposalService {
 
 
         const totalDrawingFee = data.services.reduce((acc, cur) => acc + cur.price, 0)
-        if (expectedTotalDrawingFee !== totalDrawingFee ) {
+        validateServiceOrders(data.services)
+        if (expectedTotalDrawingFee !== totalDrawingFee) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.PRICE_MISMATCH(expectedTotalDrawingFee, totalDrawingFee), RESPONSE_CODE.BAD_REQUEST)
         }
 

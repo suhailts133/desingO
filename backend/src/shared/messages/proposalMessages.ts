@@ -10,6 +10,9 @@ export const PROPOSAL_MESSAGES = {
         PRICE_MISMATCH: (expected: number, total: number) => `Invalid total drawing fee. Expected ${expected}, but received ${total}.`,
         TEMPLATE_FETCH_SUCCESS: "Proposal template fetched success.",
         STATUS_UPDATION_FAILED: "failed to update status of the proposal.",
+        SERVICE_ORDER_MUST_START_FROM_ONE: "Service orders must start from 1",
+        SERVICE_ORDER_NOT_CONTINUOUS: "Service orders must be continuous (1, 2, 3...)",
+        SERVICES_REQUIRED: "Service is required",
     },
     PROPOSAL_INPUT: {
         TEMPLATE_FETCH_SUCCESS: "Proposal template fetched success.",
