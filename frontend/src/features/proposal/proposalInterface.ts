@@ -70,10 +70,7 @@ export interface ProposalDetailDTO {
     drawingFeePerSqFt: number
     totalDrawingFee: number
     totalExecutionFee: number
-    advanceFee: number
     totalContractValue: number
-    advancePaid: boolean
-    advancePaidAt?: string
 
 
     contractStatus: ContractStatus
