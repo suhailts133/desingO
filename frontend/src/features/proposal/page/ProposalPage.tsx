@@ -1,6 +1,10 @@
 import { useState } from "react"
 import { useParams, useLocation } from "react-router-dom"
+import { loadStripe } from "@stripe/stripe-js"
+import { Elements } from "@stripe/react-stripe-js"
+
 import { useGetProposalQuery } from "../proposalEndpoints"
+
 import { useDecodeAccessToken } from "../../../helpers/decodeAccessToken"
 
 import type { ReviewPayloadFields } from "../proposalInterface"
@@ -12,16 +16,17 @@ import { useWriteReview } from "../hooks/useWriteReview"
 import ConfirmModal from "../../../shared/modals/ConfirmModal"
 import RejectJobApplicationModal from "../../user/jobApplications/components/RejectJobApplicationModal"
 import ReviewForm from "../component/ReviewForm"
-
 import NoProposalCustomer from "../component/NoProposalCustomer"
 import NoProposalDesigner from "../component/NoProposalDesigner"
 import ServiceCard from "../component/ServiceCard"
 import ProposalHeader from "../component/ProposalHeader"
-
 import ContractOverview from "../component/ContractOverview"
-
 import CustomerActionPanel from "../component/CustomerActionPanel"
 import ChatPanel from "../chat/ChatPanel"
+import PaymentModal from "../component/PaymentModal"
+import { useCreateIntent } from "../hooks/useCreateIntent"
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
 
 export default function ProposalPage() {
     const { id } = useParams<{ id: string }>()
@@ -32,7 +37,10 @@ export default function ProposalPage() {
     const sourceId = location.state?.sourceId as string | undefined
     const activeJobId = location.state?.activeJobId as string | undefined
 
-    const { data, isLoading, error } = useGetProposalQuery(id!, { skip: !id })
+    const { data, isLoading, error, refetch } = useGetProposalQuery(id!, { skip: !id })
+
+    const { ispaymentDataLoading, clientSecret, paymentIntentError, handlePaymentIntent, reset } = useCreateIntent()
+
     const { isChangingStatus, statusUpdateError, statusUpdateSuccess, newStatus, handleUpdateStatus } = useApproveOrReject()
     const { isReviewing, reviewError, reivewSuccess, handleWriteReview } = useWriteReview()
 
@@ -41,6 +49,7 @@ export default function ProposalPage() {
     const [rejectProposal, setRejectProposal] = useState<{ sourceId: string } | null>(null)
     const [review, setReview] = useState<{ sourceId: string } | null>(null)
 
+    const [payingService, setPayingService] = useState<{ serviceName: string; amount: number } | null>(null)
     const handleApproval = async () => {
         if (!approveProposal) return
         await handleUpdateStatus({ sourceId: approveProposal.sourceId, contractStatus: "Accepted" })
@@ -63,10 +72,28 @@ export default function ProposalPage() {
         setReview(null)
     }
 
+    const handlePay = async (serviceName: string, amount: number, payemnetSourceId:string) => {
+        setPayingService({ serviceName, amount })
+        console.log(payemnetSourceId)
+        const success = await handlePaymentIntent(payemnetSourceId)
+        if (!success) setPayingService(null)
+    }
+
+    const handlePaySuccess = () => {
+        reset()
+        setPayingService(null)
+        refetch()
+    }
+
+    const handlePayClose = () => {
+        reset()
+        setPayingService(null)
+    }
+
     if (!role) {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Invalid proposal source.</div>
     }
-    if(!activeJobId){
+    if (!activeJobId) {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">No Active Job.</div>
     }
     if (role === "Designer" && (!sourceType || !sourceId)) {
@@ -91,16 +118,12 @@ export default function ProposalPage() {
         )
     }
 
-
-
     const contractStatus = newStatus ?? proposal.contractStatus
     const showProposalActions = role === "Customer" && contractStatus === "Sent"
     const showUpdateProposal = role === "Designer" && contractStatus === "Rejected"
 
-
     return (
         <div className="w-full flex flex-col gap-6">
-
 
             <ConfirmModal
                 isOpen={!!approveProposal}
@@ -135,6 +158,17 @@ export default function ProposalPage() {
                 role={role}
             />
 
+            {clientSecret && payingService && (
+                <Elements stripe={stripePromise} options={{ clientSecret }}>
+                    <PaymentModal
+                        isOpen={!!clientSecret}
+                        serviceName={payingService.serviceName}
+                        amount={payingService.amount}
+                        onSuccess={handlePaySuccess}
+                        onClose={handlePayClose}
+                    />
+                </Elements>
+            )}
 
             <ProposalHeader
                 id={id!}
@@ -146,9 +180,6 @@ export default function ProposalPage() {
                 onChatOpen={() => setChatOpen(true)}
             />
 
-
-
-
             <div>
                 <button onClick={() => setReview({ sourceId: proposal.sourceId })} className="soft-black-button">
                     Write Your Review
@@ -156,7 +187,6 @@ export default function ProposalPage() {
                 {reviewError && <p className="text-xs text-red-500">{reviewError}</p>}
                 {reivewSuccess && <p className="text-xs text-green-600">{reivewSuccess}</p>}
             </div>
-
 
             {showProposalActions && (
                 <CustomerActionPanel
@@ -167,17 +197,17 @@ export default function ProposalPage() {
                 />
             )}
 
-
             <ContractOverview proposal={proposal} />
-
-
-
 
             {proposal.overallRejectionReason && (
                 <div className="bg-red-50 border border-red-200 rounded-2xl px-6 py-4">
                     <p className="text-xs font-Jost-Semibold text-red-700 uppercase tracking-widest mb-1">Rejection reason</p>
                     <p className="text-sm text-red-700">{proposal.overallRejectionReason}</p>
                 </div>
+            )}
+
+            {paymentIntentError && (
+                <p className="text-xs text-red-500 text-center">{paymentIntentError}</p>
             )}
 
             <div className="bg-white rounded-2xl border border-blush-light/40 shadow-sm px-6 py-5">
@@ -190,7 +220,7 @@ export default function ProposalPage() {
                                 key={service.order}
                                 service={service}
                                 role={role}
-                                onPay={() => { }}
+                                onPay={() => handlePay(service.serviceName, service.price, proposal.sourceId)}
                                 onVerify={() => { }}
                                 onRedo={() => { }}
                                 onUpload={() => { }}
