@@ -224,6 +224,7 @@ export default function ProposalPage() {
                                 onVerify={() => { }}
                                 onRedo={() => { }}
                                 onUpload={() => { }}
+                                isPayLoading={ispaymentDataLoading && payingService?.serviceName === service.serviceName}
                             />
                         ))}
                 </div>
