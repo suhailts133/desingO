@@ -59,7 +59,8 @@ export class DesignService implements IDesignService {
             designStyles: data.designStyles,
             services: data.services,
             spaceType: data.spaceType,
-            startingPrice: data.startingPrice,
+            minPrice: data.minPrice,
+            maxPrice: data.maxPrice,
             propertyType: data.propertyType,
         }
 

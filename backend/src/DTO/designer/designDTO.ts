@@ -35,7 +35,8 @@ export interface EditDesign {
     services: string[];
     spaceType: string;
     propertyType: string;
-    startingPrice: number;
+    minPrice: number;
+    maxPrice: number;
     keptGallery?: ImageUploadResult[];
 }
 
