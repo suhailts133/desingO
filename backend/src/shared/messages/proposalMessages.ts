@@ -25,6 +25,11 @@ export const PROPOSAL_MESSAGES = {
         ERROR: "Review posting failed.",
         FETCH_ALL: "Fetch all review success.",
         FETCH_FAILED: "Failed to fetch reviews.",
+    },
+    PAYMENT: {
+        NO_OPEN_SERVICE: "there are no open service with pending payment.",
+        CREATED: "Payment created.",
+        INTENT_NOT_CREATED: 'Failed to create payment intent',
     }
 
 } as const

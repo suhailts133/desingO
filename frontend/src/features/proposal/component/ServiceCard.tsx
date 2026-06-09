@@ -7,6 +7,7 @@ type Role = "Designer" | "Admin" | "Customer" | null
 interface ServiceCardProps {
     service: ProposalServiceItemDTO
     role: Role
+    isPayLoading: boolean
     onPay?: () => void
     onVerify?: () => void
     onRedo?: () => void
@@ -14,17 +15,17 @@ interface ServiceCardProps {
 }
 
 const statusStyle: Record<ServiceStatus, string> = {
-    "Locked":      "bg-gray-100 text-gray-500 border-gray-200",
-    "Open":        "bg-blue-50 text-blue-700 border-blue-200",
+    "Locked": "bg-gray-100 text-gray-500 border-gray-200",
+    "Open": "bg-blue-50 text-blue-700 border-blue-200",
     "In Progress": "bg-amber-50 text-amber-700 border-amber-200",
-    "Uploaded":    "bg-purple-50 text-purple-700 border-purple-200",
-    "Redo":        "bg-red-50 text-red-700 border-red-200",
-    "Completed":   "bg-green-50 text-green-700 border-green-200",
+    "Uploaded": "bg-purple-50 text-purple-700 border-purple-200",
+    "Redo": "bg-red-50 text-red-700 border-red-200",
+    "Completed": "bg-green-50 text-green-700 border-green-200",
 }
 
 const paymentStyle: Record<PaymentStatus, string> = {
-    "Pending":  "bg-amber-50 text-amber-700 border-amber-200",
-    "Paid":     "bg-green-50 text-green-700 border-green-200",
+    "Pending": "bg-amber-50 text-amber-700 border-amber-200",
+    "Paid": "bg-green-50 text-green-700 border-green-200",
     "Refunded": "bg-gray-100 text-gray-500 border-gray-200",
 }
 
@@ -61,7 +62,7 @@ function ImageGrid({ images }: { images: ImageUploadResult[] }) {
     )
 }
 
-export default function ServiceCard({ service, role, onPay, onVerify, onRedo, onUpload }: ServiceCardProps) {
+export default function ServiceCard({ isPayLoading, service, role, onPay, onVerify, onRedo, onUpload }: ServiceCardProps) {
     const isLocked = service.status === "Locked"
     const hasImages = service.uploadedImages.length > 0
 
@@ -113,9 +114,10 @@ export default function ServiceCard({ service, role, onPay, onVerify, onRedo, on
                     {showPay && (
                         <button
                             onClick={onPay}
+                            disabled={isPayLoading}
                             className="inline-flex items-center justify-center gap-1.5 bg-soft-black text-off-white hover:bg-blush-deep px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                         >
-                            Pay
+                            {isPayLoading ? "Preparing..." : "Pay"}
                         </button>
                     )}
                     {showVerify && (

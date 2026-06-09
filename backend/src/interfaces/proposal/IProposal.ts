@@ -4,7 +4,7 @@ import type { ImageUploadResult } from "../base/IImageUpload.js";
 
 export type ServiceStatus = "Locked" | "Open" | "In Progress" | "Uploaded" | "Redo" | "Completed"
 
-export type PaymentStatus = "Pending" | "Paid" | "Refunded"
+export type ProposalPaymentStatus = "Pending" | "Paid" | "Refunded"
 
 export type EscrowStatus = "Held" | "Released" | "Refunded" | "Disputed"
 
@@ -13,14 +13,6 @@ export type ContractStatus = "Sent" | "Accepted" | "Rejected" | "Ongoing" | "Com
 export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Escalated"
 
 
-export interface IEscrow {
-    amountHeld: number;
-    platformCommission: number;
-    designerPayout: number;
-    status: EscrowStatus;
-    stripeTransferId?: string;
-    releasedAt?: Date;
-}
 
 export interface IServiceReview {
     rating: number;
@@ -45,17 +37,27 @@ export interface IDispute {
 
 
 
-export interface IReview{
-    id:string,
-    comment:string,
-    rating:number,
-    userId:mongoose.Types.ObjectId 
-    designerId:mongoose.Types.ObjectId
-    userName:string,
-    profileImage:string,
-    jobId:mongoose.Types.ObjectId
-    createdAt:Date,
+export interface IReview {
+    id: string,
+    comment: string,
+    rating: number,
+    userId: mongoose.Types.ObjectId
+    designerId: mongoose.Types.ObjectId
+    userName: string,
+    profileImage: string,
+    jobId: mongoose.Types.ObjectId
+    createdAt: Date,
 }
+
+
+export interface IEscrow {
+    amountHeld: number;
+    platformCommission: number;
+    designerPayout: number;
+    status: EscrowStatus;
+    releasedAt?: Date;
+}
+
 export interface IServiceItem {
     serviceName: string;
     order: number;
@@ -67,7 +69,7 @@ export interface IServiceItem {
     currentVersion: number;
     expectedDeliveryDate: Date;
     actualDeliveryDate?: Date;
-    paymentStatus: PaymentStatus;
+    paymentStatus: ProposalPaymentStatus;
     stripePaymentIntentId?: string;
     paidAt?: Date;
     escrow?: IEscrow;
@@ -79,7 +81,7 @@ export interface IProposal {
     id: string;
     sourceId: mongoose.Types.ObjectId
     sourceType: "jobRequest" | "direct_hire",
-    sourceName:string
+    sourceName: string
     clientId: mongoose.Types.ObjectId;
     designerId: mongoose.Types.ObjectId;
     drawingFeePerSqFt: number;
@@ -89,6 +91,8 @@ export interface IProposal {
     totalExecutionFee: number;
     contractStatus: ContractStatus;
     overallRejectionReason?: string;
+    platformFee: number;
+    remainingPlatformFee: number;
     clientAcceptedAt?: Date;
     expectedCompletionDate: Date;
     actualCompletionDate?: Date;

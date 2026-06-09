@@ -81,5 +81,8 @@ export const API_ROUTES = {
     REVIEW: {
         CREATE: "/review/create",
         MY_REVIEWS: "/review/my"
+    },
+    PAYMENT:{
+        INTENT:"/payments/intent"
     }
 } as const

@@ -7,9 +7,17 @@ export interface IProposalService {
     getProposal(sourceId: string): Promise<IApiResponse<ProposalDetailDTO | null>>
     getProposalInputForJobRequest(id: string): Promise<IApiResponse<ProposalInputData>>
     getProposalTemplateForDirecHire(id: string): Promise<IApiResponse<ProposalInputData>>
-    approveOrRejectProposal(data: ProposalAcceptOrRejectDTO): Promise<IApiResponse<"Accepted"|"Rejected">>
+    approveOrRejectProposal(data: ProposalAcceptOrRejectDTO): Promise<IApiResponse<"Accepted" | "Rejected">>
 }
 export interface IReviewService {
-    createReview(userId:string, data: ReviewPayload): Promise<IApiResponse<ReviewResponseDTO>>
-    getMyReviews(designerId:string, page?:string): Promise<IApiResponseWithPagination<ReviewListDTO[]>>
+    createReview(userId: string, data: ReviewPayload): Promise<IApiResponse<ReviewResponseDTO>>
+    getMyReviews(designerId: string, page?: string): Promise<IApiResponseWithPagination<ReviewListDTO[]>>
+}
+
+
+export interface IPaymentService {
+    createPaymentIntent(jobId:string):Promise<IApiResponse<string>>
+    markPaymentSucceeded(paymentIntentId: string, sourceId: string, order: number): Promise<void>;
+    markPaymentFailed(paymentIntentId: string): Promise<void>;
+
 }

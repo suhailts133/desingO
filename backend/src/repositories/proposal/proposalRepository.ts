@@ -1,12 +1,12 @@
 
 import mongoose from "mongoose";
 import type { CreateProposalRepoDataDTO, GetProposalDTO, ProposalStatusFilter, ProposalStatusUpdateRepoDTO } from "../../DTO/proposal/proposal.js";
-import type { ContractStatus, IProposal } from "../../interfaces/proposal/IProposal.js";
+import type { ContractStatus, IEscrow, IProposal } from "../../interfaces/proposal/IProposal.js";
 import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository.js";
 import { ProposalModel } from "../../models/proposal/proposalModal.js";
 import { BaseRepository } from "../baseRepository.js";
 import type { IUser } from "../../interfaces/auth/IUser.js";
-import { CONTRACT_STATUS, FIRST_SERVICE_ORDER_NUMBER, ServiceStatus } from "../../shared/enums/proposalEnums.js";
+import { CONTRACT_STATUS, FIRST_SERVICE_ORDER_NUMBER, ServicePaymentStatus, ServiceStatus } from "../../shared/enums/proposalEnums.js";
 
 export class ProposalRepository extends BaseRepository<IProposal> implements IProposalRepository {
     constructor() {
@@ -26,7 +26,9 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
             totalContractValue: data.totalContractValue,
             sourceName: data.sourceName,
             expectedCompletionDate: data.expectedCompletionDate,
-            services: data.services
+            services: data.services,
+            platformFee: data.platformFee,
+            remainingPlatformFee: data.remainingPlatformFee
         })
     }
     async acceptOrRejectProposal(sourceId: string, contractStatus: ContractStatus, overallRejectionReason?: string): Promise<IProposal | null> {
@@ -51,12 +53,22 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
         });
     }
 
-    async updateServiceStatus(sourceId: string, order: number, status: ServiceStatus): Promise<IProposal | null> {
+    async updateService(sourceId: string, order: number, status: ServiceStatus, escrow: Partial<IEscrow>): Promise<IProposal | null> {
         return await this.updateOne(
             { sourceId, "services.order": order },
-            { $set: { "services.$.status": status } },
+            {
+                $set:
+                {
+                    "services.$.status": status,
+                    "services.$.paymentStatus": ServicePaymentStatus.PAID,
+                    "services.$.escrow": escrow,
+                    "services.$.paidAt": new Date(),
+                }
+            },
         )
     }
+
+
 
 
     async getProposal(sourceId: string): Promise<GetProposalDTO | null> {
