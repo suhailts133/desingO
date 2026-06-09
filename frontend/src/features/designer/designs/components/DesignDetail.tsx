@@ -122,7 +122,7 @@ export default function DesignDetail() {
                                 <Layers className="w-3.5 h-3.5 text-slate-500" /> {design.spaceType}
                             </span>
                             <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
-                                <Wallet className="w-3.5 h-3.5 text-slate-500" /> Starting ₹{Number(design.startingPrice).toLocaleString("en-IN")}
+                                <Wallet className="w-3.5 h-3.5 text-slate-500" /> Budget ₹{design.minPrice.toLocaleString("en-IN")} - {design.maxPrice.toLocaleString("es-IN")}
                             </span>
                             <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
                                 <Calendar className="w-3.5 h-3.5 text-slate-500" /> Posted On {design.createdAt}
@@ -216,7 +216,7 @@ export default function DesignDetail() {
                             {[
                                 { label: "Property", value: design.propertyType },
                                 { label: "Space", value: design.spaceType },
-                                { label: "Starting Price", value: `₹${Number(design.startingPrice).toLocaleString("en-IN")}` },
+                                { label: "Starting Price", value: `₹${design.minPrice.toLocaleString("en-IN")} - ${design.maxPrice.toLocaleString("en-IN")}` },
                                 { label: "Styles", value: design.designStyles.join(", ") },
                             ].map(({ label, value }) => (
                                 <li key={label} className="flex items-start justify-between gap-2">

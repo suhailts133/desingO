@@ -4,7 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import { X, Plus, ImageIcon, CheckCircle2, AlertCircle } from "lucide-react";
+import { X, Plus, ImageIcon, AlertCircle } from "lucide-react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
@@ -13,10 +13,9 @@ import { STYLE_OPTIONS, SERVICE_OPTIONS, PROPERTY_OPTIONS, SPACE_OPTIONS } from 
 import { useGetDesignDetailQuery } from "../designEndpoints";
 import { useEditDesign } from "../hooks/useEditDesign";
 import type { EditDesignFields, SelectOption } from "../designInterface";
+import toast from "react-hot-toast";
 
 const animatedComponents = makeAnimated();
-
-
 
 type ExistingGalleryItem = { type: "existing"; path: string; filename: string };
 type NewGalleryItem = { type: "new"; file: File; preview: string };
@@ -25,8 +24,6 @@ type GalleryItem = ExistingGalleryItem | NewGalleryItem;
 type ExistingCover = { type: "existing"; path: string; filename: string };
 type NewCover = { type: "new"; file: File; preview: string };
 type CoverState = ExistingCover | NewCover;
-
-
 
 const labelToOption = (label: string, options: SelectOption[]): SelectOption =>
   options.find(opt => opt.label === label) ?? { value: label, label };
@@ -37,11 +34,11 @@ const labelsToOptions = (labels: string[], options: SelectOption[]): SelectOptio
 export default function EditDesignForm() {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading: isFetching, error } = useGetDesignDetailQuery(id!, { skip: !id });
-  const { handleUpdation, updateError, updateSuccess, isEditing } = useEditDesign();
+  const { handleUpdation, updateError, isEditing } = useEditDesign();
+  const navigate = useNavigate();
 
   const [cover, setCover] = useState<CoverState | null>(null);
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
-
 
   const { register, control, handleSubmit, reset, formState: { errors } } = useForm<EditDesignFields>({
     resolver: joiResolver(editDesignValidation),
@@ -53,7 +50,8 @@ export default function EditDesignForm() {
     if (!defaultData) return;
     reset({
       name: defaultData.designName,
-      startingPrice: Number(defaultData.startingPrice),
+      minPrice: defaultData.minPrice,
+      maxPrice: defaultData.maxPrice,
       description: defaultData.description,
       designStyles: labelsToOptions(defaultData.designStyles, STYLE_OPTIONS),
       services: labelsToOptions(defaultData.services, SERVICE_OPTIONS),
@@ -61,8 +59,6 @@ export default function EditDesignForm() {
       propertyType: labelToOption(defaultData.propertyType, PROPERTY_OPTIONS),
     });
   }, [defaultData, reset]);
-
-
 
   useEffect(() => {
     if (!defaultData) return;
@@ -80,15 +76,12 @@ export default function EditDesignForm() {
     );
   }, [defaultData]);
 
-
   useEffect(() => {
     return () => {
       gallery.forEach(item => { if (item.type === "new") URL.revokeObjectURL(item.preview); });
       if (cover?.type === "new") URL.revokeObjectURL(cover.preview);
     };
-  }, []);
-
-  const navigate = useNavigate()
+  }, [gallery, cover]);
 
   if (isFetching) {
     return (
@@ -113,8 +106,6 @@ export default function EditDesignForm() {
       </div>
     );
   }
-
-
 
   const handleCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -146,8 +137,6 @@ export default function EditDesignForm() {
     });
   };
 
-
-
   const onSubmit = async (fields: EditDesignFields) => {
     if (!cover) return;
 
@@ -155,7 +144,8 @@ export default function EditDesignForm() {
     formData.append("name", fields.name);
     formData.append("spaceType", fields.spaceType.label);
     formData.append("propertyType", fields.propertyType.label);
-    formData.append("startingPrice", String(fields.startingPrice));
+    formData.append("minPrice", String(fields.minPrice));
+    formData.append("maxPrice", String(fields.maxPrice));
     formData.append("description", fields.description);
 
     fields.designStyles.forEach(({ label }, i) => formData.append(`designStyles[${i}]`, label));
@@ -168,45 +158,44 @@ export default function EditDesignForm() {
     const keptImages: { path: string; filename: string }[] = [];
     gallery.forEach(item => {
       if (item.type === "existing") {
-        keptImages.push({ path: item.path, filename: item.filename })
+        keptImages.push({ path: item.path, filename: item.filename });
       } else {
         formData.append("gallery", item.file);
       }
     });
+    
     keptImages.forEach((item, i) => {
       formData.append(`keptGallery[${i}][path]`, item.path);
       formData.append(`keptGallery[${i}][filename]`, item.filename);
     });
-    console.log([...formData.entries()]);
-    await handleUpdation({ formdata: formData, id: id! });
-  };
 
+    const result = await handleUpdation({ formdata: formData, id: id! });
+    if (result) {
+      toast.success("Design updated successfully!");
+      navigate("/designer/designs");
+    } else {
+      toast.error(updateError || "Something Went Wrong.");
+    }
+  };
 
   const coverSrc = cover?.type === "new" ? cover.preview : cover?.path;
   const coverIsChanged = cover?.type === "new";
-
+  const coverFileName = cover?.type === "new" ? cover.file.name : cover?.filename || "No file selected";
 
   return (
     <div className="min-h-screen w-full flex justify-center items-start py-10 px-4">
       <div className="w-full max-w-2xl bg-white/50 backdrop-blur-2xl shadow-blush/30 rounded-xl shadow-2xl p-8">
-
+        
         <h2 className="text-4xl font-semibold text-center font-Dynalight-Regular mb-2 text-soft-black">designO</h2>
         <p className="text-center text-gray-400 font-Jost-Semibold mb-8 text-sm uppercase tracking-widest">Edit design</p>
 
         <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-
-          {/* Name + Price */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="md:col-span-2">
-              <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Design Name</label>
-              <input {...register("name")} className="auth-input w-full" placeholder="e.g. Modern Japandi Living Room" />
-              {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
-            </div>
-            <div>
-              <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Starting Price</label>
-              <input type="number" {...register("startingPrice")} className="auth-input w-full" placeholder="0.00" />
-              {errors.startingPrice && <p className="text-xs text-red-500 mt-1">{errors.startingPrice.message}</p>}
-            </div>
+          
+          {/* Design Name */}
+          <div>
+            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Design Name</label>
+            <input {...register("name")} className="auth-input w-full" placeholder="e.g. Modern Japandi Living Room" />
+            {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
           </div>
 
           {/* Description */}
@@ -252,34 +241,64 @@ export default function EditDesignForm() {
             </div>
           </div>
 
+          {/* Budget */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Minimum Budget (₹)</label>
+              <input
+                type="number"
+                {...register("minPrice", { valueAsNumber: true })}
+                className="auth-input w-full"
+                placeholder="e.g. 50000"
+              />
+              {errors.minPrice && <p className="text-xs text-red-500 mt-1">{errors.minPrice.message}</p>}
+            </div>
+            <div>
+              <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Maximum Budget (₹)</label>
+              <input
+                type="number"
+                {...register("maxPrice", { valueAsNumber: true })}
+                className="auth-input w-full"
+                placeholder="e.g. 50000"
+              />
+              {errors.maxPrice && <p className="text-xs text-red-500 mt-1">{errors.maxPrice.message}</p>}
+            </div>
+          </div>
+
           <hr className="my-6 border-gray-100" />
 
           {/* Cover Image */}
           <div>
-            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-2">Cover Image</label>
+            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Cover Image</label>
+            <label htmlFor="coverImageEdit" className="flex items-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer hover:border-primary transition-colors mb-2">
+              <div className="bg-gray-100 p-1.5 rounded-md">
+                <ImageIcon className="h-4 w-4 text-gray-500" />
+              </div>
+              <div className="flex flex-col overflow-hidden">
+                <span className="text-sm text-gray-700 font-medium">
+                  {coverIsChanged ? "Change Cover Image" : "Replace Cover Image"}
+                </span>
+                <span className="text-xs text-primary truncate italic">
+                  {coverFileName}
+                </span>
+              </div>
+            </label>
+            <input type="file" id="coverImageEdit" hidden accept="image/*" onChange={handleCoverChange} />
+
             {coverSrc && (
-              <div className="mb-3">
-                <span className="text-xs text-gray-400 font-bold mb-1 uppercase block">
-                  {coverIsChanged ? "New Cover Preview" : "Current Cover"}
+              <div className="mt-2 flex flex-col">
+                <span className="text-xs text-gray-400 font-bold mb-2 uppercase">
+                  {coverIsChanged ? "Cover Preview" : "Current Cover Image"}
                 </span>
                 <Zoom>
                   <img
                     src={coverSrc}
                     alt="Cover"
-                    className={`rounded-lg max-h-48 object-cover shadow-sm transition-all ${coverIsChanged ? "ring-2 ring-amber-400" : ""}`}
+                    className={`rounded-lg max-h-40 object-cover shadow-sm transition-all ${coverIsChanged ? "ring-2 ring-amber-400" : ""}`}
                   />
                 </Zoom>
               </div>
             )}
-            <label htmlFor="coverImageEdit" className="flex items-center gap-3 w-fit border border-gray-300 rounded-lg px-4 py-2 cursor-pointer hover:border-primary transition-colors">
-              <div className="bg-gray-100 p-1.5 rounded-md">
-                <ImageIcon className="h-4 w-4 text-gray-500" />
-              </div>
-              <span className="text-sm text-gray-700 font-medium">
-                {coverIsChanged ? "Change Again" : "Replace Cover Image"}
-              </span>
-            </label>
-            <input type="file" id="coverImageEdit" hidden accept="image/*" onChange={handleCoverChange} />
           </div>
 
           {/* Gallery */}
@@ -295,10 +314,10 @@ export default function EditDesignForm() {
                   <div className="bg-gray-100 p-1.5 rounded-md">
                     <ImageIcon className="h-4 w-4 text-gray-500" />
                   </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm text-gray-700 font-medium">Add Photos</span>
-                    <span className="text-[11px] text-gray-400">
-                      {gallery.length > 0 ? `${gallery.length} selected — up to ${10 - gallery.length} more` : "Select one or more images"}
+                  <div className="flex flex-col overflow-hidden">
+                    <span className="text-sm text-gray-700 font-medium">Upload Project Photos</span>
+                    <span className="text-[11px] text-gray-400 truncate">
+                      {gallery.length > 0 ? `${gallery.length} images selected — up to ${10 - gallery.length} more` : "Select one or more images..."}
                     </span>
                   </div>
                   <Plus className="h-5 w-5 text-gray-400 ml-auto shrink-0" />
@@ -339,9 +358,12 @@ export default function EditDesignForm() {
               </div>
             )}
           </div>
-          <p className="text-sm text-gray-500 mt-1">
-            * If you delete all gallery images without uploading new ones, the old images will remain in use.
+
+          <p className="text-xs text-gray-400 italic mt-1">
+            * Note: If you delete all gallery images without uploading new ones, your old gallery images will remain saved on the server.
           </p>
+
+          {/* Action Buttons */}
           {!isEditing ? (
             <div className="flex gap-3">
               <button
@@ -351,7 +373,7 @@ export default function EditDesignForm() {
               >
                 Cancel
               </button>
-              <button type="submit" className="auth-button">
+              <button type="submit" className="auth-button w-full">
                 Save Changes
               </button>
             </div>
@@ -364,7 +386,7 @@ export default function EditDesignForm() {
               >
                 Cancel
               </button>
-              <button type="button" disabled className="auth-disabled-button flex items-center justify-center gap-2">
+              <button type="button" disabled className="auth-disabled-button w-full flex items-center justify-center gap-2">
                 <svg className="size-5 animate-spin shrink-0" viewBox="0 0 24 24" fill="none">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -375,9 +397,6 @@ export default function EditDesignForm() {
           )}
 
         </form>
-
-        {updateError && <p className="flex items-center gap-1 text-sm text-error text-center mt-3"><AlertCircle size={14} /> {updateError}</p>}
-        {updateSuccess && <p className="flex items-center gap-1 text-sm text-success text-center mt-3"><CheckCircle2 size={14} /> {updateSuccess}</p>}
       </div>
     </div>
   );

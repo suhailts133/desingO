@@ -4,6 +4,7 @@ interface ImportMetaEnv {
     readonly VITE_BASE_URL: string
     readonly VITE_API_URL: string
     readonly VITE_STRIPE_PUBLISHABLE_KEY:string
+    readonly VITE_CLIENT_ID:string
 }
 
 interface ImportMeta {

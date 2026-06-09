@@ -38,7 +38,8 @@ export interface DesignDetailResponseDTO {
   designName: string;
   propertyType: string;
   spaceType: string;
-  startingPrice: string;
+  maxPrice: number;
+  minPrice: number;
   services: string[];
   designStyles: string[];
   description: string;
@@ -85,7 +86,8 @@ export type SelectOption = { label: string; value: string };
 
 export interface EditDesignFields {
     name: string;
-    startingPrice: number;
+    minPrice: number;
+    maxPrice: number;
     description: string;
     designStyles: SelectOption[];
     services: SelectOption[];

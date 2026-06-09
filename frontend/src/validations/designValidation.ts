@@ -191,10 +191,26 @@ export const editDesignValidation: Joi.ObjectSchema<EditDesignFields> = Joi.obje
             "any.required": "Property type is required",
         }),
 
-    startingPrice: Joi.number()
+
+    minPrice: Joi.number()
+        .positive()
+        .precision(2)
         .required()
         .messages({
-            "number.base": "Starting price must be a number",
-            "any.required": "Starting price is required",
+            "number.base": "Minimum budget is required",
+            "number.positive": "Minimum budget must be a positive number",
+            "any.required": "Minimum budget is required",
+        }),
+
+    maxPrice: Joi.number()
+        .positive()
+        .precision(2)
+        .greater(Joi.ref("minPrice"))
+        .required()
+        .messages({
+            "number.base": "Maximum budget is required",
+            "number.positive": "Maximum budget must be a positive number",
+            "number.greater": "Maximum budget must be greater than minimum budget",
+            "any.required": "Maximum budget is required",
         }),
 });
