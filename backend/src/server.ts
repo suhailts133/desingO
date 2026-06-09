@@ -25,6 +25,7 @@ import profileRoutes from "./routes/common/profileRoutes.js"
 //benchmark routes
 import designBMRoutes from "./routes/benchmark/designBMRoutes.js"
 // proposalRoutes
+import paymentRoutes from "./routes/proposal/paymentRoutes.js"
 import proposalRoutes from "./routes/proposal/proposalRoutes.js"
 import reviewRoutes from "./routes/proposal/reviewRoutes.js"
 
@@ -38,9 +39,15 @@ app.use(cors({
     credentials: true
 }))
 
+
+
+app.use("/api/payments", paymentRoutes)
 app.use(express.json());
 
+
+
 // admin
+
 app.use("/api/admin/users", userRoutes)
 app.use("/api/admin/designer-application", designerVerificationRoutes)
 
@@ -53,12 +60,11 @@ app.use("/api/job-application", jobApplicationRoutes)
 app.use("/api/profile", profileRoutes)
 app.use("/api/saved-design", savedDesignRoutes)
 app.use("/api/direct-hire", hireDesignerRoute)
-app.use("/api/direct-hire", hireDesignerRoute)
+
 app.use("/api/design-bm", designBMRoutes)
-app.use("/api/proposal", profileRoutes)
 app.use("/api/proposal", proposalRoutes)
 app.use("/api/active-job", activeJobsRoute)
-app.use("/api/active-job", activeJobsRoute)
+
 app.use("/api/review", reviewRoutes)
 app.use(globalErrorHandler)
 

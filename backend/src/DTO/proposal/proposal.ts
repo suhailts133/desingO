@@ -1,7 +1,7 @@
 
 import type { IUser } from "../../interfaces/auth/IUser.js";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
-import type { ContractStatus, IProposal, IServiceItem, PaymentStatus, ServiceStatus } from "../../interfaces/proposal/IProposal.js";
+import type { ContractStatus, IProposal, IServiceItem, ProposalPaymentStatus, ServiceStatus } from "../../interfaces/proposal/IProposal.js";
 
 export interface ServiceItem {
     serviceName: string;
@@ -95,7 +95,7 @@ export interface ProposalServiceItemDTO {
     currentVersion: number
     expectedDeliveryDate: string
     actualDeliveryDate?: string
-    paymentStatus: PaymentStatus
+    paymentStatus: ProposalPaymentStatus
     paidAt?: string
 }
 

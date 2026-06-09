@@ -9,5 +9,11 @@ export function calculatePlatformFee(totalDrawingFee: number): number {
         return PLATFORM_FEE_RULES.STANDARD.PLATFORM_FEE;
     }
 
-    return PLATFORM_FEE_RULES.BASIC.PLATFORM_FEE;
+    if (totalDrawingFee >= PLATFORM_FEE_RULES.BASIC.MIN_AMOUNT) {
+        return PLATFORM_FEE_RULES.BASIC.PLATFORM_FEE;
+    }
+
+    return PLATFORM_FEE_RULES.FREE.PLATFORM_FEE;
 }
+
+

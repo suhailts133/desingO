@@ -10,6 +10,5 @@ export const escrowSchema = new Schema<IEscrow>({
         enum: ["Held", "Released", "Refunded", "Disputed"],
         required: true
     },
-    stripeTransferId: { type: String },
     releasedAt: { type: Date },
 }, { _id: false })

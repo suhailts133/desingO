@@ -1,6 +1,10 @@
 export const PLATFORM_FEE_RULES = {
-    BASIC: {
+    FREE: {
         MIN_AMOUNT: 0,
+        PLATFORM_FEE: 0,
+    },
+    BASIC: {
+        MIN_AMOUNT: 10000,
         PLATFORM_FEE: 1000,
     },
     STANDARD: {

@@ -4,7 +4,7 @@ import type { ImageUploadResult } from "../base/IImageUpload.js";
 
 export type ServiceStatus = "Locked" | "Open" | "In Progress" | "Uploaded" | "Redo" | "Completed"
 
-export type PaymentStatus = "Pending" | "Paid" | "Refunded"
+export type ProposalPaymentStatus = "Pending" | "Paid" | "Refunded"
 
 export type EscrowStatus = "Held" | "Released" | "Refunded" | "Disputed"
 
@@ -13,14 +13,6 @@ export type ContractStatus = "Sent" | "Accepted" | "Rejected" | "Ongoing" | "Com
 export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Escalated"
 
 
-export interface IEscrow {
-    amountHeld: number;
-    platformCommission: number;
-    designerPayout: number;
-    status: EscrowStatus;
-    stripeTransferId?: string;
-    releasedAt?: Date;
-}
 
 export interface IServiceReview {
     rating: number;
@@ -56,6 +48,16 @@ export interface IReview {
     jobId: mongoose.Types.ObjectId
     createdAt: Date,
 }
+
+
+export interface IEscrow {
+    amountHeld: number;
+    platformCommission: number;
+    designerPayout: number;
+    status: EscrowStatus;
+    releasedAt?: Date;
+}
+
 export interface IServiceItem {
     serviceName: string;
     order: number;
@@ -67,7 +69,7 @@ export interface IServiceItem {
     currentVersion: number;
     expectedDeliveryDate: Date;
     actualDeliveryDate?: Date;
-    paymentStatus: PaymentStatus;
+    paymentStatus: ProposalPaymentStatus;
     stripePaymentIntentId?: string;
     paidAt?: Date;
     escrow?: IEscrow;
