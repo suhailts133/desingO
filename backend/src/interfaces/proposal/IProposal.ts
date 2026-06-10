@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import type { ImageUploadResult } from "../base/IImageUpload.js";
 
 
-export type ServiceStatus = "Locked" | "Open" | "In Progress" | "Uploaded" | "Redo" | "Completed"
+export type ProposalServiceStatus = "Locked" | "Open" | "In Progress" | "Uploaded" | "Redo" | "Completed"
 
 export type ProposalPaymentStatus = "Pending" | "Paid" | "Refunded"
 
@@ -13,7 +13,6 @@ export type ContractStatus = "Sent" | "Accepted" | "Rejected" | "Ongoing" | "Com
 export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Escalated"
 
 
-
 export interface IServiceReview {
     rating: number;
     comment: string;
@@ -21,6 +20,7 @@ export interface IServiceReview {
     revisionsNeeded: number;
     reviewedAt: Date;
 }
+
 
 
 export interface IDispute {
@@ -63,10 +63,10 @@ export interface IServiceItem {
     order: number;
     price: number;
     executionPrice: number;
-    status: ServiceStatus;
-    rejectionReason?: string;
+    status: ProposalServiceStatus;
     uploadedImages: ImageUploadResult[];
     currentVersion: number;
+    versionId: mongoose.Types.ObjectId;
     expectedDeliveryDate: Date;
     actualDeliveryDate?: Date;
     paymentStatus: ProposalPaymentStatus;
@@ -100,15 +100,16 @@ export interface IProposal {
     updatedAt: Date;
 }
 
-export type VersionStatus = "Pending_Review" | "Rejected" | "Approved"
+export type VersionStatus = "Pending" | "Rejected" | "Approved"
 
 export interface IServiceVersion {
     id: string;
     proposalId: mongoose.Types.ObjectId;
+    sourceId: mongoose.Types.ObjectId;
     serviceOrder: number;
     version: number;
     images: ImageUploadResult[];
     status: VersionStatus;
     rejectionReason?: string;
-    uploadedAt: Date;
+    createdAt: Date;
 }

@@ -13,6 +13,7 @@ export interface IUser {
   on_investigation: boolean;
   is_verified: boolean;
   createdAt: Date;
+  wallet:number
   google_profile_id?: string;
   profile_image_url?: string;
   location?: string;

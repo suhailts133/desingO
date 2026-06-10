@@ -1,5 +1,6 @@
-import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData } from "../../DTO/proposal/proposal.js";
+import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData, ServiceImageUploadResponseDTO } from "../../DTO/proposal/proposal.js";
 import type { ReviewListDTO, ReviewPayload, ReviewResponseDTO } from "../../DTO/proposal/review.js";
+import type {  VersionAcceptOrRejectDTO } from "../../DTO/proposal/version.js";
 import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse.js";
 
 export interface IProposalService {
@@ -15,8 +16,13 @@ export interface IReviewService {
 }
 
 
+export interface IProposalVersionService {
+    uploadProposalImage(sourceId: string, ServiceNumber: number, serviceImages: Express.Multer.File[]): Promise<IApiResponse>;
+    acceptOrRejectVersion(data: VersionAcceptOrRejectDTO): Promise<IApiResponse>;
+}
+
 export interface IPaymentService {
-    createPaymentIntent(jobId:string):Promise<IApiResponse<string>>
+    createPaymentIntent(jobId: string): Promise<IApiResponse<string>>
     markPaymentSucceeded(paymentIntentId: string, sourceId: string, order: number): Promise<void>;
     markPaymentFailed(paymentIntentId: string): Promise<void>;
 

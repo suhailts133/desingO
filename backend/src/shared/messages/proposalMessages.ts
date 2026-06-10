@@ -1,8 +1,25 @@
 export const PROPOSAL_MESSAGES = {
 
+
+    VERSION: {
+        NOT_FOUND: "version not found.",
+        UPDATE_FAIL: "version update fail.",
+        UPDATE_SUCCESS: "version update success.",
+    },
+
+    SERVICE: {
+        SERVICE_RESULT_REQUIRED: "Service result is required.",
+        SUCCESS: "Result upload success.",
+        NOT_FOUND: "Service not found.",
+        UPDATE_FAIL: "Failed to update the service.",
+        CANNOT_OPEN: "Failed to Open the next service.",
+        CANNOT_COMPLETE: "Failed to set the current service as complete."
+
+    },
     PROPOSAL: {
         CREATION_FAILED: "Proposal creation failed.",
         EXISTS: "Proposal already exists.",
+        CONTRACT_STATUS_FAIL: "Failed to update the contract status.",
         CREATION_SUCCESS: "Proposal creation success.",
         FETCH_SUCCESS: "Proposal fetched Successfully.",
         NOT_FOUND: "Proposal not found.",
@@ -30,6 +47,9 @@ export const PROPOSAL_MESSAGES = {
         NO_OPEN_SERVICE: "there are no open service with pending payment.",
         CREATED: "Payment created.",
         INTENT_NOT_CREATED: 'Failed to create payment intent',
+        PAYOUT_NOT_FOUND: 'payout amount not found contact support',
+        PAYOUT_DESIGNER_FAILED: 'Cannot pay designer contact support',
+        PAYOUT_ADMIN_FAILED: 'Cannot pay admin contact support',
     }
 
 } as const

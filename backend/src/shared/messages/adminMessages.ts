@@ -1,5 +1,8 @@
 export const ADMIN_MESSAGES = {
 
+    ADMIN: {
+        NOT_FOUND: "Admin not found"
+    },
     USER_MANAGEMENT: {
         FETCH_ALL_SUCCESS: "Users retrieved successfully.",
         GET_ONE_SUCCESS: "User retrieved successfully.",
