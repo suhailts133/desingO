@@ -7,7 +7,7 @@ import { useGetProposalQuery } from "../proposalEndpoints"
 
 import { useDecodeAccessToken } from "../../../helpers/decodeAccessToken"
 
-import type { ReviewPayloadFields } from "../proposalInterface"
+import type { IServiceResult, ReviewPayloadFields } from "../proposalInterface"
 import type { RejectionPayload } from "../../user/jobApplications/jobApplicationInterFace"
 
 import { useApproveOrReject } from "../hooks/useApproveOrReject"
@@ -25,6 +25,9 @@ import CustomerActionPanel from "../component/CustomerActionPanel"
 import ChatPanel from "../chat/ChatPanel"
 import PaymentModal from "../component/PaymentModal"
 import { useCreateIntent } from "../hooks/useCreateIntent"
+import ServiceUploadForm from "../component/ServiceUploadForm"
+import toast from "react-hot-toast"
+import { useUploadResult } from "../hooks/useUploadResult"
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
 
@@ -43,17 +46,52 @@ export default function ProposalPage() {
 
     const { isChangingStatus, statusUpdateError, statusUpdateSuccess, newStatus, handleUpdateStatus } = useApproveOrReject()
     const { isReviewing, reviewError, reivewSuccess, handleWriteReview } = useWriteReview()
+    const {isUploading, uploadError, handleServiceResultUpload} = useUploadResult()
 
     const [chatOpen, setChatOpen] = useState(false)
     const [approveProposal, setApproveProposal] = useState<{ sourceId: string } | null>(null)
     const [rejectProposal, setRejectProposal] = useState<{ sourceId: string } | null>(null)
     const [review, setReview] = useState<{ sourceId: string } | null>(null)
+    const [uploadingService, setUploadingService] = useState<{
+        sourceId: string;
+        serviceNumber: number;
+        serviceName: string
+    } | null>(null)
 
     const [payingService, setPayingService] = useState<{ serviceName: string; amount: number } | null>(null)
     const handleApproval = async () => {
         if (!approveProposal) return
         await handleUpdateStatus({ sourceId: approveProposal.sourceId, contractStatus: "Accepted" })
         setApproveProposal(null)
+    }
+    const handleUpload = (serviceNumber: number, serviceName: string) => {
+        if (!proposal) return
+        setUploadingService({
+            sourceId: proposal.sourceId,
+            serviceNumber,
+            serviceName
+        })
+    }
+
+    const handleUploadSubmit = async (data: IServiceResult) => {
+        if (!uploadingService) return
+
+        const formData = new FormData()
+        formData.append("sourceId", uploadingService.sourceId)
+        formData.append("serviceNumber", String(uploadingService.serviceNumber))
+
+        data.serviceResult.forEach((item) => {
+            if (item.file[0]) {
+                formData.append("serviceResult", item.file[0])
+            }
+        })
+        console.log([...formData.entries()])
+        const result = await handleServiceResultUpload(formData)
+        if(result){
+            toast.success("Upload Successfull")
+        }
+        toast.error(uploadError || "Something went Wrong")
+        setUploadingService(null)
     }
 
     const handleRejection = async ({ rejectionReason }: RejectionPayload) => {
@@ -72,7 +110,7 @@ export default function ProposalPage() {
         setReview(null)
     }
 
-    const handlePay = async (serviceName: string, amount: number, payemnetSourceId:string) => {
+    const handlePay = async (serviceName: string, amount: number, payemnetSourceId: string) => {
         setPayingService({ serviceName, amount })
         console.log(payemnetSourceId)
         const success = await handlePaymentIntent(payemnetSourceId)
@@ -134,6 +172,15 @@ export default function ProposalPage() {
                 text="Once accepted, the designer will be notified and work can begin after the advance payment is made. This action cannot be undone."
                 buttonText="Confirm & accept"
                 buttonLoadingText="Accepting…"
+            />
+
+            <ServiceUploadForm
+                isOpen={!!uploadingService}
+                onClose={() => setUploadingService(null)}
+                onConfirm={handleUploadSubmit}
+                isLoading={isUploading}
+                sourceId={uploadingService?.sourceId ?? ""}
+                serviceNumber={uploadingService?.serviceNumber ?? 0}
             />
 
             <RejectJobApplicationModal
@@ -223,7 +270,7 @@ export default function ProposalPage() {
                                 onPay={() => handlePay(service.serviceName, service.price, proposal.sourceId)}
                                 onVerify={() => { }}
                                 onRedo={() => { }}
-                                onUpload={() => { }}
+                                onUpload={() => handleUpload(service.order, service.serviceName)}
                                 isPayLoading={ispaymentDataLoading && payingService?.serviceName === service.serviceName}
                             />
                         ))}

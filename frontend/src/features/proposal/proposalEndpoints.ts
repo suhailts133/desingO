@@ -9,8 +9,19 @@ export const proposalApi = baseApi.injectEndpoints({
             query: (jobId) => ({
                 url: `${API_ROUTES.PROPOSAL.MY_PROPOSAL}/${jobId}`,
                 method: "GET"
-            })
+            }), 
+            providesTags:["proposal"]
         }),
+
+        uploadResult:builder.mutation<IApiResponse,FormData>({
+            query:(formData:FormData) => ({
+                url: API_ROUTES.PROPOSAL.UPLOAD_RESULT,
+                method:"POST",
+                body:formData
+            }),
+            invalidatesTags:["proposal"]
+        }),
+
         getProposalPrefillData: builder.query<IApiResponse<ProposalInputData>, ProposalInputDataPayload>({
             query: (body) => ({
                 url: `${API_ROUTES.PROPOSAL.PREFILL_DATA}/${body.jobId}/${body.sourceType}`,
@@ -40,5 +51,6 @@ export const {
     useGetProposalQuery,
     useGetProposalPrefillDataQuery,
     useCreateProposalMutation,
-    useApproveRejectMutation
+    useApproveRejectMutation,
+    useUploadResultMutation
 } = proposalApi

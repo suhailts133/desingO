@@ -1,6 +1,6 @@
 import { isApiError, UNKNOWN_ERROR } from "../../helpers/errorhandler"
 import { useCreateIntentMutation } from "./paymentEndpoints"
-import { useApproveRejectMutation, useCreateProposalMutation } from "./proposalEndpoints"
+import { useApproveRejectMutation, useCreateProposalMutation, useUploadResultMutation } from "./proposalEndpoints"
 import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ReviewPayload } from "./proposalInterface"
 import { useAddYourReviewMutation } from "./wishlistEndpoints"
 
@@ -9,7 +9,20 @@ export const useProposalServices = () => {
     const [approveRejectMutation, { isLoading: isChangingStatus }] = useApproveRejectMutation()
     const [addyourReivewMutation, { isLoading: isReviewing }] = useAddYourReviewMutation()
     const [createIntentMutaiton, { isLoading: ispaymentDataLoading }] = useCreateIntentMutation()
-
+    const [uploadResultMutation, {isLoading:isUploading}] = useUploadResultMutation()
+    
+    const uploadResult = async (formData:FormData) => {
+        try {
+          
+            const result = await uploadResultMutation(formData).unwrap()
+            return result
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
+        }
+    }
     const createIntent = async (jobId: string) => {
         try {
           
@@ -66,6 +79,8 @@ export const useProposalServices = () => {
         writeReview,
         isReviewing,
         createIntent,
-        ispaymentDataLoading
+        ispaymentDataLoading,
+        uploadResult,
+        isUploading
     }
 }
