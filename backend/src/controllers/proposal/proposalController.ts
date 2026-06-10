@@ -1,8 +1,8 @@
-import type { IProposalService } from "../../interfaces/proposal/IProposalService.js";
+import type { IProposalService, IProposalVersionService } from "../../interfaces/proposal/IProposalService.js";
 import type { Request, Response } from "express"
 import { RespsonseHelper } from "../../shared/helpers/responseHelper.js"
 import { RESPONSE_CODE } from "../../shared/enums/statusCode.js"
-import type { CreateProposalDTO, ProposalAcceptOrRejectDTO } from "../../DTO/proposal/proposal.js";
+import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ServiceResultDTO } from "../../DTO/proposal/proposal.js";
 
 import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError.js"
@@ -11,6 +11,8 @@ import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
 import { isObjectId } from "../../shared/helpers/extraFunctions.js";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages.js";
 import { proposalApproveOrRejectionValidation } from "../../validators/proposal/proposalAcceptOrRejectValidation.js";
+import { versionApproveOrRejectValidation } from "../../validators/proposal/versionAcceptOrRejectValidation.js";
+import type { VersionAcceptOrRejectDTO } from "../../DTO/proposal/version.js";
 
 
 
@@ -19,7 +21,7 @@ import { proposalApproveOrRejectionValidation } from "../../validators/proposal/
  */
 
 export class ProposalController {
-    constructor(private _proposalService: IProposalService) { }
+    constructor(private _proposalService: IProposalService, private _proposalVersionService: IProposalVersionService) { }
 
 
     /**
@@ -38,7 +40,7 @@ export class ProposalController {
         RespsonseHelper.success(res, result)
     })
 
-    
+
     /**
    * for create new PRoposal
    * @route PATCH /proposal/approve-reject
@@ -95,6 +97,54 @@ export class ProposalController {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL_INPUT.UNKONW_DATA, RESPONSE_CODE.BAD_REQUEST)
         }
         const result = source === "jobRequest" ? await this._proposalService.getProposalInputForJobRequest(jobId) : await this._proposalService.getProposalTemplateForDirecHire(jobId)
+        RespsonseHelper.success(res, result)
+    })
+
+    /**
+ * to upload result for the service
+ * @route POST /proposal/upload-result
+ * @param req.body.sourceId jobid
+ * @param req.body.serviceNumber the service order
+ * @param req.files.serviceResult the service upload result
+ * @throws {AppError} 400 if there is any issue with the req.body
+ * @throws {AppError} 400 if there is no items in req.files.serviceReult
+*/
+    uploadServiceResult = asyncHandler(async (req: Request, res: Response) => {
+
+        const { serviceNumber, sourceId } = req.body as ServiceResultDTO
+        if (!sourceId) {
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        if (!isObjectId(sourceId)) {
+
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        const files = req.files as {
+            serviceResult: Express.Multer.File[]
+        }
+
+        const serviceResult: Express.Multer.File[] = files.serviceResult ?? []
+        if (serviceResult.length === 0) {
+            throw new AppError(PROPOSAL_MESSAGES.SERVICE.SERVICE_RESULT_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        const result = await this._proposalVersionService.uploadProposalImage(sourceId, serviceNumber, serviceResult);
+        RespsonseHelper.success(res, result)
+    })
+
+    /**
+ * to upload result for the service
+ * @route PATCH /proposal/approve-reject-version
+ * @param req.body {@link VersionAcceptOrRejectDTO}
+ * @throws {AppError} 400 if there is any issue with the req.body
+
+*/
+    approveOrRejectVersion = asyncHandler(async (req: Request, res: Response) => {
+        const { error, value } = versionApproveOrRejectValidation.validate(req.body, { stripUnknown: true })
+        if (error) {
+            throw new AppError(error.details[0]?.message || "Missing fields or Invalid Data", RESPONSE_CODE.BAD_REQUEST)
+        }
+        const valided = value as VersionAcceptOrRejectDTO
+        const result = await this._proposalVersionService.acceptOrRejectVersion(valided)
         RespsonseHelper.success(res, result)
     })
 }

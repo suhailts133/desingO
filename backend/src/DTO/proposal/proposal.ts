@@ -1,7 +1,7 @@
 
 import type { IUser } from "../../interfaces/auth/IUser.js";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
-import type { ContractStatus, IProposal, IServiceItem, ProposalPaymentStatus, ServiceStatus } from "../../interfaces/proposal/IProposal.js";
+import type { ContractStatus, IProposal, IServiceItem, ProposalPaymentStatus, ProposalServiceStatus, VersionStatus } from "../../interfaces/proposal/IProposal.js";
 
 export interface ServiceItem {
     serviceName: string;
@@ -84,14 +84,29 @@ export interface ProposalDetailDTO {
     services: ProposalServiceItemDTO[]
 }
 
+
+export interface VersionDTO {
+    serviceOrder: number
+    versionId: string,
+    images: string[]
+    status: VersionStatus,
+    rejectionReason?: string
+}
+
+
+export interface AllVersion {
+    versionNumber: number
+    versionData: VersionDTO
+}
+
 export interface ProposalServiceItemDTO {
     serviceName: string
     order: number
     price: number
     executionPrice: number
-    status: ServiceStatus
+    status: ProposalServiceStatus
     rejectionReason?: string
-    uploadedImages: ImageUploadResult[]
+    versions:AllVersion[]
     currentVersion: number
     expectedDeliveryDate: string
     actualDeliveryDate?: string
@@ -109,10 +124,23 @@ export interface ProposalAcceptOrRejectDTO {
 export interface ProposalStatusUpdateRepoDTO {
     contractStatus: ContractStatus;
     overallRejectionReason?: string;
-    "services.$.status"?: ServiceStatus;
+    "services.$.status"?: ProposalServiceStatus;
 }
+
+
 
 export interface ProposalStatusFilter {
     sourceId: string;
     "services.order"?: number;
+}
+
+export interface ServiceImageUploadResponseDTO {
+    versionNumber: number
+    versionId: string
+    images: string[]
+}
+
+export interface ServiceResultDTO {
+    serviceNumber: number;
+    sourceId: string;
 }

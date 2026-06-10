@@ -5,7 +5,7 @@ import { JobRequestMapper } from "../../dtoMappers/user/jobRequestMapper.js";
 import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
 import type { IActiveJobRepository, IHireDesignerRepository, IJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
 import type { IServiceItem } from "../../interfaces/proposal/IProposal.js";
-import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository.js";
+import type { IProposalRepository, IServiceVersionRepository } from "../../interfaces/proposal/IProposalRepository.js";
 import type { IProposalService } from "../../interfaces/proposal/IProposalService.js";
 
 import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
@@ -17,7 +17,7 @@ import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages.js";
 
 export class ProposalService implements IProposalService {
-    constructor(private _proposalRepo: IProposalRepository, private _activeRepo: IActiveJobRepository, private _jobRepo: IJobRepository, private _directHireRepo: IHireDesignerRepository) { }
+    constructor(private _proposalRepo: IProposalRepository, private _activeRepo: IActiveJobRepository, private _jobRepo: IJobRepository, private _directHireRepo: IHireDesignerRepository, private _serviceVersionRepo: IServiceVersionRepository) { }
 
     async createProposal(data: CreateProposalDTO): Promise<IApiResponse> {
         const activeJob = await this._activeRepo.getActiveJobBySource(data.sourceId);
@@ -79,7 +79,9 @@ export class ProposalService implements IProposalService {
         if (!result) {
             return { message: PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, data: null }
         }
-        const proposalData = ProposalMapper.toProposalDetailDTO(result)
+        const allVersions = await this._serviceVersionRepo.findAllVersions(sourceId)
+        
+        const proposalData = ProposalMapper.toProposalDetailDTO(result,allVersions)
         return { message: PROPOSAL_MESSAGES.PROPOSAL.FETCH_SUCCESS, data: proposalData, statuscode: RESPONSE_CODE.CREATED }
     }
 
@@ -100,6 +102,7 @@ export class ProposalService implements IProposalService {
         if (!job) {
             throw new AppError(JOB_MESSAGES.HIRE_DESIGNER.NOT_FOUND, RESPONSE_CODE.BAD_REQUEST)
         }
+
         const proposalData = HireDesignerMapper.toDirectHireProposalInputDTO(job)
         return { message: PROPOSAL_MESSAGES.PROPOSAL.TEMPLATE_FETCH_SUCCESS, data: proposalData }
     }

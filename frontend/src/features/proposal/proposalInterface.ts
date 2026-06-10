@@ -10,6 +10,11 @@ export type ContractStatus = "Sent" | "Accepted" | "Rejected" | "Ongoing" | "Com
 
 export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Escalated"
 
+export interface IServiceResult {
+    serviceResult: {
+        file: File[]
+    }[]
+}
 
 
 export interface ServiceItem {
@@ -37,7 +42,7 @@ export interface ProposalInputData {
     jobId: string
     minPrice: number
     maxPrice: number
-    timeLine:string
+    timeLine: string
     services: string[];
     sqft: number
 }
@@ -94,13 +99,30 @@ export interface ProposalServiceItemDTO {
     executionPrice: number
     status: ServiceStatus
     rejectionReason?: string
-    uploadedImages: ImageUploadResult[]
+    versions: AllVersion[]
     currentVersion: number
     revisionsUsed: number
     expectedDeliveryDate: string
     actualDeliveryDate?: string
     paymentStatus: PaymentStatus
     paidAt?: string
+}
+
+export interface VersionDTO {
+    serviceOrder: number
+    versionId: string,
+    images: string[]
+    status: VersionStatus,
+    rejectionReason?: string
+}
+
+export type VersionStatus = "Pending" | "Rejected" | "Approved"
+
+
+
+export interface AllVersion {
+    versionNumber: number
+    versionData: VersionDTO
 }
 
 export interface ProposalAcceptOrRejectDTO {

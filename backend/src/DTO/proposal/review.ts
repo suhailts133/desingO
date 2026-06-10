@@ -17,7 +17,6 @@ export interface ReviewListDTO extends ReviewResponseDTO {
 
 }
 
-
 export interface ReviewRepoDTO {
     jobId: string
     userId: string

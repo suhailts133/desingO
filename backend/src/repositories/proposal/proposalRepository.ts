@@ -1,7 +1,7 @@
 
 import mongoose from "mongoose";
 import type { CreateProposalRepoDataDTO, GetProposalDTO, ProposalStatusFilter, ProposalStatusUpdateRepoDTO } from "../../DTO/proposal/proposal.js";
-import type { ContractStatus, IEscrow, IProposal } from "../../interfaces/proposal/IProposal.js";
+import type { ContractStatus, IEscrow, IProposal, ProposalServiceStatus } from "../../interfaces/proposal/IProposal.js";
 import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository.js";
 import { ProposalModel } from "../../models/proposal/proposalModal.js";
 import { BaseRepository } from "../baseRepository.js";
@@ -53,7 +53,17 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
         });
     }
 
-    async updateService(sourceId: string, order: number, status: ServiceStatus, escrow: Partial<IEscrow>): Promise<IProposal | null> {
+    async acceptOrRejectServiceResult(sourceId: string, order: number, status: ProposalServiceStatus): Promise<IProposal | null> {
+
+        return await this.updateOne({ sourceId, "services.order": order }, {
+            $set: {
+                "services.$.status": status
+            }
+        })
+
+    }
+
+    async updateService(sourceId: string, order: number, status: ProposalServiceStatus, escrow: Partial<IEscrow>): Promise<IProposal | null> {
         return await this.updateOne(
             { sourceId, "services.order": order },
             {
@@ -67,13 +77,26 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
             },
         )
     }
-
-
-
+    async updateServiceVersion(sourceId: string, order: number, status: ProposalServiceStatus, newVersion: number): Promise<IProposal | null> {
+        return await this.updateOne(
+            { sourceId, "services.order": order },
+            {
+                $set: {
+                    "services.$.status": status,
+                    "services.$.currentVersion": newVersion,
+                }
+            }
+        )
+    }
 
     async getProposal(sourceId: string): Promise<GetProposalDTO | null> {
         return await this._model.findOne({ sourceId })
             .populate<{ clientId: IUser }>("clientId")
             .populate<{ designerId: IUser }>("designerId")
     }
+
+    async updateProposal(id: string, filters: Partial<IProposal>): Promise<IProposal | null> {
+        return await this.update(id, filters);
+    }
+
 }

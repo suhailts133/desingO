@@ -24,6 +24,7 @@ const UserSchema = new Schema<IUser>(
       default: "Customer"
     },
     profile_image_url: { type: String },
+    wallet: { type: Number, default:0 },
     location: { type: String },
     phone: { type: String },
     landmark: { type: String },

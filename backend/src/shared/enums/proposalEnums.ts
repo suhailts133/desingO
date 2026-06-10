@@ -46,3 +46,11 @@ export enum DisputeStatus {
 
 
 export const FIRST_SERVICE_ORDER_NUMBER = 1
+
+
+
+export enum VERSION_STATUS {
+    PENDING = "Pending",
+    APPROVED = "Approved",
+    REJECTED = "Rejected",
+}

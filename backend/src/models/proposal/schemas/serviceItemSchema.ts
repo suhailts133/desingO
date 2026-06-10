@@ -15,7 +15,7 @@ export const serviceItemSchema = new Schema<IServiceItem>({
         default: "Locked",
 
     },
-    rejectionReason: { type: String },
+    versionId: { type: Schema.Types.ObjectId, ref: "ServiceVersion" },
     uploadedImages: { type: [imageFormatSchema], default: [] },
     currentVersion: { type: Number, default: 0 },
 

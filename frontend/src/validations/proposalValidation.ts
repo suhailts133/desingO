@@ -1,5 +1,6 @@
 import Joi from "joi"
-import type { ServiceItem, CreateProposalDTO } from "../features/proposal/proposalInterface"
+import type { ServiceItem, CreateProposalDTO, IServiceResult } from "../features/proposal/proposalInterface"
+import { imageValidation } from "../helpers/imageValidation"
 
 
 const serviceItemValidation = Joi.object<ServiceItem>({
@@ -67,4 +68,15 @@ export const proposalValidation: Joi.ObjectSchema<CreateProposalDTO> = Joi.objec
             "array.min": "At least one service is required",
             "any.required": "Services are required",
         }),
+})
+
+
+export const serviceResultUploadValidatin:Joi.ObjectSchema<IServiceResult> = Joi.object<IServiceResult>({
+     serviceResult: Joi.array()
+            .items(
+                Joi.object({
+                    file: imageValidation("service result", true)
+                })
+            )
+            .default([]),
 })

@@ -1,24 +1,40 @@
-import type { GetProposalDTO, ProposalDetailDTO, ProposalServiceItemDTO } from "../../DTO/proposal/proposal.js";
+import type { AllVersion, GetProposalDTO, ProposalDetailDTO, ProposalServiceItemDTO } from "../../DTO/proposal/proposal.js";
+import type { IServiceVersion } from "../../interfaces/proposal/IProposal.js";
 
 export class ProposalMapper {
 
-    static toProposalDetailDTO(data: GetProposalDTO): ProposalDetailDTO {
+    static toProposalDetailDTO(data: GetProposalDTO, allVersions: IServiceVersion[]): ProposalDetailDTO {
 
-        const proposalServices: ProposalServiceItemDTO[] = data.services.map(d => ({
-            serviceName: d.serviceName,
-            order: d.order,
-            price: d.price,
-            executionPrice: d.executionPrice,
-            status: d.status,
+        const proposalServices: ProposalServiceItemDTO[] = data.services.map(d => {
+            const serviceVersions = allVersions.filter(v => v.serviceOrder === d.order)
 
-            uploadedImages: d.uploadedImages,
-            currentVersion: d.currentVersion,
-            expectedDeliveryDate: d.expectedDeliveryDate.toDateString(),
-            ...(d.actualDeliveryDate && { actualCompletionDate: d.actualDeliveryDate.toDateString() }),
-            paymentStatus: d.paymentStatus,
-            ...(d.paidAt && { paidAt: d.paidAt.toDateString() }),
-            ...(d.rejectionReason && { rejectionReason: d.rejectionReason }),
-        }))
+            const groupedVersions: AllVersion[] = serviceVersions.map(v => ({
+                versionNumber: v.version,
+                versionData: {
+                    serviceOrder: v.serviceOrder,
+                    versionId: v.id,
+                    images: v.images.map(img => img.path),
+                    status: v.status,
+                    ...(v.rejectionReason && { rejectionReason: v.rejectionReason })
+                }
+            }))
+
+            return {
+                serviceName: d.serviceName,
+                order: d.order,
+                price: d.price,
+                executionPrice: d.executionPrice,
+                status: d.status,
+                uploadedImages: d.uploadedImages,
+                currentVersion: d.currentVersion,
+                expectedDeliveryDate: d.expectedDeliveryDate.toDateString(),
+                ...(d.actualDeliveryDate && { actualDeliveryDate: d.actualDeliveryDate.toDateString() }),
+                paymentStatus: d.paymentStatus,
+                ...(d.paidAt && { paidAt: d.paidAt.toDateString() }),
+                versions: groupedVersions
+            }
+        })
+
         const clientProfileImage = data.clientId.profileImage?.path ?? data.clientId.google_profile_id
         const designerProfileImage = data.designerId.profileImage?.path ?? data.designerId.google_profile_id
 
@@ -49,7 +65,6 @@ export class ProposalMapper {
             createdAt: data.createdAt.toDateString(),
 
             services: proposalServices
-
         }
     }
 }

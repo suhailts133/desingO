@@ -1,5 +1,5 @@
 import type { CreateUserDTO } from "../../DTO/auth/authDTO.js";
-import type { IUser } from "../../interfaces/auth/IUser.js";
+import type { IUser, UserRole } from "../../interfaces/auth/IUser.js";
 import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
 import { UserModel } from "../../models/user/userModel.js";
 import { BaseRepository } from "../baseRepository.js";
@@ -14,6 +14,9 @@ export class UserRepository extends BaseRepository<IUser> implements IUserReposi
     }
 
 
+    async findByRole(role: UserRole): Promise<IUser | null> {
+        return await this.findOne({role})
+    }
     async delete(id: string): Promise<boolean> {
         const result = await this._model.findByIdAndDelete(id);
         return !!result;

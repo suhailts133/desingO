@@ -1,8 +1,8 @@
-import type { ImageUploadResult } from "../../designer/profile/designerProfileInterface"
+import { useState } from "react"
+import VersionCard from "./VersionCard"
 import type { ProposalServiceItemDTO, ServiceStatus, PaymentStatus } from "../proposalInterface"
 
-
-type Role = "Designer" | "Admin" | "Customer" | null
+type Role = "Designer" | "Admin" | "Customer" 
 
 interface ServiceCardProps {
     service: ProposalServiceItemDTO
@@ -11,7 +11,7 @@ interface ServiceCardProps {
     onPay?: () => void
     onVerify?: () => void
     onRedo?: () => void
-    onUpload?: () => void
+    onUpload: (serviceNumber: number, serviceName: string) => void
 }
 
 const statusStyle: Record<ServiceStatus, string> = {
@@ -29,51 +29,24 @@ const paymentStyle: Record<PaymentStatus, string> = {
     "Refunded": "bg-gray-100 text-gray-500 border-gray-200",
 }
 
-// function RevisionDots({ used, limit }: { used: number; limit: number }) {
-//     return (
-//         <div className="flex items-center gap-1.5">
-//             <span className="text-xs text-soft-black/50">Revisions</span>
-//             <div className="flex gap-1">
-//                 {Array.from({ length: limit }).map((_, i) => (
-//                     <span
-//                         key={i}
-//                         className={`w-2 h-2 rounded-full ${i < used ? "bg-red-400" : "bg-green-300"}`}
-//                     />
-//                 ))}
-//             </div>
-//             <span className="text-xs text-soft-black/50">{used}/{limit}</span>
-//         </div>
-//     )
-// }
-
-function ImageGrid({ images }: { images: ImageUploadResult[] }) {
-    if (!images.length) return null
-    return (
-        <div className="flex flex-wrap gap-2 mt-3">
-            {images.map((img, i) => (
-                <img
-                    key={i}
-                    src={img.path}
-                    alt={`upload ${i + 1}`}
-                    className="w-14 h-14 object-cover rounded-lg border border-blush-light/40"
-                />
-            ))}
-        </div>
-    )
-}
-
 export default function ServiceCard({ isPayLoading, service, role, onPay, onVerify, onRedo, onUpload }: ServiceCardProps) {
+    const [versionsOpen, setVersionsOpen] = useState(false)
+    const [openVersionIndex, setOpenVersionIndex] = useState<number | null>(null)
+
     const isLocked = service.status === "Locked"
-    const hasImages = service.uploadedImages.length > 0
 
     const showPay = role === "Customer" && service.status === "Open"
-    const showVerify = role === "Customer" && service.status === "Uploaded" && hasImages
-    const showRedo = role === "Customer" && service.status === "Uploaded" && hasImages
+    const showVerify = role === "Customer" && service.status === "Uploaded"
+    const showRedo = role === "Customer" && service.status === "Uploaded"
     const showUpload = role === "Designer" && (
         service.status === "In Progress" ||
         service.status === "Redo" ||
         service.status === "Open"
     )
+
+    const toggleVersion = (index: number) => {
+        setOpenVersionIndex(prev => prev === index ? null : index)
+    }
 
     return (
         <div className={`bg-white rounded-xl border border-blush-light/40 p-4 transition-opacity duration-200 ${isLocked ? "opacity-50" : ""}`}>
@@ -97,7 +70,6 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
             {/* Meta */}
             <div className="flex items-center justify-between gap-2 mb-3">
                 <span className="text-xs text-soft-black/50">Due {service.expectedDeliveryDate}</span>
-                {/* <RevisionDots used={service.revisionsUsed} limit={service.revisionLimit} /> */}
             </div>
 
             {/* Pricing */}
@@ -105,8 +77,39 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
                 ₹{service.price.toLocaleString("en-IN")} service &nbsp;+&nbsp; ₹{service.executionPrice.toLocaleString("en-IN")} execution
             </div>
 
-            {/* Images */}
-            <ImageGrid images={service.uploadedImages} />
+            {/* Versions */}
+            {service.versions.length > 0 && (
+                <div className="mt-3 pt-3 border-t border-blush-light/30">
+                    <button
+                        onClick={() => setVersionsOpen(prev => !prev)}
+                        className="flex items-center gap-1.5 text-xs text-soft-black/50 hover:text-soft-black transition-colors mb-2"
+                    >
+                        <span>{service.versions.length} version{service.versions.length > 1 ? "s" : ""}</span>
+                        <svg
+                            className={`w-3 h-3 transition-transform duration-200 ${versionsOpen ? "rotate-180" : ""}`}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    {versionsOpen && (
+                        <div className="flex flex-col gap-2">
+                            {service.versions.map((v, i) => (
+                                <VersionCard
+                                    key={v.versionNumber}
+                                    version={v}
+                                    isOpen={openVersionIndex === i}
+                                    onToggle={() => toggleVersion(i)}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
 
             {/* Actions */}
             {(showPay || showVerify || showRedo || showUpload) && (
@@ -131,14 +134,14 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
                     {showRedo && (
                         <button
                             onClick={onRedo}
-                            className=" inline-flex items-center justify-center gap-1.5 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
+                            className="inline-flex items-center justify-center gap-1.5 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                         >
                             Request redo
                         </button>
                     )}
                     {showUpload && (
                         <button
-                            onClick={onUpload}
+                            onClick={() => onUpload(service.order, service.serviceName)}
                             className="inline-flex items-center justify-center gap-1.5 bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                         >
                             Upload result

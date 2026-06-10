@@ -11,7 +11,7 @@ import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
 import { JobRequestMapper } from "../../dtoMappers/user/jobRequestMapper.js";
 
 export class JobRequestService implements IJobRequestService {
-    constructor(private _jobRequestRepo: IJobRepository, private _imageUploder: IImageUploaderService, ) { }
+    constructor(private _jobRequestRepo: IJobRepository, private _imageUploder: IImageUploaderService ) { }
 
     async addJobRequest(userId: string, data: ICreateJobRequest, refrenceImages?: Express.Multer.File[]): Promise<IApiResponse> {
 
