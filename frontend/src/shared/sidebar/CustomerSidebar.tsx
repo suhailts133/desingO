@@ -99,6 +99,13 @@ const CustomerSidebar = memo(({ name, email }: { name: string, email: string }) 
                     {!collapsed && <span className="flex-1">Active Jobs</span>}
                 </Link>
 
+                {/* my hire */}
+                <Link to="/customer/my-hire" onClick={() => setActive("myHire")} className={linkClass("myHire")}>
+                    {active === "activeJobs" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
+                    <BriefcaseBusiness  size={18} strokeWidth={active === "myHire" ? 2.2 : 1.8} className={iconClass("myHire")} />
+                    {!collapsed && <span className="flex-1">My hires</span>}
+                </Link>
+
 
 
                 {/* savedDesign */}

@@ -1,4 +1,4 @@
-import { Eye, Trash, Pencil } from "lucide-react"
+import { Eye, Trash, Pencil, ScrollText } from "lucide-react"
 import type { DesignResponseDTO } from "../designInterface"
 import { useNavigate } from "react-router-dom"
 
@@ -15,7 +15,9 @@ export default function DesignerDesignCard({ design, onDeleteClick }: props) {
     const updateDesignPage = (id: string) => {
         navigate(`/designer/designs/edit/${id}`)
     }
-    
+      const hireRequests = (id: string) => {
+        navigate(`/designer/hire-requests/${id}`)
+    }
     return (
         <div className="group bg-off-white w-full rounded-xl border border-blush-light/40 overflow-hidden shadow-lg  hover:shadow-2xl transition-shadow duration-300 ">
 
@@ -54,6 +56,15 @@ export default function DesignerDesignCard({ design, onDeleteClick }: props) {
 
                 {/* Actions */}
                 <div className="flex items-center gap-2">
+                     <button
+                        onClick={() => hireRequests(design.id)}
+                        title="Hire Requests"
+                        className="shrink-0 inline-flex items-center gap-1.5 bg-soft-black text-off-white hover:bg-blush-deep px-3.5 py-1.5 rounded-full text-[11px] font-semibold tracking-wide transition-all duration-200 shadow-sm hover:shadow-md"
+                    >
+                        <ScrollText className="w-3.5 h-3.5" />
+                        <span>Requests</span>
+                    </button>
+                    
                     <button
                         onClick={() => getDesignDetail(design.id)}
                         title="View"

@@ -5,9 +5,10 @@ import { useGetDesignDetailQuery } from "../designEndpoints";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css"
 import HireDesignerForm from "./HireDesignerForm";
-import type { DirectHireFields } from "../../../user/jobs/jobInterface";
+import type { DirectHireFormPayload, HireDesignerFields } from "../../../user/jobs/jobInterface";
 import { useToggleSaveDesign } from "../../../common/hooks/useToggleSaveDesign";
-
+import { useHireDesigner } from "../hooks/useHireDesigner";
+import toast from "react-hot-toast";
 
 export default function DesignDetail() {
     const { id } = useParams<{ id: string }>();
@@ -16,9 +17,9 @@ export default function DesignDetail() {
     const [servicesOpen, setServicesOpen] = useState(false);
     const [activeImage, setActiveImage] = useState<string | null>(null);
     const [hireDesigner, setHireDesigner] = useState<boolean>(false)
-    const [isSaved, setIsSaved] = useState<boolean>(false)  // ✅ Moved up before early returns
+    const [isSaved, setIsSaved] = useState<boolean>(false)
     const { isToggling, savedError, handleToggling } = useToggleSaveDesign()
-
+    const { hireError, hireSuccess, isHiring, handleSubmission } = useHireDesigner()
     const design = data?.data;
 
     useEffect(() => {
@@ -27,6 +28,11 @@ export default function DesignDetail() {
             setIsSaved(design.isSaved)
         }
     }, [design])
+    useEffect(() => {
+        if (hireSuccess) {
+            setHireDesigner(false)
+        }
+    }, [hireSuccess])
     if (isLoading) {
         return <div className="p-10 text-center animate-pulse text-gray-400">Loading Design Details...</div>;
     }
@@ -34,10 +40,25 @@ export default function DesignDetail() {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Design not found.</div>;
     }
 
-    const handleDirectHire = async (data: DirectHireFields) => {
-        console.log(data)
-    }
+    const handleDirectHire = async (body: DirectHireFormPayload) => {
+        const data: HireDesignerFields = {
+            designId: design.id,
+            length: body.length,
+            width: body.width,
+            notes: body.notes,
+            unit: body.unit.label,
+            ceilingHeight: body.ceilingHeight,
+            timeLine: body.timeLine.label,
+            services: body.services.map(e => e.label)
+        }
+        const result = await handleSubmission(data)
 
+        if (result.success) {
+            toast.success(result.message || "Design hired successfully!")
+        } else {
+            toast.error(result.message || "Something went wrong.")
+        }
+    }
     const toggleSave = async (e: React.MouseEvent) => {
         e.stopPropagation()
         const result = await handleToggling({ designId: design.id, isSaved: !isSaved })
@@ -45,7 +66,6 @@ export default function DesignDetail() {
             setIsSaved(result)
         }
     }
-    console.log(savedError)
     const allImages = [design.coverImage.path, ...design.gallery.map(e => e.path)];
 
     return (
@@ -85,8 +105,8 @@ export default function DesignDetail() {
                                 <Heart
                                     size={16}
                                     className={`transition-colors duration-200 ${isSaved
-                                            ? "fill-blush-deep text-blush-deep"
-                                            : "text-blush-deep"
+                                        ? "fill-blush-deep text-blush-deep"
+                                        : "text-blush-deep"
                                         }`}
                                 />
                             </button>
@@ -99,8 +119,8 @@ export default function DesignDetail() {
                                     key={i}
                                     onClick={() => setActiveImage(img)}
                                     className={`shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${activeImage === img
-                                            ? "border-soft-black shadow-md"
-                                            : "border-transparent opacity-60 hover:opacity-100"
+                                        ? "border-soft-black shadow-md"
+                                        : "border-transparent opacity-60 hover:opacity-100"
                                         }`}
                                 >
                                     <img src={img} alt={`Gallery ${i}`} className="w-full h-full object-cover" />
@@ -230,7 +250,7 @@ export default function DesignDetail() {
                 </div>
             </div>
 
-            <HireDesignerForm isOpen={hireDesigner} onClose={() => setHireDesigner(false)} hireDesigner={handleDirectHire} />
+            <HireDesignerForm isLoading={isHiring} isOpen={hireDesigner} onClose={() => setHireDesigner(false)} hireDesigner={handleDirectHire} />
         </div>
     );
 }
