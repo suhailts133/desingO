@@ -1,6 +1,6 @@
-import { oAuth2Client } from "../../config/oAuth.js"
+import { oAuth2Client } from "../../config/oAuth"
 import axios from "axios";
-import type { GoogleLoginResponseDTO } from "../../DTO/auth/authDTO.js";
+import type { GoogleLoginResponseDTO } from "../../DTO/auth/authDTO";
 
 
 

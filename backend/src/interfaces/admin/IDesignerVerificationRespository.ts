@@ -1,5 +1,5 @@
-import type {  AdminDesignerApprovalRequestDTO, DesignerFilterDTO, Pagination } from "../../DTO/admin/adminDTO.js";
-import type { IDesignerPopulated } from "../designer/IDesigner.js";
+import type {  AdminDesignerApprovalRequestDTO, DesignerFilterDTO, Pagination } from "../../DTO/admin/adminDTO";
+import type { IDesignerPopulated } from "../designer/IDesigner";
 
 export interface IDesignerVerificationRepository{
        getAllDesignerRequest(filter?:DesignerFilterDTO):Promise<{data:IDesignerPopulated[], pagination:Pagination}>;

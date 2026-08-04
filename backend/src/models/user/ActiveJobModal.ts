@@ -1,5 +1,5 @@
 import mongoose, { Schema, } from "mongoose";
-import type { IActiveJob, } from "../../interfaces/customer/ICustomer.js";
+import type { IActiveJob, } from "../../interfaces/customer/ICustomer";
 
 
 

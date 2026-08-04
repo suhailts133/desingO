@@ -1,7 +1,7 @@
 import type Stripe from "stripe";
-import type { IPaymentService } from "../../interfaces/proposal/IProposalService.js";
-import Logger from "../../config/logger.js";
-import type { IPaymentWebhookService } from "../../interfaces/proposal/IPaymentGateway.js";
+import type { IPaymentService } from "../../interfaces/proposal/IProposalService";
+import Logger from "../../config/logger";
+import type { IPaymentWebhookService } from "../../interfaces/proposal/IPaymentGateway";
 
 export class PaymentWebhookService implements IPaymentWebhookService {
     constructor(private _stripe: Stripe, private _paymentService: IPaymentService) { }

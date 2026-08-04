@@ -1,8 +1,8 @@
 import Stripe from "stripe";
-import type { GateWayData, IPaymentGateway } from "../../interfaces/proposal/IPaymentGateway.js";
-import { AppError } from "../../shared/errors/appError.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages.js";
+import type { GateWayData, IPaymentGateway } from "../../interfaces/proposal/IPaymentGateway";
+import { AppError } from "../../shared/errors/appError";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 
 export class StripePaymentGateway implements IPaymentGateway {
     constructor(private readonly _stripe: Stripe) { }

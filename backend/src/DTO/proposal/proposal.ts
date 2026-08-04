@@ -1,7 +1,5 @@
-
-import type { IUser } from "../../interfaces/auth/IUser.js";
-import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
-import type { ContractStatus, IProposal, IServiceItem, ProposalPaymentStatus, ProposalServiceStatus, VersionStatus } from "../../interfaces/proposal/IProposal.js";
+import type { IUser } from "../../interfaces/auth/IUser";
+import type { ContractStatus, IProposal, IServiceItem, ProposalPaymentStatus, ProposalServiceStatus, VersionStatus } from "../../interfaces/proposal/IProposal";
 
 export interface ServiceItem {
     serviceName: string;

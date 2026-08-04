@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose"
-import type { IProposal } from "../../interfaces/proposal/IProposal.js"
-import { serviceItemSchema } from "./schemas/serviceItemSchema.js"
+import type { IProposal } from "../../interfaces/proposal/IProposal"
+import { serviceItemSchema } from "./schemas/serviceItemSchema"
 
 const proposalSchema = new Schema<IProposal>({
     sourceId: {

@@ -1,13 +1,13 @@
-import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { AppError } from "../../shared/errors/appError.js";
-import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
-import type { IActiveJobRepository, IJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
-import type { IJobApplicationRepository } from "../../interfaces/designer/IDesignerRepository.js";
-import type { IJobApplicationService } from "../../interfaces/designer/IDesignerService.js";
-import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
-import { JobApplicationMapper } from "../../dtoMappers/designer/JobApplicationMapper.js";
-import { JOB_APPLICATION_STATUS, SOURCE_TYPE } from "../../shared/enums/commonEnums.js";
+import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { AppError } from "../../shared/errors/appError";
+import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
+import type { IActiveJobRepository, IJobRepository } from "../../interfaces/customer/ICustomerRepository";
+import type { IJobApplicationRepository } from "../../interfaces/designer/IDesignerRepository";
+import type { IJobApplicationService } from "../../interfaces/designer/IDesignerService";
+import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
+import { JobApplicationMapper } from "../../dtoMappers/designer/JobApplicationMapper";
+import { JOB_APPLICATION_STATUS, SOURCE_TYPE } from "../../shared/enums/commonEnums";
 
 
 export class JobApplicationService implements IJobApplicationService {

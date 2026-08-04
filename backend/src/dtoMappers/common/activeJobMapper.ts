@@ -1,4 +1,4 @@
-import type { ActiveJobPopulated, ActiveJobResponseDTO } from "../../DTO/user/activeJobDTO.js";
+import type { ActiveJobPopulated, ActiveJobResponseDTO } from "../../DTO/user/activeJobDTO";
 
 export class ActiveJobMapper {
     static toCustomerActiveJobDTOlist(data: ActiveJobPopulated[], type: "Customer" | "Designer"): ActiveJobResponseDTO[] {

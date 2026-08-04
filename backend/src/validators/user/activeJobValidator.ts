@@ -1,5 +1,5 @@
 import Joi, { type ObjectSchema } from "joi";
-import type { ActiveJobFilter } from "../../DTO/user/activeJobDTO.js";
+import type { ActiveJobFilter } from "../../DTO/user/activeJobDTO";
 
 
 export const activeJobFilterSchema: ObjectSchema<ActiveJobFilter> = Joi.object<ActiveJobFilter>({

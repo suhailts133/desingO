@@ -1,5 +1,5 @@
-import type {  DesignerProfileResponseDTO, DesignerUpdateResponseDTO, UserProfileDTO, UserProfileResponseDTO, UserProfileUpdateDTO } from "../../DTO/profile/profileDTO.js"
-import type { IApiResponse } from "./IApiResponse.js"
+import type {  DesignerProfileResponseDTO, DesignerUpdateResponseDTO, UserProfileDTO, UserProfileResponseDTO, UserProfileUpdateDTO } from "../../DTO/profile/profileDTO"
+import type { IApiResponse } from "./IApiResponse"
 
 export interface IProfileImage {
     profileImageFile: Express.Multer.File

@@ -1,10 +1,10 @@
-import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { ActiveJobFilter, ActiveJobPopulateAll, ActiveJobPopulated, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO.js";
-import type { CreateHireDesignerDTO, HireDesignerFilter, HireDesignerPopulatedALL, HireDesignerPopulateUser } from "../../DTO/user/hireDesignerDTO.js";
+import type { Pagination } from "../../DTO/admin/adminDTO";
+import type { ActiveJobFilter, ActiveJobPopulateAll, ActiveJobPopulated, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO";
+import type { CreateHireDesignerDTO, HireDesignerFilter, HireDesignerPopulatedALL, HireDesignerPopulateUser } from "../../DTO/user/hireDesignerDTO";
 
-import type { EditJobRepoData, JobFilter } from "../../DTO/user/jobsDTO.js";
-import type { ImageUploadResult } from "../base/IImageUpload.js";
-import type { IActiveJob, ICreateJobRequest, IHireDesigner, IJobRequest, IJobRequestPopulated } from "./ICustomer.js";
+import type { EditJobRepoData, JobFilter } from "../../DTO/user/jobsDTO";
+import type { ImageUploadResult } from "../base/IImageUpload";
+import type { IActiveJob, ICreateJobRequest, IHireDesigner, IJobRequest, IJobRequestPopulated } from "./ICustomer";
 
 export interface IJobRepository {
     createJobRequest(userId: string, data: ICreateJobRequest, referenceImages?: ImageUploadResult[]): Promise<boolean>;

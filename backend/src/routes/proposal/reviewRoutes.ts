@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { ReviewRepository } from "../../repositories/proposal/reviewRepository.js";
-import { ReviewService } from "../../services/proposal/reviewService.js";
-import { UserRepository } from "../../repositories/auth/userRepository.js";
-import { ProposalRepository } from "../../repositories/proposal/proposalRepository.js";
-import { ReviewController } from "../../controllers/proposal/reviewController.js";
-import customerAuthentication from "../../middlewares/customerAuth.js";
-import authenticate from "../../middlewares/auth.js";
+import { ReviewRepository } from "../../repositories/proposal/reviewRepository";
+import { ReviewService } from "../../services/proposal/reviewService";
+import { UserRepository } from "../../repositories/auth/userRepository";
+import { ProposalRepository } from "../../repositories/proposal/proposalRepository";
+import { ReviewController } from "../../controllers/proposal/reviewController";
+import customerAuthentication from "../../middlewares/customerAuth";
+import authenticate from "../../middlewares/auth";
 
 const router = Router()
 

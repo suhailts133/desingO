@@ -1,10 +1,10 @@
-import type { AddDesignRequestDTO, DesignDetailResponseDTO, DesignFiles, DesignFilter, DesignGallaryDTO, EditDesign, EditDesignFiles, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO.js";
-import type { DesignerCardDTO, DesignerFilter } from "../../DTO/designer/designerDTO.js";
-import type { DesignerVerificationBodyDTO } from "../../DTO/designer/designerVerificationDTOs.js";
-import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO.js";
-import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse.js";
-import type { WarningDTO } from "../benchmark/IBenchMark.js";
-import type { DesignerVerificationFiles } from "./IDesigner.js";
+import type { AddDesignRequestDTO, DesignDetailResponseDTO, DesignFiles, DesignFilter, DesignGallaryDTO, EditDesign, EditDesignFiles, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO";
+import type { DesignerCardDTO, DesignerFilter } from "../../DTO/designer/designerDTO";
+import type { DesignerVerificationBodyDTO } from "../../DTO/designer/designerVerificationDTOs";
+import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO";
+import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse";
+import type { WarningDTO } from "../benchmark/IBenchMark";
+import type { DesignerVerificationFiles } from "./IDesigner";
 
 export interface IDesignerService {
     designerVerification(userId: string, email: string, data: DesignerVerificationBodyDTO, files: DesignerVerificationFiles): Promise<IApiResponse>

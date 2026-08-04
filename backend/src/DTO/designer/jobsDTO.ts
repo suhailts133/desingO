@@ -1,4 +1,4 @@
-import type { JobApplicationStatus } from "../../interfaces/designer/IDesigner.js";
+import type { JobApplicationStatus } from "../../interfaces/designer/IDesigner";
 
 
 export interface IJobApplicationRequestDTO {

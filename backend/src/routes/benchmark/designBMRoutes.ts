@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { DesignBenchMarkController } from "../../controllers/benchmark/designBenchMarkController.js";
-import { DesignBenchmarkService } from "../../services/benchmark/designBenchMarkService.js";
-import { DesignRepository } from "../../repositories/designer/designRepository.js";
-import { DesignBenchMarkRepository } from "../../repositories/benchmarks/designBenchMarkRepository.js";
+import { DesignBenchMarkController } from "../../controllers/benchmark/designBenchMarkController";
+import { DesignBenchmarkService } from "../../services/benchmark/designBenchMarkService";
+import { DesignRepository } from "../../repositories/designer/designRepository";
+import { DesignBenchMarkRepository } from "../../repositories/benchmarks/designBenchMarkRepository";
 
 const router = Router()
 

@@ -2,7 +2,7 @@ import { joiResolver } from "@hookform/resolvers/joi"
 
 import { Controller, useForm } from "react-hook-form"
 import { directHireValidation } from "../../../../validations/customerValidation"
-import type { DirectHireFields } from "../../../user/jobs/jobInterface"
+import type { DirectHireFields, DirectHireFormPayload } from "../../../user/jobs/jobInterface"
 import Select from "react-select"
 import { TIMELINE_OPTIONS, UNIT_OPTIONS } from "../../../user/jobs/jobData"
 import makeAnimated from "react-select/animated";
@@ -12,39 +12,28 @@ const animatedComponents = makeAnimated();
 
 type Props = {
     isOpen: boolean
-    // dataError?: string
-    // dataSuccess?: string
     onClose: () => void
-    hireDesigner: (data: DirectHireFields) => void,
-    // isLoading: boolean
-
+    hireDesigner: (data: DirectHireFormPayload) => void,
+    isLoading: boolean
 }
 
-export default function HireDesignerForm({ isOpen, onClose, hireDesigner }: Props) {
+export default function HireDesignerForm({ isOpen, onClose, hireDesigner ,isLoading}: Props) {
 
     const { register, handleSubmit, reset, control, formState: { errors } } = useForm<DirectHireFields>({
         resolver: joiResolver(directHireValidation, { abortEarly: false, allowUnknown: true }),
         mode: "onBlur",
     })
 
-    // useEffect(() => {
-    //     if (dataSuccess) {
-    //         const timer = setTimeout(() => {
-    //             onClose();
-    //         }, 2000);
-    //         return () => clearTimeout(timer);
-    //     }
-    // }, [dataSuccess, onClose]);
+
     const handleClose = () => {
         reset()
         onClose()
     }
 
-    const onSubmit = async (data: DirectHireFields) => {
+    const onSubmit = async (data: DirectHireFormPayload) => {
         try {
-
             hireDesigner(data)
-            reset()
+          
         } catch (err) {
             console.error("update failed", err);
         }
@@ -160,11 +149,10 @@ export default function HireDesignerForm({ isOpen, onClose, hireDesigner }: Prop
                 </div>
                 <div className="flex flex-col gap-3 pt-4">
 
-                    <SubmitButton isLoading={false} label="Hire Designer" loadingLabel="Submitting" type="submit" />
+                    <SubmitButton isLoading={isLoading} label="Hire Designer" loadingLabel="Submitting" type="submit" />
                     <button type="button" onClick={handleClose} className="text-gray-500 hover:text-gray-800 text-sm font-medium cursor-pointer">Cancel</button>
                 </div>
-                {/* {dataError && <p className="text-sm text-error text-center">{dataError}</p>} */}
-                {/* {dataSuccess && <p className="text-sm text-success text-center">{dataSuccess}</p>} */}
+          
             </form>
 
         </div>

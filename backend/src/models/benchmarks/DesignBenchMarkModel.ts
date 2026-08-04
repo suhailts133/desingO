@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-import type { IDesignSpaceTypeBenchmark } from "../../interfaces/benchmark/IBenchMark.js";
+import type { IDesignSpaceTypeBenchmark } from "../../interfaces/benchmark/IBenchMark";
 
 const designBenchMarkSchema = new Schema<IDesignSpaceTypeBenchmark>(
     {

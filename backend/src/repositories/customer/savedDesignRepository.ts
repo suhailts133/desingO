@@ -1,10 +1,10 @@
 import type { Types } from "mongoose";
-import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { ISavedDesignRepository } from "../../interfaces/customer/ISavedDesign.js";
-import type { IDesign, IDesignPopulated } from "../../interfaces/designer/IDesigner.js";
-import { DesignModel } from "../../models/designer/designModel.js";
-import { BaseRepository } from "../baseRepository.js";
-import type { IUser } from "../../interfaces/auth/IUser.js";
+import type { Pagination } from "../../DTO/admin/adminDTO";
+import type { ISavedDesignRepository } from "../../interfaces/customer/ISavedDesign";
+import type { IDesign, IDesignPopulated } from "../../interfaces/designer/IDesigner";
+import { DesignModel } from "../../models/designer/designModel";
+import { BaseRepository } from "../baseRepository";
+import type { IUser } from "../../interfaces/auth/IUser";
 
 export class SavedDesignRepository extends BaseRepository<IDesign> implements ISavedDesignRepository {
     constructor() {

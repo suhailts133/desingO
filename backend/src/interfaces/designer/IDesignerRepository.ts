@@ -1,12 +1,12 @@
-import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { createDesignDTO, DesignFilter, EditDesignRepoData } from "../../DTO/designer/designDTO.js";
-import type { DesignerFilter } from "../../DTO/designer/designerDTO.js";
-import type { DesignerVerificationDTO } from "../../DTO/designer/designerVerificationDTOs.js";
-import type { IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO } from "../../DTO/designer/jobsDTO.js";
-import type { DesignerUpdateRequestDTO } from "../../DTO/profile/profileDTO.js";
-import type { ImageUploadResult } from "../base/IImageUpload.js";
-import type { SpaceTypeAvg } from "../benchmark/IBenchMark.js";
-import type { IDesign, IDesigner, IDesignerPopulated, IDesignPopulated, IJobApplication, IJobApplicationPopulated, IJobApplicationPopulatedWithJobAndUser } from "./IDesigner.js";
+import type { Pagination } from "../../DTO/admin/adminDTO";
+import type { createDesignDTO, DesignFilter, EditDesignRepoData } from "../../DTO/designer/designDTO";
+import type { DesignerFilter } from "../../DTO/designer/designerDTO";
+import type { DesignerVerificationDTO } from "../../DTO/designer/designerVerificationDTOs";
+import type { IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO } from "../../DTO/designer/jobsDTO";
+import type { DesignerUpdateRequestDTO } from "../../DTO/profile/profileDTO";
+import type { ImageUploadResult } from "../base/IImageUpload";
+import type { SpaceTypeAvg } from "../benchmark/IBenchMark";
+import type { IDesign, IDesigner, IDesignerPopulated, IDesignPopulated, IJobApplication, IJobApplicationPopulated, IJobApplicationPopulatedWithJobAndUser } from "./IDesigner";
 
 
 export interface IDesignerRepository {

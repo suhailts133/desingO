@@ -1,5 +1,5 @@
 import Joi from "joi";
-import type { VersionAcceptOrRejectDTO } from "../../DTO/proposal/version.js";
+import type { VersionAcceptOrRejectDTO } from "../../DTO/proposal/version";
 
 export const versionApproveOrRejectValidation: Joi.ObjectSchema<VersionAcceptOrRejectDTO> = Joi.object<VersionAcceptOrRejectDTO>({
     status: Joi.string()

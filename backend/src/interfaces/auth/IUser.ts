@@ -1,5 +1,5 @@
 import type mongoose from "mongoose";
-import type { ImageUploadResult } from "../base/IImageUpload.js";
+import type { ImageUploadResult } from "../base/IImageUpload";
 
 export type UserRole = "Admin" | "Customer" | "Designer";
 

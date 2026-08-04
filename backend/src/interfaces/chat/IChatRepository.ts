@@ -1,5 +1,5 @@
-import type { CreateMessageDTO } from "../../DTO/chat/chatDTO.js";
-import type { IMessage } from "./IChat.js";
+import type { CreateMessageDTO } from "../../DTO/chat/chatDTO";
+import type { IMessage } from "./IChat";
 
 export interface IMessageRepository {
     createMessage(data: CreateMessageDTO): Promise<IMessage>;

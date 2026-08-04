@@ -1,5 +1,5 @@
 import { Schema } from "mongoose"
-import type { IEscrow } from "../../../interfaces/proposal/IProposal.js"
+import type { IEscrow } from "../../../interfaces/proposal/IProposal"
 
 export const escrowSchema = new Schema<IEscrow>({
     amountHeld: { type: Number, required: true },

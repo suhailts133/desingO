@@ -1,6 +1,7 @@
 import { API_ROUTES } from "../../../api/apiRoutes";
 import { baseApi } from "../../../api/baseApi";
 import type { IApiResponse, IApiResponseWithPagination } from "../../../api/responseType";
+import type { HireDesignerFields, HireDesignerFilter, HireDesignerRequests } from "../../user/jobs/jobInterface";
 import type { DesignDetailResponseDTO, DesignResponseDTO, DesignsQueryParms, GetAllDesignCommonResponseDTO } from "./designInterface";
 
 export const designApi = baseApi.injectEndpoints({
@@ -31,6 +32,27 @@ export const designApi = baseApi.injectEndpoints({
             providesTags: (_result, _error, id) => [{ type: "designs", id }]
         }),
 
+        hireDesigner: builder.mutation<IApiResponse, HireDesignerFields>({
+            query: (body: HireDesignerFields) => ({
+                url: API_ROUTES.HIRE_DESIGNER.CREATE,
+                method: "POST",
+                body
+            })
+        }),
+
+        hireRequest: builder.query<IApiResponseWithPagination<HireDesignerRequests[]>, HireDesignerFilter>({
+            query: (args) => ({
+                url: `${API_ROUTES.HIRE_DESIGNER.REQUEST_PER_DESIGN}/${args.designId}`,
+                method: "GET",
+                params: {
+                    page: args.page,
+                    ...(args.sort && { sort: args.sort }),
+                    ...(args.startDate && { startDate: args.startDate }),
+                    ...(args.endDate && { endDate: args.endDate }),
+                }
+            })
+
+        }),
         deleteADesign: builder.mutation<IApiResponse, string>({
             query: (id) => ({
                 url: `${API_ROUTES.DESIGNS.DESIGN_DELETE}/${id}`,
@@ -78,5 +100,7 @@ export const {
     useGetDesignDetailQuery,
     useGetAllDesignsCommonQuery,
     useDeleteADesignMutation,
-    useEditDesignMutation
+    useEditDesignMutation,
+    useHireDesignerMutation,
+    useHireRequestQuery
 } = designApi

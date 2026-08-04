@@ -1,16 +1,16 @@
 import type { Request, Response } from "express"
-import { designerVeificationDataValidator } from "../../validators/designers/designerVerificationValidator.js"
-import { RespsonseHelper } from "../../shared/helpers/responseHelper.js"
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js"
-import type { DesignerVerificationBodyDTO } from "../../DTO/designer/designerVerificationDTOs.js"
-import type { DesignerVerificationFiles } from "../../interfaces/designer/IDesigner.js"
-import type { IDesignerService } from "../../interfaces/designer/IDesignerService.js"
+import { designerVeificationDataValidator } from "../../validators/designers/designerVerificationValidator"
+import { RespsonseHelper } from "../../shared/helpers/responseHelper"
+import { RESPONSE_CODE } from "../../shared/enums/statusCode"
+import type { DesignerVerificationBodyDTO } from "../../DTO/designer/designerVerificationDTOs"
+import type { DesignerVerificationFiles } from "../../interfaces/designer/IDesigner"
+import type { IDesignerService } from "../../interfaces/designer/IDesignerService"
 import asyncHandler from "express-async-handler";
-import { AppError } from "../../shared/errors/appError.js"
-import { DesignerQueryFilter } from "../../validators/designers/designerValidations.js"
-import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages.js"
-import { isObjectId } from "../../shared/helpers/extraFunctions.js"
-import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js"
+import { AppError } from "../../shared/errors/appError"
+import { DesignerQueryFilter } from "../../validators/designers/designerValidations"
+import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages"
+import { isObjectId } from "../../shared/helpers/extraFunctions"
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages"
 export class DesignerController {
 
     constructor(private _designerService: IDesignerService) { }

@@ -1,6 +1,6 @@
-import type { IRefreshToken, IRefreshTokenRepository, RefreshTokenPayload } from "../../interfaces/auth/IRefreshToken.js";
-import { RefreshTokenModel } from "../../models/auth/refreshTokenModel.js";
-import { BaseRepository } from "../baseRepository.js";
+import type { IRefreshToken, IRefreshTokenRepository, RefreshTokenPayload } from "../../interfaces/auth/IRefreshToken";
+import { RefreshTokenModel } from "../../models/auth/refreshTokenModel";
+import { BaseRepository } from "../baseRepository";
 
 export class RefreshTokenRepositoy extends BaseRepository<IRefreshToken> implements IRefreshTokenRepository {
     constructor(){

@@ -1,10 +1,9 @@
-import type {   Pagination, UserFilterDTO } from "../../DTO/admin/adminDTO.js";
-
-import type { IUserManagementRepository } from "../../interfaces/admin/IUserManagementRepository.js";
-import type { IUser } from "../../interfaces/auth/IUser.js";
-import { UserModel } from "../../models/user/userModel.js";
-import { USER_ROLES } from "../../shared/enums/commonEnums.js";
-import { BaseRepository } from "../baseRepository.js";
+import type {   Pagination, UserFilterDTO } from "../../DTO/admin/adminDTO";
+import type { IUserManagementRepository } from "../../interfaces/admin/IUserManagementRepository";
+import type { IUser } from "../../interfaces/auth/IUser";
+import { UserModel } from "../../models/user/userModel";
+import { USER_ROLES } from "../../shared/enums/commonEnums";
+import { BaseRepository } from "../baseRepository";
 import type { QueryFilter } from "mongoose"
 export class UserManagementRepository extends BaseRepository<IUser> implements IUserManagementRepository {
     constructor() {

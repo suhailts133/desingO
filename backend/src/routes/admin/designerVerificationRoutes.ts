@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { DesingerVerificationController } from "../../controllers/admin/designerVerificationController.js";
-import adminAuthentication from "../../middlewares/adminAuth.js";
-import { DesignerVerificationManagementRepository } from "../../repositories/admin/designerVerificationRepository.js";
-import { AdminDesignerVerificationservice } from "../../services/admin/designerVerificationService.js";
-import { UserRepository } from "../../repositories/auth/userRepository.js";
+import { DesingerVerificationController } from "../../controllers/admin/designerVerificationController";
+import adminAuthentication from "../../middlewares/adminAuth";
+import { DesignerVerificationManagementRepository } from "../../repositories/admin/designerVerificationRepository";
+import { AdminDesignerVerificationservice } from "../../services/admin/designerVerificationService";
+import { UserRepository } from "../../repositories/auth/userRepository";
 
 
 const router = Router()

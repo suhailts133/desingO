@@ -1,7 +1,7 @@
 import { Schema } from "mongoose"
-import type { IServiceItem } from "../../../interfaces/proposal/IProposal.js"
-import { imageFormatSchema } from "./imageFormatSchema.js"
-import { escrowSchema } from "./escrowSchema.js"
+import type { IServiceItem } from "../../../interfaces/proposal/IProposal"
+import { imageFormatSchema } from "./imageFormatSchema"
+import { escrowSchema } from "./escrowSchema"
 
 
 export const serviceItemSchema = new Schema<IServiceItem>({

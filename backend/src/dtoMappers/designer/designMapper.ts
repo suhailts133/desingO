@@ -1,5 +1,5 @@
-import type { DesignDetailResponseDTO, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO.js";
-import type { IDesign, IDesignPopulated } from "../../interfaces/designer/IDesigner.js";
+import type { DesignDetailResponseDTO, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO";
+import type { IDesign, IDesignPopulated } from "../../interfaces/designer/IDesigner";
 
 export class DesignMapper {
     static toMyDesignsDTOlist(designs: IDesign[]): getAllDesignsResponseDTO[] {

@@ -1,12 +1,12 @@
 import type { QueryFilter, SortOrder } from "mongoose";
-import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { CreateHireDesignerDTO, HireDesignerFilter, HireDesignerPopulatedALL, HireDesignerPopulateUser } from "../../DTO/user/hireDesignerDTO.js";
-import type { IUser } from "../../interfaces/auth/IUser.js";
-import type { IHireDesigner } from "../../interfaces/customer/ICustomer.js";
-import type { IHireDesignerRepository } from "../../interfaces/customer/ICustomerRepository.js";
-import type { IDesign } from "../../interfaces/designer/IDesigner.js";
-import { HireDesignerModel } from "../../models/user/hireDesignerModel.js";
-import { BaseRepository } from "../baseRepository.js";
+import type { Pagination } from "../../DTO/admin/adminDTO";
+import type { CreateHireDesignerDTO, HireDesignerFilter, HireDesignerPopulatedALL, HireDesignerPopulateUser } from "../../DTO/user/hireDesignerDTO";
+import type { IUser } from "../../interfaces/auth/IUser";
+import type { IHireDesigner } from "../../interfaces/customer/ICustomer";
+import type { IHireDesignerRepository } from "../../interfaces/customer/ICustomerRepository";
+import type { IDesign } from "../../interfaces/designer/IDesigner";
+import { HireDesignerModel } from "../../models/user/hireDesignerModel";
+import { BaseRepository } from "../baseRepository";
 import mongoose from "mongoose";
 
 export class HireDesignerRepository extends BaseRepository<IHireDesigner> implements IHireDesignerRepository {

@@ -5,7 +5,7 @@ import type { JOBFilterForm } from "../../user/jobs/jobInterface";
 import { useGetAllJobsCommonQuery } from "../../user/jobs/jobEndpoints";
 import JobCard from "../components/cards/JobCard";
 import Pagination from "../../../shared/common/Pagination";
-import JobFilter from "../components/filters/jobFilter";
+import JobFilter from "../components/filters/JobFilter";
 
 
 export default function BrowseJobs() {

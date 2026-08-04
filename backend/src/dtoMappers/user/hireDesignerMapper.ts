@@ -1,31 +1,27 @@
-import type { ProposalInputData } from "../../DTO/proposal/proposal.js";
-import type { getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerPopulatedALL, HireDesignerPopulateUser } from "../../DTO/user/hireDesignerDTO.js";
-import type { IHireDesigner } from "../../interfaces/customer/ICustomer.js";
-import { toSqFt } from "../../shared/helpers/extraFunctions.js";
+
+import type { getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerPopulatedALL, HireDesignerPopulateUser } from "../../DTO/user/hireDesignerDTO";
 
 
 export class HireDesignerMapper {
 
-    static toDirectHireProposalInputDTO(data: IHireDesigner): ProposalInputData {
-        return {
-            jobId: data.id,
-            maxPrice: data.maxPrice,
-            minPrice: data.minPrice,
-            services: data.services,
-            timeLine:data.timeLine,
-            sqft: toSqFt(Number(data.length), Number(data.width), data.unit)
+    // static toDirectHireProposalInputDTO(data: IHireDesigner): ProposalInputData {
+    //     return {
+    //         jobId: data.id,
+    //         maxPrice: data.maxPrice,
+    //         minPrice: data.minPrice,
+    //         services: data.services,
+    //         timeLine:data.timeLine,
+    //         sqft: toSqFt(Number(data.length), Number(data.width), data.unit)
 
-        }
-    }
+    //     }
+    // }
     static toGetMyHireDesignerRequestDTOlist(hireDesigner: HireDesignerPopulatedALL[]): getMyHireDesignerRequestResponseDTO[] {
         return hireDesigner.map(data => ({
             id: data.id,
             designId: data.designId.id,
-            designerId: data.designId.userId.toString(),
             ...(data.rejectionReason && { rejectionReason: data.rejectionReason }),
             status: data.status,
             timeLine: data.timeLine,
-            spaceType: data.spaceType,
             services: data.services,
             length: data.length,
             width: data.width,

@@ -1,5 +1,5 @@
 import { type HydratedDocument, Model, type QueryFilter, type QueryOptions, type UpdateQuery } from "mongoose";
-import type { IBaseRepository } from "../interfaces/base/IBaseRepository.js";
+import type { IBaseRepository } from "../interfaces/base/IBaseRepository";
 
 
 export abstract class BaseRepository<T> implements IBaseRepository<T> {

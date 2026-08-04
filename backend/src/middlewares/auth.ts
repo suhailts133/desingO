@@ -1,10 +1,10 @@
 import type { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken";
-import { RESPONSE_CODE } from "../shared/enums/statusCode.js";
-import { ensureError } from "../shared/errors/ensureError.js";
-import type { JwtPayloadAccessToken } from "../interfaces/base/IJwtToken.js";
-import { BlackListRepository } from "../repositories/auth/blacklistRepository.js";
-import { AUTH_MESSAGES } from "../shared/messages/authMessages.js";
+import { RESPONSE_CODE } from "../shared/enums/statusCode";
+import { ensureError } from "../shared/errors/ensureError";
+import type { JwtPayloadAccessToken } from "../interfaces/base/IJwtToken";
+import { BlackListRepository } from "../repositories/auth/blacklistRepository";
+import { AUTH_MESSAGES } from "../shared/messages/authMessages";
 
 const blacklistRepo = new BlackListRepository()
 

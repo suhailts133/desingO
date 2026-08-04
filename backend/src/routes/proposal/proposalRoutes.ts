@@ -1,18 +1,18 @@
 import { Router } from "express";
-import { ProposalRepository } from "../../repositories/proposal/proposalRepository.js";
-import { ProposalService } from "../../services/proposal/proposalService.js";
-import { ActiveJobRepository } from "../../repositories/common/activeJobRepository.js";
-import { ProposalController } from "../../controllers/proposal/proposalController.js";
-import designerAuthentication from "../../middlewares/designerAuth.js";
-import authenticate from "../../middlewares/auth.js";
-import { JobRequestRepository } from "../../repositories/customer/jobRequestRepository.js";
-import { HireDesignerRepository } from "../../repositories/customer/hireDesignerRepository.js";
-import customerAuthentication from "../../middlewares/customerAuth.js";
-import { ProposalVersionService } from "../../services/proposal/proposalVersionService.js";
+import { ProposalRepository } from "../../repositories/proposal/proposalRepository";
+import { ProposalService } from "../../services/proposal/proposalService";
+import { ActiveJobRepository } from "../../repositories/common/activeJobRepository";
+import { ProposalController } from "../../controllers/proposal/proposalController";
+import designerAuthentication from "../../middlewares/designerAuth";
+import authenticate from "../../middlewares/auth";
+import { JobRequestRepository } from "../../repositories/customer/jobRequestRepository";
+import { HireDesignerRepository } from "../../repositories/customer/hireDesignerRepository";
+import customerAuthentication from "../../middlewares/customerAuth";
+import { ProposalVersionService } from "../../services/proposal/proposalVersionService";
 import multer from "multer";
-import { UserRepository } from "../../repositories/auth/userRepository.js";
-import { ServiceVersionRepository } from "../../repositories/proposal/ServiceVersionRepository.js";
-import { CloudinaryService } from "../../services/common/cloudinaryService.js";
+import { UserRepository } from "../../repositories/auth/userRepository";
+import { ServiceVersionRepository } from "../../repositories/proposal/ServiceVersionRepository";
+import { CloudinaryService } from "../../services/common/cloudinaryService";
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router()

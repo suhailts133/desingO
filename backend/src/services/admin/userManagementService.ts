@@ -1,12 +1,11 @@
-import type { AdminUsersResponseDTO, AdminUserToggleStatusDTO, UserFilterDTO } from "../../DTO/admin/adminDTO.js";
-
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { AppError } from "../../shared/errors/appError.js";
-import type { IAdminUserManagementService } from "../../interfaces/admin/IAdminService.js";
-import type { IUserManagementRepository } from "../../interfaces/admin/IUserManagementRepository.js";
-import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
-import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages.js";
-import { UserMapper } from "../../dtoMappers/user/userMapper.js";
+import type { AdminUsersResponseDTO, AdminUserToggleStatusDTO, UserFilterDTO } from "../../DTO/admin/adminDTO";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { AppError } from "../../shared/errors/appError";
+import type { IAdminUserManagementService } from "../../interfaces/admin/IAdminService";
+import type { IUserManagementRepository } from "../../interfaces/admin/IUserManagementRepository";
+import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
+import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
+import { UserMapper } from "../../dtoMappers/user/userMapper";
 
 export class AdminUserManagementService implements IAdminUserManagementService {
     constructor(private _userManagement: IUserManagementRepository) { }
@@ -36,7 +35,7 @@ export class AdminUserManagementService implements IAdminUserManagementService {
             throw new AppError(ADMIN_MESSAGES.USER_MANAGEMENT.TOGGLE_ERROR, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
 
         }
-        return { message: ADMIN_MESSAGES.USER_MANAGEMENT.TOGGLE_SUCCESS, data: {is_blocked:result.is_blocked} }
+        return { message: ADMIN_MESSAGES.USER_MANAGEMENT.TOGGLE_SUCCESS, data: { is_blocked: result.is_blocked } }
 
     }
 }

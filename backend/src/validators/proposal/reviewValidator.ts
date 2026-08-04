@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import type { ReviewPayload } from '../../DTO/proposal/review.js';
+import type { ReviewPayload } from '../../DTO/proposal/review';
 
 
 export const reviewValidation: Joi.ObjectSchema<ReviewPayload> = Joi.object<ReviewPayload>({

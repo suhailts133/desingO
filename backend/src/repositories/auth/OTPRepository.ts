@@ -1,6 +1,6 @@
-import { client } from "../../config/redis.js";
-import type { IOTPRepository } from "../../interfaces/auth/IOtpRepository.js";
-import type { IUserTemp } from "../../interfaces/auth/IUser.js";
+import { client } from "../../config/redis";
+import type { IOTPRepository } from "../../interfaces/auth/IOtpRepository";
+import type { IUserTemp } from "../../interfaces/auth/IUser";
 
 
 export class OtpRepository implements IOTPRepository {

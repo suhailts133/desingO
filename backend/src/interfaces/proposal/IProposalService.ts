@@ -1,7 +1,7 @@
-import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData, ServiceImageUploadResponseDTO } from "../../DTO/proposal/proposal.js";
-import type { ReviewListDTO, ReviewPayload, ReviewResponseDTO } from "../../DTO/proposal/review.js";
-import type {  VersionAcceptOrRejectDTO } from "../../DTO/proposal/version.js";
-import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse.js";
+import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData } from "../../DTO/proposal/proposal";
+import type { ReviewListDTO, ReviewPayload, ReviewResponseDTO } from "../../DTO/proposal/review";
+import type {  VersionAcceptOrRejectDTO } from "../../DTO/proposal/version";
+import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse";
 
 export interface IProposalService {
     createProposal(data: CreateProposalDTO): Promise<IApiResponse>

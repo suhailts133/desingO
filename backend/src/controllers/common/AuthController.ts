@@ -1,17 +1,17 @@
 // Types
 import type { Request, Response } from "express";
-import type { RegisterUserDTO } from "../../DTO/auth/authDTO.js";
-import type { IAuthService } from "../../interfaces/auth/IAuthService.js";
+import type { RegisterUserDTO } from "../../DTO/auth/authDTO";
+import type { IAuthService } from "../../interfaces/auth/IAuthService";
 // Validators
-import { registerDataValidator, otpValidator, emailValidator, emailAndPasswordValidator } from "../../validators/auth/authDataValidators.js";
+import { registerDataValidator, otpValidator, emailValidator, emailAndPasswordValidator } from "../../validators/auth/authDataValidators";
 
 // Helpers
-import { RespsonseHelper } from "../../shared/helpers/responseHelper.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
+import { RespsonseHelper } from "../../shared/helpers/responseHelper";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 
 import asyncHandler from "express-async-handler";
-import { AppError } from "../../shared/errors/appError.js";
-import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
+import { AppError } from "../../shared/errors/appError";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
 
 
 /**

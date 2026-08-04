@@ -42,6 +42,8 @@ import SaveDesignPage from "../features/wishlist/page/SaveDesignPage";
 import DesignerActiveJobPage from "../features/designer/activeJobs/DesignerActiveJobPage";
 import ProposalPage from "../features/proposal/page/ProposalPage";
 import ProposalForm from "../features/proposal/component/ProposalForm";
+import HireRequestsPage from "../features/designer/designs/pages/HireRequestsPage";
+import MyHireRequestPage from "../features/user/HireRequests/pages/MyHireRequestPage";
 
 
 const router = createBrowserRouter([
@@ -103,6 +105,7 @@ const router = createBrowserRouter([
         children: [
             { path: "dashboard", Component: DesignerDashboard },
             { path: "designs", Component: Designs },
+            { path: "hire-requests/:id", Component: HireRequestsPage },
             { path: "add-design", Component: DesignForm },
             { path: "job-applications/my", Component: MyJobApplications },
             { path: "designs/edit/:id", Component: EditDesignForm },
@@ -118,6 +121,7 @@ const router = createBrowserRouter([
         children: [
             { path: "dashboard", Component: CustomerDashboard },
             { path: "jobs", Component: Jobs },
+            { path: "my-hire", Component: MyHireRequestPage },
             { path: "add-job", Component: JobRequestForm },
             { path: "jobs/edit/:id", Component: EditJobRequestForm },
             { path: "job-applications/:id", Component: JobApplications },

@@ -1,13 +1,13 @@
 import { Router } from "express";
 import express from "express"
 import Stripe from "stripe";
-import { StripePaymentGateway } from "../../services/stripe/StripePaymentGateway.js";
-import { ProposalRepository } from "../../repositories/proposal/proposalRepository.js";
-import { PaymentRepository } from "../../repositories/proposal/paymentRepository.js";
-import { PaymentService } from "../../services/proposal/paymentService.js";
-import { PaymentWebhookService } from "../../services/stripe/paymentWebhookService.js";
-import { PaymentController } from "../../controllers/proposal/paymentController.js";
-import authenticate from "../../middlewares/auth.js";
+import { StripePaymentGateway } from "../../services/stripe/StripePaymentGateway";
+import { ProposalRepository } from "../../repositories/proposal/proposalRepository";
+import { PaymentRepository } from "../../repositories/proposal/paymentRepository";
+import { PaymentService } from "../../services/proposal/paymentService";
+import { PaymentWebhookService } from "../../services/stripe/paymentWebhookService";
+import { PaymentController } from "../../controllers/proposal/paymentController";
+import authenticate from "../../middlewares/auth";
 
 const router = Router()
 

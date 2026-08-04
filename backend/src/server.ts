@@ -1,35 +1,35 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import connectDB from "./config/mongodb.js";
-import connectRedis from "./config/redis.js";
+import connectDB from "./config/mongodb";
+import connectRedis from "./config/redis";
 
 import { createServer } from "http";
-import { initSocket } from "./socket/index.js";
+import { initSocket } from "./socket/index";
 
-import authRoutes from "./routes/common/authRoutes.js"
+import authRoutes from "./routes/common/authRoutes"
 // admin routes
-import userRoutes from "./routes/admin/userRoutes.js"
-import designerVerificationRoutes from "./routes/admin/designerVerificationRoutes.js"
+import userRoutes from "./routes/admin/userRoutes"
+import designerVerificationRoutes from "./routes/admin/designerVerificationRoutes"
 // designer routes
-import designerRoutes from "./routes/designer/designerRoutes.js"
-import designRoutes from "./routes/designer/designRoutes.js"
-import jobApplicationRoutes from "./routes/designer/jobApplicationRoutes.js"
+import designerRoutes from "./routes/designer/designerRoutes"
+import designRoutes from "./routes/designer/designRoutes"
+import jobApplicationRoutes from "./routes/designer/jobApplicationRoutes"
 // user routes
-import jobRoutes from "./routes/user/jobRoutes.js"
-import savedDesignRoutes from "./routes/user/savedDesignRoutes.js"
-import hireDesignerRoute from "./routes/user/hireDesignerRoutes.js"
-import activeJobsRoute from "./routes/user/activeJobRoutes.js"
+import jobRoutes from "./routes/user/jobRoutes"
+import savedDesignRoutes from "./routes/user/savedDesignRoutes"
+import hireDesignerRoute from "./routes/user/hireDesignerRoutes"
+import activeJobsRoute from "./routes/user/activeJobRoutes"
 // common routes
-import profileRoutes from "./routes/common/profileRoutes.js"
+import profileRoutes from "./routes/common/profileRoutes"
 //benchmark routes
-import designBMRoutes from "./routes/benchmark/designBMRoutes.js"
+import designBMRoutes from "./routes/benchmark/designBMRoutes"
 // proposalRoutes
-import paymentRoutes from "./routes/proposal/paymentRoutes.js"
-import proposalRoutes from "./routes/proposal/proposalRoutes.js"
-import reviewRoutes from "./routes/proposal/reviewRoutes.js"
+import paymentRoutes from "./routes/proposal/paymentRoutes"
+import proposalRoutes from "./routes/proposal/proposalRoutes"
+import reviewRoutes from "./routes/proposal/reviewRoutes"
 
-import { globalErrorHandler } from "./middlewares/globalErrorHandler.js";
+import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 // import passport from "passport";
 dotenv.config();
 const app = express();

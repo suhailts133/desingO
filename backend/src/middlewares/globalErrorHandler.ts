@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express"
-import { RESPONSE_CODE } from "../shared/enums/statusCode.js"
-import { AppError } from "../shared/errors/appError.js"
+import { RESPONSE_CODE } from "../shared/enums/statusCode"
+import { AppError } from "../shared/errors/appError"
 
 export const globalErrorHandler = (err: Error, req: Request, res: Response, _next: NextFunction) => {
     let statusCode = RESPONSE_CODE.INTERNAL_SERVER_ERROR

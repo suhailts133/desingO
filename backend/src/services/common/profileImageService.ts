@@ -1,12 +1,12 @@
-import { CLOUDINARY_FOLDER_NAME } from "../../shared/enums/commonEnums.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { AppError } from "../../shared/errors/appError.js";
-import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
-import type { IImageUploaderService } from "../../interfaces/base/IImageUpload.js";
-import type { IProfileImage, IProfileImageService } from "../../interfaces/base/IProfile.js";
-import { PROFILE_MESSAGES } from "../../shared/messages/profileMessages.js";
-import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
-import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
+import { CLOUDINARY_FOLDER_NAME } from "../../shared/enums/commonEnums";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { AppError } from "../../shared/errors/appError";
+import type { IApiResponse } from "../../interfaces/base/IApiResponse";
+import type { IImageUploaderService } from "../../interfaces/base/IImageUpload";
+import type { IProfileImage, IProfileImageService } from "../../interfaces/base/IProfile";
+import { PROFILE_MESSAGES } from "../../shared/messages/profileMessages";
+import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
 
 export class ProfileImageService implements IProfileImageService {
     constructor(private _userRepo: IUserRepository, private _imageService: IImageUploaderService) { }

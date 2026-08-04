@@ -1,5 +1,5 @@
-import type {UserFilterDTO,Pagination } from "../../DTO/admin/adminDTO.js";
-import type { IUser } from "../auth/IUser.js";
+import type {UserFilterDTO,Pagination } from "../../DTO/admin/adminDTO";
+import type { IUser } from "../auth/IUser";
 
 
 export interface IUserManagementRepository{

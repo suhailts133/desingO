@@ -1,15 +1,15 @@
-import type { IReviewService } from "../../interfaces/proposal/IProposalService.js";
+import type { IReviewService } from "../../interfaces/proposal/IProposalService";
 import type { Request, Response } from "express"
-import { RespsonseHelper } from "../../shared/helpers/responseHelper.js"
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js"
+import { RespsonseHelper } from "../../shared/helpers/responseHelper"
+import { RESPONSE_CODE } from "../../shared/enums/statusCode"
 
 import asyncHandler from "express-async-handler";
-import { reviewValidation } from "../../validators/proposal/reviewValidator.js";
-import { AppError } from "../../shared/errors/appError.js";
-import type { ReviewPayload } from "../../DTO/proposal/review.js";
-import { isObjectId } from "../../shared/helpers/extraFunctions.js";
-import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
-import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages.js";
+import { reviewValidation } from "../../validators/proposal/reviewValidator";
+import { AppError } from "../../shared/errors/appError";
+import type { ReviewPayload } from "../../DTO/proposal/review";
+import { isObjectId } from "../../shared/helpers/extraFunctions";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
+import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages";
 
 export class ReviewController {
     constructor(private _reviewService: IReviewService) { }

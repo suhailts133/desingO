@@ -1,10 +1,10 @@
-import type { ActiveJobFilter, ActiveJobResponseDTO } from "../../DTO/user/activeJobDTO.js";
-import type { getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO.js";
-import type { EditJobRequest, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO.js";
-import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse.js";
-import type { WarningDTO } from "../benchmark/IBenchMark.js";
-import type { MessageRole } from "../chat/IChat.js";
-import type { HireDesignerPayload, ICreateJobRequest } from "./ICustomer.js";
+import type { ActiveJobFilter, ActiveJobResponseDTO } from "../../DTO/user/activeJobDTO";
+import type { getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
+import type { EditJobRequest, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO";
+import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse";
+import type { WarningDTO } from "../benchmark/IBenchMark";
+import type { MessageRole } from "../chat/IChat";
+import type { HireDesignerPayload, ICreateJobRequest } from "./ICustomer";
 
 export interface IJobRequestService {
     addJobRequest(userId: string, data: ICreateJobRequest, refrenceImages?: Express.Multer.File[]): Promise<IApiResponse>

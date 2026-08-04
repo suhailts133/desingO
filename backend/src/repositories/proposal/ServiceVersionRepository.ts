@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import type { CreateServiceVersionRepoDTO, VersionAcceptOrRejectDTO } from "../../DTO/proposal/version.js";
-import type { IServiceVersion } from "../../interfaces/proposal/IProposal.js";
-import type { IServiceVersionRepository } from "../../interfaces/proposal/IProposalRepository.js";
-import { ServiceVersionModel } from "../../models/proposal/serviceVersionModal.js";
-import { BaseRepository } from "../baseRepository.js";
+import type { CreateServiceVersionRepoDTO, VersionAcceptOrRejectDTO } from "../../DTO/proposal/version";
+import type { IServiceVersion } from "../../interfaces/proposal/IProposal";
+import type { IServiceVersionRepository } from "../../interfaces/proposal/IProposalRepository";
+import { ServiceVersionModel } from "../../models/proposal/serviceVersionModal";
+import { BaseRepository } from "../baseRepository";
 
 export class ServiceVersionRepository extends BaseRepository<IServiceVersion> implements IServiceVersionRepository {
     constructor() {

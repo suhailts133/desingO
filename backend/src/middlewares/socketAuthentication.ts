@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
-import { ensureError } from "../shared/errors/ensureError.js";
-import type { JwtPayloadAccessToken } from "../interfaces/base/IJwtToken.js";
-import { BlackListRepository } from "../repositories/auth/blacklistRepository.js";
-import { AUTH_MESSAGES } from "../shared/messages/authMessages.js";
-import type { AuthSocket } from "../socket/SocketType.js";
+import { ensureError } from "../shared/errors/ensureError";
+import type { JwtPayloadAccessToken } from "../interfaces/base/IJwtToken";
+import { BlackListRepository } from "../repositories/auth/blacklistRepository";
+import { AUTH_MESSAGES } from "../shared/messages/authMessages";
+import type { AuthSocket } from "../socket/SocketType";
 
 const blacklistRepo = new BlackListRepository();
 

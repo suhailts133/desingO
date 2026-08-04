@@ -1,5 +1,5 @@
-import type { RegisterUserDTO, AuthResponseDTO,RefreshTokenDTO } from "../../DTO/auth/authDTO.js";
-import type { IApiResponse } from "../base/IApiResponse.js";
+import type { RegisterUserDTO, AuthResponseDTO,RefreshTokenDTO } from "../../DTO/auth/authDTO";
+import type { IApiResponse } from "../base/IApiResponse";
 
 
 export interface IAuthService {

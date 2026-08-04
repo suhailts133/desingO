@@ -59,7 +59,7 @@ export const API_ROUTES = {
         CHANGE_PROFILE_IMAGE: "/profile/change-profile-image",
     },
     HIRE_DESIGNER: {
-        REQUEST: "/direct-hire/request",
+        CREATE: "/direct-hire/create",
         MY_REQUESTS: "/direct-hire/my",
         REQUEST_PER_DESIGN: "/direct-hire/design/requests",
     },

@@ -1,14 +1,14 @@
 import mongoose, { type QueryFilter, type SortOrder } from "mongoose";
-import type { ICreateJobRequest, IJobRequest, IJobRequestPopulated } from "../../interfaces/customer/ICustomer.js";
-import type { IJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
-import { JobRequestModel } from "../../models/user/jobModel.js";
-import { BaseRepository } from "../baseRepository.js";
-import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { EditJobRepoData, JobFilter } from "../../DTO/user/jobsDTO.js";
-import type { IUser } from "../../interfaces/auth/IUser.js";
-import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
-import { JOB_REQUEST_FILTERS } from "../../shared/enums/filterEnums.js";
-import { JOB_REQUEST_STATUS } from "../../shared/enums/commonEnums.js";
+import type { ICreateJobRequest, IJobRequest, IJobRequestPopulated } from "../../interfaces/customer/ICustomer";
+import type { IJobRepository } from "../../interfaces/customer/ICustomerRepository";
+import { JobRequestModel } from "../../models/user/jobModel";
+import { BaseRepository } from "../baseRepository";
+import type { Pagination } from "../../DTO/admin/adminDTO";
+import type { EditJobRepoData, JobFilter } from "../../DTO/user/jobsDTO";
+import type { IUser } from "../../interfaces/auth/IUser";
+import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
+import { JOB_REQUEST_FILTERS } from "../../shared/enums/filterEnums";
+import { JOB_REQUEST_STATUS } from "../../shared/enums/commonEnums";
 
 export class JobRequestRepository extends BaseRepository<IJobRequest> implements IJobRepository {
     constructor() {

@@ -8,11 +8,50 @@ export interface RoomMeasurement {
     unit: { value: string; label: string };
     notes: string;
 }
+
+export interface HireDesignerFilter {
+    page?: number,
+    sort?: "asc" | "desc",
+    startDate?: string,
+    endDate?: string,
+    designId:string
+}
+
+
+export interface HireDesignerRequests {
+    id: string,
+    userName: string,
+    profileImage?: string,
+    length: string;
+    width: string;
+    ceilingHeight?: string;
+    unit: string
+    notes?: string;
+    status: "Accepted" | "Rejected" | "Pending",
+    rejectionReason?: string
+    services: string[],
+    createdOn: string
+    timeLine: string
+}
+
+
+
+export interface HireDesignerFields {
+    length: string;
+    width: string;
+    ceilingHeight: string;
+    unit: string
+    notes?: string;
+    timeLine: string
+    services: string[]
+    designId: string
+}
 export type DirectHireFields = Omit<RoomMeasurement, "spaceType"> & {
     timeLine: { value: string; label: string },
     services: { value: string; label: string }[]
+    designId: string
 }
-
+export type DirectHireFormPayload = Omit<DirectHireFields, "designId">
 
 export interface EditRoomMeasurement {
     spaceType: string;

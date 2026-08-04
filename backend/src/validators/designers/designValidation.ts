@@ -1,5 +1,5 @@
 import Joi from "joi";
-import type { AddDesignRequestDTO, EditDesign } from "../../DTO/designer/designDTO.js";
+import type { AddDesignRequestDTO, EditDesign } from "../../DTO/designer/designDTO";
 
 
 export const designValidation: Joi.ObjectSchema<AddDesignRequestDTO> = Joi.object<AddDesignRequestDTO>({

@@ -1,9 +1,9 @@
-import type { CreateMessageDTO } from "../../DTO/chat/chatDTO.js";
-import type { IMessage } from "../../interfaces/chat/IChat.js";
-import type { IMessageRepository } from "../../interfaces/chat/IChatRepository.js";
-import { MessageModel } from "../../models/chat/messageModel.js";
-import { CHAT_ENUM } from "../../shared/enums/commonEnums.js";
-import { BaseRepository } from "../baseRepository.js";
+import type { CreateMessageDTO } from "../../DTO/chat/chatDTO";
+import type { IMessage } from "../../interfaces/chat/IChat";
+import type { IMessageRepository } from "../../interfaces/chat/IChatRepository";
+import { MessageModel } from "../../models/chat/messageModel";
+import { CHAT_ENUM } from "../../shared/enums/commonEnums";
+import { BaseRepository } from "../baseRepository";
 import mongoose, { type QueryFilter } from "mongoose";
 
 export class MessageRepository extends BaseRepository<IMessage> implements IMessageRepository {

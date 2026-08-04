@@ -1,14 +1,14 @@
-import type { ReviewListDTO, ReviewPayload, ReviewResponseDTO } from "../../DTO/proposal/review.js";
-import { ReviewMapper } from "../../dtoMappers/proposal/reviewMapper.js";
-import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
-import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
-import type { IProposalRepository, IReviewRepository } from "../../interfaces/proposal/IProposalRepository.js";
-import type { IReviewService } from "../../interfaces/proposal/IProposalService.js";
-// import { CONTRACT_STATUS } from "../../shared/enums/proposalEnums.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { AppError } from "../../shared/errors/appError.js";
-import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
-import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages.js";
+import type { ReviewListDTO, ReviewPayload, ReviewResponseDTO } from "../../DTO/proposal/review";
+import { ReviewMapper } from "../../dtoMappers/proposal/reviewMapper";
+import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
+import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
+import type { IProposalRepository, IReviewRepository } from "../../interfaces/proposal/IProposalRepository";
+import type { IReviewService } from "../../interfaces/proposal/IProposalService";
+// import { CONTRACT_STATUS } from "../../shared/enums/proposalEnums
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { AppError } from "../../shared/errors/appError";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
+import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 
 export class ReviewService implements IReviewService {
     constructor(private _reviewRepo: IReviewRepository, private _proposalRepo: IProposalRepository, private _userRepo: IUserRepository) {

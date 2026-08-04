@@ -1,12 +1,12 @@
 import { Server as HttpServer } from "http";
 import { Server as SocketServer } from "socket.io";
-import socketAuthenticate from "../middlewares/socketAuthentication.js";
-import { ChatService } from "../services/common/chatServices.js";
-import { MessageRepository } from "../repositories/chat/messageRepository.js";
-import { ActiveJobService } from "../services/customer/activeJobService.js";
-import { ActiveJobRepository } from "../repositories/common/activeJobRepository.js";
-import type { AuthSocket } from "./SocketType.js";
-import { registerChatHandlers } from "./chatHandler.js";
+import socketAuthenticate from "../middlewares/socketAuthentication";
+import { ChatService } from "../services/common/chatServices";
+import { MessageRepository } from "../repositories/chat/messageRepository";
+import { ActiveJobService } from "../services/customer/activeJobService";
+import { ActiveJobRepository } from "../repositories/common/activeJobRepository";
+import type { AuthSocket } from "./SocketType";
+import { registerChatHandlers } from "./chatHandler";
 
 export function initSocket(httpServer: HttpServer) {
     const io = new SocketServer(httpServer, {
