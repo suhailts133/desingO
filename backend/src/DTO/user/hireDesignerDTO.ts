@@ -37,8 +37,6 @@ export interface getHireDesignerPerDesignResponseDTO {
 
 export interface getMyHireDesignerRequestResponseDTO {
     id: string,
-    designerId: string,
-    spaceType: string,
     length: string;
     width: string;
     ceilingHeight?: string;
@@ -54,9 +52,16 @@ export interface getMyHireDesignerRequestResponseDTO {
     timeLine: string
 }
 
-export type CreateHireDesignerDTO = Omit<IHireDesigner, "id" | "status" | "rejectionReason" | "userId" | "designerId" | "designId"> & {
+export type CreateHireDesignerDTO = {
     userId: string;
     designerId: string;
     designId: string;
+    length: string;
+    width: string;
+    ceilingHeight: string;
+    unit: "ft" | "m";
+    notes: string;
+    services: string[];
+    timeLine: string;
+    status: "Accepted" | "Rejected" | "Pending";
 };
-

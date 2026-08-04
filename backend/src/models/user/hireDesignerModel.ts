@@ -17,8 +17,6 @@ const hireDesignerSchema = new Schema<IHireDesigner>(
         },
         unit: { type: String,        enum: ["m", "ft"], required: true },
         length: { type: String, required: true },
-        maxPrice:{type:Number, required:true},
-        minPrice:{type:Number, required:true},
         width: { type: String, required: true },
         timeLine: { type: String, required: true },
         ceilingHeight: { type: String },

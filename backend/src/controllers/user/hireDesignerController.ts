@@ -9,11 +9,13 @@ import { directHireValidation } from "../../validators/user/jobValidator.js";
 import type { HireDesignerPayload } from "../../interfaces/customer/ICustomer.js";
 import { RespsonseHelper } from "../../shared/helpers/responseHelper.js";
 import { directHireQueryFilters } from "../../validators/user/hireDesignerValidator.js";
+import Logger from "../../config/logger.js";
 export class HireDesignerController {
     constructor(private _hireDesignerService: IHireDesignerService) { }
 
-    createDesigner = asyncHandler(async (req: Request, res: Response) => {
+    hireDesigner = asyncHandler(async (req: Request, res: Response) => {
         const userid = req.user?.userId;
+        Logger.info(`${userid} userid`)
         if (!userid) {
             throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
@@ -45,20 +47,22 @@ export class HireDesignerController {
         const result = await this._hireDesignerService.getMyHireDesignerRequests(userid, value)
         RespsonseHelper.successWithPagination(res, result)
     })
+
+    
     getRequestPerDesign = asyncHandler(async (req: Request, res: Response) => {
         const { error, value } = directHireQueryFilters.validate(req.query, { stripUnknown: true })
         if (error) {
             throw new AppError(error.details[0]?.message || "Invalid query parameters", RESPONSE_CODE.BAD_REQUEST)
         }
-        const designerId = req.user?.userId;
-        if (!designerId) {
+        const designId = req.params?.id as string;
+        if (!designId) {
             throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
-        if (!isObjectId(designerId)) {
+        if (!isObjectId(designId)) {
             throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
 
-        const result = await this._hireDesignerService.getHireRequestPerDesign(designerId, value)
+        const result = await this._hireDesignerService.getHireRequestPerDesign(designId, value)
         RespsonseHelper.successWithPagination(res, result)
     })
 }

@@ -43,31 +43,34 @@ export const roomMeasurementValidation: Joi.ObjectSchema<IRoomMeasurement> = Joi
             "string.pattern.base": "Notes must contain only letters and punctuation",
         }),
 });
-
 export const directHireValidation = roomMeasurementValidation
     .fork(
-        ['spaceType'],
+        ["spaceType"],
         (schema) => schema.strip().optional()
     )
+    .fork(
+        ["unit"],
+        () =>
+            Joi.string()
+                .valid("ft", "m")
+                .required()
+                .messages({
+                    "any.only": "Unit must be either 'ft' or 'm'",
+                    "string.empty": "Unit is required",
+                    "any.required": "Unit is required",
+                })
+    )
     .append({
+        designId: Joi.string()
+            .regex(/^[a-fA-F0-9]{24}$/)
+            .required(),
         services: Joi.array()
             .items(Joi.string())
-            .required()
-            .messages({
-                "array.base": "Services must be an array",
-                "any.required": "Services is required",
-            }),
+            .required(),
         timeLine: Joi.string()
             .trim()
-            .required()
-            .messages({
-                "string.empty": "Timeline is required",
-                "any.required": "Timeline is required",
-            }),
-    }) as Joi.ObjectSchema<HireDesignerPayload>
-
-
-
+            .required(),
+    }) as Joi.ObjectSchema<HireDesignerPayload>;
 
 export const jobRequestValidation: Joi.ObjectSchema<ICreateJobRequest> = Joi.object<ICreateJobRequest>({
     projectTitle: Joi.string()

@@ -42,7 +42,7 @@ export class ProposalController {
 
 
     /**
-   * for create new PRoposal
+   * to accept or reject the proposal
    * @route PATCH /proposal/approve-reject
    * @param req.body {@link ProposalAcceptOrRejectDTO}
    * @throws {AppError} 400 if there is any issue with req.body
@@ -132,7 +132,7 @@ export class ProposalController {
     })
 
     /**
- * to upload result for the service
+ * to approve or reject service
  * @route PATCH /proposal/approve-reject-version
  * @param req.body {@link VersionAcceptOrRejectDTO}
  * @throws {AppError} 400 if there is any issue with the req.body

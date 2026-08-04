@@ -35,6 +35,11 @@ export enum JOB_APPLICATION_STATUS {
     COMPLETED = "Completed",
     REJECTED = "Rejected"
 }
+export enum HIRE_DESIGNER_STATUS {
+    PENDING = "Pending",
+    REJECTED = "Rejected",
+    ACCEPTED = "Accepted"
+}
 export enum ACTIVE_JOB_STATUS {
     ACTIVE = "Active",
     CANCELLED = "Cancelled",

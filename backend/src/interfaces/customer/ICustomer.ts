@@ -57,8 +57,6 @@ export interface IHireDesigner {
     designerId: mongoose.Types.ObjectId
     designId: mongoose.Types.ObjectId
     spaceType: string,
-    minPrice:number
-    maxPrice:number
     length: string;
     width: string;
     ceilingHeight: string;
@@ -71,6 +69,18 @@ export interface IHireDesigner {
     createdAt: Date,
     expiresAt: Date
 }
+
+export type HireDesignerPayload = {
+    designId: string;
+    length: string;
+    width: string;
+    ceilingHeight: string;
+    unit: "ft" | "m";
+    notes: string;
+    services: string[];
+    timeLine: string;
+};
+
 
 
 export interface IActiveJob {
@@ -88,7 +98,3 @@ export interface IActiveJob {
     createdAt: Date
 }
 
-
-export type HireDesignerPayload = Omit<IHireDesigner, "id" | "userId" | "designId" | "designerId" | "spaceType"> & {
-    designId: string
-}
