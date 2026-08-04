@@ -1,20 +1,18 @@
-import type { DesignerVerificationBodyDTO, DesignerVerificationDTO } from "../../DTO/designer/designerVerificationDTOs.js";
-import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
-import type { DesignerVerificationFiles, IEducation, IWorkExperience } from "../../interfaces/designer/IDesigner.js";
-import type { IDesignerService } from "../../interfaces/designer/IDesignerService.js";
-import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import type { IDesignerRepository } from "../../interfaces/designer/IDesignerRepository.js";
-import { sendDesignerVerificationEmail } from "../../shared/emails/designerVerificationEmail.js";
-
-import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
-import { CLOUDINARY_FOLDER_NAME, DESIGNER_STATUS, USER_ROLES } from "../../shared/enums/commonEnums.js";
-import type { DesignerFilter, DesignerCardDTO } from "../../DTO/designer/designerDTO.js";
-
-import { AppError } from "../../shared/errors/appError.js";
-import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages.js";
-import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
-import { DesignerMapper } from "../../dtoMappers/designer/designerMapper.js";
+import type { DesignerVerificationBodyDTO, DesignerVerificationDTO } from "../../DTO/designer/designerVerificationDTOs";
+import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
+import type { DesignerVerificationFiles, IEducation, IWorkExperience } from "../../interfaces/designer/IDesigner";
+import type { IDesignerService } from "../../interfaces/designer/IDesignerService";
+import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import type { IDesignerRepository } from "../../interfaces/designer/IDesignerRepository";
+import { sendDesignerVerificationEmail } from "../../shared/emails/designerVerificationEmail";
+import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload";
+import { CLOUDINARY_FOLDER_NAME, DESIGNER_STATUS, USER_ROLES } from "../../shared/enums/commonEnums";
+import type { DesignerFilter, DesignerCardDTO } from "../../DTO/designer/designerDTO";
+import { AppError } from "../../shared/errors/appError";
+import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
+import { DesignerMapper } from "../../dtoMappers/designer/designerMapper";
 
 export class DesignerService implements IDesignerService {
     constructor(

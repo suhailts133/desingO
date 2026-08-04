@@ -1,4 +1,4 @@
-import type { MessageRole } from "../../interfaces/chat/IChat.js"
+import type { MessageRole } from "../../interfaces/chat/IChat"
 
 export interface CreateMessageDTO {
     activeJobId: string

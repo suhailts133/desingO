@@ -1,20 +1,19 @@
-import type { CreateProposalDTO, CreateProposalRepoDataDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData } from "../../DTO/proposal/proposal.js";
-import { ProposalMapper } from "../../dtoMappers/proposal/proposalMapper.js";
-import { HireDesignerMapper } from "../../dtoMappers/user/hireDesignerMapper.js";
-import { JobRequestMapper } from "../../dtoMappers/user/jobRequestMapper.js";
-import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
-import type { IActiveJobRepository, IHireDesignerRepository, IJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
-import type { IServiceItem } from "../../interfaces/proposal/IProposal.js";
-import type { IProposalRepository, IServiceVersionRepository } from "../../interfaces/proposal/IProposalRepository.js";
-import type { IProposalService } from "../../interfaces/proposal/IProposalService.js";
-
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { AppError } from "../../shared/errors/appError.js";
-import { toSqFt } from "../../shared/helpers/extraFunctions.js";
-import { calculatePlatformFee } from "../../shared/helpers/platformfeeCalculator.js";
-import { validateServiceOrders } from "../../shared/helpers/proposalOrderCheck.js";
-import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
-import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages.js";
+import type { CreateProposalDTO, CreateProposalRepoDataDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData } from "../../DTO/proposal/proposal";
+import { ProposalMapper } from "../../dtoMappers/proposal/proposalMapper";
+import { HireDesignerMapper } from "../../dtoMappers/user/hireDesignerMapper";
+import { JobRequestMapper } from "../../dtoMappers/user/jobRequestMapper";
+import type { IApiResponse } from "../../interfaces/base/IApiResponse";
+import type { IActiveJobRepository, IHireDesignerRepository, IJobRepository } from "../../interfaces/customer/ICustomerRepository";
+import type { IServiceItem } from "../../interfaces/proposal/IProposal";
+import type { IProposalRepository, IServiceVersionRepository } from "../../interfaces/proposal/IProposalRepository";
+import type { IProposalService } from "../../interfaces/proposal/IProposalService";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { AppError } from "../../shared/errors/appError";
+import { toSqFt } from "../../shared/helpers/extraFunctions";
+import { calculatePlatformFee } from "../../shared/helpers/platformfeeCalculator";
+import { validateServiceOrders } from "../../shared/helpers/proposalOrderCheck";
+import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
+import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 
 export class ProposalService implements IProposalService {
     constructor(private _proposalRepo: IProposalRepository, private _activeRepo: IActiveJobRepository, private _jobRepo: IJobRepository, private _directHireRepo: IHireDesignerRepository, private _serviceVersionRepo: IServiceVersionRepository) { }

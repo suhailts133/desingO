@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
-import type { IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO } from "../../DTO/designer/jobsDTO.js";
-import type { IJobApplication, IJobApplicationPopulated, IJobApplicationPopulatedWithJobAndUser } from "../../interfaces/designer/IDesigner.js";
-import type { IJobApplicationRepository } from "../../interfaces/designer/IDesignerRepository.js";
-import { JobApplicationModel } from "../../models/designer/jobApplicationModel.js";
-import { BaseRepository } from "../baseRepository.js";
-import type { Pagination } from "../../DTO/admin/adminDTO.js";
+import type { IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO } from "../../DTO/designer/jobsDTO";
+import type { IJobApplication, IJobApplicationPopulated, IJobApplicationPopulatedWithJobAndUser } from "../../interfaces/designer/IDesigner";
+import type { IJobApplicationRepository } from "../../interfaces/designer/IDesignerRepository";
+import { JobApplicationModel } from "../../models/designer/jobApplicationModel";
+import { BaseRepository } from "../baseRepository";
+import type { Pagination } from "../../DTO/admin/adminDTO";
 import type { QueryFilter, SortOrder } from "mongoose";
-import type { IJobRequest } from "../../interfaces/customer/ICustomer.js";
-import type { IUser } from "../../interfaces/auth/IUser.js";
+import type { IJobRequest } from "../../interfaces/customer/ICustomer";
+import type { IUser } from "../../interfaces/auth/IUser";
 
 export class JobApplicationRepository extends BaseRepository<IJobApplication> implements IJobApplicationRepository {
     constructor() {

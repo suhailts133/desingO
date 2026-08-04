@@ -1,7 +1,7 @@
-import type { IDesignSpaceTypeBenchmark, SpaceTypeAvg } from "../../interfaces/benchmark/IBenchMark.js";
-import type { IDesignBenchMarkRepository } from "../../interfaces/benchmark/IBenchMarkRepository.js";
-import { DesignBenchmarkModel } from "../../models/benchmarks/DesignBenchMarkModel.js";
-import { BaseRepository } from "../baseRepository.js";
+import type { IDesignSpaceTypeBenchmark, SpaceTypeAvg } from "../../interfaces/benchmark/IBenchMark";
+import type { IDesignBenchMarkRepository } from "../../interfaces/benchmark/IBenchMarkRepository";
+import { DesignBenchmarkModel } from "../../models/benchmarks/DesignBenchMarkModel";
+import { BaseRepository } from "../baseRepository";
 
 export class DesignBenchMarkRepository extends BaseRepository<IDesignSpaceTypeBenchmark> implements IDesignBenchMarkRepository {
   

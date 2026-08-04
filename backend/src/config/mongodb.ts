@@ -1,5 +1,5 @@
 import { connect } from "mongoose";
-import { ensureError } from "../shared/errors/ensureError.js";
+import { ensureError } from "../shared/errors/ensureError";
 
 
 const  connectDB = async () => {

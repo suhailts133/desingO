@@ -1,14 +1,14 @@
 import mongoose, { type SortOrder } from "mongoose";
-import type { createDesignDTO, DesignFilter, EditDesignRepoData } from "../../DTO/designer/designDTO.js";
-import type { IDesign, IDesignPopulated } from "../../interfaces/designer/IDesigner.js";
-import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository.js";
-import { DesignModel } from "../../models/designer/designModel.js";
-import { BaseRepository } from "../baseRepository.js";
-import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { IUser } from "../../interfaces/auth/IUser.js";
+import type { createDesignDTO, DesignFilter, EditDesignRepoData } from "../../DTO/designer/designDTO";
+import type { IDesign, IDesignPopulated } from "../../interfaces/designer/IDesigner";
+import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
+import { DesignModel } from "../../models/designer/designModel";
+import { BaseRepository } from "../baseRepository";
+import type { Pagination } from "../../DTO/admin/adminDTO";
+import type { IUser } from "../../interfaces/auth/IUser";
 import type { QueryFilter } from "mongoose"
-import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
-import type { SpaceTypeAvg } from "../../interfaces/benchmark/IBenchMark.js";
+import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
+import type { SpaceTypeAvg } from "../../interfaces/benchmark/IBenchMark";
 
 export class DesignRepository extends BaseRepository<IDesign> implements IDesignRepository {
     constructor() {

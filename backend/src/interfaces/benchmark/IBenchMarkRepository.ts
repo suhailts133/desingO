@@ -1,4 +1,4 @@
-import type { IDesignSpaceTypeBenchmark, SpaceTypeAvg } from "./IBenchMark.js";
+import type { IDesignSpaceTypeBenchmark, SpaceTypeAvg } from "./IBenchMark";
 
 export interface IDesignBenchMarkRepository {
     getAvgPriceBySpaceType(spaceType:string):Promise<IDesignSpaceTypeBenchmark | null>   

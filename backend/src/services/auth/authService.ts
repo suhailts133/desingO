@@ -1,26 +1,26 @@
 // Helpers
-import generateOtp from "../../shared/jwt/generateOTP.js";
-import sendVerificationEmail from "../../shared/emails/sendOTP.js";
-import { comparePassword, hashPassword } from "../../shared/helpers/hashPassword.js";
-import { jwtAccessToken } from "../../shared/jwt/jsonTokenCreater.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { jwtRefreshToken, refeshTokenVerificaion } from "../../shared/jwt/refreshToken.js";
+import generateOtp from "../../shared/jwt/generateOTP";
+import sendVerificationEmail from "../../shared/emails/sendOTP";
+import { comparePassword, hashPassword } from "../../shared/helpers/hashPassword";
+import { jwtAccessToken } from "../../shared/jwt/jsonTokenCreater";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { jwtRefreshToken, refeshTokenVerificaion } from "../../shared/jwt/refreshToken";
 // Interfaces / Repositories
-import type { IOTPRepository } from "../../interfaces/auth/IOtpRepository.js";
-import type { IAuthService } from "../../interfaces/auth/IAuthService.js";
-import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
-import type { IUserTemp } from "../../interfaces/auth/IUser.js";
-import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
+import type { IOTPRepository } from "../../interfaces/auth/IOtpRepository";
+import type { IAuthService } from "../../interfaces/auth/IAuthService";
+import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
+import type { IUserTemp } from "../../interfaces/auth/IUser";
+import type { IApiResponse } from "../../interfaces/base/IApiResponse";
 // DTOs
-import type { CreateUserDTO, RegisterUserDTO, AuthResponseDTO, RefreshTokenDTO } from "../../DTO/auth/authDTO.js";
-import { googleLoginResponse } from "../common/googleAuth.js";
-import { AppError } from "../../shared/errors/appError.js";
-import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
-import { USER_ROLES } from "../../shared/enums/commonEnums.js";
-import { UserMapper } from "../../dtoMappers/user/userMapper.js";
+import type { CreateUserDTO, RegisterUserDTO, AuthResponseDTO, RefreshTokenDTO } from "../../DTO/auth/authDTO";
+import { googleLoginResponse } from "../common/googleAuth";
+import { AppError } from "../../shared/errors/appError";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
+import { USER_ROLES } from "../../shared/enums/commonEnums";
+import { UserMapper } from "../../dtoMappers/user/userMapper";
 
 import { v4 as uuidv4 } from "uuid"
-import type { IBlackListRepository, IRefreshTokenRepository, RefreshTokenPayload } from "../../interfaces/auth/IRefreshToken.js";
+import type { IBlackListRepository, IRefreshTokenRepository, RefreshTokenPayload } from "../../interfaces/auth/IRefreshToken";
 
 /**
 * Auth Service handle all the authentication based operations.

@@ -1,14 +1,14 @@
-import type { EditJobRepoData, EditJobRequest, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
-import type { ICreateJobRequest } from "../../interfaces/customer/ICustomer.js";
-import type {  IJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
-import type { IJobRequestService } from "../../interfaces/customer/ICustomerService.js";
-import { AppError } from "../../shared/errors/appError.js";
-import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
-import { CLOUDINARY_FOLDER_NAME } from "../../shared/enums/commonEnums.js";
-import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
-import { JobRequestMapper } from "../../dtoMappers/user/jobRequestMapper.js";
+import type { EditJobRepoData, EditJobRequest, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
+import type { ICreateJobRequest } from "../../interfaces/customer/ICustomer";
+import type {  IJobRepository } from "../../interfaces/customer/ICustomerRepository";
+import type { IJobRequestService } from "../../interfaces/customer/ICustomerService";
+import { AppError } from "../../shared/errors/appError";
+import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload";
+import { CLOUDINARY_FOLDER_NAME } from "../../shared/enums/commonEnums";
+import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
+import { JobRequestMapper } from "../../dtoMappers/user/jobRequestMapper";
 
 export class JobRequestService implements IJobRequestService {
     constructor(private _jobRequestRepo: IJobRepository, private _imageUploder: IImageUploaderService ) { }

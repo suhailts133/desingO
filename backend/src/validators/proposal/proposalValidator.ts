@@ -1,5 +1,5 @@
 import Joi from "joi";
-import type { CreateProposalDTO } from "../../DTO/proposal/proposal.js";
+import type { CreateProposalDTO } from "../../DTO/proposal/proposal";
 
 const serviceItemSchema = Joi.object({
     serviceName: Joi.string()

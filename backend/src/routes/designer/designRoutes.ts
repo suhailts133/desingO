@@ -1,13 +1,13 @@
 import { Router } from "express";
 import multer from "multer";
-import designerAuthentication from "../../middlewares/designerAuth.js";
-import { DesignController } from "../../controllers/designer/designController.js";
-import { DesignService } from "../../services/designer/designService.js";
-import { DesignRepository } from "../../repositories/designer/designRepository.js";
-import { CloudinaryService } from "../../services/common/cloudinaryService.js";
-import optionalAuth from "../../middlewares/optionalAuth.js";
-import { UserRepository } from "../../repositories/auth/userRepository.js";
-import { DesignBenchMarkRepository } from "../../repositories/benchmarks/designBenchMarkRepository.js";
+import designerAuthentication from "../../middlewares/designerAuth";
+import { DesignController } from "../../controllers/designer/designController";
+import { DesignService } from "../../services/designer/designService";
+import { DesignRepository } from "../../repositories/designer/designRepository";
+import { CloudinaryService } from "../../services/common/cloudinaryService";
+import optionalAuth from "../../middlewares/optionalAuth";
+import { UserRepository } from "../../repositories/auth/userRepository";
+import { DesignBenchMarkRepository } from "../../repositories/benchmarks/designBenchMarkRepository";
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router()

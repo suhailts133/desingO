@@ -1,5 +1,5 @@
-import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
-import type { VersionStatus } from "../../interfaces/proposal/IProposal.js";
+import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
+import type { VersionStatus } from "../../interfaces/proposal/IProposal";
 
 export interface CreateServiceVersionRepoDTO {
     proposalId: string;

@@ -1,5 +1,5 @@
 import Joi from "joi";
-import type { IBid } from "../../interfaces/customer/ICustomer.js";
+import type { IBid } from "../../interfaces/customer/ICustomer";
 
 export const bidValidation: Joi.ObjectSchema<IBid> = Joi.object<IBid>({
     timeLine: Joi.string()

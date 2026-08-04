@@ -1,5 +1,5 @@
 import mongoose, { Schema, } from "mongoose";
-import type { IHireDesigner } from "../../interfaces/customer/ICustomer.js";
+import type { IHireDesigner } from "../../interfaces/customer/ICustomer";
 
 
 

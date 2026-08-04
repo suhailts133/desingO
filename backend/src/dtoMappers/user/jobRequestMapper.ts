@@ -1,7 +1,7 @@
-import type { ProposalInputData } from "../../DTO/proposal/proposal.js";
-import type { JobDetailResponseDTO, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO.js";
-import type { IJobRequest, IJobRequestPopulated } from "../../interfaces/customer/ICustomer.js";
-import { toSqFt } from "../../shared/helpers/extraFunctions.js";
+import type { ProposalInputData } from "../../DTO/proposal/proposal";
+import type { JobDetailResponseDTO, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO";
+import type { IJobRequest, IJobRequestPopulated } from "../../interfaces/customer/ICustomer";
+import { toSqFt } from "../../shared/helpers/extraFunctions";
 
 export class JobRequestMapper {
 

@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import type { paymentRepoDTO } from "../../DTO/proposal/payment.js";
-import type { IPayment, PaymentStatus } from "../../interfaces/proposal/IPayment.js";
-import type { IPaymentRepository } from "../../interfaces/proposal/IProposalRepository.js";
-import { PaymentModel } from "../../models/proposal/paymentModal.js";
-import { BaseRepository } from "../baseRepository.js";
+import type { paymentRepoDTO } from "../../DTO/proposal/payment";
+import type { IPayment, PaymentStatus } from "../../interfaces/proposal/IPayment";
+import type { IPaymentRepository } from "../../interfaces/proposal/IProposalRepository";
+import { PaymentModel } from "../../models/proposal/paymentModal";
+import { BaseRepository } from "../baseRepository";
 
 export class PaymentRepository extends BaseRepository<IPayment> implements IPaymentRepository {
     constructor() {

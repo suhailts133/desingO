@@ -1,5 +1,5 @@
-import type { IUser } from "../../interfaces/auth/IUser.js";
-import type { IActiveJob, IHireDesigner, IJobRequest } from "../../interfaces/customer/ICustomer.js";
+import type { IUser } from "../../interfaces/auth/IUser";
+import type { IActiveJob, IHireDesigner, IJobRequest } from "../../interfaces/customer/ICustomer";
 
 export type ActiveJobPopulateAll = Omit<IActiveJob, "userId" | "designerId" | "sourceId" | "sourceType"> & {
     userId: IUser

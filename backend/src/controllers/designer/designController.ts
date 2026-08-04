@@ -1,16 +1,16 @@
 import type { Request, Response } from "express"
-import { RespsonseHelper } from "../../shared/helpers/responseHelper.js"
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js"
-import type { IDesignService } from "../../interfaces/designer/IDesignerService.js"
-import { designValidation, editDesignValidation } from "../../validators/designers/designValidation.js"
-import type { AddDesignRequestDTO, DesignFiles, EditDesign, EditDesignFiles } from "../../DTO/designer/designDTO.js"
+import { RespsonseHelper } from "../../shared/helpers/responseHelper"
+import { RESPONSE_CODE } from "../../shared/enums/statusCode"
+import type { IDesignService } from "../../interfaces/designer/IDesignerService"
+import { designValidation, editDesignValidation } from "../../validators/designers/designValidation"
+import type { AddDesignRequestDTO, DesignFiles, EditDesign, EditDesignFiles } from "../../DTO/designer/designDTO"
 import asyncHandler from "express-async-handler";
-import { AppError } from "../../shared/errors/appError.js"
+import { AppError } from "../../shared/errors/appError"
 
 
-import { isObjectId } from "../../shared/helpers/extraFunctions.js"
-import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages.js"
-import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js"
+import { isObjectId } from "../../shared/helpers/extraFunctions"
+import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages"
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages"
 
 
 

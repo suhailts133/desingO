@@ -1,14 +1,14 @@
 import { type Request, type Response } from "express";
-import type { IJobApplicationService } from "../../interfaces/designer/IDesignerService.js";
+import type { IJobApplicationService } from "../../interfaces/designer/IDesignerService";
 import asyncHandler from "express-async-handler";
-import { AppError } from "../../shared/errors/appError.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { jobApplicationApprovalOrRejectionValidation, JobApplicationsQueryFilter, jobApplicationValidation } from "../../validators/designers/jobApplicationValidations.js";
-import type { IJobApplicationRequestDTO, JobApplicationApprovalOrRejectionRequestDTO } from "../../DTO/designer/jobsDTO.js";
-import { RespsonseHelper } from "../../shared/helpers/responseHelper.js";
-import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
-import { isObjectId } from "../../shared/helpers/extraFunctions.js";
-import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
+import { AppError } from "../../shared/errors/appError";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { jobApplicationApprovalOrRejectionValidation, JobApplicationsQueryFilter, jobApplicationValidation } from "../../validators/designers/jobApplicationValidations";
+import type { IJobApplicationRequestDTO, JobApplicationApprovalOrRejectionRequestDTO } from "../../DTO/designer/jobsDTO";
+import { RespsonseHelper } from "../../shared/helpers/responseHelper";
+import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
+import { isObjectId } from "../../shared/helpers/extraFunctions";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
 
 export class JobApplicationController {
     constructor(private _jobApplicationService: IJobApplicationService) { }

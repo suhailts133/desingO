@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
-import type { GetAllDesignCommonResponseDTO } from "../../DTO/designer/designDTO.js";
-import { DesignMapper } from "../../dtoMappers/designer/designMapper.js";
-import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
-import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
-import type { ISavedDesignDTO, ISavedDesignRepository, ISavedDesignService } from "../../interfaces/customer/ISavedDesign.js";
-import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { AppError } from "../../shared/errors/appError.js";
-import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
-import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages.js";
+import type { GetAllDesignCommonResponseDTO } from "../../DTO/designer/designDTO";
+import { DesignMapper } from "../../dtoMappers/designer/designMapper";
+import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
+import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
+import type { ISavedDesignDTO, ISavedDesignRepository, ISavedDesignService } from "../../interfaces/customer/ISavedDesign";
+import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { AppError } from "../../shared/errors/appError";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
+import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages";
 
 export class SavedDesignService implements ISavedDesignService {
     constructor(private _savedDesignRepo: ISavedDesignRepository, private _userRepo: IUserRepository, private _DesignRepo: IDesignRepository) { }

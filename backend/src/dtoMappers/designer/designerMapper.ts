@@ -1,6 +1,6 @@
-import type { AdminDesignerApprovalDTO, AdminDesignerRequestResponseDTO, AdminDesignersResponseDTO } from "../../DTO/admin/adminDTO.js";
-import type { DesignerCardDTO } from "../../DTO/designer/designerDTO.js";
-import type { IDesignerPopulated } from "../../interfaces/designer/IDesigner.js";
+import type { AdminDesignerApprovalDTO, AdminDesignerRequestResponseDTO, AdminDesignersResponseDTO } from "../../DTO/admin/adminDTO";
+import type { DesignerCardDTO } from "../../DTO/designer/designerDTO";
+import type { IDesignerPopulated } from "../../interfaces/designer/IDesigner";
 
 export class DesignerMapper {
     static toDesingerDtoList(designers: IDesignerPopulated[]): AdminDesignersResponseDTO[] {

@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-import type { ReviewRepoDTO } from "../../DTO/proposal/review.js";
-import type { IReview } from "../../interfaces/proposal/IProposal.js";
-import type { IReviewRepository } from "../../interfaces/proposal/IProposalRepository.js";
-import { ReviewModel } from "../../models/proposal/ReviewModal.js";
-import { BaseRepository } from "../baseRepository.js";
-import type { Pagination } from "../../DTO/admin/adminDTO.js";
+import type { ReviewRepoDTO } from "../../DTO/proposal/review";
+import type { IReview } from "../../interfaces/proposal/IProposal";
+import type { IReviewRepository } from "../../interfaces/proposal/IProposalRepository";
+import { ReviewModel } from "../../models/proposal/ReviewModal";
+import { BaseRepository } from "../baseRepository";
+import type { Pagination } from "../../DTO/admin/adminDTO";
 
 export class ReviewRepository extends BaseRepository<IReview> implements IReviewRepository {
     constructor() {

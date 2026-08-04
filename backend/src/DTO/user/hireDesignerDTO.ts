@@ -1,6 +1,6 @@
-import type { IUser } from "../../interfaces/auth/IUser.js";
-import type { IHireDesigner } from "../../interfaces/customer/ICustomer.js";
-import type { IDesign } from "../../interfaces/designer/IDesigner.js";
+import type { IUser } from "../../interfaces/auth/IUser";
+import type { IHireDesigner } from "../../interfaces/customer/ICustomer";
+import type { IDesign } from "../../interfaces/designer/IDesigner";
 
 export type HireDesignerPopulatedALL = Omit<IHireDesigner, "userId" | "designerId" | "designId"> & {
     designId: IDesign,

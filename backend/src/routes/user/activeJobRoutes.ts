@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { ActiveJobRepository } from "../../repositories/common/activeJobRepository.js";
-import { ActiveJobService } from "../../services/customer/activeJobService.js";
-import { ActiveJobController } from "../../controllers/user/activeJobController.js";
-import authenticate from "../../middlewares/auth.js";
-import designerAuthentication from "../../middlewares/designerAuth.js";
+import { ActiveJobRepository } from "../../repositories/common/activeJobRepository";
+import { ActiveJobService } from "../../services/customer/activeJobService";
+import { ActiveJobController } from "../../controllers/user/activeJobController";
+import authenticate from "../../middlewares/auth";
+import designerAuthentication from "../../middlewares/designerAuth";
 
 const router = Router()
 

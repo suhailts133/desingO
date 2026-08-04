@@ -1,6 +1,6 @@
 import mongoose, { Schema, } from "mongoose";
-import type { IUser } from "../../interfaces/auth/IUser.js";
-import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
+import type { IUser } from "../../interfaces/auth/IUser";
+import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
 
 
 const imageFormatSchema = new Schema<ImageUploadResult>({

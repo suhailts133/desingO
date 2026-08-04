@@ -1,5 +1,5 @@
 import Joi from "joi";
-import type { ProposalAcceptOrRejectDTO } from "../../DTO/proposal/proposal.js";
+import type { ProposalAcceptOrRejectDTO } from "../../DTO/proposal/proposal";
 
 export const proposalApproveOrRejectionValidation: Joi.ObjectSchema<ProposalAcceptOrRejectDTO> = Joi.object<ProposalAcceptOrRejectDTO>({
     contractStatus: Joi.string()

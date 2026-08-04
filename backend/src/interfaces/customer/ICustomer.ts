@@ -1,6 +1,6 @@
 import type mongoose from "mongoose";
-import type { ImageUploadResult } from "../base/IImageUpload.js";
-import type { IUser } from "../auth/IUser.js";
+import type { ImageUploadResult } from "../base/IImageUpload";
+import type { IUser } from "../auth/IUser";
 
 export interface IRoomMeasurement {
     spaceType: string;

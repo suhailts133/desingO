@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 
-import type { ImageUploadResult, IImageUploaderService } from "../../interfaces/base/IImageUpload.js";
+import type { ImageUploadResult, IImageUploaderService } from "../../interfaces/base/IImageUpload";
 
 
 export class CloudinaryService implements IImageUploaderService {

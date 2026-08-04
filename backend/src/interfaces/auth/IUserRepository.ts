@@ -1,4 +1,4 @@
-import type { IUser, UserRole } from "./IUser.js";
+import type { IUser, UserRole } from "./IUser";
 
 export interface IUserRepository{
     findEmail(email:string):Promise<boolean>;

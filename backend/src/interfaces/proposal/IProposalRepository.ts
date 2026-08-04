@@ -1,10 +1,10 @@
-import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { paymentRepoDTO } from "../../DTO/proposal/payment.js";
-import type { CreateProposalRepoDataDTO, GetProposalDTO } from "../../DTO/proposal/proposal.js";
-import type { ReviewRepoDTO } from "../../DTO/proposal/review.js";
-import type { CreateServiceVersionRepoDTO, VersionAcceptOrRejectDTO } from "../../DTO/proposal/version.js";
-import type { IPayment, PaymentStatus } from "./IPayment.js";
-import type { ContractStatus, IEscrow, IProposal, IReview, IServiceVersion, ProposalServiceStatus } from "./IProposal.js";
+import type { Pagination } from "../../DTO/admin/adminDTO";
+import type { paymentRepoDTO } from "../../DTO/proposal/payment";
+import type { CreateProposalRepoDataDTO, GetProposalDTO } from "../../DTO/proposal/proposal";
+import type { ReviewRepoDTO } from "../../DTO/proposal/review";
+import type { CreateServiceVersionRepoDTO, VersionAcceptOrRejectDTO } from "../../DTO/proposal/version";
+import type { IPayment, PaymentStatus } from "./IPayment";
+import type { ContractStatus, IEscrow, IProposal, IReview, IServiceVersion, ProposalServiceStatus } from "./IProposal";
 
 export interface IProposalRepository {
     createProposal(data: CreateProposalRepoDataDTO): Promise<IProposal>

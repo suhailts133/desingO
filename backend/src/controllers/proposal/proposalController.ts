@@ -1,18 +1,18 @@
-import type { IProposalService, IProposalVersionService } from "../../interfaces/proposal/IProposalService.js";
+import type { IProposalService, IProposalVersionService } from "../../interfaces/proposal/IProposalService";
 import type { Request, Response } from "express"
-import { RespsonseHelper } from "../../shared/helpers/responseHelper.js"
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js"
-import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ServiceResultDTO } from "../../DTO/proposal/proposal.js";
+import { RespsonseHelper } from "../../shared/helpers/responseHelper"
+import { RESPONSE_CODE } from "../../shared/enums/statusCode"
+import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ServiceResultDTO } from "../../DTO/proposal/proposal";
 
 import asyncHandler from "express-async-handler";
-import { AppError } from "../../shared/errors/appError.js"
-import { createProposalValidation } from "../../validators/proposal/proposalValidator.js";
-import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
-import { isObjectId } from "../../shared/helpers/extraFunctions.js";
-import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages.js";
-import { proposalApproveOrRejectionValidation } from "../../validators/proposal/proposalAcceptOrRejectValidation.js";
-import { versionApproveOrRejectValidation } from "../../validators/proposal/versionAcceptOrRejectValidation.js";
-import type { VersionAcceptOrRejectDTO } from "../../DTO/proposal/version.js";
+import { AppError } from "../../shared/errors/appError"
+import { createProposalValidation } from "../../validators/proposal/proposalValidator";
+import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
+import { isObjectId } from "../../shared/helpers/extraFunctions";
+import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
+import { proposalApproveOrRejectionValidation } from "../../validators/proposal/proposalAcceptOrRejectValidation";
+import { versionApproveOrRejectValidation } from "../../validators/proposal/versionAcceptOrRejectValidation";
+import type { VersionAcceptOrRejectDTO } from "../../DTO/proposal/version";
 
 
 

@@ -1,7 +1,7 @@
-import type { ProposalInputData } from "../../DTO/proposal/proposal.js";
-import type { getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerPopulatedALL, HireDesignerPopulateUser } from "../../DTO/user/hireDesignerDTO.js";
-import type { IHireDesigner } from "../../interfaces/customer/ICustomer.js";
-import { toSqFt } from "../../shared/helpers/extraFunctions.js";
+import type { ProposalInputData } from "../../DTO/proposal/proposal";
+import type { getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerPopulatedALL, HireDesignerPopulateUser } from "../../DTO/user/hireDesignerDTO";
+import type { IHireDesigner } from "../../interfaces/customer/ICustomer";
+import { toSqFt } from "../../shared/helpers/extraFunctions";
 
 
 export class HireDesignerMapper {

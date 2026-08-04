@@ -1,12 +1,11 @@
 import { Router } from "express"
-
 import multer from "multer"
-import { DesignerController } from "../../controllers/designer/designerController.js";
-import { DesignerService } from "../../services/designer/designerService.js";
-import { DesignerRepository } from "../../repositories/designer/designerRepository.js";
-import { UserRepository } from "../../repositories/auth/userRepository.js";
-import authenticate from "../../middlewares/auth.js"
-import { CloudinaryService } from "../../services/common/cloudinaryService.js";
+import { DesignerController } from "../../controllers/designer/designerController";
+import { DesignerService } from "../../services/designer/designerService";
+import { DesignerRepository } from "../../repositories/designer/designerRepository";
+import { UserRepository } from "../../repositories/auth/userRepository";
+import authenticate from "../../middlewares/auth"
+import { CloudinaryService } from "../../services/common/cloudinaryService";
 
 const upload = multer({ storage: multer.memoryStorage() });
 

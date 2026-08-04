@@ -1,12 +1,12 @@
-import type { IAdminUserManagementService } from "../../interfaces/admin/IAdminService.js";
+import type { IAdminUserManagementService } from "../../interfaces/admin/IAdminService";
 import type { Request, Response } from "express";
-import { RespsonseHelper } from "../../shared/helpers/responseHelper.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import type { UserFilterDTO } from "../../DTO/admin/adminDTO.js";
+import { RespsonseHelper } from "../../shared/helpers/responseHelper";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import type { UserFilterDTO } from "../../DTO/admin/adminDTO";
 import asyncHandler from "express-async-handler";
-import { AppError } from "../../shared/errors/appError.js";
-import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages.js";
-import { isObjectId } from "../../shared/helpers/extraFunctions.js";
+import { AppError } from "../../shared/errors/appError";
+import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
+import { isObjectId } from "../../shared/helpers/extraFunctions";
 
 
 /**

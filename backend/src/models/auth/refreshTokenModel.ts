@@ -1,5 +1,5 @@
 import mongoose, { Schema, } from "mongoose";
-import type { IRefreshToken } from "../../interfaces/auth/IRefreshToken.js";
+import type { IRefreshToken } from "../../interfaces/auth/IRefreshToken";
 
 
 

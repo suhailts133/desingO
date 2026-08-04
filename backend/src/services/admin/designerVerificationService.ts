@@ -1,15 +1,15 @@
-import type { DesignerFilterDTO, AdminDesignersResponseDTO, AdminDesignerRequestResponseDTO, AdminDesignerApprovalDTO, AdminDesignerStatusDTO } from "../../DTO/admin/adminDTO.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import type { IAdminDesignerVerificatoinServices } from "../../interfaces/admin/IAdminService.js";
-import type { IDesignerVerificationRepository } from "../../interfaces/admin/IDesignerVerificationRespository.js";
-import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
-import { sendDesignerStatusEmail } from "../../shared/emails/designerVerificationEmail.js";
-import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
-import { DESIGNER_STATUS, USER_ROLES } from "../../shared/enums/commonEnums.js";
+import type { DesignerFilterDTO, AdminDesignersResponseDTO, AdminDesignerRequestResponseDTO, AdminDesignerApprovalDTO, AdminDesignerStatusDTO } from "../../DTO/admin/adminDTO";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import type { IAdminDesignerVerificatoinServices } from "../../interfaces/admin/IAdminService";
+import type { IDesignerVerificationRepository } from "../../interfaces/admin/IDesignerVerificationRespository";
+import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
+import { sendDesignerStatusEmail } from "../../shared/emails/designerVerificationEmail";
+import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
+import { DESIGNER_STATUS, USER_ROLES } from "../../shared/enums/commonEnums";
+import { AppError } from "../../shared/errors/appError";
+import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
+import { DesignerMapper } from "../../dtoMappers/designer/designerMapper";
 
-import { AppError } from "../../shared/errors/appError.js";
-import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages.js";
-import { DesignerMapper } from "../../dtoMappers/designer/designerMapper.js";
 
 export class AdminDesignerVerificationservice implements IAdminDesignerVerificatoinServices {
   constructor(private _designerVerificationRepo: IDesignerVerificationRepository, private _userRepo: IUserRepository) { }

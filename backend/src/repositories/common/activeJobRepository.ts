@@ -1,14 +1,14 @@
 import mongoose, { type QueryFilter } from "mongoose";
-import type { ActiveJobFilter, ActiveJobPopulateAll, ActiveJobPopulated, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO.js";
-import type { IUser } from "../../interfaces/auth/IUser.js";
-import type { IActiveJob, IHireDesigner, IJobRequest } from "../../interfaces/customer/ICustomer.js";
-import type { IActiveJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
-import { ActiveJobModel } from "../../models/user/ActiveJobModal.js";
-import { ACTIVE_JOB_STATUS } from "../../shared/enums/commonEnums.js";
-import { BaseRepository } from "../baseRepository.js";
-import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import { HireDesignerModel } from "../../models/user/hireDesignerModel.js";
-import { JobRequestModel } from "../../models/user/jobModel.js";
+import type { ActiveJobFilter, ActiveJobPopulateAll, ActiveJobPopulated, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO";
+import type { IUser } from "../../interfaces/auth/IUser";
+import type { IActiveJob, IHireDesigner, IJobRequest } from "../../interfaces/customer/ICustomer";
+import type { IActiveJobRepository } from "../../interfaces/customer/ICustomerRepository";
+import { ActiveJobModel } from "../../models/user/ActiveJobModal";
+import { ACTIVE_JOB_STATUS } from "../../shared/enums/commonEnums";
+import { BaseRepository } from "../baseRepository";
+import type { Pagination } from "../../DTO/admin/adminDTO";
+import { HireDesignerModel } from "../../models/user/hireDesignerModel";
+import { JobRequestModel } from "../../models/user/jobModel";
 
 export class ActiveJobRepository extends BaseRepository<IActiveJob> implements IActiveJobRepository {
     constructor() {

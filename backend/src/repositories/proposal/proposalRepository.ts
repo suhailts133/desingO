@@ -1,12 +1,11 @@
-
 import mongoose from "mongoose";
-import type { CreateProposalRepoDataDTO, GetProposalDTO, ProposalStatusFilter, ProposalStatusUpdateRepoDTO } from "../../DTO/proposal/proposal.js";
-import type { ContractStatus, IEscrow, IProposal, ProposalServiceStatus } from "../../interfaces/proposal/IProposal.js";
-import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository.js";
-import { ProposalModel } from "../../models/proposal/proposalModal.js";
-import { BaseRepository } from "../baseRepository.js";
-import type { IUser } from "../../interfaces/auth/IUser.js";
-import { CONTRACT_STATUS, FIRST_SERVICE_ORDER_NUMBER, ServicePaymentStatus, ServiceStatus } from "../../shared/enums/proposalEnums.js";
+import type { CreateProposalRepoDataDTO, GetProposalDTO, ProposalStatusFilter, ProposalStatusUpdateRepoDTO } from "../../DTO/proposal/proposal";
+import type { ContractStatus, IEscrow, IProposal, ProposalServiceStatus } from "../../interfaces/proposal/IProposal";
+import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
+import { ProposalModel } from "../../models/proposal/proposalModal";
+import { BaseRepository } from "../baseRepository";
+import type { IUser } from "../../interfaces/auth/IUser";
+import { CONTRACT_STATUS, FIRST_SERVICE_ORDER_NUMBER, ServicePaymentStatus, ServiceStatus } from "../../shared/enums/proposalEnums";
 
 export class ProposalRepository extends BaseRepository<IProposal> implements IProposalRepository {
     constructor() {

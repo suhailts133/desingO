@@ -1,7 +1,7 @@
 import { Server as SocketServer } from "socket.io"
-import type { AuthSocket } from "./SocketType.js";
-import type { IChatService } from "../interfaces/chat/IChatService.js";
-import { ChatController } from "./controller/chatController.js";
+import type { AuthSocket } from "./SocketType";
+import type { IChatService } from "../interfaces/chat/IChatService";
+import { ChatController } from "./controller/chatController";
 
 
 export function registerChatHandlers(io: SocketServer, socket: AuthSocket, chatService: IChatService) {

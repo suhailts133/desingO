@@ -1,11 +1,11 @@
 import asyncHandler from "express-async-handler";
 import type { Request, Response } from 'express'
-import type { IProfileImage, IProfileImageService } from "../../interfaces/base/IProfile.js";
-import { AppError } from "../../shared/errors/appError.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { RespsonseHelper } from "../../shared/helpers/responseHelper.js";
-import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
-import { PROFILE_MESSAGES } from "../../shared/messages/profileMessages.js";
+import type { IProfileImage, IProfileImageService } from "../../interfaces/base/IProfile";
+import { AppError } from "../../shared/errors/appError";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { RespsonseHelper } from "../../shared/helpers/responseHelper";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
+import { PROFILE_MESSAGES } from "../../shared/messages/profileMessages";
 
 export class ProfileImageController {
     constructor(private _profileImageService: IProfileImageService) { }

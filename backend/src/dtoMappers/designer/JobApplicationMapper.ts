@@ -1,5 +1,5 @@
-import type { AllJobApplicationsDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO.js";
-import type { IJobApplication, IJobApplicationPopulated, IJobApplicationPopulatedWithJobAndUser, JobApplicationApprovalOrRejectionStatus } from "../../interfaces/designer/IDesigner.js";
+import type { AllJobApplicationsDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO";
+import type { IJobApplication, IJobApplicationPopulated, IJobApplicationPopulatedWithJobAndUser, JobApplicationApprovalOrRejectionStatus } from "../../interfaces/designer/IDesigner";
 
 export class JobApplicationMapper {
     static toJobApplicationApprovalOrRejectionDTO(data: IJobApplication): JobApplicationApprovalOrRejectionResponseDTO {

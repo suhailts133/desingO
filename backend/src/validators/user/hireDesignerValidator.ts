@@ -1,8 +1,8 @@
 import Joi from "joi";
-import type { HireDesignerPayload } from "../../interfaces/customer/ICustomer.js";
-import { roomMeasurementValidation } from "./jobValidator.js";
-import { JobApplicationsQueryFilter } from "../designers/jobApplicationValidations.js";
-import type { HireDesignerFilter } from "../../DTO/user/hireDesignerDTO.js";
+import type { HireDesignerPayload } from "../../interfaces/customer/ICustomer";
+import { roomMeasurementValidation } from "./jobValidator";
+import { JobApplicationsQueryFilter } from "../designers/jobApplicationValidations";
+import type { HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
 
 export const directHireValidation = roomMeasurementValidation
     .fork(

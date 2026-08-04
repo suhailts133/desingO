@@ -1,8 +1,8 @@
 import type { Server } from "socket.io";
-import type { AuthSocket } from "../SocketType.js";
-import type { IChatService } from "../../interfaces/chat/IChatService.js";
+import type { AuthSocket } from "../SocketType";
+import type { IChatService } from "../../interfaces/chat/IChatService";
 import { handleSocketError } from "../../shared/errors/socketErrorHandler.js";
-import type { ChatRoomPayload, LeaveRoomPayload, SendMessagePayload, SendMessageRequestDTO } from "../../DTO/chat/chatDTO.js";
+import type { ChatRoomPayload, LeaveRoomPayload, SendMessagePayload, SendMessageRequestDTO } from "../../DTO/chat/chatDTO";
 export class ChatController {
 
     constructor(private _io: Server, private _socket: AuthSocket, private _chatService: IChatService) { }

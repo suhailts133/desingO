@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose"
-import type { IDesign } from "../../interfaces/designer/IDesigner.js"
-import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js"
+import type { IDesign } from "../../interfaces/designer/IDesigner"
+import type { ImageUploadResult } from "../../interfaces/base/IImageUpload"
 
 const imageFormatSchema = new Schema<ImageUploadResult>({
     path: { type: String, required: true },

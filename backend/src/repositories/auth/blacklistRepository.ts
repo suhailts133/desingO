@@ -1,5 +1,5 @@
 import { client } from "../../config/redis.js";
-import type { IBlackListRepository } from "../../interfaces/auth/IRefreshToken.js";
+import type { IBlackListRepository } from "../../interfaces/auth/IRefreshToken";
 
 export class BlackListRepository implements IBlackListRepository{
 

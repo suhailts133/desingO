@@ -1,5 +1,5 @@
 import Joi from "joi";
-import type { DesignerUpdateResponseDTO, UserProfileUpdateDTO } from "../../DTO/profile/profileDTO.js";
+import type { DesignerUpdateResponseDTO, UserProfileUpdateDTO } from "../../DTO/profile/profileDTO";
 
 export const designerProfileUpdateValidation: Joi.ObjectSchema<DesignerUpdateResponseDTO> = Joi.object<DesignerUpdateResponseDTO>({
     full_name: Joi.string()

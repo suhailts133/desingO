@@ -1,5 +1,5 @@
-import type { AllVersion, GetProposalDTO, ProposalDetailDTO, ProposalServiceItemDTO } from "../../DTO/proposal/proposal.js";
-import type { IServiceVersion } from "../../interfaces/proposal/IProposal.js";
+import type { AllVersion, GetProposalDTO, ProposalDetailDTO, ProposalServiceItemDTO } from "../../DTO/proposal/proposal";
+import type { IServiceVersion } from "../../interfaces/proposal/IProposal";
 
 export class ProposalMapper {
 

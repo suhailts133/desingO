@@ -1,16 +1,16 @@
-import type { CreateHireDesignerDTO, getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO.js";
-import { HireDesignerMapper } from "../../dtoMappers/user/hireDesignerMapper.js";
-import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
-import type { WarningDTO } from "../../interfaces/benchmark/IBenchMark.js";
-import type { HireDesignerPayload } from "../../interfaces/customer/ICustomer.js";
-import type { IActiveJobRepository, IHireDesignerRepository } from "../../interfaces/customer/ICustomerRepository.js";
-import type { IHireDesignerService } from "../../interfaces/customer/ICustomerService.js";
-import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { AppError } from "../../shared/errors/appError.js";
-import { toSqFt } from "../../shared/helpers/extraFunctions.js";
-import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages.js";
-import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
+import type { CreateHireDesignerDTO, getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
+import { HireDesignerMapper } from "../../dtoMappers/user/hireDesignerMapper";
+import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
+import type { WarningDTO } from "../../interfaces/benchmark/IBenchMark";
+import type { HireDesignerPayload } from "../../interfaces/customer/ICustomer";
+import type { IActiveJobRepository, IHireDesignerRepository } from "../../interfaces/customer/ICustomerRepository";
+import type { IHireDesignerService } from "../../interfaces/customer/ICustomerService";
+import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { AppError } from "../../shared/errors/appError";
+import { toSqFt } from "../../shared/helpers/extraFunctions";
+import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages";
+import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 
 export class HireDesignerService implements IHireDesignerService {
     constructor(private _hireDesignerRepo: IHireDesignerRepository, private _designRepo: IDesignRepository, private _activeJobRepo: IActiveJobRepository) { }

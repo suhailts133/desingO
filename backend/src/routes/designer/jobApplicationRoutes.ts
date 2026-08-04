@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { JobApplicationRepository } from "../../repositories/common/jobApplicationRepository.js";
-import { JobApplicationService } from "../../services/common/JobApplicationServices.js";
-import { JobRequestRepository } from "../../repositories/customer/jobRequestRepository.js";
-import { JobApplicationController } from "../../controllers/designer/jobApplicationController.js";
-import designerAuthentication from "../../middlewares/designerAuth.js";
-import authenticate from "../../middlewares/auth.js";
-import { ActiveJobRepository } from "../../repositories/common/activeJobRepository.js";
+import { JobApplicationRepository } from "../../repositories/common/jobApplicationRepository";
+import { JobApplicationService } from "../../services/common/JobApplicationServices";
+import { JobRequestRepository } from "../../repositories/customer/jobRequestRepository";
+import { JobApplicationController } from "../../controllers/designer/jobApplicationController";
+import designerAuthentication from "../../middlewares/designerAuth";
+import authenticate from "../../middlewares/auth";
+import { ActiveJobRepository } from "../../repositories/common/activeJobRepository";
 
 const router = Router()
 

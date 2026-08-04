@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import type { ImageUploadResult } from "../base/IImageUpload.js";
-import type { IUser } from "../auth/IUser.js";
-import type { IJobRequest } from "../customer/ICustomer.js";
+import type { ImageUploadResult } from "../base/IImageUpload";
+import type { IUser } from "../auth/IUser";
+import type { IJobRequest } from "../customer/ICustomer";
 
 
 export interface DesignerVerificationFiles {

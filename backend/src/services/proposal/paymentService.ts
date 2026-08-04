@@ -1,14 +1,14 @@
-import Logger from "../../config/logger.js";
-import type { paymentRepoDTO } from "../../DTO/proposal/payment.js";
-import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
-import type { GateWayData, IPaymentGateway } from "../../interfaces/proposal/IPaymentGateway.js";
-import type { IEscrow } from "../../interfaces/proposal/IProposal.js";
-import type { IPaymentRepository, IProposalRepository } from "../../interfaces/proposal/IProposalRepository.js";
-import type { IPaymentService } from "../../interfaces/proposal/IProposalService.js";
-import { EscrowStatus, Payment_Status, ServicePaymentStatus, ServiceStatus } from "../../shared/enums/proposalEnums.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { AppError } from "../../shared/errors/appError.js";
-import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages.js";
+import Logger from "../../config/logger";
+import type { paymentRepoDTO } from "../../DTO/proposal/payment";
+import type { IApiResponse } from "../../interfaces/base/IApiResponse";
+import type { GateWayData, IPaymentGateway } from "../../interfaces/proposal/IPaymentGateway";
+import type { IEscrow } from "../../interfaces/proposal/IProposal";
+import type { IPaymentRepository, IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
+import type { IPaymentService } from "../../interfaces/proposal/IProposalService";
+import { EscrowStatus, Payment_Status, ServicePaymentStatus, ServiceStatus } from "../../shared/enums/proposalEnums";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { AppError } from "../../shared/errors/appError";
+import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 
 export class PaymentService implements IPaymentService {
     constructor(private _paymentGateway: IPaymentGateway, private _proposalRepo: IProposalRepository, private _paymentRepo: IPaymentRepository) { }

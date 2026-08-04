@@ -1,17 +1,16 @@
-import Logger from "../../config/logger.js";
-import type { ServiceImageUploadResponseDTO } from "../../DTO/proposal/proposal.js";
-import type { VersionAcceptOrRejectDTO } from "../../DTO/proposal/version.js";
-import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
-import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
-import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
-import type { IProposalRepository, IServiceVersionRepository } from "../../interfaces/proposal/IProposalRepository.js";
-import type { IProposalVersionService } from "../../interfaces/proposal/IProposalService.js";
-import { CLOUDINARY_FOLDER_NAME, USER_ROLES } from "../../shared/enums/commonEnums.js";
-import { CONTRACT_STATUS, ServiceStatus, VERSION_STATUS } from "../../shared/enums/proposalEnums.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { AppError } from "../../shared/errors/appError.js";
-import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages.js";
-import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages.js";
+import Logger from "../../config/logger";
+import type { VersionAcceptOrRejectDTO } from "../../DTO/proposal/version";
+import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
+import type { IApiResponse } from "../../interfaces/base/IApiResponse";
+import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload";
+import type { IProposalRepository, IServiceVersionRepository } from "../../interfaces/proposal/IProposalRepository";
+import type { IProposalVersionService } from "../../interfaces/proposal/IProposalService";
+import { CLOUDINARY_FOLDER_NAME, USER_ROLES } from "../../shared/enums/commonEnums";
+import { CONTRACT_STATUS, ServiceStatus, VERSION_STATUS } from "../../shared/enums/proposalEnums";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { AppError } from "../../shared/errors/appError";
+import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
+import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 
 export class ProposalVersionService implements IProposalVersionService {
     constructor(private _proposalRepo: IProposalRepository, private _serviceVersionRepo: IServiceVersionRepository, private _imageUploder: IImageUploaderService, private _userRepo: IUserRepository) { }

@@ -1,5 +1,5 @@
-import type { ReviewListDTO } from "../../DTO/proposal/review.js";
-import type { IReview } from "../../interfaces/proposal/IProposal.js";
+import type { ReviewListDTO } from "../../DTO/proposal/review";
+import type { IReview } from "../../interfaces/proposal/IProposal";
 
 export class ReviewMapper {
     static toReviewDTOList(data: IReview[]): ReviewListDTO[] {

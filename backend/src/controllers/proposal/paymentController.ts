@@ -1,13 +1,13 @@
-import type { IPaymentWebhookService } from "../../interfaces/proposal/IPaymentGateway.js";
-import type { IPaymentService } from "../../interfaces/proposal/IProposalService.js";
+import type { IPaymentWebhookService } from "../../interfaces/proposal/IPaymentGateway";
+import type { IPaymentService } from "../../interfaces/proposal/IProposalService";
 import type { Request, Response } from "express"
-import { RespsonseHelper } from "../../shared/helpers/responseHelper.js"
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js"
+import { RespsonseHelper } from "../../shared/helpers/responseHelper"
+import { RESPONSE_CODE } from "../../shared/enums/statusCode"
 import asyncHandler from "express-async-handler";
-import { AppError } from "../../shared/errors/appError.js"
-import { isObjectId } from "../../shared/helpers/extraFunctions.js";;
-import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
-import Logger from "../../config/logger.js";
+import { AppError } from "../../shared/errors/appError"
+import { isObjectId } from "../../shared/helpers/extraFunctions";;
+import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
+import Logger from "../../config/logger";
 /**
  * This controller has everything realted to payment
  */

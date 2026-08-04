@@ -1,15 +1,14 @@
-
-import type { ActiveJobFilter, ActiveJobResponseDTO } from "../../DTO/user/activeJobDTO.js";
-import { ActiveJobMapper } from "../../dtoMappers/common/activeJobMapper.js";
-import type { IApiResponseWithPagination } from "../../interfaces/base/IApiResponse.js";
-import type { MessageRole } from "../../interfaces/chat/IChat.js";
-import type { IActiveJobRepository } from "../../interfaces/customer/ICustomerRepository.js";
-import type { IActiveJobService } from "../../interfaces/customer/ICustomerService.js";
-import { ACTIVE_JOB_STATUS, USER_ROLES } from "../../shared/enums/commonEnums.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { AppError } from "../../shared/errors/appError.js";
-import { CHAT_MESSAGES } from "../../shared/messages/chatMessage.js";
-import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
+import type { ActiveJobFilter, ActiveJobResponseDTO } from "../../DTO/user/activeJobDTO";
+import { ActiveJobMapper } from "../../dtoMappers/common/activeJobMapper";
+import type { IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
+import type { MessageRole } from "../../interfaces/chat/IChat";
+import type { IActiveJobRepository } from "../../interfaces/customer/ICustomerRepository";
+import type { IActiveJobService } from "../../interfaces/customer/ICustomerService";
+import { ACTIVE_JOB_STATUS, USER_ROLES } from "../../shared/enums/commonEnums";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { AppError } from "../../shared/errors/appError";
+import { CHAT_MESSAGES } from "../../shared/messages/chatMessage";
+import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 
 export class ActiveJobService implements IActiveJobService {
     constructor(private _activeJobRepo: IActiveJobRepository) { }

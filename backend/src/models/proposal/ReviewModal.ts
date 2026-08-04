@@ -1,6 +1,6 @@
 
 import mongoose, { Schema } from "mongoose"
-import type { IReview } from "../../interfaces/proposal/IProposal.js"
+import type { IReview } from "../../interfaces/proposal/IProposal"
 
 const reviewSchema = new Schema<IReview>({
     jobId: {

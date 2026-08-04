@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose"
-import type { IJobApplication } from "../../interfaces/designer/IDesigner.js"
+import type { IJobApplication } from "../../interfaces/designer/IDesigner"
 
 
 const jobApplicationSchema = new Schema<IJobApplication>({

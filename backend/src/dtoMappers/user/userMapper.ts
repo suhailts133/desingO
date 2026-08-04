@@ -1,6 +1,6 @@
-import type { AdminUsersResponseDTO } from "../../DTO/admin/adminDTO.js";
-import type { AuthResponseDTO, UserRepsonseDTO } from "../../DTO/auth/authDTO.js";
-import type { IUser } from "../../interfaces/auth/IUser.js";
+import type { AdminUsersResponseDTO } from "../../DTO/admin/adminDTO";
+import type { AuthResponseDTO, UserRepsonseDTO } from "../../DTO/auth/authDTO";
+import type { IUser } from "../../interfaces/auth/IUser";
 
 export class UserMapper {
     static toResponseDTO(user: IUser): UserRepsonseDTO {

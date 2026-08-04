@@ -1,4 +1,4 @@
-import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
+import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
 
 
 export interface WorkExperienceWithImage extends WorkExperience {

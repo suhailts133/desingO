@@ -1,11 +1,11 @@
-import type {  DesignerProfileResponseDTO, DesignerUpdateResponseDTO, UserProfileDTO, UserProfileResponseDTO, UserProfileUpdateDTO, } from "../../DTO/profile/profileDTO.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { AppError } from "../../shared/errors/appError.js";
-import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
-import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
-import type { IProfileService } from "../../interfaces/base/IProfile.js";
-import type { IDesignerRepository } from "../../interfaces/designer/IDesignerRepository.js";
-import { PROFILE_MESSAGES } from "../../shared/messages/profileMessages.js";
+import type {  DesignerProfileResponseDTO, DesignerUpdateResponseDTO, UserProfileDTO, UserProfileResponseDTO, UserProfileUpdateDTO, } from "../../DTO/profile/profileDTO";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { AppError } from "../../shared/errors/appError";
+import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
+import type { IApiResponse } from "../../interfaces/base/IApiResponse";
+import type { IProfileService } from "../../interfaces/base/IProfile";
+import type { IDesignerRepository } from "../../interfaces/designer/IDesignerRepository";
+import { PROFILE_MESSAGES } from "../../shared/messages/profileMessages";
 
 export class ProfileService implements IProfileService {
     constructor(private _DesignerRepo: IDesignerRepository, private _userRepo: IUserRepository) { };

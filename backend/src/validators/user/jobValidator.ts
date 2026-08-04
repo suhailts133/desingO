@@ -1,6 +1,6 @@
 import Joi from "joi";
-import type { HireDesignerPayload, ICreateJobRequest, IRoomMeasurement } from "../../interfaces/customer/ICustomer.js";
-import type { EditJobRequest } from "../../DTO/user/jobsDTO.js";
+import type { HireDesignerPayload, ICreateJobRequest, IRoomMeasurement } from "../../interfaces/customer/ICustomer";
+import type { EditJobRequest } from "../../DTO/user/jobsDTO";
 
 
 export const roomMeasurementValidation: Joi.ObjectSchema<IRoomMeasurement> = Joi.object<IRoomMeasurement>({

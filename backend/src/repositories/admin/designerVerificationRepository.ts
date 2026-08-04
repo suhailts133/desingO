@@ -1,10 +1,10 @@
-import type { DesignerFilterDTO, AdminDesignerApprovalRequestDTO, Pagination } from "../../DTO/admin/adminDTO.js";
-import type { IDesignerVerificationRepository } from "../../interfaces/admin/IDesignerVerificationRespository.js";
-import type { IUser } from "../../interfaces/auth/IUser.js";
-import type { IDesigner, IDesignerPopulated } from "../../interfaces/designer/IDesigner.js";
-import { DesignerModel } from "../../models/designer/designerModel.js";
-import { UserModel } from "../../models/user/userModel.js";
-import { BaseRepository } from "../baseRepository.js";
+import type { DesignerFilterDTO, AdminDesignerApprovalRequestDTO, Pagination } from "../../DTO/admin/adminDTO";
+import type { IDesignerVerificationRepository } from "../../interfaces/admin/IDesignerVerificationRespository";
+import type { IUser } from "../../interfaces/auth/IUser";
+import type { IDesigner, IDesignerPopulated } from "../../interfaces/designer/IDesigner";
+import { DesignerModel } from "../../models/designer/designerModel";
+import { UserModel } from "../../models/user/userModel";
+import { BaseRepository } from "../baseRepository";
 import type { QueryFilter } from "mongoose";
 
 export class DesignerVerificationManagementRepository extends BaseRepository<IDesigner> implements IDesignerVerificationRepository {

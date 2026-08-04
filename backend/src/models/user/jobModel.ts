@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
-import type { IJobRequest, IRoomMeasurement } from "../../interfaces/customer/ICustomer.js";
-import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js";
+import type { IJobRequest, IRoomMeasurement } from "../../interfaces/customer/ICustomer";
+import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
 
 
 const imageFormatSchema = new Schema<ImageUploadResult>({

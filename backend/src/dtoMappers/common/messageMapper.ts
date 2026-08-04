@@ -1,5 +1,5 @@
-import type { MessageResponseDTO } from "../../DTO/chat/chatDTO.js";
-import type { IMessage } from "../../interfaces/chat/IChat.js";
+import type { MessageResponseDTO } from "../../DTO/chat/chatDTO";
+import type { IMessage } from "../../interfaces/chat/IChat";
 
 export class MessageMapper {
     static toMessageDTO(data: IMessage): MessageResponseDTO {

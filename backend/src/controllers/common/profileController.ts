@@ -1,12 +1,12 @@
-import type { IProfileService } from "../../interfaces/base/IProfile.js";
+import type { IProfileService } from "../../interfaces/base/IProfile";
 import asyncHandler from "express-async-handler";
 import type { Request, Response } from 'express'
-import { AppError } from "../../shared/errors/appError.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { RespsonseHelper } from "../../shared/helpers/responseHelper.js";
-import { designerProfileUpdateValidation, userProfileUpdateValidation } from "../../validators/profile/profileValidation.js";
-import type { DesignerUpdateResponseDTO, UserProfileUpdateDTO } from "../../DTO/profile/profileDTO.js";
-import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
+import { AppError } from "../../shared/errors/appError";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { RespsonseHelper } from "../../shared/helpers/responseHelper";
+import { designerProfileUpdateValidation, userProfileUpdateValidation } from "../../validators/profile/profileValidation";
+import type { DesignerUpdateResponseDTO, UserProfileUpdateDTO } from "../../DTO/profile/profileDTO";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
 export class ProfileController {
     constructor(private _profileServices: IProfileService) { }
 

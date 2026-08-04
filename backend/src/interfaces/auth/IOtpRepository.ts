@@ -1,4 +1,4 @@
-import type { IUserTemp } from "./IUser.js";
+import type { IUserTemp } from "./IUser";
 export interface IOTPRepository {
     saveUserData(data: IUserTemp): Promise<string | null | undefined>;
     saveOTP(otp:string,email:string):Promise<boolean>

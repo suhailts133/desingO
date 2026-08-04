@@ -1,11 +1,11 @@
-import type { DesignerFilterDTO, AdminDesignerApprovalRequestDTO } from "../../DTO/admin/adminDTO.js";
-import type { IAdminDesignerVerificatoinServices } from "../../interfaces/admin/IAdminService.js";
-import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import { AppError } from "../../shared/errors/appError.js";
-import { isObjectId } from "../../shared/helpers/extraFunctions.js";
-import { RespsonseHelper } from "../../shared/helpers/responseHelper.js";
-import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages.js";
-import { designerStatusChangeValidator } from "../../validators/admin/designerStatusChangeValidator.js";
+import type { DesignerFilterDTO, AdminDesignerApprovalRequestDTO } from "../../DTO/admin/adminDTO";
+import type { IAdminDesignerVerificatoinServices } from "../../interfaces/admin/IAdminService";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
+import { AppError } from "../../shared/errors/appError";
+import { isObjectId } from "../../shared/helpers/extraFunctions";
+import { RespsonseHelper } from "../../shared/helpers/responseHelper";
+import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
+import { designerStatusChangeValidator } from "../../validators/admin/designerStatusChangeValidator";
 import asyncHandler from "express-async-handler";
 import type { Request, Response } from "express"
 

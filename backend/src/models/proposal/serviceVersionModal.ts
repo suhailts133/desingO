@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose"
-import type { IServiceVersion } from "../../interfaces/proposal/IProposal.js"
-import { imageFormatSchema } from "./schemas/imageFormatSchema.js"
+import type { IServiceVersion } from "../../interfaces/proposal/IProposal"
+import { imageFormatSchema } from "./schemas/imageFormatSchema"
 
 export const serviceVersionSchema = new Schema<IServiceVersion>({
     proposalId: { type: Schema.Types.ObjectId, ref: "Proposal", required: true },

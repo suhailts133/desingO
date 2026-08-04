@@ -1,5 +1,5 @@
 import Joi from "joi";
-import type { JobApplicationApprovalOrRejectionRequestDTO, JobApplicationFilter } from "../../DTO/designer/jobsDTO.js";
+import type { JobApplicationApprovalOrRejectionRequestDTO, JobApplicationFilter } from "../../DTO/designer/jobsDTO";
 
 export const jobApplicationValidation: Joi.ObjectSchema<{ jobId: string }> = Joi.object<{ jobId: string }>({
     jobId: Joi.string()

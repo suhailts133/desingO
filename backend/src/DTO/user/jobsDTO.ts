@@ -1,5 +1,5 @@
-import type { ImageUploadResult } from "../../interfaces/base/IImageUpload.js"
-import type { IJobRequest, IRoomMeasurement } from "../../interfaces/customer/ICustomer.js"
+import type { ImageUploadResult } from "../../interfaces/base/IImageUpload"
+import type { IJobRequest, IRoomMeasurement } from "../../interfaces/customer/ICustomer"
 
 export type JobStatus = "Pending" | "Closed" | "Ongoing"
 

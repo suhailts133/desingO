@@ -1,9 +1,9 @@
-import type { IApiResponse } from "../../interfaces/base/IApiResponse.js";
+import type { IApiResponse } from "../../interfaces/base/IApiResponse";
 import type { SpaceTypeAvg } from "../../interfaces/benchmark/IBenchMark.js";
-import type { IDesignBenchMarkRepository } from "../../interfaces/benchmark/IBenchMarkRepository.js";
-import type { IDesignBenchMarkService } from "../../interfaces/benchmark/IBenchMarkService.js";
-import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository.js";
-import { BENCHMARK_MESSAGES } from "../../shared/messages/benchMarkMessages.js";
+import type { IDesignBenchMarkRepository } from "../../interfaces/benchmark/IBenchMarkRepository";
+import type { IDesignBenchMarkService } from "../../interfaces/benchmark/IBenchMarkService";
+import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
+import { BENCHMARK_MESSAGES } from "../../shared/messages/benchMarkMessages";
 
 export class DesignBenchmarkService implements IDesignBenchMarkService {
     constructor(private _designRepo: IDesignRepository, private _benchMarkRepo: IDesignBenchMarkRepository) { }

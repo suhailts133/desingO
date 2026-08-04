@@ -1,8 +1,8 @@
-import type { CreateUserDTO } from "../../DTO/auth/authDTO.js";
-import type { IUser, UserRole } from "../../interfaces/auth/IUser.js";
-import type { IUserRepository } from "../../interfaces/auth/IUserRepository.js";
-import { UserModel } from "../../models/user/userModel.js";
-import { BaseRepository } from "../baseRepository.js";
+import type { CreateUserDTO } from "../../DTO/auth/authDTO";
+import type { IUser, UserRole } from "../../interfaces/auth/IUser";
+import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
+import { UserModel } from "../../models/user/userModel";
+import { BaseRepository } from "../baseRepository";
 
 
 

@@ -1,14 +1,14 @@
 import mongoose, { type QueryFilter } from "mongoose";
-import type { DesignerVerificationDTO } from "../../DTO/designer/designerVerificationDTOs.js";
-import type { IDesigner, IDesignerPopulated } from "../../interfaces/designer/IDesigner.js";
-import type { IDesignerRepository } from "../../interfaces/designer/IDesignerRepository.js";
-import { DesignerModel } from "../../models/designer/designerModel.js";
-import { BaseRepository } from "../baseRepository.js";
-import type { DesignerUpdateRequestDTO } from "../../DTO/profile/profileDTO.js";
-import type { Pagination } from "../../DTO/admin/adminDTO.js";
-import type { DesignerFilter } from "../../DTO/designer/designerDTO.js";
-import { UserModel } from "../../models/user/userModel.js";
-import type { IUser } from "../../interfaces/auth/IUser.js";
+import type { DesignerVerificationDTO } from "../../DTO/designer/designerVerificationDTOs";
+import type { IDesigner, IDesignerPopulated } from "../../interfaces/designer/IDesigner";
+import type { IDesignerRepository } from "../../interfaces/designer/IDesignerRepository";
+import { DesignerModel } from "../../models/designer/designerModel";
+import { BaseRepository } from "../baseRepository";
+import type { DesignerUpdateRequestDTO } from "../../DTO/profile/profileDTO";
+import type { Pagination } from "../../DTO/admin/adminDTO";
+import type { DesignerFilter } from "../../DTO/designer/designerDTO";
+import { UserModel } from "../../models/user/userModel";
+import type { IUser } from "../../interfaces/auth/IUser";
 
 export class DesignerRepository extends BaseRepository<IDesigner> implements IDesignerRepository {
     constructor() {
