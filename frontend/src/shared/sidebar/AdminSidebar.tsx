@@ -91,11 +91,11 @@ const AdminSidebar = memo(({ name, email }: { name: string, email: string }) => 
         </Link>
 
         {/* disputes */}
-        <a onClick={() => setActive("Orders")} className={linkClass("Orders")}>
+        <Link to="/admin/disputes" onClick={() => setActive("disputes")} className={linkClass("disputes")}>
           {active === "Orders" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
-          <TriangleAlert size={18} strokeWidth={active === "Orders" ? 2.2 : 1.8} className={iconClass("Orders")} />
+          <TriangleAlert size={18} strokeWidth={active === "disputes" ? 2.2 : 1.8} className={iconClass("disputes")} />
           {!collapsed && <span className="flex-1">Disputes</span>}
-        </a>
+        </Link>
 
         {/* bids */}
         <a onClick={() => setActive("Analytics")} className={linkClass("Analytics")}>

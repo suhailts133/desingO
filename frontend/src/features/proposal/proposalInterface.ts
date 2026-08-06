@@ -1,5 +1,3 @@
-import type { ImageUploadResult } from "../designer/profile/designerProfileInterface"
-
 export type ServiceStatus = "Locked" | "Open" | "In Progress" | "Uploaded" | "Redo" | "Completed"
 
 export type PaymentStatus = "Pending" | "Paid" | "Refunded"
@@ -8,12 +6,38 @@ export type EscrowStatus = "Held" | "Released" | "Refunded" | "Disputed"
 
 export type ContractStatus = "Sent" | "Accepted" | "Rejected" | "Ongoing" | "Completed" | "Disputed" | "Expired"
 
-export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Escalated"
+export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Redo" | "Awaiting Confirmation"
 
 export interface IServiceResult {
     serviceResult: {
         file: File[]
     }[]
+}
+
+
+export interface DisputeFormDTO {
+    reason: string,
+    type: { value: string; label: string };
+    evidence: {
+        file: File[];
+    }[];
+}
+export interface AcceptOrRejectDisputeDTO {
+    status: "Resolved" | "Redo",
+    disputeId: string
+}
+
+
+export interface DisputeResponseDTO {
+    id: string
+    raisedBy: "Customer" | "Designer";
+    serviceOrder: number;
+    reason: string;
+    contractStatus: string,
+    evidence: string[];
+    status: DisputeStatus;
+    resolution?: string;
+    resolutionType?: string;
 }
 
 
