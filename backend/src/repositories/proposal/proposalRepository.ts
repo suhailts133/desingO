@@ -93,6 +93,11 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
             .populate<{ clientId: IUser }>("clientId")
             .populate<{ designerId: IUser }>("designerId")
     }
+    async getProposalbyId(id: string): Promise<IProposal | null> {
+        return this.findById(id)
+    }
+
+    
 
     async updateProposal(id: string, filters: Partial<IProposal>): Promise<IProposal | null> {
         return await this.update(id, filters);

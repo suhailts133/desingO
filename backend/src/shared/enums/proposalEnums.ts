@@ -37,11 +37,22 @@ export enum CONTRACT_STATUS {
     EXPIRED = "Expired"
 }
 
-export enum DisputeStatus {
+export enum DISPUTE_STATUS {
     OPEN = "Open",
     UNDER_REVIEW = "Under Review",
     RESOLVED = "Resolved",
-    ESCALATED = "Escalated"
+    ESCALATED = "Escalated",
+    AWAITING_CONFIRMATION = "Awaiting Confirmation"
+}
+
+
+export enum USER_TYPE {
+    CUSTOMER = "Customer",
+    DESIGNER = "Designer",
+}
+export enum DISPUTE_RESOLVED_BY {
+    ADMIN = "Admin",
+    MUTUAL = "Mutual",
 }
 
 
@@ -53,4 +64,10 @@ export enum VERSION_STATUS {
     PENDING = "Pending",
     APPROVED = "Approved",
     REJECTED = "Rejected",
+}
+
+
+export enum DISPUTE_SOLUTION {
+    FULL_REFUND = "Full Refund",
+    REFUND = "Refund",
 }

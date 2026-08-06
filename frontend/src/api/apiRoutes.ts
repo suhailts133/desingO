@@ -15,6 +15,9 @@ export const API_ROUTES = {
     ADMIN: {
         GET_ALL_USERS: "/admin/users",
         GET_ALL_USER: "/admin/users",
+        GET_ALL_DISPUTES: "/admin/disputes",
+        GET_DISPUTE: "/admin/disputes",
+        GIVE_VERDIT: "/admin/disputes/give-verdit",
         TOGGLE_USER_STATUS: '/admin/users/toggle-status',
         GET_ALL_DESIGNER_REQUESTS: "/admin/designer-application",
         GET_DESIGNER_REQUEST: "/admin/designer-application",
@@ -86,5 +89,10 @@ export const API_ROUTES = {
     },
     PAYMENT: {
         INTENT: "/payments/intent"
+    },
+    DISPUTE:{
+        REPORT:"/dispute/report-issue",
+        GET_DISPUTE:"/dispute",
+        ACCEPT_OR_REJECT:"/dispute/accept-reject",
     }
 } as const

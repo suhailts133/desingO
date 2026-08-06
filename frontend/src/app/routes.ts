@@ -44,6 +44,8 @@ import ProposalPage from "../features/proposal/page/ProposalPage";
 import ProposalForm from "../features/proposal/component/ProposalForm";
 import HireRequestsPage from "../features/designer/designs/pages/HireRequestsPage";
 import MyHireRequestPage from "../features/user/HireRequests/pages/MyHireRequestPage";
+import DisputeTable from "../features/admin/disputes/component/DisputeTable";
+import DisputeDetailAdmin from "../features/admin/disputes/component/DisputeDetailAdmin";
 
 
 const router = createBrowserRouter([
@@ -93,6 +95,8 @@ const router = createBrowserRouter([
         children: [
             { path: "dashboard", Component: Dashboard },
             { path: "users", Component: UsersTable },
+            { path: "disputes", Component: DisputeTable },
+            { path: "disputes/:id", Component: DisputeDetailAdmin },
             { path: "users/:id", Component: UserDetail },
             { path: "designer-requests", Component: DesignerVerificationTable },
             { path: "designer-requests/:id", Component: DesignerVerificationDetails }

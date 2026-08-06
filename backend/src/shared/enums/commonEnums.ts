@@ -20,7 +20,8 @@ export enum CLOUDINARY_FOLDER_NAME {
     GALLERY = "designer/gallery",
     SERVICE_RESULT = "designer/serviceResult",
     PROFILE_IMAGES = "common/profileImages",
-    REFERENCE_IMAGES = "jobRequest/refrenceImages"
+    REFERENCE_IMAGES = "jobRequest/refrenceImages",
+    EVIDENCE = "proposal/evidence"
 }
 
 

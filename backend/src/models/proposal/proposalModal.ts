@@ -22,6 +22,9 @@ const proposalSchema = new Schema<IProposal>({
         ref: "User",
         required: true
     },
+    disputeId: {
+        type: String
+    },
     drawingFeePerSqFt: { type: Number, required: true },
     platformFee: { type: Number, required: true },
     remainingPlatformFee: { type: Number, required: true },

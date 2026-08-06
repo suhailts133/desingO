@@ -10,7 +10,7 @@ export type EscrowStatus = "Held" | "Released" | "Refunded" | "Disputed"
 
 export type ContractStatus = "Sent" | "Accepted" | "Rejected" | "Ongoing" | "Completed" | "Disputed" | "Expired"
 
-export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Escalated"
+export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Redo" | "Awaiting Confirmation" 
 
 
 export interface IServiceReview {
@@ -19,20 +19,6 @@ export interface IServiceReview {
     deliveredOnTime: boolean;
     revisionsNeeded: number;
     reviewedAt: Date;
-}
-
-
-
-export interface IDispute {
-    raisedBy: "client" | "designer";
-    serviceOrder: number;
-    reason: string;
-    evidence: ImageUploadResult[];
-    status: DisputeStatus;
-    resolution?: string;
-    resolvedBy?: "admin" | "mutual";
-    createdAt: Date;
-    resolvedAt?: Date;
 }
 
 
@@ -84,6 +70,7 @@ export interface IProposal {
     sourceName: string
     clientId: mongoose.Types.ObjectId;
     designerId: mongoose.Types.ObjectId;
+    disputeId: string;
     drawingFeePerSqFt: number;
     totalDrawingFee: number;
     services: IServiceItem[];
