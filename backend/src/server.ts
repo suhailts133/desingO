@@ -11,6 +11,7 @@ import authRoutes from "./routes/common/authRoutes"
 // admin routes
 import userRoutes from "./routes/admin/userRoutes"
 import designerVerificationRoutes from "./routes/admin/designerVerificationRoutes"
+import disputeManagementRoutes from "./routes/admin/adminDisputeRoutes"
 // designer routes
 import designerRoutes from "./routes/designer/designerRoutes"
 import designRoutes from "./routes/designer/designRoutes"
@@ -22,6 +23,7 @@ import hireDesignerRoute from "./routes/user/hireDesignerRoutes"
 import activeJobsRoute from "./routes/user/activeJobRoutes"
 // common routes
 import profileRoutes from "./routes/common/profileRoutes"
+import disputeRoutes from "./routes/proposal/disputeRoutes"
 //benchmark routes
 import designBMRoutes from "./routes/benchmark/designBMRoutes"
 // proposalRoutes
@@ -49,6 +51,7 @@ app.use(express.json());
 // admin
 
 app.use("/api/admin/users", userRoutes)
+app.use("/api/admin/disputes", disputeManagementRoutes)
 app.use("/api/admin/designer-application", designerVerificationRoutes)
 
 
@@ -66,6 +69,7 @@ app.use("/api/proposal", proposalRoutes)
 app.use("/api/active-job", activeJobsRoute)
 
 app.use("/api/review", reviewRoutes)
+app.use("/api/dispute", disputeRoutes)
 app.use(globalErrorHandler)
 
 

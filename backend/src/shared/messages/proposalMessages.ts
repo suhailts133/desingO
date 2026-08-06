@@ -1,5 +1,21 @@
 export const PROPOSAL_MESSAGES = {
 
+    DISPUTE: {
+        ONGOING: "A Dispute is already on going please wait till it get resolved.",
+        SUCCESS: "Successfully reported the issue.",
+        NOT_FOUND: "Dispute not found.",
+        NOT_DISPUTED: "Either part hasnet risen a ticket.",
+        DECISION_PENDING: "Admin has yet to make a decision.",
+        UPDATION_FAILED: "Updation success.",
+        UPDATION_SUCCESS: "Updation failed.",
+        EVIDENCE: "Evidence of the wrong doing is required.",
+        FETCH_ALL: "Fetch all disputes.",
+        FETCH_ONE: "Fetch a dispute.",
+        PAYMENT_NOT_FOUND: "Payment Not found.",
+        REFEUND_EXCEEDS: "Refend amount exceed the aloted payout.",
+        ZERO: "Refend amount cannot to less then zero",
+        ID_REQUIRED: "Dispute Id required",
+    },
 
     VERSION: {
         NOT_FOUND: "version not found.",
@@ -30,6 +46,7 @@ export const PROPOSAL_MESSAGES = {
         SERVICE_ORDER_MUST_START_FROM_ONE: "Service orders must start from 1",
         SERVICE_ORDER_NOT_CONTINUOUS: "Service orders must be continuous (1, 2, 3...)",
         SERVICES_REQUIRED: "Service is required",
+        NOT_ONGOING: "This proposal is not Active."
     },
     PROPOSAL_INPUT: {
         TEMPLATE_FETCH_SUCCESS: "Proposal template fetched success.",

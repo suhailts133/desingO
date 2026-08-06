@@ -9,6 +9,7 @@ import type { ContractStatus, IEscrow, IProposal, IReview, IServiceVersion, Prop
 export interface IProposalRepository {
     createProposal(data: CreateProposalRepoDataDTO): Promise<IProposal>
     getProposal(sourceId: string): Promise<GetProposalDTO | null>
+    getProposalbyId(id: string): Promise<IProposal | null>
     updateProposal(proposalId:string, data:Partial<IProposal>):Promise<IProposal | null>
     acceptOrRejectProposal(sourceId: string, contractStatus: ContractStatus, overallRejectionReason?: string): Promise<IProposal | null>
     updateService(sourceId: string, order: number, status: ProposalServiceStatus, escrow: Partial<IEscrow>): Promise<IProposal | null>
