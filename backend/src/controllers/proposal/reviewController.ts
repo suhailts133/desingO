@@ -10,6 +10,7 @@ import type { ReviewPayload } from "../../DTO/proposal/review";
 import { isObjectId } from "../../shared/helpers/extraFunctions";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
 import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages";
+import Logger from "../../config/logger";
 
 export class ReviewController {
     constructor(private _reviewService: IReviewService) { }
@@ -36,7 +37,9 @@ export class ReviewController {
             throw new AppError(error.details[0]?.message || "Missing fields or Invalid Data", RESPONSE_CODE.BAD_REQUEST)
         }
         const validated = value as ReviewPayload
+        Logger.info(`${JSON.stringify(validated)}`)
         const result = await this._reviewService.createReview(userid, validated)
+         Logger.info(`${JSON.stringify(result)}`)
         RespsonseHelper.success(res, result)
     })
 

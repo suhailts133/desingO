@@ -1,3 +1,4 @@
+import Logger from "../../config/logger";
 import type { ReviewListDTO, ReviewPayload, ReviewResponseDTO } from "../../DTO/proposal/review";
 import { ReviewMapper } from "../../dtoMappers/proposal/reviewMapper";
 import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
@@ -15,6 +16,7 @@ export class ReviewService implements IReviewService {
     }
 
     async createReview(userId: string, data: ReviewPayload): Promise<IApiResponse<ReviewResponseDTO>> {
+        Logger.info("hit service")
         const checkJobStatus = await this._proposalRepo.getProposal(data.sourceId)
         if (!checkJobStatus) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
@@ -36,10 +38,12 @@ export class ReviewService implements IReviewService {
             rating: data.rating,
             comment: data.comment,
             userId,
-            designerId: checkJobStatus.designerId.toString(),
+            designerId: checkJobStatus.designerId.id,
             userName: user.full_name,
             ...(profileImage && { profileImage })
         })
+
+        Logger.info("Review created")
         if (!result) {
             throw new AppError(PROPOSAL_MESSAGES.REVIEW.ERROR, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
