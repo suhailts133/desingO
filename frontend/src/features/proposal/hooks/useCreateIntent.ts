@@ -9,7 +9,6 @@ export const useCreateIntent = () => {
         setPaymentIntentError(null)
         setClientSecret(null)
         const result = await createIntent(jobId)
-
         if (result.success) {
             setClientSecret(result.data as string)
             return true

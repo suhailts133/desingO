@@ -46,6 +46,7 @@ import HireRequestsPage from "../features/designer/designs/pages/HireRequestsPag
 import MyHireRequestPage from "../features/user/HireRequests/pages/MyHireRequestPage";
 import DisputeTable from "../features/admin/disputes/component/DisputeTable";
 import DisputeDetailAdmin from "../features/admin/disputes/component/DisputeDetailAdmin";
+import TransactionTable from "../features/admin/transaction/component/TransactionTable";
 
 
 const router = createBrowserRouter([
@@ -96,6 +97,7 @@ const router = createBrowserRouter([
             { path: "dashboard", Component: Dashboard },
             { path: "users", Component: UsersTable },
             { path: "disputes", Component: DisputeTable },
+            { path: "transaction", Component: TransactionTable },
             { path: "disputes/:id", Component: DisputeDetailAdmin },
             { path: "users/:id", Component: UserDetail },
             { path: "designer-requests", Component: DesignerVerificationTable },

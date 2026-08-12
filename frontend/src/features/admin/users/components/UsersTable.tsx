@@ -81,6 +81,9 @@ export default function UsersTable() {
         </div>
       )}
 
+
+      <button className="auth-button">sort</button>
+
       {/* Table */}
       <div className="bg-white/20 backdrop-blur-2xl border border-white/30 rounded-2xl shadow-[0_8px_32px_rgba(216,160,144,0.15)] overflow-hidden">
         <table className="w-full">

@@ -165,7 +165,6 @@ export default function ProposalPage() {
 
     const handlePay = async (serviceName: string, amount: number, payemnetSourceId: string) => {
         setPayingService({ serviceName, amount })
-        console.log(payemnetSourceId)
         const success = await handlePaymentIntent(payemnetSourceId)
         if (!success) setPayingService(null)
     }
