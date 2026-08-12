@@ -5,6 +5,7 @@ import type { IReviewRepository } from "../../interfaces/proposal/IProposalRepos
 import { ReviewModel } from "../../models/proposal/ReviewModal";
 import { BaseRepository } from "../baseRepository";
 import type { Pagination } from "../../DTO/admin/adminDTO";
+import Logger from "../../config/logger";
 
 export class ReviewRepository extends BaseRepository<IReview> implements IReviewRepository {
     constructor() {
@@ -37,6 +38,8 @@ export class ReviewRepository extends BaseRepository<IReview> implements IReview
     }
 
     async createReview(data: ReviewRepoDTO): Promise<IReview> {
+        Logger.info("Repo hit")
+        Logger.info(`${JSON.stringify(data)} from repo`)
         return await this.create({
             ...data,
             userId: new mongoose.Types.ObjectId(data.userId),

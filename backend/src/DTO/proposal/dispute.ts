@@ -62,6 +62,9 @@ export type DisputePopulated = Omit<IDispute, "customerId" | "designerId"> & {
     designerId: IUser,
     customerId: IUser
 }
+
+
+
 export type DisputePopulatedAll = Omit<IDispute, "customerId" | "designerId" | "proposalId"> & {
     designerId: IUser,
     customerId: IUser

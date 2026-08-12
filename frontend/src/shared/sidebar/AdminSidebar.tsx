@@ -97,12 +97,13 @@ const AdminSidebar = memo(({ name, email }: { name: string, email: string }) => 
           {!collapsed && <span className="flex-1">Disputes</span>}
         </Link>
 
-        {/* bids */}
-        <a onClick={() => setActive("Analytics")} className={linkClass("Analytics")}>
+        {/* transaction */}
+   <Link to="/admin/transaction" onClick={() => setActive("transaction")} className={linkClass("transaction")}>
           {active === "Analytics" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blush-deep" />}
           <CircleDollarSign size={18} strokeWidth={active === "Analytics" ? 2.2 : 1.8} className={iconClass("Analytics")} />
-          {!collapsed && <span className="flex-1">Bids</span>}
-        </a>
+          {!collapsed && <span className="flex-1">transaction</span>}
+           </Link>
+
 
         {/* Jobs */}
         <a onClick={() => setActive("Notifications")} className={linkClass("Notifications")}>

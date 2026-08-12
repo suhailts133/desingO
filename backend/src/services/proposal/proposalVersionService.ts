@@ -81,6 +81,7 @@ export class ProposalVersionService implements IProposalVersionService {
             if (!updatedWalletDesigner) {
                 throw new AppError(PROPOSAL_MESSAGES.PAYMENT.PAYOUT_DESIGNER_FAILED, RESPONSE_CODE.NOT_FOUND)
             }
+            
             const admin = await this._userRepo.findByRole(USER_ROLES.ADMIN)
             if (!admin) {
                 throw new AppError(ADMIN_MESSAGES.ADMIN.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)

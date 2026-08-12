@@ -10,7 +10,12 @@ export enum DESIGNER_STATUS {
     REJECTED = "Rejected",
     PENDING = "Pending"
 }
-
+export enum TRANSACTION_TYPE {
+    PAYMENT = "Payment",
+    COMMISSION = "Commission",
+    PAYOUT = "Payout",
+    REFUND = "Refund",
+}
 
 export enum CLOUDINARY_FOLDER_NAME {
     CERTIFICATES = "designer/certificates",

@@ -24,5 +24,9 @@ export const ADMIN_MESSAGES = {
         ID_NOT_PROVIDED: "application ID is required. "
     },
 
+    TRANSACTION:{
+        FETCH_ALL:"fetched all transactions"
+    }
+
 
 } as const

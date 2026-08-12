@@ -29,7 +29,8 @@ export class UserManagementRepository extends BaseRepository<IUser> implements I
     async getAllUsers(filter?: UserFilterDTO): Promise<{ data: IUser[]; pagination: Pagination; }> {
         const page = filter?.page ? Number(filter.page) : 1;
         const limit = 10;
-
+        const skip = (page -1) * limit
+        let sort = {}
         const query: QueryFilter<IUser> = {};
         query.role = { "$ne": USER_ROLES.ADMIN };
         if (filter) {
@@ -42,9 +43,17 @@ export class UserManagementRepository extends BaseRepository<IUser> implements I
             if (filter.role) {
                 query.role = filter.role;
             }
+
+            if(filter.sortByName === "BY_NAME"){
+                sort = {full_name:-1}
+            }
         }
  
-        const result = await this.find(query, { skip: (page - 1) * limit, limit });
+        // const result = await this.find(query, { skip: (page - 1) * limit, limit,sort });
+        const result = await this._model.find(query)
+        .sort(sort)
+        .skip(skip)
+        .limit(limit)
         const total = await this._model.countDocuments(query);
 
 

@@ -16,6 +16,7 @@ export const API_ROUTES = {
         GET_ALL_USERS: "/admin/users",
         GET_ALL_USER: "/admin/users",
         GET_ALL_DISPUTES: "/admin/disputes",
+        GET_ALL_TRANSACTION: "/admin/transaction",
         GET_DISPUTE: "/admin/disputes",
         GIVE_VERDIT: "/admin/disputes/give-verdit",
         TOGGLE_USER_STATUS: '/admin/users/toggle-status',

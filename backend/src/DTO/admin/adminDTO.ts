@@ -21,7 +21,7 @@ export interface UserFilterDTO {
     role?: string,
     is_blocked?: string,
     page?: number
-
+    sortByName?:string
 }
 
 export interface DesignerFilterDTO {

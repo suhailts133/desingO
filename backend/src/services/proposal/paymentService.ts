@@ -1,17 +1,20 @@
 import Logger from "../../config/logger";
+import type { TransactionRepoDTO } from "../../DTO/common/transaction";
 import type { paymentRepoDTO } from "../../DTO/proposal/payment";
 import type { IApiResponse } from "../../interfaces/base/IApiResponse";
+import type { ITransactionRepository } from "../../interfaces/base/ITransaction";
 import type { GateWayData, IPaymentGateway } from "../../interfaces/proposal/IPaymentGateway";
 import type { IEscrow } from "../../interfaces/proposal/IProposal";
 import type { IPaymentRepository, IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
 import type { IPaymentService } from "../../interfaces/proposal/IProposalService";
+import { TRANSACTION_TYPE } from "../../shared/enums/commonEnums";
 import { EscrowStatus, Payment_Status, ServicePaymentStatus, ServiceStatus } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 
 export class PaymentService implements IPaymentService {
-    constructor(private _paymentGateway: IPaymentGateway, private _proposalRepo: IProposalRepository, private _paymentRepo: IPaymentRepository) { }
+    constructor(private _transactionRepo: ITransactionRepository, private _paymentGateway: IPaymentGateway, private _proposalRepo: IProposalRepository, private _paymentRepo: IPaymentRepository) { }
 
     async createPaymentIntent(jobId: string): Promise<IApiResponse<string>> {
         const proposal = await this._proposalRepo.getProposal(jobId)
@@ -42,7 +45,13 @@ export class PaymentService implements IPaymentService {
             serviceName: service.serviceName,
             serviceOrder: service.order
         }
-        await this._paymentRepo.createPayment(paymentRepo)
+        const payment = await this._paymentRepo.createPayment(paymentRepo)
+        const transactionData: TransactionRepoDTO = {
+            amount: payment.amount,
+            sourceUserId: payment.customerId.toString(),
+            type: TRANSACTION_TYPE.PAYMENT
+        }
+        await this._transactionRepo.createTransaction(transactionData)
         return { message: PROPOSAL_MESSAGES.PAYMENT.CREATED, statuscode: RESPONSE_CODE.CREATED, data: intent.clientSecret }
     }
 
@@ -65,7 +74,7 @@ export class PaymentService implements IPaymentService {
             return
         }
 
-       
+
         const serviceProportion = service.price / proposal.totalContractValue
         const servicePlatformFee = Math.round(proposal.platformFee * serviceProportion)
         const designerPayout = service.price - servicePlatformFee
@@ -80,20 +89,20 @@ export class PaymentService implements IPaymentService {
         await this._proposalRepo.updateService(sourceId, order, ServiceStatus.IN_PROGRESS, escrowData)
     }
 
-    
+
     async markPaymentFailed(paymentIntentId: string): Promise<void> {
-    const updated = await this._paymentRepo.updateStatus(paymentIntentId, Payment_Status.FAILED)
-    if (!updated) {
-        Logger.error(`Payment not found for intent: ${paymentIntentId}`)
-        return
+        const updated = await this._paymentRepo.updateStatus(paymentIntentId, Payment_Status.FAILED)
+        if (!updated) {
+            Logger.error(`Payment not found for intent: ${paymentIntentId}`)
+            return
+        }
+
+
+        await this._proposalRepo.updateService(
+            updated.jobId.toString(),
+            updated.serviceOrder,
+            ServiceStatus.OPEN,
+            {}
+        )
     }
-
-
-    await this._proposalRepo.updateService(
-        updated.jobId.toString(),
-        updated.serviceOrder,
-        ServiceStatus.OPEN,
-        {}  
-    )
-}
 }

@@ -11,7 +11,8 @@ import authRoutes from "./routes/common/authRoutes"
 // admin routes
 import userRoutes from "./routes/admin/userRoutes"
 import designerVerificationRoutes from "./routes/admin/designerVerificationRoutes"
-import disputeManagementRoutes from "./routes/admin/adminDisputeRoutes"
+import disputeManagementRoutes from "./routes/admin/adminDisputeRoutes" 
+import transactionRoutes from "./routes/admin/transactionRoutes" 
 // designer routes
 import designerRoutes from "./routes/designer/designerRoutes"
 import designRoutes from "./routes/designer/designRoutes"
@@ -51,6 +52,7 @@ app.use(express.json());
 // admin
 
 app.use("/api/admin/users", userRoutes)
+app.use("/api/admin/transaction", transactionRoutes)
 app.use("/api/admin/disputes", disputeManagementRoutes)
 app.use("/api/admin/designer-application", designerVerificationRoutes)
 
