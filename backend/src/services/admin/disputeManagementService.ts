@@ -13,15 +13,35 @@ import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 
+
+
+/**
+ * Service handling admin-level dispute resolution workflows.
+ * 
+ * Manages fetching dispute logs, retrieving full context for individual disputes,
+ */
 export class DisputeManagementService implements IAdminDisputeService {
     constructor(private _disputeRepo: IDisputeRepository, private _proposalRepo: IProposalRepository, private _userRepo: IUserRepository) { }
 
+
+    /**
+  * Fetches a paginated list of all disputes for admin management.
+  * 
+  * @param filter - Optional filter parameters (e.g., status, page, sort).
+  * @returns Paginated list of dispute summary DTOs.
+  */
     async getAllDispute(filter?: DisputeAdminFilters): Promise<IApiResponseWithPagination<AllDisputeAdminDTO[]>> {
         const { data, pagination } = await this._disputeRepo.getAllDispute(filter)
         const disputeData = DisputeMapper.toAdminDisputeDTOList(data)
         return { message: PROPOSAL_MESSAGES.DISPUTE.FETCH_ALL, total: pagination.total, totalPages: pagination.totalPages, data: disputeData }
     }
 
+    /**
+     *  Fetches full details for a specific dispute.
+     * @param id  - Unique identifier of the dispute
+     * @returns Detailed dispute data
+     * @throws {AppError} 404 - If the dispute, asssosiated proposal or the service not found
+     */
     async getDisputeDetail(id: string): Promise<IApiResponse<DisputeDetailAdminDTO>> {
         const dispute = await this._disputeRepo.findDispute(id)
         if (!dispute) {
@@ -40,6 +60,20 @@ export class DisputeManagementService implements IAdminDisputeService {
     }
 
 
+    /**
+  * Processes and applies a resolution for an open dispute.
+  * 
+  * - Validates the refund amounts against escrow metrics (`designerPayout`).
+  * - Distributes funds dynamically: transfers platform commissions to the admin 
+  *   and refunds the reporter (customer or designer) if applicable.
+  * - Updates the dispute status to `AWAITING_CONFIRMATION`.
+  * 
+  * @param data - Resolution payload containing solution type, refund amount, and notes.
+  * @returns Resolution summary status.
+  * @throws {AppError} 409 - If refund amount is negative or exceeds available escrow.
+  * @throws {AppError} 404 - If dispute, associated escrow, admin user, or reporter is not found.
+  * @throws {AppError} 500 - If updating wallets or dispute state fails.
+  */
     async disputeSolution(data: DisputeSolutionDTO): Promise<IApiResponse<DisputeSolutionResponseDTO>> {
         if (data.refundAmount < 0) {
             throw new AppError(PROPOSAL_MESSAGES.DISPUTE.ZERO, RESPONSE_CODE.CONFILT);
