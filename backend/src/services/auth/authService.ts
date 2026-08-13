@@ -181,7 +181,7 @@ export class AuthService implements IAuthService {
         }
         const forgetPasswordOTP = generateOtp()
 
-        const isSaved = this._otpRepository.saveOTP(forgetPasswordOTP, email);
+        const isSaved = await this._otpRepository.saveOTP(forgetPasswordOTP, email);
         if (!isSaved) {
             throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.OTP_SENT_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
