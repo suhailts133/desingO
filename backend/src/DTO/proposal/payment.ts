@@ -7,3 +7,11 @@ export interface paymentRepoDTO {
     serviceOrder: number,
     amount: number;
 }
+
+
+export interface PaymentIntentDTO {
+    paymentIntentId: string,
+    status: string,
+    jobId: string,
+    serviceOrder: number
+}

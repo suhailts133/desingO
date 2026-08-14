@@ -8,6 +8,7 @@ import { AppError } from "../../shared/errors/appError"
 import { isObjectId } from "../../shared/helpers/extraFunctions";;
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import Logger from "../../config/logger";
+import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 /**
  * This controller has everything realted to payment
  */
@@ -36,8 +37,8 @@ export class PaymentController {
   */
     createPaymentIntent = asyncHandler(async (req: Request, res: Response) => {
         Logger.info(`${JSON.stringify(req.body)}`)
-       const { jobId } = req.body  
- 
+        const { jobId } = req.body
+
         if (!jobId) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
@@ -46,6 +47,22 @@ export class PaymentController {
         }
 
         const result = await this._paymentService.createPaymentIntent(jobId)
+        RespsonseHelper.success(res, result)
+    })
+
+
+    /**
+      * to verify the payment
+      * @route POST /payments/verify
+      * @param req.body.intentId paymentIntentId
+      * @throws {AppError} 400 if there is no intentid
+     */
+    getpaymentIntent = asyncHandler(async (req: Request, res: Response) => {
+        const { intentId } = req.body
+        if (!intentId) {
+            throw new AppError(PROPOSAL_MESSAGES.PAYMENT.INTENT_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        const result = await this._paymentService.verifyPaymentIntent(intentId)
         RespsonseHelper.success(res, result)
     })
 

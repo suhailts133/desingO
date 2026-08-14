@@ -25,6 +25,7 @@ const controller = new PaymentController(paymentService, webhookService)
 router.post('/webhook', express.raw({ type: 'application/json' }), controller.handleWebhook)
 router.use(express.json())
 router.post("/intent", authenticate, controller.createPaymentIntent)
+router.post("/verify", authenticate, controller.getpaymentIntent)
 
 
 export default router

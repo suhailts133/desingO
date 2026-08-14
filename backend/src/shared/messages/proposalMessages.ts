@@ -63,10 +63,14 @@ export const PROPOSAL_MESSAGES = {
     PAYMENT: {
         NO_OPEN_SERVICE: "there are no open service with pending payment.",
         CREATED: "Payment created.",
+        ALREADY_SUCCESS: "Payment is already marked as success.",
+        MARKED_SUCCESS: "Payment is marked as success.",
         INTENT_NOT_CREATED: 'Failed to create payment intent',
+        INTENT_REQUIRED: 'Payment intent is required.',
         PAYOUT_NOT_FOUND: 'payout amount not found contact support',
         PAYOUT_DESIGNER_FAILED: 'Cannot pay designer contact support',
         PAYOUT_ADMIN_FAILED: 'Cannot pay admin contact support',
+        STRIPE_META_DATA_NOT_FOUND: "Missing jobId or serviceOrder in payment metadata",
     }
 
 } as const
