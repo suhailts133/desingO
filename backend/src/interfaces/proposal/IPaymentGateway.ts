@@ -1,3 +1,5 @@
+import type { PaymentIntentDTO } from "../../DTO/proposal/payment";
+
 export interface GateWayData {
     amount: number;
     currency: string;
@@ -12,6 +14,7 @@ export interface GateWayData {
 
 export interface IPaymentGateway {
     createPaymentIntent(data: GateWayData): Promise<{ intentId: string, clientSecret: string }>;
+    getPaymentIntent(intentId: string): Promise<PaymentIntentDTO>;
 }
 
 export interface IPaymentWebhookService {

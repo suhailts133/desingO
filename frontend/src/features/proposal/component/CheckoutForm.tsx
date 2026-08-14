@@ -3,7 +3,7 @@ import { useState } from "react"
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js"
 
 interface CheckoutFormProps {
-    onSuccess: () => void
+    onSuccess: (intentId: string) => void
     onCancel: () => void
 }
 
@@ -27,7 +27,8 @@ export default function CheckoutForm({ onSuccess, onCancel }: CheckoutFormProps)
         if (stripeError) {
             setError(stripeError.message ?? "Payment failed")
         } else if (paymentIntent?.status === "succeeded") {
-            onSuccess()
+
+            onSuccess(paymentIntent.id!)
         }
 
         setIsProcessing(false)

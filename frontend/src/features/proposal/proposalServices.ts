@@ -1,5 +1,5 @@
 import { isApiError, UNKNOWN_ERROR } from "../../helpers/errorhandler"
-import { useCreateIntentMutation } from "./paymentEndpoints"
+import { useCreateIntentMutation, useGetPaymentIdMutation } from "./paymentEndpoints"
 import { useApproveRejectMutation, useCreateProposalMutation, useUploadResultMutation } from "./proposalEndpoints"
 import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ReviewPayload } from "./proposalInterface"
 import { useAddYourReviewMutation } from "./wishlistEndpoints"
@@ -9,11 +9,12 @@ export const useProposalServices = () => {
     const [approveRejectMutation, { isLoading: isChangingStatus }] = useApproveRejectMutation()
     const [addyourReivewMutation, { isLoading: isReviewing }] = useAddYourReviewMutation()
     const [createIntentMutaiton, { isLoading: ispaymentDataLoading }] = useCreateIntentMutation()
-    const [uploadResultMutation, {isLoading:isUploading}] = useUploadResultMutation()
-    
-    const uploadResult = async (formData:FormData) => {
+    const [uploadResultMutation, { isLoading: isUploading }] = useUploadResultMutation()
+    const [getPaymentIdMUtation, { isLoading: isVerifying }] = useGetPaymentIdMutation()
+
+    const uploadResult = async (formData: FormData) => {
         try {
-          
+
             const result = await uploadResultMutation(formData).unwrap()
             return result
         } catch (error) {
@@ -25,8 +26,19 @@ export const useProposalServices = () => {
     }
     const createIntent = async (jobId: string) => {
         try {
-          
+
             const result = await createIntentMutaiton(jobId).unwrap()
+            return result
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
+        }
+    }
+    const getPaymentId = async (intentId: string) => {
+        try {
+            const result = await getPaymentIdMUtation(intentId).unwrap()
             return result
         } catch (error) {
             if (isApiError(error)) {
@@ -81,6 +93,8 @@ export const useProposalServices = () => {
         createIntent,
         ispaymentDataLoading,
         uploadResult,
-        isUploading
+        isUploading,
+        getPaymentId,
+        isVerifying
     }
 }

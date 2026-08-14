@@ -23,6 +23,7 @@ export interface IProposalVersionService {
 
 export interface IPaymentService {
     createPaymentIntent(jobId: string): Promise<IApiResponse<string>>
+    verifyPaymentIntent(paymentIntent: string): Promise<IApiResponse>
     markPaymentSucceeded(paymentIntentId: string, sourceId: string, order: number): Promise<void>;
     markPaymentFailed(paymentIntentId: string): Promise<void>;
 

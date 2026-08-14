@@ -33,6 +33,7 @@ import { useReportIssue } from "../hooks/useReportIssue"
 import DisputeCard from "../component/DisputeCard"
 import { useGetDisputeQuery } from "../disputeEndpoints"
 import { useAcceptOrRejectVerdit } from "../hooks/useAcceptOrRejectVerdit"
+import { useVerifyPayment } from "../hooks/useVerifyPayment"
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
 
@@ -59,6 +60,7 @@ export default function ProposalPage() {
     const disputedData = disputeData?.data
 
     const { ispaymentDataLoading, clientSecret, paymentIntentError, handlePaymentIntent, reset } = useCreateIntent()
+    const { isVerifying, handlePaymentIntentVerification } = useVerifyPayment()
 
     const { isChangingStatus, statusUpdateError, statusUpdateSuccess, handleUpdateStatus } = useApproveOrReject()
     const { isReviewing, reviewError, reivewSuccess, handleWriteReview } = useWriteReview()
@@ -169,10 +171,14 @@ export default function ProposalPage() {
         if (!success) setPayingService(null)
     }
 
-    const handlePaySuccess = () => {
+    const handlePaySuccess = async (intentId: string) => {
         reset()
         setPayingService(null)
-        refetch()
+        const result = await handlePaymentIntentVerification(intentId)
+        if(result.success){
+            refetch()
+            toast.success("Payment Success")
+        }
     }
 
     const handlePayClose = () => {

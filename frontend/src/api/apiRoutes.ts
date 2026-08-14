@@ -89,7 +89,8 @@ export const API_ROUTES = {
         MY_REVIEWS: "/review/my"
     },
     PAYMENT: {
-        INTENT: "/payments/intent"
+        INTENT: "/payments/intent",
+        VERIFY: "/payments/verify"
     },
     DISPUTE:{
         REPORT:"/dispute/report-issue",
