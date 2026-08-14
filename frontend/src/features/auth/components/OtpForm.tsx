@@ -4,6 +4,8 @@ import { useVerifyOtp } from "../hooks/useVerifyOtp";
 import { useResendOtp } from "../hooks/useResendOtp";
 import { useForgetPasswordOtpVerification } from "../hooks/useForgetPasswordOtpVerification";
 import { useForgetPasswordResendOtp } from "../hooks/useForgetPasswordResendOtp";
+import { useHandleResponse } from "../../../helpers/useHandleResponse";
+import ResendOtpSection from "./ResendOtpSection";
 
 
 
@@ -11,15 +13,13 @@ export default function OtpForm() {
     const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
     const inputRefs = useRef<(HTMLInputElement | null)[]>(Array(6).fill(null));
     const [error1, setError] = useState<string>("");
+    const handleResponse = useHandleResponse()
     const location = useLocation();
     const email = location.state?.email;
     const where = location.state?.where;
+    console.log(email, where)
 
-
-    const [timer, setTimer] = useState<number>(30);
-    const [canResend, setCanResend] = useState<boolean>(false);
-    const [timerActive, setTimerActive] = useState<boolean>(true);
-
+    
     const { handleVerification, error, isLoading } = useVerifyOtp();
     const { handleResendOtp, resendOTPError, resendOtpSuccessMessage, isResendOtpLoading } = useResendOtp();
     const { handleForgetpasswordOtpVerification, forgetPasswordError, isLoadingForgetPassword } = useForgetPasswordOtpVerification();
@@ -27,31 +27,6 @@ export default function OtpForm() {
 
     const isSubmitLoading = isLoading || isLoadingForgetPassword;
     const isResendLoading = isResendOtpLoading || isLoadingForgetPasswordResend;
-
-  
-    const startTimer = () => {
-        setTimer(30);
-        setCanResend(false);
-        setTimerActive(true);
-    };
-
-    
-    useEffect(() => {
-        if (!timerActive) return;
-
-        const interval = setInterval(() => {
-            setTimer((prev) => {
-                if (prev <= 1) {
-                    setCanResend(true);
-                    setTimerActive(false);
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-
-        return () => clearInterval(interval);
-    }, [timerActive]);
 
     useEffect(() => {
         inputRefs.current[0]?.focus();
@@ -83,24 +58,23 @@ export default function OtpForm() {
             return;
         }
         if (where === "signup") {
-            await handleVerification({ email, otp: otp.join("") });
+            const result = await handleVerification({ email, otp: otp.join("") });
+            handleResponse(result.success, "OTP Verification Successfull", result.message, "/", { state: { where: "signUpOtpVerification" } })
         } else {
             await handleForgetpasswordOtpVerification({ email, otp: otp.join("") });
         }
     };
 
     const handleResend = async () => {
-        if (!canResend || isResendLoading) return;
+        if (isResendLoading) return;
         if (where === "signup") {
             await handleResendOtp({ email });
         } else {
             await handleForgetpasswordResendOtp({ email });
         }
-      
-        startTimer();
     };
 
-  
+
     // const formatTime = (seconds: number) => {
     //     const m = Math.floor(seconds / 60).toString().padStart(2, "0");
     //     const s = (seconds % 60).toString().padStart(2, "0");
@@ -143,7 +117,6 @@ export default function OtpForm() {
 
             {/* Error / success messages */}
             {error1 && <p className="text-center text-sm text-error mb-4 -mt-2">{error1}</p>}
-            {error && <p className="text-center text-sm text-error mb-4 -mt-2">{error}</p>}
             {resendOTPError && <p className="text-center text-sm text-error mb-4 -mt-2">{resendOTPError}</p>}
             {resendOtpSuccessMessage && <p className="text-center text-sm text-success mb-4 -mt-2">{resendOtpSuccessMessage}</p>}
             {forgetPasswordError && <p className="text-center text-sm text-error mb-4 -mt-2">{forgetPasswordError}</p>}
@@ -167,8 +140,8 @@ export default function OtpForm() {
                 )}
             </div>
 
-   
-            <div className="mt-5 text-center text-sm text-gray-500">
+
+            {/* <div className="mt-5 text-center text-sm text-gray-500">
                 Didn't receive the code?{" "}
                 {canResend ? (
                     <button
@@ -184,7 +157,8 @@ export default function OtpForm() {
                         resend in {timer}
                     </span>
                 )}
-            </div>
+            </div> */}
+            <ResendOtpSection onResend={handleResend} isLoading={isResendLoading} />
         </div>
     );
 }
