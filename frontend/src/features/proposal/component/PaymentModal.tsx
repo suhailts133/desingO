@@ -4,7 +4,7 @@ interface PaymentModalProps {
     isOpen: boolean
     serviceName: string
     amount: number
-    onSuccess: () => void
+    onSuccess: (intentId:string) => void
     onClose: () => void
 }
 

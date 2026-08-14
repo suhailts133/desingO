@@ -8,17 +8,25 @@ export const paymentEndpoints = baseApi.injectEndpoints({
             query: (jobId) => ({
                 url: API_ROUTES.PAYMENT.INTENT,
                 method: "POST",
-                body:{jobId}
+                body: { jobId }
             })
         }),
-       
-      
-    
+        getPaymentId: builder.mutation<IApiResponse, string>({
+            query: (intentId) => ({
+                url: API_ROUTES.PAYMENT.VERIFY,
+                method: "POST",
+                body: { intentId }
+            })
+        }),
+
+
+
     })
 })
 
 
 export const {
     useCreateIntentMutation,
+    useGetPaymentIdMutation
 
 } = paymentEndpoints

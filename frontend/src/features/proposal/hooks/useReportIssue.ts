@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { useProposalServices } from "../proposalServices"
 import { useDisputeServices } from "../disputeServices"
 
 export const useReportIssue = () => {
