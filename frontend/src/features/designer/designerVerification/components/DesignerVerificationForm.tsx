@@ -5,14 +5,21 @@ import { DesignerprofileValidations } from "../../../../validations/designerVeri
 import { INDIAN_STATES } from "../indianStates"
 import { Plus, Trash2 } from "lucide-react"
 import { useDesignerVerification } from "../hooks/useDesignerVerification"
+import { InputField } from "../../../../shared/form/InputField"
+import { SelectField } from "../../../../shared/form/SelectField"
+import { FileInputField } from "../../../../shared/form/FileInputField"
+import { TextAreaField } from "../../../../shared/form/TextAreaField"
+import SubmitButton from "../../../../shared/common/SubmitButton"
+import { useHandleResponse } from "../../../../helpers/useHandleResponse"
 
 export default function DesignerVerificationForm() {
   const { register, handleSubmit, watch, control, formState: { errors } } = useForm<IDesignerProfile>({
     resolver: joiResolver(DesignerprofileValidations, { abortEarly: false, allowUnknown: false }),
     mode: "onBlur"
   })
-  const { handleVerification, designerError, designerSuccess, isLoading } = useDesignerVerification()
-
+  const watchedGovtId = watch("governmentIdImage");
+  const { handleVerification, isLoading } = useDesignerVerification()
+  const handleResponse = useHandleResponse()
   const {
     fields: educationFields,
     append: educationAppend,
@@ -54,7 +61,8 @@ export default function DesignerVerificationForm() {
       if (proofImage) formData.append("workExperienceImages", proofImage)
     })
 
-    await handleVerification(formData)
+    const result = await handleVerification(formData)
+    handleResponse(result.success, "Designer application submitted successfully.", result.message, "/")
   }
 
   return (
@@ -66,54 +74,15 @@ export default function DesignerVerificationForm() {
 
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
 
-
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Phone</label>
-            <input
-              {...register("phone")}
-              type="text"
-              className="auth-input"
-              placeholder="Enter Your Phone Number"
-            />
-            <p className="text-sm text-error">{errors.phone?.message}</p>
-          </div>
-          <div>
-            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">State</label>
-            <select {...register("state")} className="auth-input" defaultValue="">
-              <option value="" disabled>Select your state</option>
-              {INDIAN_STATES.map((state) => (
-                <option key={state} value={state}>{state}</option>
-              ))}
-            </select>
-            <p className="text-sm text-error">{errors.state?.message}</p>
-          </div>
+          <InputField placeholder="Enter Your Phone Number" label="Phone" type="number" registration={register("phone")} error={errors.phone?.message} />
+          <SelectField label="State" placeholder="Select your state" registration={register("state")} error={errors.state?.message} options={INDIAN_STATES} />
         </div>
 
-
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">District</label>
-            <input
-              {...register("district")}
-              type="text"
-              className="auth-input"
-              placeholder="Enter Your District"
-            />
-            <p className="text-sm text-error">{errors.district?.message}</p>
-          </div>
-          <div>
-            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">City</label>
-            <input
-              {...register("city")}
-              type="text"
-              className="auth-input"
-              placeholder="Enter Your City"
-            />
-            <p className="text-sm text-error">{errors.city?.message}</p>
-          </div>
+          <InputField placeholder="Enter Your District" label="District" type="text" registration={register("district")} error={errors.district?.message} />
+          <InputField placeholder="Enter Your City" label="City" type="text" registration={register("city")} error={errors.city?.message} />
         </div>
-
 
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -125,28 +94,9 @@ export default function DesignerVerificationForm() {
             </select>
             <p className="text-sm text-error">{errors.governmentIdType?.message}</p>
           </div>
-          <div>
-            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">GOVT ID Image</label>
-            <label
-              htmlFor="governmentIdImage"
-              className="flex items-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer hover:border-primary transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-              </svg>
-              <span className="text-sm text-gray-400 truncate">
-                {(watch("governmentIdImage"))?.[0]?.name ?? "Choose an image..."}
-              </span>
-            </label>
-            <input
-              {...register("governmentIdImage")}
-              id="governmentIdImage"
-              type="file"
-              accept="image/jpeg,image/png,image/jpg,image/webp"
-              className="hidden"
-            />
-            <p className="text-sm text-error">{errors.governmentIdImage?.message}</p>
-          </div>
+
+          <FileInputField label="GOVT ID Image" fileName={watchedGovtId?.[0]?.name} registration={register("governmentIdImage")} error={errors.governmentIdImage?.message} />
+
         </div>
 
 
@@ -169,78 +119,29 @@ export default function DesignerVerificationForm() {
             )}
           </div>
 
-          {educationFields.map((field, index) => (
-            <div key={field.id} className="space-y-3 border border-gray-400 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-Jost-Semibold text-gray-600">Education {index + 1}</p>
-                <button type="button" onClick={() => educationRemove(index)} className="text-error hover:opacity-70">
-                  <Trash2 size={16} />
-                </button>
-              </div>
-
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Institution Name</label>
-                  <input
-                    {...register(`education.${index}.institutionName`)}
-                    type="text"
-                    className="auth-input"
-                    placeholder="Enter Institution Name"
-                  />
-                  <p className="text-sm text-error">{errors.education?.[index]?.institutionName?.message}</p>
+          {educationFields.map((field, index) => {
+            const certImage = watch(`education.${index}.certificateImage`);
+            return (
+              <div key={field.id} className="space-y-3 border border-gray-400 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-Jost-Semibold text-gray-600">Education {index + 1}</p>
+                  <button type="button" onClick={() => educationRemove(index)} className="text-error hover:opacity-70">
+                    <Trash2 size={16} />
+                  </button>
                 </div>
-                <div>
-                  <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Course Name</label>
-                  <input
-                    {...register(`education.${index}.courseName`)}
-                    type="text"
-                    className="auth-input"
-                    placeholder="Enter Course Name"
-                  />
-                  <p className="text-sm text-error">{errors.education?.[index]?.courseName?.message}</p>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <InputField placeholder="Enter Institution Name" type="text" label="Institution Name" registration={register(`education.${index}.institutionName`)} error={errors.education?.[index]?.institutionName?.message} />
+                  <InputField placeholder="Enter Course Name" type="text" label="Course Name" registration={register(`education.${index}.courseName`)} error={errors.education?.[index]?.courseName?.message} />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <InputField min={1970} max={new Date().getFullYear()} placeholder="e.g. 2022" type="number" label="pass out year" registration={register(`education.${index}.completionYear`, { valueAsNumber: true })} error={errors.education?.[index]?.completionYear?.message} />
+                  <FileInputField label="Certificate Image" placeholder="Choose certificate..." fileName={certImage?.[0]?.name} registration={register(`education.${index}.certificateImage`)} error={errors.education?.[index]?.certificateImage?.message} />
                 </div>
               </div>
-
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Completion Year</label>
-                  <input
-                    {...register(`education.${index}.completionYear`, { valueAsNumber: true })}
-                    type="number"
-                    className="auth-input"
-                    placeholder="e.g. 2022"
-                    min={1970}
-                    max={new Date().getFullYear()}
-                  />
-                  <p className="text-sm text-error">{errors.education?.[index]?.completionYear?.message}</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Certificate Image</label>
-                  <label
-                    htmlFor={`certificateImage-${index}`}
-                    className="flex items-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer hover:border-primary transition-colors"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                    </svg>
-                    <span className="text-sm text-gray-400 truncate">
-                      {watch(`education.${index}.certificateImage`)?.[0]?.name ?? "Choose an image..."}
-                    </span>
-                  </label>
-                  <input
-                    {...register(`education.${index}.certificateImage`)}
-                    id={`certificateImage-${index}`}
-                    type="file"
-                    accept="image/jpeg,image/png,image/jpg,image/webp"
-                    className="hidden"
-                  />
-                  <p className="text-sm text-error">{errors.education?.[index]?.certificateImage?.message}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+            )
+          })}
 
           <p className="text-sm text-error">{errors.education?.message}</p>
         </div>
@@ -267,121 +168,40 @@ export default function DesignerVerificationForm() {
             )}
           </div>
 
-          {workExperienceFields.map((field, index) => (
-            <div key={field.id} className="space-y-3 border border-gray-400 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-Jost-Semibold text-gray-600">Experience {index + 1}</p>
-                <button type="button" onClick={() => workExperienceRemove(index)} className="text-error hover:opacity-70">
-                  <Trash2 size={16} />
-                </button>
-              </div>
-
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Company Name</label>
-                  <input
-                    {...register(`workExperience.${index}.companyName`)}
-                    type="text"
-                    className="auth-input"
-                    placeholder="Enter Company Name"
-                  />
-                  <p className="text-sm text-error">{errors.workExperience?.[index]?.companyName?.message}</p>
+          {workExperienceFields.map((field, index) => {
+            const workExp = watch(`workExperience.${index}.proofImage`);
+            return (
+              <div key={field.id} className="space-y-3 border border-gray-400 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-Jost-Semibold text-gray-600">Experience {index + 1}</p>
+                  <button type="button" onClick={() => workExperienceRemove(index)} className="text-error hover:opacity-70">
+                    <Trash2 size={16} />
+                  </button>
                 </div>
-                <div>
-                  <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Role</label>
-                  <input
-                    {...register(`workExperience.${index}.role`)}
-                    type="text"
-                    className="auth-input"
-                    placeholder="Enter Your Role"
-                  />
-                  <p className="text-sm text-error">{errors.workExperience?.[index]?.role?.message}</p>
+
+
+                <div className="grid grid-cols-2 gap-4">
+                  <InputField placeholder="Enter Company Name" type="text" label="Company Name" registration={register(`workExperience.${index}.companyName`)} error={errors.workExperience?.[index]?.companyName?.message} />
+                  <InputField placeholder="Enter your Role" type="text" label="Role" registration={register(`workExperience.${index}.role`)} error={errors.workExperience?.[index]?.role?.message} />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <InputField min={0} max={50} placeholder="e.g. 2" type="number" label="Years of Experience" registration={register(`workExperience.${index}.yearsOfExperience`, { valueAsNumber: true })} error={errors.workExperience?.[index]?.yearsOfExperience?.message} />
+                  <FileInputField label="Proof Image" placeholder="Choose proof of experience..." fileName={workExp?.[0]?.name} registration={register(`workExperience.${index}.proofImage`)} error={errors.workExperience?.[index]?.proofImage?.message} />
                 </div>
               </div>
-
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Years of Experience</label>
-                  <input
-                    {...register(`workExperience.${index}.yearsOfExperience`, { valueAsNumber: true })}
-                    type="number"
-                    className="auth-input"
-                    placeholder="e.g. 2"
-                    min={0}
-                    max={50}
-                  />
-                  <p className="text-sm text-error">{errors.workExperience?.[index]?.yearsOfExperience?.message}</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">
-                    Proof Image
-                  </label>
-                  <label
-                    htmlFor={`proofImage-${index}`}
-                    className="flex items-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer hover:border-primary transition-colors"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                    </svg>
-                    <span className="text-sm text-gray-400 truncate">
-                      {watch(`workExperience.${index}.proofImage`)?.[0]?.name ?? "Choose an image..."}
-                    </span>
-                  </label>
-                  <input
-                    {...register(`workExperience.${index}.proofImage`)}
-                    id={`proofImage-${index}`}
-                    type="file"
-                    accept="image/jpeg,image/png,image/jpg,image/webp"
-                    className="hidden"
-                  />
-                  <p className="text-sm text-error">{errors.workExperience?.[index]?.proofImage?.message}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
-        {/* portfolio url */}
-        <div>
-          <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Portfolio URL</label>
-          <input
-            {...register("portfolioUrl")}
-            type="text"
-            className="auth-input"
-            placeholder="https://yourportfolio.com"
-          />
-          <p className="text-sm text-error">{errors.portfolioUrl?.message}</p>
-        </div>
+        <InputField label="Portfolio URL" registration={register("portfolioUrl")} type="url" placeholder="https://yourportfolio.com" error={errors.portfolioUrl?.message} />
+        <TextAreaField label="Bio" placeholder="Enter your bio" rows={4} registration={register("bio")} error={errors.bio?.message} />
 
-        {/* bio */}
-        <div>
-          <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Bio</label>
-          <textarea
-            {...register("bio")}
-            className="auth-input"
-            placeholder="Enter your bio"
-            rows={4}
-          />
-          <p className="text-sm text-error">{errors.bio?.message}</p>
-        </div>
+        <SubmitButton isLoading={isLoading} label="Submit" loadingLabel="Verifying" type="submit" />
 
-        {!isLoading ? (
-          <button type="submit" className="auth-button">Submit</button>
-        ) : (
-          <button type="submit" disabled={isLoading} className="auth-disabled-button">
-            <svg className="mr-2 size-5 animate-spin" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
-            Verifying
-          </button>
-        )}
 
       </form>
-      {designerError && <p className="text-sm text-error text-center">{designerError}</p>}
-      {designerSuccess && <p className="text-sm text-success text-center">{designerSuccess}</p>}
+
     </div>
   )
 }

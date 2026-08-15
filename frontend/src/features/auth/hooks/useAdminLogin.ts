@@ -1,28 +1,14 @@
-import { useState } from "react";
 import { useAuthService } from "../authService"
 import type { LoginPayload } from "../authInterfaces";
-import { useNavigate } from "react-router-dom";
 
 export const useAdminLogin = () => {
-    const {adminLogin,isAdminLogging} = useAuthService();
-    const [loginError, setLoginError] = useState<string | null>(null)
-    const navigate = useNavigate();
-    const handleAdminLogin = async (data:LoginPayload) =>{
-        setLoginError(null)
-        const result = await adminLogin(data)
-        if(result.success){
-            navigate("/admin/dashboard"); 
-        }else{
-            setLoginError(result.message as string)
-             setTimeout(() => {
-                setLoginError(null);
-            }, 3000);
-        }
+    const { adminLogin, isAdminLogging } = useAuthService();
 
-    }
+    const handleAdminLogin = async (data: LoginPayload) => await adminLogin(data)
+
     return {
         handleAdminLogin,
-        isLoading:isAdminLogging,
-        loginError
+        isLoading: isAdminLogging,
+
     }
 }

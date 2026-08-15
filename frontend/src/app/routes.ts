@@ -24,7 +24,7 @@ import DesignForm from "../features/designer/designs/components/DesignForm";
 import CustomerLayout from "../layouts/CustomerLayout";
 import CustomerDashboard from "../features/user/dashboard/CustomerDashboard";
 import Jobs from "../features/user/jobs/page/Jobs";
-import JobRequestForm from "../features/user/jobs/components/JobRequestForm";
+import JobRequestForm from "../features/user/jobs/page/JobRequestForm";
 import JobRequestDetail from "../features/user/jobs/components/JobRequestDetail";
 import DesignDetail from "../features/designer/designs/components/DesignDetail";
 import BrowseDesigns from "../features/common/pages/BrowseDesigns";

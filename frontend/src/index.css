@@ -78,13 +78,11 @@
 }
 
 .auth-disabled-button {
-    @apply w-full text-white font-Jost-Semibold py-2.5 rounded-lg bg-gray-400 tracking-wide cursor-not-allowed opacity-70
+    @apply w-full text-white font-Jost-Semibold py-3 rounded-sm bg-gray-400 tracking-wide cursor-not-allowed opacity-70 flex items-center justify-center gap-2;
 }
-
 .auth-button {
-    @apply w-full text-white font-Jost-Semibold py-2.5 rounded-lg bg-blush tracking-wide transition-all duration-200 hover:opacity-85
+    @apply w-full text-white font-Jost-Semibold py-3 rounded-sm bg-soft-black tracking-wide transition-colors duration-200 hover:bg-blush-deep cursor-pointer;
 }
-
 .google-button {
     @apply font-Jost-Semibold text-white w-full bg-linear-to-r from-peach via-blush to-blush-deep/85 hover:brightness-110 hover:scale-110 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center mr-2 mb-2 transition-all duration-300
 }
