@@ -1,10 +1,10 @@
 import { useEffect } from "react"
-import { useChat } from "./useChat"
-import { useDecodeAccessToken } from "../../../helpers/decodeAccessToken"
-import { getInitials } from "./chatUtils"
-import { ChatHeader } from "./component/ChatHeader"
-import { ChatInput } from "./component/ChatInput"
-import { MessageList } from "./component/MessageList"
+import { useChat } from "../useChat"
+import { useDecodeAccessToken } from "../../../../helpers/decodeAccessToken"
+import { getInitials } from "../chatUtils"
+import { ChatHeader } from "./ChatHeader"
+import { ChatInput } from "./ChatInput"
+import { MessageList } from "./MessageList"
 
 
 interface ChatPanelProps {

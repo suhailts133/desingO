@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom"
 import { FileX, MessageCircle } from "lucide-react"
 
 interface Props {
-    jobId: string
+    activeJobId: string
 }
 
-export default function NoProposalCustomer({ jobId }: Props) {
+export default function NoProposalCustomer({ activeJobId }: Props) {
     const navigate = useNavigate()
 
     return (
@@ -17,7 +17,7 @@ export default function NoProposalCustomer({ jobId }: Props) {
                 The designer hasn't created a proposal yet. Please wait or contact the designer directly.
             </p>
             <button
-                onClick={() => navigate(`/chat/${jobId}`)}
+                onClick={() => navigate(`/chat/${activeJobId}`)}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-blush-light/50 bg-off-white text-soft-black text-sm font-medium hover:bg-blush-pale hover:text-blush-deep transition-all duration-200 mt-2"
             >
                 <MessageCircle className="w-4 h-4" />

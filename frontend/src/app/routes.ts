@@ -47,6 +47,7 @@ import MyHireRequestPage from "../features/user/HireRequests/pages/MyHireRequest
 import DisputeTable from "../features/admin/disputes/component/DisputeTable";
 import DisputeDetailAdmin from "../features/admin/disputes/component/DisputeDetailAdmin";
 import TransactionTable from "../features/admin/transaction/component/TransactionTable";
+import ChatPage from "../features/proposal/chat/ChatPage";
 
 
 const router = createBrowserRouter([
@@ -61,6 +62,7 @@ const router = createBrowserRouter([
             { path: "designs", Component: BrowseDesigns },
             { path: "designers", Component: BrowseDesigners },
             { path: "designers/:id", Component: DesignerDetail },
+            { path: "chat/:id", Component: ChatPage },
 
         ]
     },
