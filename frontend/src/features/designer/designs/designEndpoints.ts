@@ -2,7 +2,7 @@ import { API_ROUTES } from "../../../api/apiRoutes";
 import { baseApi } from "../../../api/baseApi";
 import type { IApiResponse, IApiResponseWithPagination } from "../../../api/responseType";
 import type { HireDesignerFields, HireDesignerFilter, HireDesignerRequests } from "../../user/jobs/jobInterface";
-import type { DesignDetailResponseDTO, DesignResponseDTO, DesignsQueryParms, GetAllDesignCommonResponseDTO } from "./designInterface";
+import type { AcceptOrRejectHireDesigner, DesignDetailResponseDTO, DesignResponseDTO, DesignsQueryParms, GetAllDesignCommonResponseDTO } from "./designInterface";
 
 export const designApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -39,6 +39,14 @@ export const designApi = baseApi.injectEndpoints({
                 body
             })
         }),
+        approveOrRejectHireRequest: builder.mutation<IApiResponse, AcceptOrRejectHireDesigner>({
+            query: (body: AcceptOrRejectHireDesigner) => ({
+                url: API_ROUTES.HIRE_DESIGNER.ACCEPT_OR_REJECT,
+                method: "PATCH",
+                body
+            }),
+            invalidatesTags: ["hireRequest"]
+        }),
 
         hireRequest: builder.query<IApiResponseWithPagination<HireDesignerRequests[]>, HireDesignerFilter>({
             query: (args) => ({
@@ -49,8 +57,10 @@ export const designApi = baseApi.injectEndpoints({
                     ...(args.sort && { sort: args.sort }),
                     ...(args.startDate && { startDate: args.startDate }),
                     ...(args.endDate && { endDate: args.endDate }),
-                }
-            })
+                },
+
+            }),
+            providesTags: ["hireRequest"]
 
         }),
         deleteADesign: builder.mutation<IApiResponse, string>({
@@ -102,5 +112,6 @@ export const {
     useDeleteADesignMutation,
     useEditDesignMutation,
     useHireDesignerMutation,
-    useHireRequestQuery
+    useHireRequestQuery,
+    useApproveOrRejectHireRequestMutation,
 } = designApi

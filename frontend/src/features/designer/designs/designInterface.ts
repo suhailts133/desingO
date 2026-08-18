@@ -21,6 +21,13 @@ export interface IDesign {
 }
 
 
+export interface AcceptOrRejectHireDesigner {
+  status: "Accepted" | "Rejected"
+  rejectionReason?: string
+  hireRequestId: string
+}
+
+
 export interface DesignResponseDTO {
   name: string
   coverImage: string,
@@ -46,7 +53,7 @@ export interface DesignDetailResponseDTO {
   coverImage: ImageUploadResult;
   gallery: ImageUploadResult[];
   createdAt: string;
-  isSaved:boolean
+  isSaved: boolean
 }
 
 
@@ -56,42 +63,42 @@ export interface DesignsQueryParms {
   designStyles?: { label: string, value: string }[] | null
   propertyTypes?: { label: string, value: string }[] | null
   spaceTypes?: { label: string, value: string }[] | null
-  sortBy?: {label:string, value:string }| null
+  sortBy?: { label: string, value: string } | null
 }
 
 
 export interface GetAllDesignCommonResponseDTO {
-  id:string
+  id: string
   name: string,
   spaceType: string,
   designStyles: string[]
   coverImage: string,
   budget: string,
   designerName: string,
-  minPrice:string
-  maxPrice:string
-  isSaved:boolean
+  minPrice: string
+  maxPrice: string
+  isSaved: boolean
 }
 
 
 export interface DesignFilterForm {
-    designStyles: { label: string; value: string }[] | null;
-    propertyTypes: { label: string; value: string }[] | null;
-    spaceTypes: { label: string; value: string }[] | null;
-    sortBy: { label: string; value: string } | null;
+  designStyles: { label: string; value: string }[] | null;
+  propertyTypes: { label: string; value: string }[] | null;
+  spaceTypes: { label: string; value: string }[] | null;
+  sortBy: { label: string; value: string } | null;
 }
 
 
 export type SelectOption = { label: string; value: string };
 
 export interface EditDesignFields {
-    name: string;
-    minPrice: number;
-    maxPrice: number;
-    description: string;
-    designStyles: SelectOption[];
-    services: SelectOption[];
-    spaceType: SelectOption;
-    propertyType: SelectOption;
+  name: string;
+  minPrice: number;
+  maxPrice: number;
+  description: string;
+  designStyles: SelectOption[];
+  services: SelectOption[];
+  spaceType: SelectOption;
+  propertyType: SelectOption;
 }
 

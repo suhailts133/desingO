@@ -1,21 +1,34 @@
 import { isApiError, UNKNOWN_ERROR } from "../../../helpers/errorhandler";
-import type {  HireDesignerFields } from "../../user/jobs/jobInterface";
-import { useAddDesignMutation, useDeleteADesignMutation, useEditDesignMutation, useHireDesignerMutation } from "./designEndpoints"
+import type { HireDesignerFields } from "../../user/jobs/jobInterface";
+import { useAddDesignMutation, useApproveOrRejectHireRequestMutation, useDeleteADesignMutation, useEditDesignMutation, useHireDesignerMutation } from "./designEndpoints"
+import type { AcceptOrRejectHireDesigner } from "./designInterface";
 
 export const useDesignServices = () => {
 
     const [addDesignMutation, { isLoading }] = useAddDesignMutation();
     const [deleteDesignMutation, { isLoading: isDeleting }] = useDeleteADesignMutation();
     const [editDesignMutation, { isLoading: isEditing }] = useEditDesignMutation();
-    const [hireDesingerMutatin, {isLoading:isHiring}] = useHireDesignerMutation()
+    const [hireDesingerMutatin, { isLoading: isHiring }] = useHireDesignerMutation()
+    const [approveOrRejectHireRequestMutation, { isLoading: isApproveOrReject }] = useApproveOrRejectHireRequestMutation()
 
-    const hireDesigner = async (body:HireDesignerFields) => {
+    const hireDesigner = async (body: HireDesignerFields) => {
         try {
             const result = await hireDesingerMutatin(body).unwrap()
 
             return result
         } catch (error) {
-             if (isApiError(error)) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
+        }
+    }
+    const approveOrRejectHireRequest = async (body: AcceptOrRejectHireDesigner) => {
+        try {
+            const result = await approveOrRejectHireRequestMutation(body).unwrap()
+            return result
+        } catch (error) {
+            if (isApiError(error)) {
                 return error.data
             }
             return UNKNOWN_ERROR
@@ -27,7 +40,7 @@ export const useDesignServices = () => {
 
             return result
         } catch (error) {
-             if (isApiError(error)) {
+            if (isApiError(error)) {
                 return error.data
             }
             return UNKNOWN_ERROR
@@ -39,7 +52,7 @@ export const useDesignServices = () => {
             console.log(result)
             return result
         } catch (error) {
-             if (isApiError(error)) {
+            if (isApiError(error)) {
                 return error.data
             }
             return UNKNOWN_ERROR
@@ -65,6 +78,8 @@ export const useDesignServices = () => {
         isEditing,
         editDesign,
         isHiring,
-        hireDesigner
+        hireDesigner,
+        isApproveOrReject,
+        approveOrRejectHireRequest
     }
 }

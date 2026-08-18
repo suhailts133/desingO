@@ -7,23 +7,38 @@ interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
     error?: string;
     showPasswordToggle?: boolean;
     registration?: UseFormRegisterReturn;
+    labelAction?: React.ReactNode;
 }
 
-export function InputField({ label, error, type = "text", showPasswordToggle = false, registration, className = "", ...props }: InputFieldProps) {
+export function InputField({
+    label,
+    error,
+    type = "text",
+    showPasswordToggle = false,
+    registration,
+    labelAction,
+    className = "",
+    ...props
+}: InputFieldProps) {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-    const resolvedType = showPasswordToggle ? isPasswordVisible ? "text" : "password" : type;
+    const resolvedType = showPasswordToggle
+        ? isPasswordVisible
+            ? "text"
+            : "password"
+        : type;
 
     return (
-        <div >
-            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">
-                {label}
-            </label>
-
+        <div>
+            <div className="flex items-center justify-between mb-1">
+                <label className="text-sm font-Jost-Semibold text-gray-700">
+                    {label}
+                </label>
+                {labelAction}
+            </div>
 
             <div className="relative">
                 <input
-            
                     type={resolvedType}
                     className={`auth-input ${className}`}
                     {...registration}

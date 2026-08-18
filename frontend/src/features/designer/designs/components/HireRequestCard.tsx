@@ -29,6 +29,8 @@ export default function HireRequestCard({ request, onApprove, onReject }: Props)
         .filter(Boolean)
         .join(" · ")
 
+    
+
     return (
         <div className="group bg-off-white w-full rounded-xl border border-blush-light/40 overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
             <div className="px-4 pt-4 pb-4 flex flex-col gap-2 h-full">
