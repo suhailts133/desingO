@@ -70,5 +70,5 @@ export enum ACTIVE_JOB_PROPOSAL_STATUS {
 }
 export enum SOURCE_TYPE {
     JOB_REQUEST = "jobRequest",
-    REJECTED = "direct_hire"
+    DIRECT_HIRE = "direct_hire"
 }

@@ -22,7 +22,7 @@ import ServiceCard from "../component/ServiceCard"
 import ProposalHeader from "../component/ProposalHeader"
 import ContractOverview from "../component/ContractOverview"
 import CustomerActionPanel from "../component/CustomerActionPanel"
-import ChatPanel from "../chat/ChatPanel"
+import ChatPanel from "../chat/component/ChatPanel"
 import PaymentModal from "../component/PaymentModal"
 import { useCreateIntent } from "../hooks/useCreateIntent"
 import ServiceUploadForm from "../component/ServiceUploadForm"
@@ -205,8 +205,8 @@ export default function ProposalPage() {
         return (
             <div className="w-full flex flex-col gap-6">
                 {role === "Designer"
-                    ? <NoProposalDesigner jobId={id!} sourceType={sourceType!} sourceId={sourceId!} />
-                    : <NoProposalCustomer jobId={id!} />
+                    ? <NoProposalDesigner activeJobId={activeJobId} jobId={id!} sourceType={sourceType!} sourceId={sourceId!} />
+                    : <NoProposalCustomer activeJobId={activeJobId!} />
                 }
             </div>
         )

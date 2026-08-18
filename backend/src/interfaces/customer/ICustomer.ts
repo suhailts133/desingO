@@ -53,12 +53,15 @@ export interface IBid {
 
 export interface IHireDesigner {
     id: string
+    projectTitle: string;
     userId: mongoose.Types.ObjectId
     designerId: mongoose.Types.ObjectId
     designId: mongoose.Types.ObjectId
     spaceType: string,
     length: string;
     width: string;
+    minBudget: number;
+    maxBudget: number;
     ceilingHeight: string;
     unit: "ft" | "m"
     notes: string;

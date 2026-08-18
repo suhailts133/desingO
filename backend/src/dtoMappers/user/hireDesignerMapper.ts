@@ -10,10 +10,10 @@ export class HireDesignerMapper {
     static toDirectHireProposalInputDTO(data: IHireDesigner): ProposalInputData {
         return {
             jobId: data.id,
-            maxPrice: 0,
-            minPrice: 0,
+            maxPrice: data.maxBudget,
+            minPrice: data.minBudget,
             services: data.services,
-            timeLine:data.timeLine,
+            timeLine: data.timeLine,
             sqft: toSqFt(Number(data.length), Number(data.width), data.unit)
 
         }

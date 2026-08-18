@@ -66,6 +66,8 @@ export const API_ROUTES = {
         CREATE: "/direct-hire/create",
         MY_REQUESTS: "/direct-hire/my",
         REQUEST_PER_DESIGN: "/direct-hire/design/requests",
+        ACCEPT_OR_REJECT: "/direct-hire/accept-reject",
+        DELETE: "/direct-hire//request",
     },
 
     SAVE_DESIGNS: {
@@ -92,9 +94,9 @@ export const API_ROUTES = {
         INTENT: "/payments/intent",
         VERIFY: "/payments/verify"
     },
-    DISPUTE:{
-        REPORT:"/dispute/report-issue",
-        GET_DISPUTE:"/dispute",
-        ACCEPT_OR_REJECT:"/dispute/accept-reject",
+    DISPUTE: {
+        REPORT: "/dispute/report-issue",
+        GET_DISPUTE: "/dispute",
+        ACCEPT_OR_REJECT: "/dispute/accept-reject",
     }
 } as const
