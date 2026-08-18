@@ -27,8 +27,15 @@ export const JOB_MESSAGES = {
     },
 
     HIRE_DESIGNER: {
+        ID_REQUIRED: "Hire id is required.",
         CREATED: "Your request has been submitted.",
-        NOT_FOUND: "Job request not found.",
+        NOT_FOUND: "hire request not found.",
+        DELETE: "request deleted successfully.",
+        DELETE_FAIL: "request deleted failed.",
+        DELETE_STATUS_NOT_PENDING: "you can only delete if the status is pending.",
+        UPDATE_SUCCESS: "Update successfull.",
+        UPDATE_FAIL: "update failed.",
+        ALREADY_STATUS_CHANGED: "request status is already changed.",
         FAIL: "you have already submitted a request.",
         MY_REQUEST: "successfully fetched all you hire designer request.",
         EXTRA_SERVICES: "You have selected some extra services that the designer is not providing.",

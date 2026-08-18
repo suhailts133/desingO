@@ -35,6 +35,31 @@ export interface getHireDesignerPerDesignResponseDTO {
     timeLine: string
 }
 
+
+export interface UpdateHireDesignerRequestDTO {
+    length: string;
+    width: string;
+    ceilingHeight: string;
+    unit: "ft" | "m";
+    spaceType: string;
+    notes: string;
+    services: string[];
+    timeLine: string;
+    status: "Accepted" | "Rejected" | "Pending";
+    rejectionReason?: string;
+}
+
+
+export type UpdateHireDesignerRepoInput = Partial<Omit<IHireDesigner, "id" | "userId" | "designerId" | "createdAt">>;
+
+export interface AcceptOrRejectHireDesigner {
+    status: "Accepted" | "Rejected"
+    rejectionReason?: string
+    hireRequestId: string
+}
+
+export type AcceptOrRejectHireDesignerDTO = Omit<AcceptOrRejectHireDesigner, "hireRequestId">
+
 export interface getMyHireDesignerRequestResponseDTO {
     id: string,
     length: string;
@@ -56,6 +81,9 @@ export type CreateHireDesignerDTO = {
     userId: string;
     designerId: string;
     designId: string;
+    projectTitle: string
+    minBudget: number;
+    maxBudget: number;
     length: string;
     width: string;
     ceilingHeight: string;

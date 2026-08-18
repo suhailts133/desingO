@@ -14,6 +14,18 @@ export class HireDesignerRepository extends BaseRepository<IHireDesigner> implem
         super(HireDesignerModel)
     }
 
+    async deleteHireDesigner(id: string): Promise<boolean> {
+        return await this.delete(id)
+    }
+
+    async updateHireDesigner(id: string, data: Partial<IHireDesigner>): Promise<IHireDesigner | null> {
+        return await this.update(id, data)
+    }
+
+    async getHireDesignerById(id: string): Promise<IHireDesigner | null> {
+        return await this.findById(id)
+    }
+
 
     async createHireDesigner(data: CreateHireDesignerDTO): Promise<IHireDesigner> {
         const doc = {
@@ -21,7 +33,7 @@ export class HireDesignerRepository extends BaseRepository<IHireDesigner> implem
             userId: new mongoose.Types.ObjectId(data.userId),
             designerId: new mongoose.Types.ObjectId(data.designerId),
             designId: new mongoose.Types.ObjectId(data.designId),
-            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) 
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         };
         return await this.create(doc);
     }
@@ -29,7 +41,7 @@ export class HireDesignerRepository extends BaseRepository<IHireDesigner> implem
     async checkIfApplied(userId: string, designId: string): Promise<IHireDesigner | null> {
         return await this.findOne({ userId, designId })
     }
-    async getHireDesignerByJobId(jobId:string): Promise<IHireDesigner | null> {
+    async getHireDesignerByJobId(jobId: string): Promise<IHireDesigner | null> {
         return await this.findOne({ jobId })
     }
     async getHireRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<{ data: HireDesignerPopulateUser[]; pagination: Pagination; }> {

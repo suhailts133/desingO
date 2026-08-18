@@ -19,5 +19,6 @@ const hireDesignerController = new HireDesignerController(hireDesignerService)
 router.post("/create", customerAuthentication,  hireDesignerController.hireDesigner)
 router.get("/my",customerAuthentication, hireDesignerController.getMyHireDesignerRequests)
 router.get("/design/requests/:id", designerAuthentication, hireDesignerController.getRequestPerDesign)
-
+router.patch("/accept-reject", designerAuthentication, hireDesignerController.acceptOrRejectHireRequest)
+router.delete("/request/:id", customerAuthentication, hireDesignerController.deleteHireRequest)
 export default router

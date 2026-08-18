@@ -1,4 +1,5 @@
-import type { CreateHireDesignerDTO, getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
+
+import type { AcceptOrRejectHireDesignerDTO, CreateHireDesignerDTO, getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
 import { HireDesignerMapper } from "../../dtoMappers/user/hireDesignerMapper";
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
 import type { WarningDTO } from "../../interfaces/benchmark/IBenchMark";
@@ -6,7 +7,7 @@ import type { HireDesignerPayload } from "../../interfaces/customer/ICustomer";
 import type { IActiveJobRepository, IHireDesignerRepository } from "../../interfaces/customer/ICustomerRepository";
 import type { IHireDesignerService } from "../../interfaces/customer/ICustomerService";
 import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
-import { HIRE_DESIGNER_STATUS } from "../../shared/enums/commonEnums";
+import { HIRE_DESIGNER_STATUS, SOURCE_TYPE } from "../../shared/enums/commonEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
 import { toSqFt } from "../../shared/helpers/extraFunctions";
@@ -15,6 +16,38 @@ import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 
 export class HireDesignerService implements IHireDesignerService {
     constructor(private _hireDesignerRepo: IHireDesignerRepository, private _designRepo: IDesignRepository, private _activeJobRepo: IActiveJobRepository) { }
+
+
+    async acceptOrRejectHireRequest(id: string, data: AcceptOrRejectHireDesignerDTO): Promise<IApiResponse> {
+        const hireRequest = await this._hireDesignerRepo.getHireDesignerById(id)
+        if (!hireRequest) {
+            throw new AppError(JOB_MESSAGES.HIRE_DESIGNER.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+        }
+
+        if (hireRequest.status !== HIRE_DESIGNER_STATUS.PENDING) {
+            throw new AppError(JOB_MESSAGES.HIRE_DESIGNER.ALREADY_STATUS_CHANGED, RESPONSE_CODE.BAD_REQUEST)
+        }
+
+        const updatedHireRequst = await this._hireDesignerRepo.updateHireDesigner(id, data);
+        if (!updatedHireRequst) {
+            throw new AppError(JOB_MESSAGES.HIRE_DESIGNER.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
+        const isActive = await this._activeJobRepo.createActiveJOb({
+            userId: updatedHireRequst.userId.toString(),
+            designerId: updatedHireRequst.designerId.toString(),
+            sourceId: updatedHireRequst.id,
+            sourceType: SOURCE_TYPE.DIRECT_HIRE,
+            sourceName: updatedHireRequst.projectTitle
+        })
+        if (!isActive) {
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+
+        }
+        return { message: JOB_MESSAGES.HIRE_DESIGNER.UPDATE_SUCCESS }
+    }
+
+
+
     async createHireDesigner(userId: string, data: HireDesignerPayload): Promise<IApiResponse<WarningDTO>> {
         const warnings: string[] = []
 
@@ -50,7 +83,10 @@ export class HireDesignerService implements IHireDesignerService {
         const createData: CreateHireDesignerDTO = {
             ...data,
             userId: userId,
-            status:HIRE_DESIGNER_STATUS.PENDING,
+            projectTitle: design.name,
+            maxBudget: design.maxPrice,
+            minBudget: design.minPrice,
+            status: HIRE_DESIGNER_STATUS.PENDING,
             designId: data.designId,
             designerId: design.userId.id
         }
@@ -59,8 +95,24 @@ export class HireDesignerService implements IHireDesignerService {
         return {
             message: JOB_MESSAGES.HIRE_DESIGNER.CREATED,
             statuscode: RESPONSE_CODE.CREATED,
-            data: {warnings}
+            data: { warnings }
         }
+    }
+
+
+    async deleteHireDesigenr(id: string): Promise<IApiResponse> {
+        const hireRequest = await this._hireDesignerRepo.getHireDesignerById(id)
+        if (!hireRequest) {
+            throw new AppError(JOB_MESSAGES.HIRE_DESIGNER.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+        }
+        if (hireRequest.status !== HIRE_DESIGNER_STATUS.PENDING) {
+            throw new AppError(JOB_MESSAGES.HIRE_DESIGNER.DELETE_STATUS_NOT_PENDING, RESPONSE_CODE.BAD_REQUEST)
+        }
+        const isDeleted = await this._hireDesignerRepo.deleteHireDesigner(id)
+        if (!isDeleted) {
+            throw new AppError(JOB_MESSAGES.HIRE_DESIGNER.DELETE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
+        return { message: JOB_MESSAGES.HIRE_DESIGNER.DELETE }
     }
 
     async getMyHireDesignerRequests(userId: string, filters?: HireDesignerFilter): Promise<IApiResponseWithPagination<getMyHireDesignerRequestResponseDTO[]>> {

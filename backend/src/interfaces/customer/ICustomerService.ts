@@ -1,5 +1,5 @@
 import type { ActiveJobFilter, ActiveJobResponseDTO } from "../../DTO/user/activeJobDTO";
-import type { getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
+import type {  AcceptOrRejectHireDesignerDTO, getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
 import type { EditJobRequest, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO";
 import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse";
 import type { WarningDTO } from "../benchmark/IBenchMark";
@@ -17,6 +17,8 @@ export interface IJobRequestService {
 
 
 export interface IHireDesignerService {
+    acceptOrRejectHireRequest(id:string, data:AcceptOrRejectHireDesignerDTO):Promise<IApiResponse>
+    deleteHireDesigenr(id:string):Promise<IApiResponse>
     createHireDesigner(userId: string, data: HireDesignerPayload): Promise<IApiResponse<WarningDTO>>
     getMyHireDesignerRequests(userId: string, filters?: HireDesignerFilter): Promise<IApiResponseWithPagination<getMyHireDesignerRequestResponseDTO[]>>
     getHireRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<IApiResponseWithPagination<getHireDesignerPerDesignResponseDTO[]>>
