@@ -26,6 +26,7 @@ export enum CLOUDINARY_FOLDER_NAME {
     SERVICE_RESULT = "designer/serviceResult",
     PROFILE_IMAGES = "common/profileImages",
     REFERENCE_IMAGES = "jobRequest/refrenceImages",
+    FLOOR_PLANS = "jobRequest/floorPlans",
     EVIDENCE = "proposal/evidence"
 }
 
@@ -34,6 +35,8 @@ export enum JOB_REQUEST_STATUS {
     PENDING = "Pending",
     ONGOING = "Ongoing",
     CLOSED = "Closed",
+    REJECTED = "Rejected",
+    ACCEPTED = "Accepted",
 }
 export enum JOB_APPLICATION_STATUS {
     PENDING = "Pending",
@@ -71,4 +74,11 @@ export enum ACTIVE_JOB_PROPOSAL_STATUS {
 export enum SOURCE_TYPE {
     JOB_REQUEST = "jobRequest",
     DIRECT_HIRE = "direct_hire"
+}
+
+
+
+export enum JOB_SOURCE_TYPE {
+    JOB_REQUEST = "JOB_REQUEST",
+    DIRECT_HIRE = "DIRECT_HIRE"
 }

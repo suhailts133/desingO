@@ -1,5 +1,5 @@
 import mongoose, { type QueryFilter, type SortOrder } from "mongoose";
-import type { ICreateJobRequest, IJobRequest, IJobRequestPopulated } from "../../interfaces/customer/ICustomer";
+import type { ICreateJobRequest, IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, Source_type } from "../../interfaces/customer/ICustomer";
 import type { IJobRepository } from "../../interfaces/customer/ICustomerRepository";
 import { JobRequestModel } from "../../models/user/jobModel";
 import { BaseRepository } from "../baseRepository";
@@ -8,11 +8,16 @@ import type { EditJobRepoData, JobFilter } from "../../DTO/user/jobsDTO";
 import type { IUser } from "../../interfaces/auth/IUser";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
 import { JOB_REQUEST_FILTERS } from "../../shared/enums/filterEnums";
-import { JOB_REQUEST_STATUS } from "../../shared/enums/commonEnums";
+import { JOB_REQUEST_STATUS, JOB_SOURCE_TYPE } from "../../shared/enums/commonEnums";
+import type { HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
 
 export class JobRequestRepository extends BaseRepository<IJobRequest> implements IJobRepository {
     constructor() {
         super(JobRequestModel)
+    }
+
+    async updateHireRequest(id: string, data: Partial<IJobRequest>): Promise<IJobRequest | null> {
+        return await this.update(id, data)
     }
 
     async changeStatus(id: string, status: string): Promise<IJobRequest | null> {
@@ -22,28 +27,33 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
         return res
     }
 
-    async createJobRequest(userId: string, data: ICreateJobRequest, referenceImages?: ImageUploadResult[]): Promise<boolean> {
+    async createJobRequest(userId: string, data: ICreateJobRequest, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<boolean> {
         const result = await this.create({
             ...data,
             referenceImages: referenceImages ?? [],
-            userId: new mongoose.Types.ObjectId(userId)
+            floorPlans: floorplans ?? [],
+            userId: new mongoose.Types.ObjectId(userId),
+            designerId: new mongoose.Types.ObjectId(data.designerId),
+            designId: new mongoose.Types.ObjectId(data.designId)
         })
         return !!result
     }
 
-    async editJobRequest(id: string, data: EditJobRepoData, referenceImages?: ImageUploadResult[]): Promise<boolean> {
+    async editJobRequest(id: string, data: EditJobRepoData, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<boolean> {
         const updateData: QueryFilter<IJobRequest> = {
             ...data,
-            referenceImages: referenceImages ?? []
+            referenceImages: referenceImages ?? [],
+            floorPlans: floorplans ?? []
         }
         const result = await this.update(id, { $set: updateData })
         return !!result
     }
 
-    async getMyJobs(userId: string, page?: string): Promise<{ data: IJobRequest[]; pagination: Pagination; }> {
+
+    async getMyJobs(userId: string, sourceType: Source_type, page?: string): Promise<{ data: IJobRequest[]; pagination: Pagination; }> {
         const pageNo = page ? Number(page) : 1;
         const limit = 6;
-        const result = await this._model.find({ userId })
+        const result = await this._model.find({ userId, sourceType })
             .skip((pageNo - 1) * limit)
             .limit(limit)
             .sort({ createdAt: 1 })
@@ -58,6 +68,44 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
             data: result,
             pagination
         }
+    }
+
+    async getjobRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<{ data: IJobRequestCustomerPopulated[]; pagination: Pagination; }> {
+        const page = filters?.page ? Number(filters.page) : 1;
+        const limit = 6
+        const skip = (page - 1) * limit;
+        const query: QueryFilter<IJobRequest> = { designId: designId };
+        const sortOrder: { [key: string]: SortOrder } = { createdAt: -1 }
+
+        if (filters) {
+            if (filters.sort === "asc") {
+                sortOrder.createdAt = "asc"
+            } else if (filters.sort === "desc") {
+                sortOrder.createdAt = "desc"
+            }
+
+            if (filters.startDate && filters.endDate) {
+                query.createdAt = {
+                    $gte: new Date(filters.startDate),
+                    $lte: new Date(filters.endDate)
+                }
+
+            }
+        }
+        const [result, total] = await Promise.all([
+            this._model.find(query)
+                .populate<{ userId: IUser }>("userId")
+                .skip(skip)
+                .limit(limit)
+                .exec(),
+            this._model.countDocuments(query)
+        ]);
+        const pagination: Pagination = {
+            total,
+            totalPages: Math.ceil(total / limit)
+        };
+
+        return { data: result, pagination };
     }
 
 
@@ -78,6 +126,7 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
 
         }
         query.status = JOB_REQUEST_STATUS.PENDING
+        query.sourceType = JOB_SOURCE_TYPE.JOB_REQUEST
 
         const sortOrder: { [key: string]: SortOrder } = {}
         if (JobFilter?.sortBy) {
@@ -103,11 +152,12 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
 
         const result = await this._model.find(query)
             .populate<{ userId: IUser }>("userId")
+            .populate<{ designerId: IUser }>("designerId")
             .skip((page - 1) * limit)
             .limit(limit)
             .sort(sortOrder)
             .exec()
-       
+
         const total = await this._model.countDocuments(query)
         const pagination: Pagination = {
             total,
@@ -124,7 +174,8 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
 
     async getJobRequest(id: string): Promise<IJobRequestPopulated | null> {
         const result = await this._model.findById(id)
-            .populate<{ userId: IUser }>("userId");
+            .populate<{ userId: IUser }>("userId")
+            .populate<{ designerId: IUser }>("designerId").exec()
         if (!result) {
             return null
         }

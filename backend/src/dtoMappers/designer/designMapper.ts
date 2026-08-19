@@ -19,8 +19,8 @@ export class DesignMapper {
             spaceType: data.spaceType,
             designStyles: data.designStyles,
             coverImage: data.coverImage.path,
-            minPrice:data.minPrice.toString(),
-            maxPrice:data.maxPrice.toString(),
+            minPrice: data.minPrice.toString(),
+            maxPrice: data.maxPrice.toString(),
             designerName: data.userId.full_name,
             isSaved: saved.has(data.id)
 
@@ -31,6 +31,7 @@ export class DesignMapper {
         return {
             id: data.id,
             designerName: data.userId.full_name,
+            designerId: data.userId.id,
             designName: data.name,
             propertyType: data.propertyType,
             spaceType: data.spaceType,

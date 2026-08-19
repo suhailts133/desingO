@@ -8,11 +8,11 @@ import type { IJobRequest } from "../jobInterface";
 export default function ReferenceImagesSection() {
     const { control, watch, formState: { errors } } = useFormContext<IJobRequest>();
 
-    const { fields: refrenceFields, append, remove: refrenceRemove } = useFieldArray({ control, name: "refrenceImages" });
+    const { fields: refrenceFields, append, remove: refrenceRemove } = useFieldArray({ control, name: "referenceImages" });
 
     const [refrenceImagesPreview, setRefrenceImagesPreview] = useState<string[]>([]);
 
-    const watchImages = watch("refrenceImages");
+    const watchImages = watch("referenceImages");
 
     
     useEffect(() => {
@@ -118,8 +118,8 @@ export default function ReferenceImagesSection() {
                 </div>
             )}
 
-            {errors.refrenceImages && !Array.isArray(errors.refrenceImages) && (
-                <p className="text-xs text-red-500 mt-1">{errors.refrenceImages.message as string}</p>
+            {errors.referenceImages && !Array.isArray(errors.referenceImages) && (
+                <p className="text-xs text-red-500 mt-1">{errors.referenceImages.message as string}</p>
             )}
         </div>
     );

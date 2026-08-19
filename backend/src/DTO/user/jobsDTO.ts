@@ -1,7 +1,7 @@
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload"
-import type { IJobRequest, IRoomMeasurement } from "../../interfaces/customer/ICustomer"
+import type { IHouseholdProfile, IJobRequest, INewBuildDetails, IRenovationDetails, Source_type } from "../../interfaces/customer/ICustomer"
 
-export type JobStatus = "Pending" | "Closed" | "Ongoing"
+export type JobStatus = "Pending" | "Closed" | "Ongoing" | "Rejected" |"Accepted"
 
 export interface JobsResponseDTO {
     id: string
@@ -9,6 +9,7 @@ export interface JobsResponseDTO {
     propertyType: string,
     description: string,
     timeLine: string,
+    sourceType: Source_type
     status: JobStatus
     rooms: number
     city: string
@@ -19,24 +20,56 @@ export interface JobsResponseDTO {
 }
 
 export interface EditJobRequest {
-    services: string[]
+
+    sourceType: "JOB_REQUEST" | "DIRECT_HIRE";
+    designerId?: string;
+    designId?: string;
+    projectType: "Renovation" | "New_Build";
     projectTitle: string;
     propertyType: string;
+    description: string;
+    renovationDetails?: IRenovationDetails;
+    newbuildDetails?: INewBuildDetails;
+    totalCarpetArea: number;
+    areaUnit: "ft" | "m";
+    selectedRooms: string[];
+    requiresSiteVisitMeasurement: boolean;
+    oldFloorPlans?: ImageUploadResult[];
+    services: string[];
     designStyles: string[];
-    city: string;
-    district: string;
+    preferredMaterials: string[];
+    oldReferences?: ImageUploadResult[];
+    householdProfile: IHouseholdProfile;
     state: string;
+    district: string;
+    city: string;
+    pincode: string;
     phone: string;
     timeline: string;
     minBudget: number;
     maxBudget: number;
-    description: string;
-    rooms: IRoomMeasurement[];
-    oldReferences?: ImageUploadResult[];
 }
 
 
-export type EditJobRepoData = Omit<EditJobRequest, "oldReferences">
+export type EditJobRepoData = Omit<EditJobRequest, "oldReferences" | "oldFloorPlans">
+
+export interface HireDesignerDTO {
+    id: string,
+    userId: string
+    userName: string,
+    profileImage?: string,
+    totalArea: number
+    rooms: number
+    areaUnit: "ft" | "m";
+    projectTitle: string
+    maxBudget: number
+    minBudget: number
+    createdAt: string
+    timeLine: string
+    rejectionReason?: string
+    projectType: "Renovation" | "New_Build";
+    status: "Pending" | "Ongoing" | "Closed" | "Rejected" | "Accepted"
+}
 
 
 export type JobsCommonResponseDTO = Omit<JobsResponseDTO, "status"> & {
@@ -46,12 +79,15 @@ export type JobsCommonResponseDTO = Omit<JobsResponseDTO, "status"> & {
 }
 
 
-export type JobDetailResponseDTO = Omit<IJobRequest, "userId" | "createdAt" | "referenceImages"> & {
-    name: string
-    userCreatedAt: string
-    createdAt: string,
-    referenceImages: ImageUploadResult[]
-}
+export type JobDetailResponseDTO = Omit<IJobRequest, "designId" | "userId" | "designerId" | "createdAt"> & {
+    userId: string;
+    userName: string;
+    designerId?: string;
+    designId?: string;
+    designerName?: string;
+    createdAt: string;
+
+};
 
 
 export interface JobFilter {

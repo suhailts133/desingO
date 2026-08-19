@@ -4,22 +4,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useGetDesignDetailQuery } from "../designEndpoints";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css"
-import HireDesignerForm from "./HireDesignerForm";
-import type { DirectHireFormPayload, HireDesignerFields } from "../../../user/jobs/jobInterface";
 import { useToggleSaveDesign } from "../../../common/hooks/useToggleSaveDesign";
-import { useHireDesigner } from "../hooks/useHireDesigner";
-import toast from "react-hot-toast";
+import { useDecodeAccessToken } from "../../../../helpers/decodeAccessToken";
 
 export default function DesignDetail() {
     const { id } = useParams<{ id: string }>();
+    const { role } = useDecodeAccessToken()
     const navigate = useNavigate()
     const { data, isLoading, error } = useGetDesignDetailQuery(id!, { skip: !id })
     const [servicesOpen, setServicesOpen] = useState(false);
     const [activeImage, setActiveImage] = useState<string | null>(null);
-    const [hireDesigner, setHireDesigner] = useState<boolean>(false)
+
     const [isSaved, setIsSaved] = useState<boolean>(false)
-    const { isToggling, savedError, handleToggling } = useToggleSaveDesign()
-    const { hireError, hireSuccess, isHiring, handleSubmission } = useHireDesigner()
+    const { isToggling, handleToggling } = useToggleSaveDesign()
     const design = data?.data;
 
     useEffect(() => {
@@ -28,37 +25,24 @@ export default function DesignDetail() {
             setIsSaved(design.isSaved)
         }
     }, [design])
-    useEffect(() => {
-        if (hireSuccess) {
-            setHireDesigner(false)
-        }
-    }, [hireSuccess])
+
+
     if (isLoading) {
         return <div className="p-10 text-center animate-pulse text-gray-400">Loading Design Details...</div>;
     }
     if (error || !design) {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Design not found.</div>;
     }
-
-    const handleDirectHire = async (body: DirectHireFormPayload) => {
-        const data: HireDesignerFields = {
+    const handleDirectHire = () => {
+        const params = new URLSearchParams({
+            designerId: design.designerId,
             designId: design.id,
-            length: body.length,
-            width: body.width,
-            notes: body.notes,
-            unit: body.unit.label,
-            ceilingHeight: body.ceilingHeight,
-            timeLine: body.timeLine.label,
-            services: body.services.map(e => e.label)
-        }
-        const result = await handleSubmission(data)
+            source: "DIRECT_HIRE",
+        });
 
-        if (result.success) {
-            toast.success(result.message || "Design hired successfully!")
-        } else {
-            toast.error(result.message || "Something went wrong.")
-        }
-    }
+        navigate(`/customer/add-job?${params.toString()}`);
+    };
+
     const toggleSave = async (e: React.MouseEvent) => {
         e.stopPropagation()
         const result = await handleToggling({ designId: design.id, isSaved: !isSaved })
@@ -223,9 +207,14 @@ export default function DesignDetail() {
                             <div>
                                 <p className="font-Jost-Semibold text-gray-800">{design.designerName}</p>
                             </div>
-                            <button className="auth-button w-full" onClick={() => setHireDesigner(true)}>
-                                Hire this Designer
-                            </button>
+
+                            {role === "Customer" && (
+                                <button className="auth-button w-full" onClick={handleDirectHire}>
+                                    Hire this Designer
+                                </button>
+                            )}
+
+
                         </div>
                     </div>
 
@@ -250,7 +239,7 @@ export default function DesignDetail() {
                 </div>
             </div>
 
-            <HireDesignerForm isLoading={isHiring} isOpen={hireDesigner} onClose={() => setHireDesigner(false)} hireDesigner={handleDirectHire} />
+
         </div>
     );
 }

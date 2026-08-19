@@ -24,7 +24,7 @@ export interface IDesign {
 export interface AcceptOrRejectHireDesigner {
   status: "Accepted" | "Rejected"
   rejectionReason?: string
-  hireRequestId: string
+  requestId: string
 }
 
 
@@ -43,6 +43,7 @@ export interface DesignDetailResponseDTO {
   id: string;
   designerName: string;
   designName: string;
+  designerId: string;
   propertyType: string;
   spaceType: string;
   maxPrice: number;
@@ -56,6 +57,24 @@ export interface DesignDetailResponseDTO {
   isSaved: boolean
 }
 
+
+export interface HireDesignerDTO {
+    id: string,
+    userId: string
+    userName: string,
+    profileImage?: string,
+    totalArea: number
+    rooms: number
+    areaUnit: "ft" | "m";
+    projectTitle: string
+    maxBudget: number
+    minBudget: number
+    createdAt: string
+    timeLine: string
+    rejectionReason?: string
+    projectType: "Renovation" | "New_Build";
+    status: "Pending" | "Ongoing" | "Closed" | "Rejected" | "Accepted"
+}
 
 
 export interface DesignsQueryParms {

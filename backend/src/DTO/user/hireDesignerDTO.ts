@@ -55,10 +55,13 @@ export type UpdateHireDesignerRepoInput = Partial<Omit<IHireDesigner, "id" | "us
 export interface AcceptOrRejectHireDesigner {
     status: "Accepted" | "Rejected"
     rejectionReason?: string
-    hireRequestId: string
+    requestId: string
 }
 
-export type AcceptOrRejectHireDesignerDTO = Omit<AcceptOrRejectHireDesigner, "hireRequestId">
+export type AcceptOrRejectHireDesignerDTO = Omit<AcceptOrRejectHireDesigner, "requestId">
+
+
+
 
 export interface getMyHireDesignerRequestResponseDTO {
     id: string,

@@ -52,14 +52,18 @@ export default function MyJobCard({ jobRequest, onDeleteClick }: Props) {
                         {jobRequest.projectTitle}
                     </h5>
 
-                    <button
-                        onClick={() => jobApplications(jobRequest.id)}
-                        title="Job Applications"
-                        className="shrink-0 inline-flex items-center gap-1.5 bg-soft-black text-off-white hover:bg-blush-deep px-3.5 py-1.5 rounded-full text-[11px] font-semibold tracking-wide transition-all duration-200 shadow-sm hover:shadow-md"
-                    >
-                        <ScrollText className="w-3.5 h-3.5" />
-                        <span>Job Applications</span>
-                    </button>
+                    {
+                        jobRequest.sourceType === "JOB_REQUEST" && (
+                            <button
+                                onClick={() => jobApplications(jobRequest.id)}
+                                title="Job Applications"
+                                className="shrink-0 inline-flex items-center gap-1.5 bg-soft-black text-off-white hover:bg-blush-deep px-3.5 py-1.5 rounded-full text-[11px] font-semibold tracking-wide transition-all duration-200 shadow-sm hover:shadow-md"
+                            >
+                                <ScrollText className="w-3.5 h-3.5" />
+                                <span>Job Applications</span>
+                            </button>
+                        )
+                    }
                 </div>
 
                 {/* Location */}

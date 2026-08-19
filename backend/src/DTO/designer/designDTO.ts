@@ -66,6 +66,7 @@ export interface DesignDetailResponseDTO {
     id: string;
     designerName: string;
     designName: string;
+    designerId: string;
     propertyType: string;
     spaceType: string;
     minPrice: string;

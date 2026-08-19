@@ -4,16 +4,18 @@ import type { CreateHireDesignerDTO, HireDesignerFilter, HireDesignerPopulatedAL
 
 import type { EditJobRepoData, JobFilter } from "../../DTO/user/jobsDTO";
 import type { ImageUploadResult } from "../base/IImageUpload";
-import type { IActiveJob, ICreateJobRequest, IHireDesigner, IJobRequest, IJobRequestPopulated } from "./ICustomer";
+import type { IActiveJob, ICreateJobRequest, IHireDesigner, IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, Source_type } from "./ICustomer";
 
 export interface IJobRepository {
-    createJobRequest(userId: string, data: ICreateJobRequest, referenceImages?: ImageUploadResult[]): Promise<boolean>;
-    getMyJobs(userId: string, page?: string): Promise<{ data: IJobRequest[], pagination: Pagination }>
+    createJobRequest(userId: string, data: ICreateJobRequest, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<boolean>;
+    getjobRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<{ data: IJobRequestCustomerPopulated[], pagination: Pagination }>
+    getMyJobs(userId: string, sourceType: Source_type, page?: string): Promise<{ data: IJobRequest[], pagination: Pagination }>
     getAllJobs(JobFilter?: JobFilter): Promise<{ data: IJobRequestPopulated[], pagination: Pagination }>;
     deleteAJob(id: string): Promise<boolean>;
     getJobRequest(id: string): Promise<IJobRequestPopulated | null>
-    editJobRequest(id: string, data: EditJobRepoData, referenceImages?: ImageUploadResult[]): Promise<boolean>
+    editJobRequest(id: string, data: EditJobRepoData, referenceImages?: ImageUploadResult[], finalFloorPlans?: ImageUploadResult[]): Promise<boolean>
     changeStatus(id: string, status: string): Promise<IJobRequest | null>
+    updateHireRequest(id: string, data: Partial<IJobRequest>): Promise<IJobRequest | null>
 
 
 }
