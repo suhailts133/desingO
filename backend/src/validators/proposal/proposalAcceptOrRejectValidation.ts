@@ -11,9 +11,9 @@ export const proposalApproveOrRejectionValidation: Joi.ObjectSchema<ProposalAcce
         }),
 
     overallRejectionReason: Joi.string()
-        .min(10)
-        .max(40)
-        .when("status", {
+        .min(5)
+        .max(400)
+        .when("contractStatus", {
             is: "Rejected",
             then: Joi.required(),
             otherwise: Joi.forbidden()

@@ -67,7 +67,7 @@ export const createProposalValidation: Joi.ObjectSchema<CreateProposalDTO> = Joi
         }),
 
     sourceType: Joi.string()
-        .valid("jobRequest", "directHire")
+        .valid("jobRequest", "direct_hire")
         .required()
         .messages({
             "any.only": 'Source type must be either "jobRequest" or "directHire"',

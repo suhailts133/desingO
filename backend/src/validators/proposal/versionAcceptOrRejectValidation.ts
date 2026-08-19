@@ -24,6 +24,7 @@ export const versionApproveOrRejectValidation: Joi.ObjectSchema<VersionAcceptOrR
             "any.required": "Rejection reason is required when status is Rejected",
             "any.unknown": "Rejection reason is not allowed when status is Approved"
         }),
+        
     versionId: Joi.string()
         .regex(/^[a-fA-F0-9]{24}$/)
         .required()

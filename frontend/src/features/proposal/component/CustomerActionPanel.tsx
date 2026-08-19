@@ -1,11 +1,9 @@
 interface CustomerActionPanelProps {
     onAccept: () => void;
     onDecline: () => void;
-    statusUpdateError?: string | null;
-    statusUpdateSuccess?: string | null;
 }
 
-export default function CustomerActionPanel({ onAccept, onDecline, statusUpdateError, statusUpdateSuccess }: CustomerActionPanelProps) {
+export default function CustomerActionPanel({ onAccept, onDecline }: CustomerActionPanelProps) {
     return (
         <div className="bg-white rounded-2xl border border-blush-light/40 shadow-sm px-6 py-5">
             <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-soft-black/40 mb-1">
@@ -30,8 +28,6 @@ export default function CustomerActionPanel({ onAccept, onDecline, statusUpdateE
                     Decline proposal
                 </button>
             </div>
-            {statusUpdateError && <p className="text-xs text-red-500 mt-3">{statusUpdateError}</p>}
-            {statusUpdateSuccess && <p className="text-xs text-green-600 mt-3">{statusUpdateSuccess}</p>}
         </div>
     )
 }

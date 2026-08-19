@@ -1,5 +1,6 @@
 import type { AllVersion } from "../proposalInterface"
-
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css"
 interface VersionCardProps {
     version: AllVersion
     isOpen: boolean
@@ -13,6 +14,7 @@ const versionStatusStyle: Record<string, string> = {
 }
 
 export default function VersionCard({ version, isOpen, onToggle }: VersionCardProps) {
+
     return (
         <div className="rounded-lg border border-blush-light/40 overflow-hidden">
             <button
@@ -48,12 +50,15 @@ export default function VersionCard({ version, isOpen, onToggle }: VersionCardPr
                     {version.versionData.images.length > 0 ? (
                         <div className="flex flex-wrap gap-2 mt-2">
                             {version.versionData.images.map((img, idx) => (
-                                <img
-                                    key={idx}
-                                    src={img}
-                                    alt={`version ${version.versionNumber} image ${idx + 1}`}
-                                    className="w-14 h-14 object-cover rounded-lg border border-blush-light/40"
-                                />
+                                <Zoom>
+                                    <img
+                                        key={idx}
+                                        src={img}
+                                        alt={`version ${version.versionNumber} image ${idx + 1}`}
+                                        className="w-14 h-14 object-cover rounded-lg border border-blush-light/40"
+                                    />
+                                </Zoom>
+
                             ))}
                         </div>
                     ) : (

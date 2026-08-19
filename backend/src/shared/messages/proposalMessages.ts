@@ -27,6 +27,7 @@ export const PROPOSAL_MESSAGES = {
         SERVICE_RESULT_REQUIRED: "Service result is required.",
         SUCCESS: "Result upload success.",
         NOT_FOUND: "Service not found.",
+        NOT_PAID:"Customer has not paid for this service",
         UPDATE_FAIL: "Failed to update the service.",
         CANNOT_OPEN: "Failed to Open the next service.",
         CANNOT_COMPLETE: "Failed to set the current service as complete."
@@ -71,6 +72,9 @@ export const PROPOSAL_MESSAGES = {
         PAYOUT_DESIGNER_FAILED: 'Cannot pay designer contact support',
         PAYOUT_ADMIN_FAILED: 'Cannot pay admin contact support',
         STRIPE_META_DATA_NOT_FOUND: "Missing jobId or serviceOrder in payment metadata",
+    },
+    ESCROW:{
+        NOT_FOUND:"Payment details not found"
     }
 
 } as const

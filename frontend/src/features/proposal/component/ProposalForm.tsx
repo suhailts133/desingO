@@ -14,7 +14,7 @@ export default function ProposalForm() {
     const navigate = useNavigate()
     const sourceType = location.state?.sourceType as "jobRequest" | "direct_hire" | undefined
     const sourceId = location.state?.sourceId as string | undefined
-
+    console.log(sourceId, sourceType)
     const [dropdownOpen, setDropdownOpen] = useState(false)
 
     const { data, isLoading, error } = useGetProposalPrefillDataQuery(
@@ -63,7 +63,7 @@ export default function ProposalForm() {
     }
 
     const onSubmit = async (formData: CreateProposalDTO) => {
-        console.log(formData)
+        console.log(formData, "lol")
         const success = await handleSubmission(formData)
 
         if (success) {

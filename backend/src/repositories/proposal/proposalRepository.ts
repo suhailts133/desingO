@@ -31,7 +31,6 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
         })
     }
     async acceptOrRejectProposal(sourceId: string, contractStatus: ContractStatus, overallRejectionReason?: string): Promise<IProposal | null> {
-
         const filter: ProposalStatusFilter = { sourceId };
 
         const update: ProposalStatusUpdateRepoDTO = {
@@ -46,7 +45,6 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
         if (contractStatus === CONTRACT_STATUS.REJECTED && overallRejectionReason) {
             update.overallRejectionReason = overallRejectionReason;
         }
-
         return await this.updateOne(filter, {
             $set: update,
         });

@@ -2,15 +2,15 @@ import { useState } from "react"
 import VersionCard from "./VersionCard"
 import type { ProposalServiceItemDTO, ServiceStatus, PaymentStatus } from "../proposalInterface"
 
-type Role = "Designer" | "Admin" | "Customer" 
+type Role = "Designer" | "Admin" | "Customer"
 
 interface ServiceCardProps {
     service: ProposalServiceItemDTO
     role: Role
     isPayLoading: boolean
     onPay?: () => void
-    onVerify?: () => void
-    onRedo?: () => void
+    onVerify: (versionId: string) => void
+    onRedo: (versionId: string) => void
     onUpload: (serviceNumber: number, serviceName: string) => void
 }
 
@@ -35,14 +35,15 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
 
     const isLocked = service.status === "Locked"
 
-    const showPay = role === "Customer" && service.status === "Open"
+    const showPay = role === "Customer" && service.paymentStatus === "Pending"
     const showVerify = role === "Customer" && service.status === "Uploaded"
     const showRedo = role === "Customer" && service.status === "Uploaded"
     const showUpload = role === "Designer" && (
         service.status === "In Progress" ||
-        service.status === "Redo" ||
-        service.status === "Open"
+        service.status === "Redo"
     )
+    const latestVersion = service.versions.find(e => e.versionData.status === "Pending")
+    const latestVersionId = latestVersion?.versionData.versionId
 
     const toggleVersion = (index: number) => {
         setOpenVersionIndex(prev => prev === index ? null : index)
@@ -100,7 +101,7 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
                         <div className="flex flex-col gap-2">
                             {service.versions.map((v, i) => (
                                 <VersionCard
-                                    key={v.versionNumber}
+                                    key={v.versionData.versionId}
                                     version={v}
                                     isOpen={openVersionIndex === i}
                                     onToggle={() => toggleVersion(i)}
@@ -111,7 +112,6 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
                 </div>
             )}
 
-            {/* Actions */}
             {(showPay || showVerify || showRedo || showUpload) && (
                 <div className="flex items-center gap-2 mt-3 pt-3 border-t border-blush-light/30">
                     {showPay && (
@@ -125,7 +125,7 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
                     )}
                     {showVerify && (
                         <button
-                            onClick={onVerify}
+                            onClick={() => latestVersionId && onVerify?.(latestVersionId)}
                             className="inline-flex items-center justify-center gap-1.5 bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                         >
                             Verify
@@ -133,7 +133,7 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
                     )}
                     {showRedo && (
                         <button
-                            onClick={onRedo}
+                            onClick={() => latestVersionId && onRedo?.(latestVersionId)}
                             className="inline-flex items-center justify-center gap-1.5 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                         >
                             Request redo
