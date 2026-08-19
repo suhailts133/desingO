@@ -12,8 +12,10 @@ export const JOB_MESSAGES = {
     },
 
     JOB_REQUEST: {
+        SOURCE_INVALID:"Invalid source type",
         ID_REQUIRED: "Job request id is required.",
         NOT_FOUND: "Job request not found.",
+        ACCEPTED_CANT_UPDATE: "The job request is accepted so cant update.",
         JOB_REQUEST_FAIL: "Failed to post job request, please try again.",
         JOB_REQUEST_SUCCESS: "Job request posted successfully.",
         UPDATION_FAILED: "Failed to update your job request. Please contact support.",

@@ -11,36 +11,95 @@ export interface IRoomMeasurement {
     notes?: string;
 }
 
+export type ProjectType = "Renovation" | "New_Build";
+export type JobStatus = "Pending" | "Ongoing" | "Closed" | "Rejected" | "Accepted"
+export type AreaUnit = "ft" | "m"
+export type RenovationLevel = "DECOR_ONLY" | "ROOMS_UPGRADE" | "COMPLETE_MAKEOVER";
+export type VastuPreference = "STRICT" | "BASIC" | "NOT_REQUIRED";
+export type ConstructionStage = "PLANNING" | "UNDER_CONSTRUCTION" | "BARE_SHELL_READY";
+export type DimensionUnit = "FT" | "INCH" | "CM" | "MM";
+export type Source_type = "JOB_REQUEST" | "DIRECT_HIRE"
 
-export type JobStatus = "Pending" | "Ongoing" | "Closed"
+export interface IHouseholdProfile {
+    adultsCount: number;
+    kidsCount: number;
+    seniorsCount: number;
+    hasPets: boolean;
+    petDetails?: string;
+}
+
+export interface IRenovationDetails {
+    level: RenovationLevel;
+    propertyAgeYears: string;
+    livingInDuringRenovation: boolean;
+}
+
+export interface INewBuildDetails {
+    stage: ConstructionStage;
+    vastuCompliantRequired: boolean;
+};
+
+
+export interface IItemDimensions {
+    length: number;
+    width: number;
+    height?: number;
+    unit: DimensionUnit;
+}
+
+
 
 export interface IJobRequest {
     id: string;
     userId: mongoose.Types.ObjectId
+    designerId?: mongoose.Types.ObjectId
+    designId?: mongoose.Types.ObjectId
     projectTitle: string;
+    rejectionReason?:string
     propertyType: string;
+    projectType: ProjectType
+    sourceType: Source_type
     designStyles: string[];
+    preferredMaterials: string[]
+    householdProfile: IHouseholdProfile;
+    newbuildDetails: INewBuildDetails
+    renovationDetails: IRenovationDetails
     city: string;
     district: string;
     state: string;
+    pincode: string;
     phone: string;
+
+    totalCarpetArea: number;
+    areaUnit: AreaUnit;
+    selectedRooms: string[];
+
+    floorPlans: ImageUploadResult[];
+    requiresSiteVisitMeasurement: boolean;
     timeline: string;
     minBudget: number;
     maxBudget: number;
     description: string;
-    rooms: IRoomMeasurement[];
     status: JobStatus
     createdAt: Date,
     services: string[]
     referenceImages: ImageUploadResult[]
 }
 
-export type IJobRequestPopulated = Omit<IJobRequest, "userId"> & {
+export type IJobRequestPopulated = Omit<IJobRequest, "userId" | "designerId"> & {
+    userId: IUser
+    designerId: IUser
+}
+
+export type IJobRequestCustomerPopulated = Omit<IJobRequest, "userId"> & {
     userId: IUser
 }
 
 
-export type ICreateJobRequest = Omit<IJobRequest, "id" | "userId" | "status">
+export type ICreateJobRequest = Omit<IJobRequest, "id" | "userId" | "status" | "designerId" | "designId"> & {
+    designId?: string
+    designerId?: string
+}
 
 
 

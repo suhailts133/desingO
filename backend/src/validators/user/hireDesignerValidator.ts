@@ -58,7 +58,7 @@ export const directHireApprovalOrRejectionValidation: Joi.ObjectSchema<AcceptOrR
             "any.required": "Rejection reason is required when status is Rejected",
             "any.unknown": "Rejection reason is not allowed when status is Accepted"
         }),
-    hireRequestId: Joi.string()
+    requestId: Joi.string()
         .regex(/^[a-fA-F0-9]{24}$/)
         .required()
         .messages({

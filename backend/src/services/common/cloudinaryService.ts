@@ -15,7 +15,7 @@ export class CloudinaryService implements IImageUploaderService {
     async upload(file: Express.Multer.File, folder: string): Promise<ImageUploadResult> {
         return new Promise((resolve, reject) => {
             const stream = cloudinary.uploader.upload_stream(
-                { folder, resource_type: "image" },
+                { folder, resource_type: "auto" },
                 (error, result) => {
                     if (error || !result) reject(error || new Error("Upload failed"));
                     else resolve({ path: result.secure_url, filename: result.public_id });

@@ -18,7 +18,7 @@ export class JobApplicationMapper {
             jobTitle: data.jobId.projectTitle,
             propertyType: data.jobId.propertyType,
             timeLine: data.jobId.timeline,
-            numberOfRooms: data.jobId.rooms.length,
+            numberOfRooms: data.jobId.selectedRooms.length,
             description: data.jobId.description,
             createdOn: data.createdAt.toDateString()
         }))

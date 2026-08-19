@@ -1,4 +1,3 @@
-import Logger from "../../config/logger";
 import type { VersionAcceptOrRejectDTO } from "../../DTO/proposal/version";
 import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
 import type { IApiResponse } from "../../interfaces/base/IApiResponse";
@@ -16,7 +15,6 @@ export class ProposalVersionService implements IProposalVersionService {
     constructor(private _proposalRepo: IProposalRepository, private _serviceVersionRepo: IServiceVersionRepository, private _imageUploder: IImageUploaderService, private _userRepo: IUserRepository) { }
 
     async uploadProposalImage(sourceId: string, ServiceNumber: number, serviceImages: Express.Multer.File[]): Promise<IApiResponse> {
-        Logger.info(`${ServiceNumber} service from the controller`)
         const proposal = await this._proposalRepo.getProposal(sourceId)
         if (!proposal) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
@@ -29,7 +27,6 @@ export class ProposalVersionService implements IProposalVersionService {
         if (service.paymentStatus === ServicePaymentStatus.PENDING) {
             throw new AppError(PROPOSAL_MESSAGES.SERVICE.NOT_PAID, RESPONSE_CODE.CONFILT)
         }
-        Logger.info(`${service.order} service order in the service`)
         const currntVersion = service.currentVersion
         const images: ImageUploadResult[] = await this._imageUploder.uploadMany(serviceImages ?? [], CLOUDINARY_FOLDER_NAME.SERVICE_RESULT)
         const versionResult = await this._serviceVersionRepo.createVersion({
