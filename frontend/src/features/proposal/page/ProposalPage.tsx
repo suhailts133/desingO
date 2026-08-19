@@ -34,6 +34,8 @@ import DisputeCard from "../component/DisputeCard"
 import { useGetDisputeQuery } from "../disputeEndpoints"
 import { useAcceptOrRejectVerdit } from "../hooks/useAcceptOrRejectVerdit"
 import { useVerifyPayment } from "../hooks/useVerifyPayment"
+import { useHandleResponse } from "../../../helpers/useHandleResponse"
+import { useApproveOrRejectVersion } from "../hooks/useApproveOrRejectVersion"
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
 
@@ -41,7 +43,8 @@ export default function ProposalPage() {
     const { id } = useParams<{ id: string }>()
     const { role } = useDecodeAccessToken()
     const location = useLocation()
-
+    const [approveVersion, setApproveVersion] = useState<string | null>(null)
+    const [rejectVersion, setRejectVersion] = useState<string | null>(null)
     const sourceType = location.state?.sourceType as "jobRequest" | "direct_hire" | undefined
     const sourceId = location.state?.sourceId as string | undefined
     const activeJobId = location.state?.activeJobId as string | undefined
@@ -49,8 +52,8 @@ export default function ProposalPage() {
     const { data, isLoading, error, refetch } = useGetProposalQuery(id!, { skip: !id })
 
     const proposal = data?.data
-    const { newStatus } = useApproveOrReject()
-    const contractStatus = newStatus ?? proposal?.contractStatus
+
+    const contractStatus = proposal?.contractStatus
 
     const {
         data: disputeData,
@@ -58,13 +61,14 @@ export default function ProposalPage() {
         error: disputeError
     } = useGetDisputeQuery(proposal?.id ?? "", { skip: !proposal || contractStatus !== "Disputed" })
     const disputedData = disputeData?.data
-
+    const handleResponse = useHandleResponse()
     const { ispaymentDataLoading, clientSecret, paymentIntentError, handlePaymentIntent, reset } = useCreateIntent()
-    const { isVerifying, handlePaymentIntentVerification } = useVerifyPayment()
+    const { handlePaymentIntentVerification } = useVerifyPayment()
 
-    const { isChangingStatus, statusUpdateError, statusUpdateSuccess, handleUpdateStatus } = useApproveOrReject()
-    const { isReviewing, reviewError, reivewSuccess, handleWriteReview } = useWriteReview()
-    const { isUploading, uploadError, handleServiceResultUpload } = useUploadResult()
+    const { isChangingStatus, handleUpdateStatus } = useApproveOrReject()
+    const { isVersionApprovingOrRejecting, handleVersionApprovalOrRejection } = useApproveOrRejectVersion()
+    const { isReviewing, handleWriteReview } = useWriteReview()
+    const { isUploading, handleServiceResultUpload } = useUploadResult()
     const { handleVerditSubmit, isChecking } = useAcceptOrRejectVerdit()
     const { isReporting, handleReportIssue, ReportError } = useReportIssue()
 
@@ -87,9 +91,10 @@ export default function ProposalPage() {
     const handleVerdit = async (data: AcceptOrRejectDisputeDTO) => {
         await handleVerditSubmit(data)
     }
-    const handleApproval = async () => {
+    const handleApprovalProposal = async () => {
         if (!approveProposal) return
-        await handleUpdateStatus({ sourceId: approveProposal.sourceId, contractStatus: "Accepted" })
+        const result = await handleUpdateStatus({ sourceId: approveProposal.sourceId, contractStatus: "Accepted" })
+        handleResponse(result.success, "You have accepted the contract", result.message)
         setApproveProposal(null)
     }
     const handleUpload = (serviceNumber: number, serviceName: string) => {
@@ -101,9 +106,23 @@ export default function ProposalPage() {
         })
     }
 
+    const handleApproveVersion = async () => {
+        if (!approveVersion) return
+        const result = await handleVersionApprovalOrRejection({ status: "Approved", versionId: approveVersion })
+        handleResponse(result.success, "You have approved this version.", result.message)
+        setApproveVersion(null)
+    }
+
+    const handleRejectVersion = async (data: RejectionPayload) => {
+        if (!rejectVersion) return
+        const result = await handleVersionApprovalOrRejection({ versionId: rejectVersion, status: "Rejected", rejectionReason: data.rejectionReason })
+        handleResponse(result.success, "You have reject this version.", result.message)
+        setRejectVersion(null)
+    }
+
     const handleUploadSubmit = async (data: IServiceResult) => {
         if (!uploadingService) return
-
+        console.log(uploadingService)
         const formData = new FormData()
         formData.append("sourceId", uploadingService.sourceId)
         formData.append("serviceNumber", String(uploadingService.serviceNumber))
@@ -115,26 +134,26 @@ export default function ProposalPage() {
         })
         console.log([...formData.entries()])
         const result = await handleServiceResultUpload(formData)
-        if (result) {
-            toast.success("Upload Successfull")
-        }
-        toast.error(uploadError || "Something went Wrong")
+        handleResponse(result.success, "Upload successfull", result.message)
+
         setUploadingService(null)
     }
 
     const handleRejection = async ({ rejectionReason }: RejectionPayload) => {
         if (!rejectProposal) return
-        await handleUpdateStatus({
+        const result = await handleUpdateStatus({
             sourceId: rejectProposal.sourceId,
             contractStatus: "Rejected",
             overallRejectionReason: rejectionReason
         })
+        handleResponse(result.success, "You have rejected the contract", result.message)
         setRejectProposal(null)
     }
 
     const handleWriteReveiw = async (data: ReviewPayloadFields) => {
         if (!review) return
-        await handleWriteReview({ sourceId: review.sourceId, comment: data.comment, rating: data.rating })
+        const result = await handleWriteReview({ sourceId: review.sourceId, comment: data.comment, rating: data.rating })
+        handleResponse(result.success, "Your reveiw was successfully submitted", result.message)
         setReview(null)
     }
 
@@ -175,7 +194,7 @@ export default function ProposalPage() {
         reset()
         setPayingService(null)
         const result = await handlePaymentIntentVerification(intentId)
-        if(result.success){
+        if (result.success) {
             refetch()
             toast.success("Payment Success")
         }
@@ -226,7 +245,7 @@ export default function ProposalPage() {
 
             <ConfirmModal
                 isOpen={!!approveProposal}
-                onConfirm={handleApproval}
+                onConfirm={handleApprovalProposal}
                 onClose={() => setApproveProposal(null)}
                 isLoading={isChangingStatus}
                 heading="Accept this proposal?"
@@ -294,14 +313,33 @@ export default function ProposalPage() {
                 showUpdateProposal={showUpdateProposal}
                 onChatOpen={() => setChatOpen(true)}
             />
+            <ConfirmModal
+                isOpen={!!approveVersion}
+                onConfirm={handleApproveVersion}
+                onClose={() => setApproveVersion(null)}
+                isLoading={isVersionApprovingOrRejecting}
+                text="Are you sure you want to accept this request?"
+                heading="Confirm?"
+                buttonLoadingText="Accepting"
+                buttonText="Confirm & Accept"
+            />
 
-            <div>
-                <button onClick={() => setReview({ sourceId: proposal.sourceId })} className="soft-black-button">
-                    Write Your Review
-                </button>
-                {reviewError && <p className="text-xs text-red-500">{reviewError}</p>}
-                {reivewSuccess && <p className="text-xs text-green-600">{reivewSuccess}</p>}
-            </div>
+            <RejectJobApplicationModal
+                isOpen={!!rejectVersion}
+                onClose={() => setRejectVersion(null)}
+                onConfirm={handleRejectVersion}
+                isLoading={isVersionApprovingOrRejecting}
+            />
+
+            {
+                contractStatus === "Completed" && role === "Customer" && (
+                    <div>
+                        <button onClick={() => setReview({ sourceId: proposal.sourceId })} className="soft-black-button">
+                            Write Your Review
+                        </button>
+                    </div>
+                )
+            }
             <div>
                 <button onClick={() => setDispute({ sourceId: proposal.sourceId })} className="soft-black-button">
                     Raise a Issue
@@ -312,8 +350,6 @@ export default function ProposalPage() {
                 <CustomerActionPanel
                     onAccept={() => setApproveProposal({ sourceId: proposal.sourceId })}
                     onDecline={() => setRejectProposal({ sourceId: proposal.sourceId })}
-                    statusUpdateError={statusUpdateError}
-                    statusUpdateSuccess={statusUpdateSuccess}
                 />
             )}
 
@@ -345,8 +381,8 @@ export default function ProposalPage() {
                                 service={service}
                                 role={role}
                                 onPay={() => handlePay(service.serviceName, service.price, proposal.sourceId)}
-                                onVerify={() => { }}
-                                onRedo={() => { }}
+                                onVerify={(versionId) => setApproveVersion(versionId)}
+                                onRedo={(versionId) => setRejectVersion(versionId)}
                                 onUpload={() => handleUpload(service.order, service.serviceName)}
                                 isPayLoading={ispaymentDataLoading && payingService?.serviceName === service.serviceName}
                             />

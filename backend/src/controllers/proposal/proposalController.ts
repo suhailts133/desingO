@@ -13,6 +13,7 @@ import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 import { proposalApproveOrRejectionValidation } from "../../validators/proposal/proposalAcceptOrRejectValidation";
 import { versionApproveOrRejectValidation } from "../../validators/proposal/versionAcceptOrRejectValidation";
 import type { VersionAcceptOrRejectDTO } from "../../DTO/proposal/version";
+import Logger from "../../config/logger";
 
 
 
@@ -96,6 +97,7 @@ export class ProposalController {
         if (source !== "jobRequest" && source !== "direct_hire") {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL_INPUT.UNKONW_DATA, RESPONSE_CODE.BAD_REQUEST)
         }
+        Logger.info(`${source} ${jobId}`)
         const result = source === "jobRequest" ? await this._proposalService.getProposalInputForJobRequest(jobId) : await this._proposalService.getProposalTemplateForDirecHire(jobId)
         RespsonseHelper.success(res, result)
     })
@@ -112,6 +114,7 @@ export class ProposalController {
     uploadServiceResult = asyncHandler(async (req: Request, res: Response) => {
 
         const { serviceNumber, sourceId } = req.body as ServiceResultDTO
+        Logger.info(`${serviceNumber} ${sourceId}`)
         if (!sourceId) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }

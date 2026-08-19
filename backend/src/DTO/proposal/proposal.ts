@@ -21,6 +21,15 @@ export interface CreateProposalDTO {
 }
 
 
+export interface IRoom {
+    length: number;
+    width: number;
+    unit: string;
+}
+
+export interface IProjectSource {
+    rooms: IRoom[];
+}
 export type GetProposalDTO = Omit<IProposal, "clientId" | "designerId"> & {
     clientId: IUser
     designerId: IUser
@@ -104,7 +113,7 @@ export interface ProposalServiceItemDTO {
     executionPrice: number
     status: ProposalServiceStatus
     rejectionReason?: string
-    versions:AllVersion[]
+    versions: AllVersion[]
     currentVersion: number
     expectedDeliveryDate: string
     actualDeliveryDate?: string

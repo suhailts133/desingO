@@ -13,7 +13,11 @@ export interface IServiceResult {
         file: File[]
     }[]
 }
-
+export interface VersionAcceptOrRejectDTO {
+    status: "Rejected" | "Approved",
+    rejectionReason?: string,
+    versionId: string
+}
 
 export interface DisputeFormDTO {
     reason: string,

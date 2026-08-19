@@ -6,7 +6,7 @@ import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/
 import type { IProposalRepository, IServiceVersionRepository } from "../../interfaces/proposal/IProposalRepository";
 import type { IProposalVersionService } from "../../interfaces/proposal/IProposalService";
 import { CLOUDINARY_FOLDER_NAME, USER_ROLES } from "../../shared/enums/commonEnums";
-import { CONTRACT_STATUS, ServiceStatus, VERSION_STATUS } from "../../shared/enums/proposalEnums";
+import { CONTRACT_STATUS, ServicePaymentStatus, ServiceStatus, VERSION_STATUS } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
 import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
@@ -16,34 +16,37 @@ export class ProposalVersionService implements IProposalVersionService {
     constructor(private _proposalRepo: IProposalRepository, private _serviceVersionRepo: IServiceVersionRepository, private _imageUploder: IImageUploaderService, private _userRepo: IUserRepository) { }
 
     async uploadProposalImage(sourceId: string, ServiceNumber: number, serviceImages: Express.Multer.File[]): Promise<IApiResponse> {
+        Logger.info(`${ServiceNumber} service from the controller`)
         const proposal = await this._proposalRepo.getProposal(sourceId)
         if (!proposal) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
-        const service = proposal.services.find(s => s.order === Number(ServiceNumber) && s.status === ServiceStatus.IN_PROGRESS)
+
+        const service = proposal.services.find(s => s.order === Number(ServiceNumber) && (s.status === ServiceStatus.IN_PROGRESS || s.status === ServiceStatus.REDO))
         if (!service) {
             throw new AppError(PROPOSAL_MESSAGES.SERVICE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
-        Logger.info(`service ${JSON.stringify(service)}`)
+        if (service.paymentStatus === ServicePaymentStatus.PENDING) {
+            throw new AppError(PROPOSAL_MESSAGES.SERVICE.NOT_PAID, RESPONSE_CODE.CONFILT)
+        }
+        Logger.info(`${service.order} service order in the service`)
         const currntVersion = service.currentVersion
         const images: ImageUploadResult[] = await this._imageUploder.uploadMany(serviceImages ?? [], CLOUDINARY_FOLDER_NAME.SERVICE_RESULT)
-        Logger.info(`images , ${JSON.stringify(images)}`)
         const versionResult = await this._serviceVersionRepo.createVersion({
             proposalId: proposal.id,
-            sourceId:proposal.sourceId.toString(),
+            sourceId: proposal.sourceId.toString(),
             version: currntVersion + 1,
             images,
             serviceOrder: service.order
         })
-        if(!versionResult){
+        if (!versionResult) {
             throw new AppError("version createion failed", RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
-        Logger.info(`version created ${JSON.stringify(versionResult)}`)
+
         const updatedServiceVersion = await this._proposalRepo.updateServiceVersion(sourceId, Number(ServiceNumber), ServiceStatus.UPLOADED, versionResult.version)
         if (!updatedServiceVersion) {
             throw new AppError(PROPOSAL_MESSAGES.SERVICE.UPDATE_FAIL, RESPONSE_CODE.NOT_FOUND)
         }
-        Logger.info(`updated the service ${JSON.stringify(updatedServiceVersion)}`)
 
         return { message: PROPOSAL_MESSAGES.SERVICE.SUCCESS }
     }
@@ -66,22 +69,27 @@ export class ProposalVersionService implements IProposalVersionService {
             throw new AppError(PROPOSAL_MESSAGES.VERSION.UPDATE_FAIL, RESPONSE_CODE.NOT_FOUND)
         }
 
+        const paymentDetails = service.escrow
+        if (!paymentDetails) {
+            throw new AppError(PROPOSAL_MESSAGES.ESCROW.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+        }
+
+
         if (updatedVersion.status === VERSION_STATUS.APPROVED) {
             const updateCurrentServiceStatus = await this._proposalRepo.acceptOrRejectServiceResult(proposal.sourceId.toString(), service.order, ServiceStatus.COMPLETED)
             if (!updateCurrentServiceStatus) {
                 throw new AppError(PROPOSAL_MESSAGES.SERVICE.CANNOT_COMPLETE, RESPONSE_CODE.NOT_FOUND)
             }
-            const designerAmount = service.escrow?.designerPayout
-            const platformFee = service.escrow?.platformCommission
-            if (!designerAmount || !platformFee) {
-                throw new AppError(PROPOSAL_MESSAGES.PAYMENT.PAYOUT_NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
-            }
+
+            const designerAmount = paymentDetails.designerPayout
+            const platformFee = paymentDetails.platformCommission
+
             const designerNewWalletAmount = proposal.designerId.wallet + designerAmount
             const updatedWalletDesigner = await this._userRepo.updateUser(proposal.designerId.id, { wallet: designerNewWalletAmount })
             if (!updatedWalletDesigner) {
                 throw new AppError(PROPOSAL_MESSAGES.PAYMENT.PAYOUT_DESIGNER_FAILED, RESPONSE_CODE.NOT_FOUND)
             }
-            
+
             const admin = await this._userRepo.findByRole(USER_ROLES.ADMIN)
             if (!admin) {
                 throw new AppError(ADMIN_MESSAGES.ADMIN.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
