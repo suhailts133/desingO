@@ -14,25 +14,9 @@ export interface HireDesignerFilter {
     sort?: "asc" | "desc",
     startDate?: string,
     endDate?: string,
-    designId:string
+    designId: string
 }
 
-
-export interface HireDesignerRequests {
-    id: string,
-    userName: string,
-    profileImage?: string,
-    length: string;
-    width: string;
-    ceilingHeight?: string;
-    unit: string
-    notes?: string;
-    status: "Accepted" | "Rejected" | "Pending",
-    rejectionReason?: string
-    services: string[],
-    createdOn: string
-    timeLine: string
-}
 
 
 
@@ -62,23 +46,80 @@ export interface EditRoomMeasurement {
     notes?: string;
 }
 
+export interface SelectOption {
+    value: string;
+    label: string;
+}
+
+export type ProjectType = "Renovation" | "New_Build";
+export type RenovationLevel = "DECOR_ONLY" | "ROOMS_UPGRADE" | "COMPLETE_MAKEOVER";
+export type ConstructionStage = "PLANNING" | "UNDER_CONSTRUCTION" | "BARE_SHELL_READY";
+export type AreaUnit = "ft" | "m";
+export type DimensionUnit = "FT" | "INCH" | "CM" | "MM";
+
+export interface IItemDimensions {
+    length: number;
+    width: number;
+    height?: number;
+    unit: DimensionUnit;
+}
+
+
+export interface IHouseholdProfile {
+    adultsCount: number;
+    kidsCount: number;
+    seniorsCount: number;
+    hasPets: boolean;
+    petDetails?: string;
+}
+
+export interface IRenovationDetails {
+    level: RenovationLevel;
+    propertyAgeYears: string;
+    livingInDuringRenovation: boolean;
+}
+
+export interface INewBuildDetails {
+    stage: ConstructionStage;
+    vastuCompliantRequired: boolean;
+}
+export type Source_type = "JOB_REQUEST" | "DIRECT_HIRE"
 export interface IJobRequest {
-    services: { value: string; label: string }[];
     projectTitle: string;
-    propertyType: { value: string; label: string }
-    designStyles: { value: string; label: string }[];
-    city: string;
-    district: string;
+    description: string;
+    projectType: ProjectType;
+    propertyType: SelectOption;
+    designId?: string
+    designerId?: string
+    sourceType: Source_type
+
+
+    renovationDetails?: IRenovationDetails;
+    newbuildDetails?: INewBuildDetails;
+
+    totalCarpetArea: number;
+    areaUnit: AreaUnit;
+    selectedRooms: SelectOption[];
+    requiresSiteVisitMeasurement: boolean;
+    floorPlans?: { file: File[] }[];
+
+    servicePackageType: "CONCEPT" | "CONTRACTOR_READY" | "CUSTOM";
+    services: SelectOption[];
+    designStyles: SelectOption[];
+    preferredMaterials: SelectOption[];
+    householdProfile: IHouseholdProfile;
     state: string;
+    district: string;
+    city: string;
+    pincode: string;
     phone: string;
-    timeline: { value: string; label: string };
+
+
+    timeline: SelectOption;
     minBudget: number;
     maxBudget: number;
-    description: string;
-    rooms: RoomMeasurement[];
-    refrenceImages: {
-        file: File[];
-    }[];
+
+    referenceImages: { file: File[] }[];
 }
 
 export type EditJobRequestFields = Omit<IJobRequest, "refrenceImages">
@@ -116,14 +157,92 @@ export interface IJobRequestPayload {
     rooms: RoomMeasurementPayload[];
 }
 
-export interface JobRequestDetailDTO extends IJobRequestPayload {
-    name: string,
-    createdAt: string,
-    userCreatedAt: string,
-    status: JobStatus,
-    id: string
+export interface IHouseholdProfileDTO {
+    adultsCount: number;
+    kidsCount: number;
+    seniorsCount: number;
+    hasPets: boolean;
+    petDetails?: string;
 }
 
+export interface IRenovationDetailsDTO {
+    level: "DECOR_ONLY" | "ROOMS_UPGRADE" | "COMPLETE_MAKEOVER";
+    propertyAgeYears: string;
+    livingInDuringRenovation: boolean;
+}
+
+export interface INewBuildDetailsDTO {
+    stage: "PLANNING" | "UNDER_CONSTRUCTION" | "BARE_SHELL_READY";
+    vastuCompliantRequired: boolean;
+}
+
+export interface IItemDimensionsDTO {
+    length: number;
+    width: number;
+    height?: number;
+    unit: "FT" | "INCH" | "CM" | "MM";
+}
+
+export interface IReusableItemDTO {
+    name: string;
+    category: "FURNITURE" | "APPLIANCE" | "ART_DECOR" | "OTHER";
+    dimensions: IItemDimensionsDTO;
+    photoUrl?: string;
+    notes?: string;
+}
+
+export interface JobRequestDetailDTO {
+    id: string;
+    userId: string;
+    userName: string;
+
+    designerId?: string;
+    designerName?: string;
+    designId?: string;
+    sourceType: "JOB_REQUEST" | "DIRECT_HIRE";
+
+    projectTitle: string;
+    propertyType: string;
+    projectType: "Renovation" | "New_Build";
+    description: string;
+
+
+    renovationDetails?: IRenovationDetailsDTO;
+    newbuildDetails?: INewBuildDetailsDTO;
+
+
+    totalCarpetArea: number;
+    areaUnit: "ft" | "m";
+    selectedRooms: string[];
+    requiresSiteVisitMeasurement: boolean;
+    floorPlans: ImageUploadResult[];
+    referenceImages: ImageUploadResult[];
+
+
+    designStyles: string[];
+    preferredMaterials: string[];
+    services: string[];
+    reusableItems?: IReusableItemDTO[];
+
+    householdProfile: IHouseholdProfileDTO;
+
+
+    state: string;
+    district: string;
+    city: string;
+    pincode: string;
+    phone: string;
+
+    timeline: string;
+    minBudget: number;
+    maxBudget: number;
+
+
+    status: JobStatus;
+    createdAt: string;
+
+}
+export type JobStatus = "Pending" | "Closed" | "Ongoing"
 
 export interface JobsQueryParms {
     page?: number,
@@ -137,12 +256,12 @@ export interface JobsQueryParms {
 
 
 
-export type JobStatus = "Pending" | "Closed" | "Ongoing"
 
 export interface JobsResponseDTO {
     id: string
     projectTitle: string,
     propertyType: string,
+    sourceType: Source_type
     description: string,
     timeLine: string,
     status: JobStatus

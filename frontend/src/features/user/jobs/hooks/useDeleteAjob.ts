@@ -1,31 +1,12 @@
-import { useState } from "react"
 import { useJobRequestServices } from "../jobService"
 
 export const useDeleteAJob = () => {
     const { deleteAJob, isDeleting } = useJobRequestServices()
-    const [deleteError, setDeleteError] = useState<string | null>(null)
-    const [deleteSuccess, setDeleteSuccess] = useState<string | null>(null)
-    const handleDeletion = async (id: string) => {
-        setDeleteSuccess(null)
-        setDeleteError(null)
-        const result = await deleteAJob(id);
-        if (result.success) {
-            setDeleteSuccess(result.message as string);
-            setTimeout(() => {
-                setDeleteSuccess(null)
 
-            }, 3000);
-        } else {
-            setDeleteError(result.message as string)
-            setTimeout(() => {
-                setDeleteError(null)
-            }, 3000);
-        }
-    }
+    const handleDeletion = async (id: string) => await deleteAJob(id);
     return {
         handleDeletion,
         isDeleting,
-        deleteError,
-        deleteSuccess
+        
     }
 }

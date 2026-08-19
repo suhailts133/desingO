@@ -45,14 +45,14 @@ export default function HireRequestsPage() {
 
     const handleApproval = async () => {
         if (!approveHireRequest) return
-        const result = await handleSubmission({ status: "Accepted", hireRequestId: approveHireRequest.hireRequestId })
+        const result = await handleSubmission({ status: "Accepted", requestId: approveHireRequest.hireRequestId })
         handleResponse(result.success, "You have accepted this request.", result.message)
         setApproveHireRequest(null)
     }
 
     const handleRejection = async (data: RejectionPayload) => {
         if (!rejectHireRequest) return
-        const result = await handleSubmission({ hireRequestId: rejectHireRequest.hireRequestId, status: "Rejected", rejectionReason: data.rejectionReason })
+        const result = await handleSubmission({ requestId: rejectHireRequest.hireRequestId, status: "Rejected", rejectionReason: data.rejectionReason })
         handleResponse(result.success, "You have reject this request.", result.message)
         setRejectHireRequest(null)
     }

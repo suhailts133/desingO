@@ -1,8 +1,8 @@
 import { API_ROUTES } from "../../../api/apiRoutes";
 import { baseApi } from "../../../api/baseApi";
 import type { IApiResponse, IApiResponseWithPagination } from "../../../api/responseType";
-import type { HireDesignerFields, HireDesignerFilter, HireDesignerRequests } from "../../user/jobs/jobInterface";
-import type { AcceptOrRejectHireDesigner, DesignDetailResponseDTO, DesignResponseDTO, DesignsQueryParms, GetAllDesignCommonResponseDTO } from "./designInterface";
+import type {  HireDesignerFields, HireDesignerFilter } from "../../user/jobs/jobInterface";
+import type { AcceptOrRejectHireDesigner, DesignDetailResponseDTO, DesignResponseDTO, DesignsQueryParms, GetAllDesignCommonResponseDTO, HireDesignerDTO } from "./designInterface";
 
 export const designApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -48,7 +48,7 @@ export const designApi = baseApi.injectEndpoints({
             invalidatesTags: ["hireRequest"]
         }),
 
-        hireRequest: builder.query<IApiResponseWithPagination<HireDesignerRequests[]>, HireDesignerFilter>({
+        hireRequest: builder.query<IApiResponseWithPagination<HireDesignerDTO[]>, HireDesignerFilter>({
             query: (args) => ({
                 url: `${API_ROUTES.HIRE_DESIGNER.REQUEST_PER_DESIGN}/${args.designId}`,
                 method: "GET",

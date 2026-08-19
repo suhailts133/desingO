@@ -65,9 +65,9 @@ export const API_ROUTES = {
     HIRE_DESIGNER: {
         CREATE: "/direct-hire/create",
         MY_REQUESTS: "/direct-hire/my",
-        REQUEST_PER_DESIGN: "/direct-hire/design/requests",
-        ACCEPT_OR_REJECT: "/direct-hire/accept-reject",
-        DELETE: "/direct-hire//request",
+        REQUEST_PER_DESIGN: "/job/design/request",
+        ACCEPT_OR_REJECT: "/job/accept-reject",
+        DELETE: "/direct-hire/request",
     },
 
     SAVE_DESIGNS: {

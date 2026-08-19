@@ -1,7 +1,7 @@
 import { API_ROUTES } from "../../../api/apiRoutes";
 import { baseApi } from "../../../api/baseApi";
 import type { IApiResponse, IApiResponseWithPagination } from "../../../api/responseType";
-import type { JobRequestDetailDTO, JobsCommonResponseDTO, JobsQueryParms, JobsResponseDTO } from "./jobInterface";
+import type { JobRequestDetailDTO, JobsCommonResponseDTO, JobsQueryParms, JobsResponseDTO, Source_type } from "./jobInterface";
 
 export const jobsApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -22,11 +22,11 @@ export const jobsApi = baseApi.injectEndpoints({
             invalidatesTags: ["jobs"]
         }),
 
-        getMyJobs: builder.query<IApiResponseWithPagination<JobsResponseDTO[]>, { page: number }>({
-            query: ({ page }) => ({
+        getMyJobs: builder.query<IApiResponseWithPagination<JobsResponseDTO[]>, { page: number, sourceType:Source_type }>({
+            query: ({ page,sourceType }) => ({
                 url: API_ROUTES.JOB.MY_JOBS,
                 method: "GET",
-                params: { page }
+                params: { page,sourceType }
             }),
             providesTags: ["jobs"]
         }),

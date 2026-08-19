@@ -1,75 +1,142 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { jobRequestValidation } from "../../../../validations/customerValidation";
-import { STYLE_OPTIONS, PROPERTY_OPTIONS, SERVICE_OPTIONS } from "../../../designer/designs/designData";
-import { TIMELINE_OPTIONS } from "../jobData";
-import { INDIAN_STATES } from "../../../designer/designerVerification/indianStates";
+import { useSearchParams } from "react-router-dom";
+import { UserCheck } from "lucide-react";
+
 import { usePostJob } from "../hooks/usePostJob";
-
-import type { IJobRequest } from "../jobInterface";
-
-import SubmitButton from "../../../../shared/common/SubmitButton";
-import { InputField } from "../../../../shared/form/InputField";
-import { TextAreaField } from "../../../../shared/form/TextAreaField";
-import { ReactSelectField } from "../../../../shared/form/ReactSelectField";
-import { SelectField } from "../../../../shared/form/SelectField";
-import { createJobFormData } from "../../../../helpers/formHelpers/createJobFromData";
-import RoomMeasurementsSection from "../components/RoomMeasurementsSection";
-import ReferenceImagesSection from "../components/ReferenceImagesSection";
 import { useHandleResponse } from "../../../../helpers/useHandleResponse";
-
+import SubmitButton from "../../../../shared/common/SubmitButton";
+import ReferenceImagesSection from "../components/ReferenceImagesSection";
+import { jobRequestValidation } from "../../../../validations/customerValidation";
+import type { IJobRequest, Source_type } from "../jobInterface";
+import { createJobFormData } from "../../../../helpers/formHelpers/createJobFromData";
+import ProjectOverviewSection from "../components/ProjectOverviewSection";
+import AestheticsAndItemsSection from "../components/AestheticsAndItemsSection";
+import DeliverablesSection from "../components/DeliverablesSection";
+import HouseholdProfileSection from "../components/HouseholdProfileSection";
+import LocationBudgetSection from "../components/LocationBudgetSection";
+import SpaceScopeSection from "../components/SpaceScopeSection";
+import SpaceStatusSection from "../components/SpaceStatusSection";
+import { SERVICE_PRESETS } from "../jobData";
 
 export default function JobRequestForm() {
+    const [searchParams] = useSearchParams();
+
+    const designerId = searchParams.get("designerId") ?? undefined;
+    const designId = searchParams.get("designId") ?? undefined;
+    const sourceType: Source_type = searchParams.get("source") === "DIRECT_HIRE" || Boolean(designerId) ? "DIRECT_HIRE" : "JOB_REQUEST";
+
+    const isDirectHire = sourceType === "DIRECT_HIRE";
+
     const methods = useForm<IJobRequest>({
-        defaultValues: { rooms: [], refrenceImages: [] },
         resolver: joiResolver(jobRequestValidation),
+        defaultValues: {
+            sourceType,
+            designerId,
+            designId,
+            projectType: "Renovation",
+            areaUnit: "ft",
+            requiresSiteVisitMeasurement: false,
+            servicePackageType: "CONTRACTOR_READY",
+            services: SERVICE_PRESETS.CONTRACTOR_READY,
+            selectedRooms: [],
+            designStyles: [],
+            preferredMaterials: [],
+            householdProfile: {
+                adultsCount: 2,
+                kidsCount: 0,
+                seniorsCount: 0,
+                hasPets: false,
+            },
+            renovationDetails: {
+                level: "ROOMS_UPGRADE",
+                propertyAgeYears: "5",
+                livingInDuringRenovation: false,
+            },
+            newbuildDetails: {
+                stage: "BARE_SHELL_READY",
+                vastuCompliantRequired: false,
+            },
+            referenceImages: [],
+            floorPlans: [],
+        },
     });
-    const handleResponse = useHandleResponse()
 
+    const { handleSubmit } = methods;
     const { handleSubmission, isLoading } = usePostJob();
-    const { register, control, handleSubmit, formState: { errors } } = methods;
-
+    const handleResponse = useHandleResponse();
+    const onInvalid = (errors: any) => {
+        console.error("Form Validation Failed:", errors);
+    };
     const onSubmit = async (data: IJobRequest) => {
         const formData = createJobFormData(data);
-        const resullt = await handleSubmission(formData);
-        handleResponse(resullt.success, "Job Posted Successfully", resullt.message, "/customer/jobs")
+        console.log([...formData.entries()])
+        const result = await handleSubmission(formData);
+        handleResponse(result.success, isDirectHire ? "Direct Hire Request Sent" : "Job Posted Successfully", result.message, -1);
     };
 
     return (
-        <div className="min-h-screen w-full flex justify-center items-start py-10 px-4">
-            <div className="w-full max-w-2xl bg-white/50 backdrop-blur-2xl shadow-blush/30 rounded-xl shadow-2xl p-8">
-                <h2 className="text-4xl font-semibold text-center font-Dynalight-Regular mb-2 text-soft-black">designO</h2>
-                <p className="text-center text-gray-400 font-Jost-Semibold mb-8 text-sm uppercase tracking-widest">Post a Job Request</p>
+        <div className="min-h-screen w-full flex justify-center items-start py-10 px-4 bg-seashell-tint/40">
+            <div className="w-full max-w-3xl bg-snow-white shadow-2xl rounded-2xl p-6 sm:p-10 border border-blush-pale">
+                {/* Header Section */}
+                <div className="text-center mb-8">
+                    <h2 className="text-5xl font-semibold font-Dynalight-Regular text-soft-black">
+                        designO
+                    </h2>
+                    <p className="text-soft-black/60 font-Jost-Semibold text-xs tracking-widest uppercase mt-1">
+                        {isDirectHire
+                            ? "Send a Direct Hire Proposal"
+                            : "Post an Interior Drawing Job Request"}
+                    </p>
+
+                    {isDirectHire && (
+                        <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-blush-pale/70 border border-blush rounded-full text-xs font-Jost-Semibold text-soft-black">
+                            <UserCheck className="w-3.5 h-3.5 text-blush-deep" />
+                            <span>Direct Designer Inquiry</span>
+                        </div>
+                    )}
+                </div>
 
                 <FormProvider {...methods}>
-                    <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-                   
-                        <InputField label="Project Title" placeholder="e.g. Modern Living Room Redesign" registration={register("projectTitle")} error={errors.projectTitle?.message} />
-                        <TextAreaField label="Description" placeholder="Describe your vision, requirements, or anything the designer should know..." registration={register("description")} error={errors.description?.message} />
-                        <ReactSelectField label="Property Type" name="propertyType" control={control} placeholder="Select property type..." options={PROPERTY_OPTIONS} error={errors.propertyType?.message} />
+                    <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-8">
+                        <ProjectOverviewSection />
+                        <hr className="border-blush-pale" />
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <ReactSelectField label="Design Styles" name="designStyles" isMulti={true} control={control} options={STYLE_OPTIONS} error={errors.designStyles?.message} />
-                            <ReactSelectField label="Services" name="services" isMulti={true} control={control} options={SERVICE_OPTIONS} error={errors.services?.message} />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <SelectField label="State" registration={register("state")} error={errors.state?.message} options={INDIAN_STATES} />
-                            <InputField label="District" registration={register("district")} error={errors.district?.message} />
-                            <InputField label="City" registration={register("city")} error={errors.city?.message} />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <InputField label="Phone" placeholder="+91 XXXXXXXXXX" registration={register("phone")} error={errors.phone?.message} />
-                            <ReactSelectField label="Project Timeline" name="timeline" control={control} options={TIMELINE_OPTIONS} error={errors.timeline?.message} />
-                            <InputField type="number" placeholder="5000"  label="Minimum Budget (₹)" registration={register("minBudget", { valueAsNumber: true })} error={errors.minBudget?.message} />
-                            <InputField type="number" placeholder="10000" label="Max Budget (₹)" registration={register("maxBudget", { valueAsNumber: true })} error={errors.maxBudget?.message} />
-                        </div>
+                        <SpaceStatusSection />
+                        <hr className="border-blush-pale" />
 
-                        <hr className="my-6 border-gray-100" />
+                        <SpaceScopeSection />
+                        <hr className="border-blush-pale" />
 
-                        <RoomMeasurementsSection />
+                        <DeliverablesSection />
+                        <hr className="border-blush-pale" />
+
+                        <AestheticsAndItemsSection />
+                        <hr className="border-blush-pale" />
+
+                        <HouseholdProfileSection />
+                        <hr className="border-blush-pale" />
+
+                        <LocationBudgetSection />
+
                         <ReferenceImagesSection />
 
-                        <SubmitButton isLoading={isLoading} label="Post Job Request" loadingLabel="Posting" type="submit" />
+                        <div className="pt-4">
+                            <SubmitButton
+                                isLoading={isLoading}
+                                label={
+                                    isDirectHire
+                                        ? "Send Direct Hire Proposal"
+                                        : "Post Interior Job Request"
+                                }
+                                loadingLabel={
+                                    isDirectHire
+                                        ? "Sending Proposal..."
+                                        : "Submitting Request..."
+                                }
+                                type="submit"
+                            />
+                        </div>
                     </form>
                 </FormProvider>
             </div>

@@ -12,3 +12,21 @@ export const UNIT_OPTIONS = [
     { value: "ft", label: "ft" },
     { value: "m", label: "m" },
 ];
+
+
+export const SERVICE_PRESETS = {
+    CONCEPT: [
+        { value: "2D Space Planning", label: "2D Space Planning" },
+        { value: "3D Photorealistic Renders", label: "3D Photorealistic Renders" },
+        { value: "Moodboard & Color Palette", label: "Moodboard & Color Palette" },
+    ],
+    CONTRACTOR_READY: [
+        { value: "2D Space Planning", label: "2D Space Planning" },
+        { value: "3D Photorealistic Renders", label: "3D Photorealistic Renders" },
+        { value: "Electrical & Lighting Layout", label: "Electrical & Lighting Layout" },
+        { value: "Plumbing & Sanitary Layout", label: "Plumbing & Sanitary Layout" },
+        { value: "Reflected Ceiling Plan (RCP)", label: "Reflected Ceiling Plan (RCP)" },
+        { value: "Carpentry & Wardrobe Elevations", label: "Carpentry & Wardrobe Elevations" },
+        { value: "Bill of Quantities (BOQ)", label: "Bill of Quantities (BOQ)" },
+    ],
+};
