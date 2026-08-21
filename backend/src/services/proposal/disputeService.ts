@@ -19,7 +19,7 @@ export class DisputeService implements IDisputeService {
         if (!proposal) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
-        if(proposal.contractStatus !== CONTRACT_STATUS.DISPUTED){
+        if (proposal.contractStatus !== CONTRACT_STATUS.DISPUTED) {
             throw new AppError(PROPOSAL_MESSAGES.DISPUTE.NOT_DISPUTED, RESPONSE_CODE.CONFILT)
         }
         const disputId = proposal.disputeId
@@ -40,9 +40,7 @@ export class DisputeService implements IDisputeService {
             throw new AppError(PROPOSAL_MESSAGES.DISPUTE.ONGOING, RESPONSE_CODE.CONFILT)
         }
 
-        if (proposal.contractStatus !== CONTRACT_STATUS.ACCEPTED) {
-            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_ONGOING, RESPONSE_CODE.CONFILT)
-        }
+
         const current_service = proposal.services.find(service => service.order === Number(data.order))
         if (!current_service) {
             throw new AppError(PROPOSAL_MESSAGES.SERVICE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
@@ -95,6 +93,12 @@ export class DisputeService implements IDisputeService {
         const updatedDispute = await this._disputeRepo.updateDispute(data.disputeId, { status: data.status })
         if (!updatedDispute) {
             throw new AppError(PROPOSAL_MESSAGES.DISPUTE.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
+        if (updatedDispute.status === DISPUTE_STATUS.RESOLVED) {
+            const proposalStatusUpdated = await this._propsalRepo.updateProposal(updatedDispute.proposalId.toString(), { contractStatus: CONTRACT_STATUS.ONGOING })
+            if (!proposalStatusUpdated) {
+                throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.UPDATE_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+            }
         }
         return { message: PROPOSAL_MESSAGES.DISPUTE.UPDATION_SUCCESS, data: updatedDispute.status }
     }

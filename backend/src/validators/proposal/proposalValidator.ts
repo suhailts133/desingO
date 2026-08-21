@@ -1,5 +1,5 @@
 import Joi from "joi";
-import type { CreateProposalDTO } from "../../DTO/proposal/proposal";
+import type { CreateProposalDTO, UpdateProposalDTO } from "../../DTO/proposal/proposal";
 
 const serviceItemSchema = Joi.object({
     serviceName: Joi.string()
@@ -56,7 +56,6 @@ const serviceItemSchema = Joi.object({
             "date.base": "Actual delivery date must be a valid date",
         }),
 });
-
 export const createProposalValidation: Joi.ObjectSchema<CreateProposalDTO> = Joi.object<CreateProposalDTO>({
     sourceId: Joi.string()
         .trim()
@@ -64,14 +63,6 @@ export const createProposalValidation: Joi.ObjectSchema<CreateProposalDTO> = Joi
         .messages({
             "string.empty": "Source ID is required",
             "any.required": "Source ID is required",
-        }),
-
-    sourceType: Joi.string()
-        .valid("jobRequest", "direct_hire")
-        .required()
-        .messages({
-            "any.only": 'Source type must be either "jobRequest" or "directHire"',
-            "any.required": "Source type is required",
         }),
 
     drawingFeePerSqFt: Joi.number()
@@ -93,6 +84,27 @@ export const createProposalValidation: Joi.ObjectSchema<CreateProposalDTO> = Joi
             "any.required": "Expected completion date is required",
         }),
 
+    siteVisitingNeeded: Joi.boolean()
+        .required()
+        .messages({
+            "boolean.base": "Site visiting needed must be a boolean",
+            "any.required": "Site visiting needed status is required",
+        }),
+
+    expectedSiteVisitingDate: Joi.date()
+        .greater("now")
+        .when("siteVisitingNeeded", {
+            is: true,
+            then: Joi.required(),
+            otherwise: Joi.forbidden(),
+        })
+        .messages({
+            "date.base": "Expected site visiting date must be a valid date",
+            "date.greater": "Expected site visiting date must be in the future",
+            "any.required": "Expected site visiting date is required when site visit is needed",
+            "any.unknown": "Expected site visiting date is not allowed when site visit is not needed",
+        }),
+
     services: Joi.array()
         .items(serviceItemSchema)
         .min(1)
@@ -101,5 +113,15 @@ export const createProposalValidation: Joi.ObjectSchema<CreateProposalDTO> = Joi
             "array.base": "Services must be an array",
             "array.min": "At least one service is required",
             "any.required": "Services are required",
+        }),
+});
+
+export const updateProposalValidation: Joi.ObjectSchema<UpdateProposalDTO> = (createProposalValidation as unknown as Joi.ObjectSchema<UpdateProposalDTO>).keys({
+    proposalId: Joi.string()
+        .trim()
+        .required()
+        .messages({
+            "string.empty": "Proposal ID is required",
+            "any.required": "Proposal ID is required",
         }),
 });

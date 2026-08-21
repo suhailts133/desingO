@@ -16,28 +16,32 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
     async createProposal(data: CreateProposalRepoDataDTO): Promise<IProposal> {
         return await this.create({
             sourceId: new mongoose.Types.ObjectId(data.sourceId),
-            sourceType: data.sourceType,
             clientId: new mongoose.Types.ObjectId(data.clientId),
             designerId: new mongoose.Types.ObjectId(data.designerId),
             drawingFeePerSqFt: data.drawingFeePerSqFt,
             totalDrawingFee: data.totalDrawingFee,
             totalExecutionFee: data.totalExecutionFee,
             totalContractValue: data.totalContractValue,
+            totalArea: data.totalArea,
+            unit: data.unit,
             sourceName: data.sourceName,
             expectedCompletionDate: data.expectedCompletionDate,
             services: data.services,
+            siteVisitingNeeded: data.siteVisitingNeeded,
+            ...(data.expectedSiteVisitingDate && { expectedSiteVisitingDate: data.expectedSiteVisitingDate, }),
             platformFee: data.platformFee,
             remainingPlatformFee: data.remainingPlatformFee
         })
     }
-    async acceptOrRejectProposal(sourceId: string, contractStatus: ContractStatus, overallRejectionReason?: string): Promise<IProposal | null> {
+
+    async acceptOrRejectProposal(sourceId: string, contractStatus: ContractStatus, shouldUpdateService: boolean, overallRejectionReason?: string): Promise<IProposal | null> {
         const filter: ProposalStatusFilter = { sourceId };
 
         const update: ProposalStatusUpdateRepoDTO = {
             contractStatus,
         };
 
-        if (contractStatus === CONTRACT_STATUS.ACCEPTED) {
+        if (contractStatus === CONTRACT_STATUS.ACCEPTED && shouldUpdateService) {
             filter["services.order"] = FIRST_SERVICE_ORDER_NUMBER;
             update["services.$.status"] = ServiceStatus.OPEN;
         }
@@ -45,6 +49,7 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
         if (contractStatus === CONTRACT_STATUS.REJECTED && overallRejectionReason) {
             update.overallRejectionReason = overallRejectionReason;
         }
+
         return await this.updateOne(filter, {
             $set: update,
         });
@@ -95,7 +100,7 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
         return this.findById(id)
     }
 
-    
+
 
     async updateProposal(id: string, filters: Partial<IProposal>): Promise<IProposal | null> {
         return await this.update(id, filters);

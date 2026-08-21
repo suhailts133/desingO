@@ -6,8 +6,8 @@ export const PROPOSAL_MESSAGES = {
         NOT_FOUND: "Dispute not found.",
         NOT_DISPUTED: "Either part hasnet risen a ticket.",
         DECISION_PENDING: "Admin has yet to make a decision.",
-        UPDATION_FAILED: "Updation success.",
-        UPDATION_SUCCESS: "Updation failed.",
+        UPDATION_FAILED: "Updation failed",
+        UPDATION_SUCCESS: "Updation success.",
         EVIDENCE: "Evidence of the wrong doing is required.",
         FETCH_ALL: "Fetch all disputes.",
         FETCH_ONE: "Fetch a dispute.",
@@ -27,14 +27,21 @@ export const PROPOSAL_MESSAGES = {
         SERVICE_RESULT_REQUIRED: "Service result is required.",
         SUCCESS: "Result upload success.",
         NOT_FOUND: "Service not found.",
-        NOT_PAID:"Customer has not paid for this service",
+        NOT_PAID: "Customer has not paid for this service",
         UPDATE_FAIL: "Failed to update the service.",
         CANNOT_OPEN: "Failed to Open the next service.",
         CANNOT_COMPLETE: "Failed to set the current service as complete."
 
     },
     PROPOSAL: {
+        FLOOR_PLAN_REQUIRED: "Floor plan  is required.",
+        FLOOR_PLAN_UPLOADED: "Floor plan uploaded.",
+        SITE_VIST_NOT_NEEDED: "Site vist is not needed floor plan is in the job request.",
+        ID_REQUIRED: "proposal Id required",
         CREATION_FAILED: "Proposal creation failed.",
+        UPDATE_SUCCESS: "Proposal updation success.",
+        UPDATE_FAILED: "Proposal updation failed.",
+        UPDATE_NOT_REJECTED: "Only rejected  proposal can be updated.",
         EXISTS: "Proposal already exists.",
         CONTRACT_STATUS_FAIL: "Failed to update the contract status.",
         CREATION_SUCCESS: "Proposal creation success.",
@@ -73,8 +80,8 @@ export const PROPOSAL_MESSAGES = {
         PAYOUT_ADMIN_FAILED: 'Cannot pay admin contact support',
         STRIPE_META_DATA_NOT_FOUND: "Missing jobId or serviceOrder in payment metadata",
     },
-    ESCROW:{
-        NOT_FOUND:"Payment details not found"
+    ESCROW: {
+        NOT_FOUND: "Payment details not found"
     }
 
 } as const

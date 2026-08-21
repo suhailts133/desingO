@@ -1,20 +1,22 @@
 import Logger from "../../config/logger";
 import type { TransactionRepoDTO } from "../../DTO/common/transaction";
 import type { paymentRepoDTO } from "../../DTO/proposal/payment";
+import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
 import type { IApiResponse } from "../../interfaces/base/IApiResponse";
 import type { ITransactionRepository } from "../../interfaces/base/ITransaction";
 import type { GateWayData, IPaymentGateway } from "../../interfaces/proposal/IPaymentGateway";
 import type { IEscrow } from "../../interfaces/proposal/IProposal";
 import type { IPaymentRepository, IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
 import type { IPaymentService } from "../../interfaces/proposal/IProposalService";
-import { TRANSACTION_TYPE } from "../../shared/enums/commonEnums";
+import { TRANSACTION_TYPE, USER_ROLES } from "../../shared/enums/commonEnums";
 import { EscrowStatus, Payment_Status, ServicePaymentStatus, ServiceStatus } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 
 export class PaymentService implements IPaymentService {
-    constructor(private _transactionRepo: ITransactionRepository, private _paymentGateway: IPaymentGateway, private _proposalRepo: IProposalRepository, private _paymentRepo: IPaymentRepository) { }
+    constructor(protected _userRepo: IUserRepository, private _transactionRepo: ITransactionRepository, private _paymentGateway: IPaymentGateway, private _proposalRepo: IProposalRepository, private _paymentRepo: IPaymentRepository) { }
 
     async createPaymentIntent(jobId: string): Promise<IApiResponse<string>> {
         const proposal = await this._proposalRepo.getProposal(jobId)
@@ -45,10 +47,15 @@ export class PaymentService implements IPaymentService {
             serviceName: service.serviceName,
             serviceOrder: service.order
         }
+        const admin = await this._userRepo.findByRole(USER_ROLES.ADMIN)
+        if (!admin) {
+            throw new AppError(AUTH_MESSAGES.AUTH.NOT_ADMIN, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
         const payment = await this._paymentRepo.createPayment(paymentRepo)
         const transactionData: TransactionRepoDTO = {
             amount: payment.amount,
             sourceUserId: payment.customerId.toString(),
+            destinationUserId: admin.id,
             type: TRANSACTION_TYPE.PAYMENT
         }
         await this._transactionRepo.createTransaction(transactionData)

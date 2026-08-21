@@ -1,20 +1,22 @@
 
 import type { ProposalInputData } from "../../DTO/proposal/proposal";
 import type { getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerPopulatedALL, HireDesignerPopulateUser } from "../../DTO/user/hireDesignerDTO";
-import type { IHireDesigner } from "../../interfaces/customer/ICustomer";
-import { toSqFt } from "../../shared/helpers/extraFunctions";
+import type { IJobRequestPopulated } from "../../interfaces/customer/ICustomer";
 
 
 export class HireDesignerMapper {
 
-    static toDirectHireProposalInputDTO(data: IHireDesigner): ProposalInputData {
+    static toDirectHireProposalInputDTO(data: IJobRequestPopulated): ProposalInputData {
         return {
             jobId: data.id,
             maxPrice: data.maxBudget,
             minPrice: data.minBudget,
             services: data.services,
-            timeLine: data.timeLine,
-            sqft: toSqFt(Number(data.length), Number(data.width), data.unit)
+            timeLine: data.timeline,
+            totalArea: data.totalCarpetArea,
+            unit: data.areaUnit,
+            siteVisitingRequired: data.requiresSiteVisitMeasurement
+
 
         }
     }
