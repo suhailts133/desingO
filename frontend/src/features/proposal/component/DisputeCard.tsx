@@ -38,7 +38,7 @@ export default function DisputeCard({ dispute, onConfirm, isResponding }: Disput
     const handleDisputeRejection = () => {
         if (!rejectDispute) return
         onConfirm({ status: "Redo", disputeId: dispute.id })
-        setApproveDispute(null)
+        setRejectDispute(null)
     }
     return (
 
@@ -139,7 +139,7 @@ export default function DisputeCard({ dispute, onConfirm, isResponding }: Disput
                     >
                         <Check className="w-3.5 h-3.5" />
                         Confirm Resolution
-                    </button>
+                    </button> 
                     <button
                         type="button"
                         onClick={() => setRejectDispute(dispute.id)}

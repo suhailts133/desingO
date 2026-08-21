@@ -1,3 +1,5 @@
+import { dateFormater } from "../../../helpers/dateFormater";
+
 interface ContractOverviewProps {
     proposal: {
         drawingFeePerSqFt: number;
@@ -6,6 +8,8 @@ interface ContractOverviewProps {
         totalContractValue: number;
         expectedCompletionDate: string;
         createdAt: string;
+        siteVisitingRequired: boolean
+        expectedSiteVisitingDate?: string
         actualCompletionDate?: string;
     }
 }
@@ -34,8 +38,15 @@ export default function ContractOverview({ proposal }: ContractOverviewProps) {
             <div className="flex flex-wrap gap-6 text-sm">
                 <div>
                     <p className="text-xs text-soft-black/40 mb-0.5">Expected completion</p>
-                    <p className="font-medium text-soft-black">{proposal.expectedCompletionDate}</p>
+                    <p className="font-medium text-soft-black">{dateFormater(proposal.expectedCompletionDate)}</p>
                 </div>
+                {proposal.siteVisitingRequired && proposal.expectedSiteVisitingDate && (
+                    <div>
+                        <p className="text-xs text-soft-black/40 mb-0.5">Site Visiting</p>
+                        <p className="font-medium text-soft-black">{dateFormater(proposal.expectedSiteVisitingDate)}</p>
+                    </div>
+                )}
+
                 <div>
                     <p className="text-xs text-soft-black/40 mb-0.5">Created</p>
                     <p className="font-medium text-soft-black">{proposal.createdAt}</p>

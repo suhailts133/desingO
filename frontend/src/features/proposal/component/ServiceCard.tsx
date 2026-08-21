@@ -1,6 +1,7 @@
 import { useState } from "react"
 import VersionCard from "./VersionCard"
 import type { ProposalServiceItemDTO, ServiceStatus, PaymentStatus } from "../proposalInterface"
+import { dateFormater } from "../../../helpers/dateFormater"
 
 type Role = "Designer" | "Admin" | "Customer"
 
@@ -70,7 +71,9 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
 
             {/* Meta */}
             <div className="flex items-center justify-between gap-2 mb-3">
-                <span className="text-xs text-soft-black/50">Due {service.expectedDeliveryDate}</span>
+                <span className="text-xs text-soft-black/50">
+                    Due {dateFormater(service.expectedDeliveryDate)}
+                </span>
             </div>
 
             {/* Pricing */}

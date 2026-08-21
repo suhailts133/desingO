@@ -1,7 +1,7 @@
 import { API_ROUTES } from "../../api/apiRoutes";
 import { baseApi } from "../../api/baseApi";
 import type { IApiResponse } from "../../api/responseType";
-import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData, ProposalInputDataPayload, VersionAcceptOrRejectDTO } from "./proposalInterface";
+import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData, ProposalInputDataPayload, UpdateProposalDTO, VersionAcceptOrRejectDTO } from "./proposalInterface";
 
 export const proposalApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -11,6 +11,15 @@ export const proposalApi = baseApi.injectEndpoints({
                 method: "GET"
             }),
             providesTags: ["proposal"]
+        }),
+
+        uploadFloorPlan: builder.mutation<IApiResponse, FormData>({
+            query: (formData: FormData) => ({
+                url: API_ROUTES.PROPOSAL.UPLOAD_FLOOR_PLAN,
+                method: "PATCH",
+                body: formData
+            }),
+            invalidatesTags: ["proposal"]
         }),
 
         uploadResult: builder.mutation<IApiResponse, FormData>({
@@ -32,7 +41,7 @@ export const proposalApi = baseApi.injectEndpoints({
 
         getProposalPrefillData: builder.query<IApiResponse<ProposalInputData>, ProposalInputDataPayload>({
             query: (body) => ({
-                url: `${API_ROUTES.PROPOSAL.PREFILL_DATA}/${body.jobId}/${body.sourceType}`,
+                url: `${API_ROUTES.PROPOSAL.PREFILL_DATA}/${body.jobId}`,
                 method: "GET",
 
             })
@@ -43,6 +52,14 @@ export const proposalApi = baseApi.injectEndpoints({
                 method: "POST",
                 body
             })
+        }),
+        UpdateProposal: builder.mutation<IApiResponse, UpdateProposalDTO>({
+            query: (body) => ({
+                url: API_ROUTES.PROPOSAL.UPDATE,
+                method: "PATCH",
+                body
+            }),
+            invalidatesTags: ["proposal"]
         }),
         approveReject: builder.mutation<IApiResponse<"Accepted" | "Rejected">, ProposalAcceptOrRejectDTO>({
             query: (body) => ({
@@ -63,4 +80,6 @@ export const {
     useApproveRejectMutation,
     useUploadResultMutation,
     useApproveOrRejectVersionResultMutation,
+    useUpdateProposalMutation,
+    useUploadFloorPlanMutation
 } = proposalApi

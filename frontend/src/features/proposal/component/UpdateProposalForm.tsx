@@ -1,84 +1,97 @@
-import { useState, useMemo, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useForm, useFieldArray, Controller } from "react-hook-form"
 import { joiResolver } from "@hookform/resolvers/joi"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { Plus, Trash2, GripVertical, ChevronDown, ChevronLeft, Info } from "lucide-react"
 
-import { useGetProposalPrefillDataQuery } from "../proposalEndpoints"
-import { useCreateProposal } from "../hooks/useCreateProposal"
-import { proposalValidation } from "../../../validations/proposalValidation"
-import type { CreateProposalDTO } from "../proposalInterface"
+import { useGetProposalQuery, useGetProposalPrefillDataQuery } from "../proposalEndpoints"
+import type { ProposalDetailDTO, UpdateProposalDTO } from "../proposalInterface"
+import { updateProposalValidation } from "../../../validations/updateProposalValidation"
+import { useUpdateProposal } from "../hooks/useUpdateProposal"
 import { useHandleResponse } from "../../../helpers/useHandleResponse"
 import { convertToSqFt } from "../../../helpers/sqFtConverter"
 
-// 1. Interfaces & Types
-export interface ProposalInputData {
-    jobId: string
-    minPrice: number
-    maxPrice: number
-    timeLine: string
-    services: string[]
-    totalArea: number
-    unit: "ft" | "m"
-    siteVisitingRequired?: boolean
-}
-
-// 2. Unit Conversion Utility
-
-
-// 3. Main Component
-export default function ProposalForm() {
-    const location = useLocation()
+export default function UpdateProposalForm() {
+    const { id } = useParams<{ id: string }>()
     const navigate = useNavigate()
-    const sourceId = location.state?.sourceId as string | undefined
     const [dropdownOpen, setDropdownOpen] = useState(false)
 
-    const { data, isLoading, error } = useGetProposalPrefillDataQuery(
-        { jobId: sourceId! },
-        { skip: !sourceId }
+    // 1. Fetch current proposal details
+    const { data: proposalData, isLoading: isProposalLoading, error: proposalError } = useGetProposalQuery(id!, { skip: !id })
+    const proposal: ProposalDetailDTO | undefined = proposalData?.data
+
+    // 2. Fetch original job prefill data to get all catalog services
+    const { data: prefillData, isLoading: isPrefillLoading } = useGetProposalPrefillDataQuery(
+        { jobId: proposal?.sourceId! },
+        { skip: !proposal?.sourceId }
     )
-    const { isProposalCreating, handleSubmission } = useCreateProposal()
+    const prefill = prefillData?.data
 
-    const prefill = data?.data
-    console.log(prefill, "lol")
+    const { handleUpdateProposal, isProposalUpdating } = useUpdateProposal()
+    const handleResponse = useHandleResponse()
+
+    // Convert area to sqft
     const effectiveSqFt = useMemo(() => {
-        if (!prefill?.totalArea) return 0
-        return convertToSqFt(prefill.totalArea, prefill.unit)
-    }, [prefill?.totalArea, prefill?.unit])
+        if (!proposal?.totalArea) return 0
+        return convertToSqFt(proposal.totalArea, proposal.unit)
+    }, [proposal?.totalArea, proposal?.unit])
 
-    const {reset, register, control, handleSubmit, watch, formState: { errors }, } = useForm<CreateProposalDTO>({
-        resolver: joiResolver(proposalValidation),
+    const {
+        register,
+        control,
+        handleSubmit,
+        watch,
+        reset,
+        formState: { errors },
+    } = useForm<UpdateProposalDTO>({
+        resolver: joiResolver(updateProposalValidation),
         defaultValues: {
-            sourceId: sourceId || "",
+            proposalId: id || "",
+            sourceId: "",
             drawingFeePerSqFt: 0,
-            siteVisitingNeeded: prefill?.siteVisitingRequired,
+            siteVisitingNeeded: false,
             expectedSiteVisitingDate: undefined,
             services: [],
         },
     })
-
-    useEffect(() => {
-        if(!prefill) return
-        reset({
-            sourceId:sourceId || "",
-            drawingFeePerSqFt:0,
-            siteVisitingNeeded:prefill.siteVisitingRequired,
-            expectedSiteVisitingDate:undefined,
-            services:[]
-        })
-    }, [prefill, reset])
-
-    const handleResponse = useHandleResponse()
-
-    const siteVisitingNeeded = watch("siteVisitingNeeded")
-    const watchedServices = watch("services") || []
-    const drawingFeePerSqFt = watch("drawingFeePerSqFt") || 0
 
     const { fields, append, remove } = useFieldArray({
         control,
         name: "services",
     })
 
+    // Reset form values with fetched proposal data
+    useEffect(() => {
+        if (proposal) {
+            reset({
+                proposalId: proposal.id,
+                sourceId: proposal.sourceId,
+                drawingFeePerSqFt: proposal.drawingFeePerSqFt,
+                siteVisitingNeeded: Boolean(proposal.siteVisitingRequired),
+                expectedSiteVisitingDate: proposal.expectedSiteVisitingDate
+                    ? proposal.expectedSiteVisitingDate.split("T")[0]
+                    : undefined,
+                expectedCompletionDate: proposal.expectedCompletionDate
+                    ? proposal.expectedCompletionDate.split("T")[0]
+                    : "",
+                services: (proposal.services || []).map((s) => ({
+                    serviceName: s.serviceName,
+                    order: s.order,
+                    price: s.price,
+                    executionPrice: s.executionPrice,
+                    expectedDeliveryDate: s.expectedDeliveryDate
+                        ? s.expectedDeliveryDate.split("T")[0]
+                        : "",
+                })),
+            })
+        }
+    }, [proposal, reset])
+
+    const siteVisitingNeeded = watch("siteVisitingNeeded")
+    const watchedServices = watch("services") || []
+    const drawingFeePerSqFt = watch("drawingFeePerSqFt") || 0
+
+    // Compute added services and available remaining services from job prefill
     const addedServiceNames = fields.map((f) => f.serviceName)
     const availableServices = (prefill?.services ?? []).filter((s) => !addedServiceNames.includes(s))
 
@@ -88,48 +101,47 @@ export default function ProposalForm() {
             order: fields.length + 1,
             price: 0,
             executionPrice: 0,
-            expectedDeliveryDate: new Date(),
+            expectedDeliveryDate: new Date().toISOString().split("T")[0],
         })
         setDropdownOpen(false)
     }
 
-    const onSubmit = async (formData: CreateProposalDTO) => {
-        if (!formData.siteVisitingNeeded) {
-            delete formData.expectedSiteVisitingDate
-        }
-        console.log(formData)
-        const result = await handleSubmission(formData)
-        handleResponse(result.success, "Proposal Created", result.message, -2)
+    const handleRemoveService = (index: number) => {
+        remove(index)
     }
 
     // Calculations based on converted SqFt
     const totalDrawingFee = drawingFeePerSqFt * effectiveSqFt
     const totalServicePrice = watchedServices.reduce((acc, s) => acc + (Number(s.price) || 0), 0)
     const totalExecutionPrice = watchedServices.reduce((acc, s) => acc + (Number(s.executionPrice) || 0), 0)
-    const totalContractValue =  totalServicePrice + totalExecutionPrice
+    const totalContractValue = totalDrawingFee + totalServicePrice + totalExecutionPrice
 
-    if (!sourceId) {
-        return (
-            <div className="w-full p-10 text-center text-red-500 font-Jost-Semibold">
-                Invalid proposal source.
-            </div>
-        )
+    const onSubmit = async (formData: UpdateProposalDTO) => {
+        if (!formData.siteVisitingNeeded || !formData.expectedSiteVisitingDate) {
+            delete formData.expectedSiteVisitingDate
+        }
+
+        formData.services = (formData.services || []).map((service, index) => ({
+            ...service,
+            order: index + 1,
+            price: Number(service.price) || 0,
+            executionPrice: Number(service.executionPrice) || 0,
+        }))
+        console.log(formData)
+        const result = await handleUpdateProposal(formData)
+        handleResponse(result.success, "Proposal updated successfully", result.message, -1)
     }
 
-    if (isLoading) {
-        return (
-            <div className="w-full p-10 text-center animate-pulse text-soft-black/40">
-                Loading...
-            </div>
-        )
+    if (!id) {
+        return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Invalid proposal ID.</div>
     }
 
-    if (error || !prefill) {
-        return (
-            <div className="w-full p-10 text-center text-red-500 font-Jost-Semibold">
-                Something went wrong. Please try again.
-            </div>
-        )
+    if (isProposalLoading || isPrefillLoading) {
+        return <div className="p-10 text-center animate-pulse text-soft-black/40">Loading proposal...</div>
+    }
+
+    if (proposalError || !proposal) {
+        return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Proposal not found.</div>
     }
 
     return (
@@ -144,16 +156,16 @@ export default function ProposalForm() {
                     <ChevronLeft className="w-5 h-5" />
                 </button>
                 <div>
-                    <h1 className="font-Jost-Semibold text-xl text-soft-black">Create proposal</h1>
+                    <h1 className="font-Jost-Semibold text-xl text-soft-black">Update Proposal</h1>
                     <p className="text-xs text-soft-black mt-0.5">
-                        Budget range: ₹{prefill.minPrice?.toLocaleString("en-IN")} – ₹{prefill.maxPrice?.toLocaleString("en-IN")}
-                        &nbsp;·&nbsp; {effectiveSqFt.toLocaleString("en-IN")} sqft {prefill.unit === "m" && `(${prefill.totalArea} m²)`}
-                        &nbsp;·&nbsp; {prefill.timeLine} timeline
+                        {proposal.sourceName} &nbsp;·&nbsp; {effectiveSqFt.toLocaleString("en-IN")} sqft
+                        {proposal.unit === "m" && ` (${proposal.totalArea} m²)`}
                     </p>
                 </div>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+                <input type="hidden" {...register("proposalId")} />
                 <input type="hidden" {...register("sourceId")} />
 
                 {/* Contract Details */}
@@ -176,16 +188,12 @@ export default function ProposalForm() {
                             {errors.drawingFeePerSqFt && (
                                 <p className="text-xs text-red-500">{errors.drawingFeePerSqFt.message}</p>
                             )}
-                            <p className="text-xs text-soft-black/40">
-                                Total: ₹{totalDrawingFee.toLocaleString("en-IN")}
-                            </p>
+                            <p className="text-xs text-soft-black/40">Total: ₹{totalDrawingFee.toLocaleString("en-IN")}</p>
                         </div>
 
                         {/* Expected Completion Date */}
                         <div className="flex flex-col gap-1.5">
-                            <label className="text-xs font-medium text-soft-black/60">
-                                Expected completion date
-                            </label>
+                            <label className="text-xs font-medium text-soft-black/60">Expected completion date</label>
                             <Controller
                                 control={control}
                                 name="expectedCompletionDate"
@@ -193,7 +201,7 @@ export default function ProposalForm() {
                                     <input
                                         type="date"
                                         value={field.value ? new Date(field.value).toISOString().split("T")[0] : ""}
-                                        onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                                        onChange={(e) => field.onChange(e.target.value)}
                                         className="w-full px-3 py-2.5 rounded-xl border border-blush-light/50 bg-off-white text-sm text-soft-black focus:outline-none focus:border-blush-deep transition-colors"
                                     />
                                 )}
@@ -205,9 +213,7 @@ export default function ProposalForm() {
 
                         {/* Site Visit Checkbox */}
                         <div className="flex flex-col gap-1.5 justify-center">
-                            <label className="text-xs font-medium text-soft-black/60">
-                                Site visit required?
-                            </label>
+                            <label className="text-xs font-medium text-soft-black/60">Site visit required?</label>
                             <div className="flex items-center gap-2 pt-2">
                                 <label className="inline-flex items-center gap-2 cursor-pointer text-sm">
                                     <input
@@ -223,12 +229,10 @@ export default function ProposalForm() {
                             )}
                         </div>
 
-                        {/* Site Visit Date (Conditional) */}
+                        {/* Site Visit Date */}
                         {siteVisitingNeeded && (
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-medium text-soft-black/60">
-                                    Expected site visit date
-                                </label>
+                                <label className="text-xs font-medium text-soft-black/60">Expected site visit date</label>
                                 <Controller
                                     control={control}
                                     name="expectedSiteVisitingDate"
@@ -236,7 +240,7 @@ export default function ProposalForm() {
                                         <input
                                             type="date"
                                             value={field.value ? new Date(field.value).toISOString().split("T")[0] : ""}
-                                            onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                                            onChange={(e) => field.onChange(e.target.value)}
                                             className="w-full px-3 py-2.5 rounded-xl border border-blush-light/50 bg-off-white text-sm text-soft-black focus:outline-none focus:border-blush-deep transition-colors"
                                         />
                                     )}
@@ -256,6 +260,7 @@ export default function ProposalForm() {
                             Services
                         </h2>
 
+                        {/* Dropdown to add service */}
                         <div className="relative">
                             <button
                                 type="button"
@@ -302,6 +307,7 @@ export default function ProposalForm() {
                                 key={field.id}
                                 className="rounded-xl border border-blush-light/40 bg-blush-pale/10 overflow-hidden"
                             >
+                                {/* Service Header */}
                                 <div className="flex items-center justify-between px-4 py-3 bg-blush-pale/30 border-b border-blush-light/30">
                                     <div className="flex items-center gap-2">
                                         <GripVertical className="w-4 h-4 text-soft-black/20" />
@@ -312,7 +318,7 @@ export default function ProposalForm() {
                                     </div>
                                     <button
                                         type="button"
-                                        onClick={() => remove(index)}
+                                        onClick={() => handleRemoveService(index)}
                                         className="text-soft-black/30 hover:text-red-500 transition-colors"
                                     >
                                         <Trash2 className="w-4 h-4" />
@@ -322,6 +328,7 @@ export default function ProposalForm() {
                                 <input type="hidden" {...register(`services.${index}.serviceName`)} />
                                 <input type="hidden" {...register(`services.${index}.order`)} value={index + 1} />
 
+                                {/* Service Inputs */}
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4">
                                     <div className="flex flex-col gap-1.5">
                                         <label className="text-xs font-medium text-soft-black/50">Price (₹)</label>
@@ -358,7 +365,7 @@ export default function ProposalForm() {
                                                 <input
                                                     type="date"
                                                     value={field.value ? new Date(field.value).toISOString().split("T")[0] : ""}
-                                                    onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                                                    onChange={(e) => field.onChange(e.target.value)}
                                                     className="w-full px-3 py-2 rounded-lg border border-blush-light/50 bg-white text-sm text-soft-black focus:outline-none focus:border-blush-deep transition-colors"
                                                 />
                                             )}
@@ -403,10 +410,8 @@ export default function ProposalForm() {
                     </div>
                 )}
 
-                {/* Submission Actions */}
+                {/* Actions */}
                 <div className="flex flex-col gap-3">
-
-
                     <div className="flex justify-end gap-3">
                         <button
                             type="button"
@@ -417,10 +422,10 @@ export default function ProposalForm() {
                         </button>
                         <button
                             type="submit"
-                            disabled={isProposalCreating || fields.length === 0}
+                            disabled={isProposalUpdating || fields.length === 0}
                             className="px-6 py-2.5 rounded-xl bg-soft-black text-off-white text-sm font-medium hover:bg-blush-deep transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
                         >
-                            {isProposalCreating ? "Submitting..." : "Submit proposal"}
+                            {isProposalUpdating ? "Updating..." : "Save Changes"}
                         </button>
                     </div>
                 </div>

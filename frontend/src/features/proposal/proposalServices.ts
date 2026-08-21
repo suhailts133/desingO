@@ -1,10 +1,11 @@
 import { isApiError, UNKNOWN_ERROR } from "../../helpers/errorhandler"
 import { useCreateIntentMutation, useGetPaymentIdMutation } from "./paymentEndpoints"
-import { useApproveOrRejectVersionResultMutation, useApproveRejectMutation, useCreateProposalMutation, useUploadResultMutation } from "./proposalEndpoints"
-import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ReviewPayload, VersionAcceptOrRejectDTO } from "./proposalInterface"
+import { useApproveOrRejectVersionResultMutation, useApproveRejectMutation, useCreateProposalMutation, useUploadFloorPlanMutation, useUpdateProposalMutation, useUploadResultMutation } from "./proposalEndpoints"
+import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ReviewPayload, UpdateProposalDTO, VersionAcceptOrRejectDTO } from "./proposalInterface"
 import { useAddYourReviewMutation } from "./wishlistEndpoints"
 
 export const useProposalServices = () => {
+    const [udpateProposalMutation, { isLoading: isProposalUpdating }] = useUpdateProposalMutation()
     const [createProposalMutation, { isLoading: isProposalCreating }] = useCreateProposalMutation()
     const [approveRejectMutation, { isLoading: isChangingStatus }] = useApproveRejectMutation()
     const [addyourReivewMutation, { isLoading: isReviewing }] = useAddYourReviewMutation()
@@ -12,11 +13,24 @@ export const useProposalServices = () => {
     const [uploadResultMutation, { isLoading: isUploading }] = useUploadResultMutation()
     const [getPaymentIdMUtation, { isLoading: isVerifying }] = useGetPaymentIdMutation()
     const [approveOrRejectVersionResultMutation, { isLoading: isVersionApprovingOrRejecting }] = useApproveOrRejectVersionResultMutation()
+    const [uploadFloorPlanMutation, { isLoading: isFloorPlanUploading }] = useUploadFloorPlanMutation()
 
     const approveOrRejectVersionResult = async (body: VersionAcceptOrRejectDTO) => {
         try {
 
             const result = await approveOrRejectVersionResultMutation(body).unwrap()
+            return result
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
+        }
+    }
+    const uploadFloorPlan = async (formData: FormData) => {
+        try {
+
+            const result = await uploadFloorPlanMutation(formData).unwrap()
             return result
         } catch (error) {
             if (isApiError(error)) {
@@ -71,6 +85,17 @@ export const useProposalServices = () => {
             return UNKNOWN_ERROR
         }
     }
+    const updateProposal = async (payload: UpdateProposalDTO) => {
+        try {
+            const result = await udpateProposalMutation(payload).unwrap()
+            return result
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
+        }
+    }
 
     const writeReview = async (payload: ReviewPayload) => {
         try {
@@ -97,6 +122,8 @@ export const useProposalServices = () => {
     }
 
     return {
+        uploadFloorPlan,
+        isFloorPlanUploading,
         createProposal,
         isProposalCreating,
         approveOrReject,
@@ -110,6 +137,8 @@ export const useProposalServices = () => {
         getPaymentId,
         isVerifying,
         approveOrRejectVersionResult,
-        isVersionApprovingOrRejecting
+        isVersionApprovingOrRejecting,
+        updateProposal,
+        isProposalUpdating
     }
 }

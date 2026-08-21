@@ -48,6 +48,7 @@ import DisputeTable from "../features/admin/disputes/component/DisputeTable";
 import DisputeDetailAdmin from "../features/admin/disputes/component/DisputeDetailAdmin";
 import TransactionTable from "../features/admin/transaction/component/TransactionTable";
 import ChatPage from "../features/proposal/chat/ChatPage";
+import UpdateProposalForm from "../features/proposal/component/UpdateProposalForm";
 
 
 const router = createBrowserRouter([
@@ -63,6 +64,7 @@ const router = createBrowserRouter([
             { path: "designers", Component: BrowseDesigners },
             { path: "designers/:id", Component: DesignerDetail },
             { path: "chat/:id", Component: ChatPage },
+            { path: "proposal/edit/:id", Component: UpdateProposalForm },
 
         ]
     },

@@ -18,6 +18,7 @@ export const adminDisputesApi = baseApi.injectEndpoints({
                     ...(status && status !== "All" && { status })
                 }
             }),
+            providesTags: ["dispute"]
 
         }),
 
@@ -25,14 +26,16 @@ export const adminDisputesApi = baseApi.injectEndpoints({
             query: (disputeId) => ({
                 url: `${API_ROUTES.ADMIN.GET_DISPUTE}/${disputeId}`,
                 method: "GET",
-            })
+            }),
+            providesTags: (_result, _error, arg) => [{ type: 'dispute', id: arg }]
         }),
         giveVerdit: builder.mutation<IApiResponse<DisputeSolutionResponseDTO>, DisputeSolutionDTO>({
             query: (body) => ({
                 url: API_ROUTES.ADMIN.GIVE_VERDIT,
                 method: "POST",
                 body
-            })
+            }),
+            invalidatesTags: ["dispute"]
         })
 
     })

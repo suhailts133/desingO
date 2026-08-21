@@ -7,7 +7,7 @@ import { useGetProposalQuery } from "../proposalEndpoints"
 
 import { useDecodeAccessToken } from "../../../helpers/decodeAccessToken"
 
-import type { AcceptOrRejectDisputeDTO, DisputeFormDTO, DisputeResponseDTO, IServiceResult, ReviewPayloadFields } from "../proposalInterface"
+import type { AcceptOrRejectDisputeDTO, DisputeFormDTO, FloorPlans, IServiceResult, ReviewPayloadFields } from "../proposalInterface"
 import type { RejectionPayload } from "../../user/jobApplications/jobApplicationInterFace"
 
 import { useApproveOrReject } from "../hooks/useApproveOrReject"
@@ -36,6 +36,9 @@ import { useAcceptOrRejectVerdit } from "../hooks/useAcceptOrRejectVerdit"
 import { useVerifyPayment } from "../hooks/useVerifyPayment"
 import { useHandleResponse } from "../../../helpers/useHandleResponse"
 import { useApproveOrRejectVersion } from "../hooks/useApproveOrRejectVersion"
+import UploadFloorPlan from "../component/UploadFloorPlan"
+import { useUploadFloorPlan } from "../hooks/useUploadFloorPlan"
+import { ExternalLink, FileText } from "lucide-react"
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
 
@@ -59,7 +62,8 @@ export default function ProposalPage() {
         data: disputeData,
         isLoading: isDisputeLoading,
         error: disputeError
-    } = useGetDisputeQuery(proposal?.id ?? "", { skip: !proposal || contractStatus !== "Disputed" })
+        
+} = useGetDisputeQuery(proposal?.id ?? "", { skip: !proposal || contractStatus !== "Disputed" })
     const disputedData = disputeData?.data
     const handleResponse = useHandleResponse()
     const { ispaymentDataLoading, clientSecret, paymentIntentError, handlePaymentIntent, reset } = useCreateIntent()
@@ -70,15 +74,15 @@ export default function ProposalPage() {
     const { isReviewing, handleWriteReview } = useWriteReview()
     const { isUploading, handleServiceResultUpload } = useUploadResult()
     const { handleVerditSubmit, isChecking } = useAcceptOrRejectVerdit()
-    const { isReporting, handleReportIssue, ReportError } = useReportIssue()
-
+    const { isReporting, handleReportIssue } = useReportIssue()
+    const { isFloorPlanUploading, handleFloorPlanSubmission } = useUploadFloorPlan()
     const [chatOpen, setChatOpen] = useState(false)
     const [approveProposal, setApproveProposal] = useState<{ sourceId: string } | null>(null)
 
     const [rejectProposal, setRejectProposal] = useState<{ sourceId: string } | null>(null)
     const [review, setReview] = useState<{ sourceId: string } | null>(null)
     const [dispute, setDispute] = useState<{ sourceId: string } | null>(null)
-    const [reportedDispute, setReportedDispute] = useState<DisputeResponseDTO | null>(null)
+    const [uploadFloorPlan, setUploadFloorPlan] = useState<string | null>(null)
     const [uploadingService, setUploadingService] = useState<{
         sourceId: string;
         serviceNumber: number;
@@ -87,7 +91,7 @@ export default function ProposalPage() {
 
     const [payingService, setPayingService] = useState<{ serviceName: string; amount: number } | null>(null)
 
-    const activeDispute = reportedDispute ?? disputedData
+    const activeDispute = disputedData
     const handleVerdit = async (data: AcceptOrRejectDisputeDTO) => {
         await handleVerditSubmit(data)
     }
@@ -157,6 +161,22 @@ export default function ProposalPage() {
         setReview(null)
     }
 
+    const handlFloorPlan = async (data: FloorPlans) => {
+        if (!uploadFloorPlan) return
+        const formData = new FormData();
+        formData.append("proposalId", uploadFloorPlan)
+        data.floorPlans.forEach(item => {
+            const file = item.file?.[0]
+            if (file) {
+                formData.append("floorPlans", file)
+            }
+        })
+        // console.log([...formData.entries()])
+        const result = await handleFloorPlanSubmission(formData)
+        handleResponse(result.success, "Floor Plan Uploaded", result.message)
+        setUploadFloorPlan(null)
+    }
+
     const handleRaiseIssue = async (data: DisputeFormDTO) => {
         if (!dispute) return
         const formData = new FormData();
@@ -175,12 +195,8 @@ export default function ProposalPage() {
         })
         console.log([...formData.entries()])
         const result = await handleReportIssue(formData)
-        if (result.success) {
-            toast.success("The Issue has been noted")
-            setReportedDispute(result.data!)
-        } else {
-            toast.error(ReportError ?? "Something went wrong")
-        }
+        handleResponse(result.success, "The issue has been noted", result.message)
+
         setDispute(null)
     }
 
@@ -283,6 +299,13 @@ export default function ProposalPage() {
                 onConfirm={handleRaiseIssue}
                 isLoading={isReporting}
             />
+            <UploadFloorPlan
+                isOpen={!!uploadFloorPlan}
+                onClose={() => setUploadFloorPlan(null)}
+                onConfirm={handlFloorPlan}
+                isLoading={isFloorPlanUploading}
+            />
+
 
             <ChatPanel
                 isOpen={chatOpen}
@@ -307,7 +330,6 @@ export default function ProposalPage() {
             <ProposalHeader
                 id={id!}
                 status={proposal.contractStatus}
-                sourceType={proposal.sourceType}
                 sourceId={sourceId}
                 role={role}
                 showUpdateProposal={showUpdateProposal}
@@ -340,6 +362,17 @@ export default function ProposalPage() {
                     </div>
                 )
             }
+
+            {
+                proposal.contractStatus !== "Sent" && proposal.siteVisitingRequired && proposal.floorPlans?.length === 0 && role === "Designer" && (
+                    <div>
+                        <button onClick={() => setUploadFloorPlan(proposal.id)} className="soft-black-button">
+                            Upload Floor plan
+                        </button>
+                    </div>
+                )
+            }
+
             <div>
                 <button onClick={() => setDispute({ sourceId: proposal.sourceId })} className="soft-black-button">
                     Raise a Issue
@@ -359,6 +392,28 @@ export default function ProposalPage() {
 
             <ContractOverview proposal={proposal} />
 
+            {proposal.floorPlans && proposal.floorPlans.length > 0 && (
+                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-5">
+                    <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-soft-black mb-3">Floor Plans</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {proposal.floorPlans.map((url, index) => (
+                            <a
+                                key={index}
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+                            >
+                                <div className="bg-gray-50 p-1.5 rounded-lg border border-gray-200">
+                                    <FileText className="w-3.5 h-3.5 text-slate-600" />
+                                </div>
+                                <span className="text-sm text-gray-700 flex-1 truncate">Floor Plan {index + 1}.pdf</span>
+                                <ExternalLink className="w-3.5 h-3.5 text-gray-400" />
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            )}
             {proposal.overallRejectionReason && (
                 <div className="bg-red-50 border border-red-200 rounded-2xl px-6 py-4">
                     <p className="text-xs font-Jost-Semibold text-red-700 uppercase tracking-widest mb-1">Rejection reason</p>

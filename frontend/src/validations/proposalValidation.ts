@@ -40,11 +40,32 @@ const serviceItemValidation = Joi.object<ServiceItem>({
 })
 
 export const proposalValidation: Joi.ObjectSchema<CreateProposalDTO> = Joi.object<CreateProposalDTO>({
+
+
+    siteVisitingNeeded: Joi.boolean()
+        .required()
+        .messages({
+            "boolean.base": "Site visiting needed must be a boolean",
+            "any.required": "Site visiting needed status is required",
+        }),
+
+    expectedSiteVisitingDate: Joi.date()
+        .greater("now")
+        .when("siteVisitingNeeded", {
+            is: true,
+            then: Joi.required(),
+            otherwise: Joi.forbidden(),
+        })
+        .messages({
+            "date.base": "Expected site visiting date must be a valid date",
+            "date.greater": "Expected site visiting date must be in the future",
+            "any.required": "Expected site visiting date is required when site visit is needed",
+            "any.unknown": "Expected site visiting date is not allowed when site visit is not needed",
+        }),
+        
     sourceId: Joi.string()
         .required(),
-    sourceType: Joi.string()
-        .valid("jobRequest", "direct_hire")
-        .required(),
+
     drawingFeePerSqFt: Joi.number()
         .positive()
         .required()
@@ -71,12 +92,12 @@ export const proposalValidation: Joi.ObjectSchema<CreateProposalDTO> = Joi.objec
 })
 
 
-export const serviceResultUploadValidatin:Joi.ObjectSchema<IServiceResult> = Joi.object<IServiceResult>({
-     serviceResult: Joi.array()
-            .items(
-                Joi.object({
-                    file: imageValidation("service result", true)
-                })
-            )
-            .default([]),
+export const serviceResultUploadValidatin: Joi.ObjectSchema<IServiceResult> = Joi.object<IServiceResult>({
+    serviceResult: Joi.array()
+        .items(
+            Joi.object({
+                file: imageValidation("service result", true)
+            })
+        )
+        .default([]),
 })

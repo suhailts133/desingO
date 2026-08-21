@@ -15,14 +15,13 @@ const contractStatusStyle: Record<ContractStatus, string> = {
 interface ProposalHeaderProps {
     id: string;
     status: ContractStatus;
-    sourceType: string;
     sourceId?: string;
     role: string;
     showUpdateProposal: boolean;
     onChatOpen: () => void
 }
 
-export default function ProposalHeader({onChatOpen, id, status, sourceType, sourceId, role, showUpdateProposal }: ProposalHeaderProps) {
+export default function ProposalHeader({onChatOpen, id, status, role, showUpdateProposal }: ProposalHeaderProps) {
     const navigate = useNavigate()
 
     return (
@@ -37,15 +36,13 @@ export default function ProposalHeader({onChatOpen, id, status, sourceType, sour
                 <span className={`text-xs font-medium px-3 py-1 rounded-full border ${contractStatusStyle[status]}`}>
                     {status}
                 </span>
-                <span className="text-xs text-soft-black/40 capitalize">
-                    {sourceType.replace("_", " ")}
-                </span>
+            
             </div>
 
             <div className="flex items-center gap-2">
-                {showUpdateProposal && sourceId && (
+                {showUpdateProposal  && (
                     <button
-                        onClick={() => navigate(`/proposals/${id}/edit`, { state: { sourceType, sourceId } })}
+                        onClick={() => navigate(`/proposal/edit/${id}`,)}
                         className="inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-lg border border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all duration-200"
                     >
                         <PencilLine className="w-4 h-4" />
