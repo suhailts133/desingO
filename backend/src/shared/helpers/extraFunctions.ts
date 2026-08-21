@@ -6,5 +6,12 @@ export const isObjectId = (id: string): boolean => {
 
 export const toSqFt = (length: number, width: number, unit: string) => {
     const area = length * width
-    return unit === 'm' ? area * 10.764 : area 
+    return unit === 'm' ? area * 10.764 : area
 }
+
+
+
+export const toCleanRegExp = (string: string):RegExp => {
+    const cleanString = string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    return new RegExp(`^${cleanString}`, "i")
+};

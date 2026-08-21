@@ -8,6 +8,7 @@ import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
 import { designerStatusChangeValidator } from "../../validators/admin/designerStatusChangeValidator";
 import asyncHandler from "express-async-handler";
 import type { Request, Response } from "express"
+import Logger from "../../config/logger";
 
 /**
  * Handle all admin designer verificaion related Routes
@@ -21,6 +22,7 @@ export class DesingerVerificationController {
        * @route GET /admin/designer-application
        */
     getAllDesignerApplication = asyncHandler(async (req: Request, res: Response) => {
+        Logger.info(JSON.stringify(req.query))
         const result = await this._adminDesignerVerificationServices.getallDesignerRequests(req.query as DesignerFilterDTO);
         RespsonseHelper.successWithPagination(res, result);
     })
