@@ -3,6 +3,7 @@ import type { IUserManagementRepository } from "../../interfaces/admin/IUserMana
 import type { IUser } from "../../interfaces/auth/IUser";
 import { UserModel } from "../../models/user/userModel";
 import { USER_ROLES } from "../../shared/enums/commonEnums";
+import { toCleanRegExp } from "../../shared/helpers/extraFunctions";
 import { BaseRepository } from "../baseRepository";
 import type { QueryFilter } from "mongoose"
 export class UserManagementRepository extends BaseRepository<IUser> implements IUserManagementRepository {
@@ -34,8 +35,8 @@ export class UserManagementRepository extends BaseRepository<IUser> implements I
         const query: QueryFilter<IUser> = {};
         query.role = { "$ne": USER_ROLES.ADMIN };
         if (filter) {
-            if (filter.name) {
-                query.full_name = { $regex: `${filter.name}`, $options: 'i' };
+            if (filter.debouncedName) {
+                query.full_name =  toCleanRegExp(filter.debouncedName)
             }
             if (filter.is_blocked !== undefined) {
                 query.is_blocked = filter.is_blocked === "true"

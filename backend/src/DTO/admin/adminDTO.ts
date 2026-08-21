@@ -17,7 +17,7 @@ export interface Pagination{
 }
 
 export interface UserFilterDTO {
-    name?: string,
+    debouncedName?: string,
     role?: string,
     is_blocked?: string,
     page?: number

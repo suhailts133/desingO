@@ -6,7 +6,7 @@
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "predev": "npm run lint",
-    "dev": "tsx watch src/server.ts",
+    "dev": "tsx watch --include src src/server.ts",
     "build": "tsup src/server.ts --format cjs --out-dir dist --sourcemap --clean",
     "start": "node dist/server.js"
   },
