@@ -25,7 +25,7 @@ export interface UserFilterDTO {
 }
 
 export interface DesignerFilterDTO {
-    name?: string,
+    debouncedName?: string,
     status?: Status,
     page?:number
 }

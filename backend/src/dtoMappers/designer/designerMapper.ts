@@ -5,7 +5,7 @@ import type { IDesignerPopulated } from "../../interfaces/designer/IDesigner";
 export class DesignerMapper {
     static toDesingerDtoList(designers: IDesignerPopulated[]): AdminDesignersResponseDTO[] {
         return designers.map(designer => ({
-            id: designer.id,
+            id: designer._id.toString(),
             full_name: designer.userId.full_name,
             status: designer.status,
             createdAt: designer.createdAt.toISOString(),

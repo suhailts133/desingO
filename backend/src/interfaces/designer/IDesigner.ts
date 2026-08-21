@@ -25,11 +25,11 @@ export interface IWorkExperience {
 }
 
 export type Status = "Pending" | "Rejected" | "Approved";
-
 export type GovernmentIdType = "aadhar_card" | "driving_licence"
 
 export interface IDesigner {
   id: string;
+  _id: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
   phone: string;
   state: string
@@ -44,7 +44,7 @@ export interface IDesigner {
   rejectionReason?: string;
   createdAt: Date,
   bio: string
-  attempt:number
+  attempt: number
 }
 
 export type IDesignerPopulated = Omit<IDesigner, 'userId'> & {

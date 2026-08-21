@@ -1,49 +1,75 @@
 import type { DesignerFilterDTO, AdminDesignerApprovalRequestDTO, Pagination } from "../../DTO/admin/adminDTO";
-import type { IDesignerVerificationRepository } from "../../interfaces/admin/IDesignerVerificationRespository";
+import type { IDesignerVerificationRepository, IFacetQueryResult } from "../../interfaces/admin/IDesignerVerificationRespository";
 import type { IUser } from "../../interfaces/auth/IUser";
 import type { IDesigner, IDesignerPopulated } from "../../interfaces/designer/IDesigner";
 import { DesignerModel } from "../../models/designer/designerModel";
-import { UserModel } from "../../models/user/userModel";
+import { toCleanRegExp } from "../../shared/helpers/extraFunctions";
 import { BaseRepository } from "../baseRepository";
-import type { QueryFilter } from "mongoose";
+import type { PipelineStage } from "mongoose";
 
 export class DesignerVerificationManagementRepository extends BaseRepository<IDesigner> implements IDesignerVerificationRepository {
     constructor() {
         super(DesignerModel)
     }
 
-    async getAllDesignerRequest(filter?: DesignerFilterDTO): Promise<{ data: IDesignerPopulated[], pagination: Pagination }> {
-        const page = filter?.page ? Number(filter.page) : 1;
-        const limit = 10;
-        const query: QueryFilter<DesignerFilterDTO> = {}
-        if (filter) {
-            if (filter.name) {
-                const matchingUsers = await UserModel.find({ full_name: { $regex: filter.name, $options: "i" } })
-                const userIds = matchingUsers.map(u => u._id);
-                query.userId = { $in: userIds }
+    async getAllDesignerRequest(filter?: DesignerFilterDTO): Promise<{ data: IDesignerPopulated[]; pagination: Pagination; }> {
+        const page = filter?.page ? Number(filter.page) : 1
+        const limit = 10
+        const skip = (page - 1) * limit
+        const pipeline: PipelineStage[] = []
+        if (filter?.status) {
+            pipeline.push({
+                $match: { status: filter.status }
+            })
+        }
+        pipeline.push(
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "userId",
+                    foreignField: "_id",
+                    as: "userId"
+                }
+            },
+            {
+                $unwind: "$userId"
             }
-            if (filter.status) {
-                query.status = filter.status
-            }
+        )
+        if (filter?.debouncedName) {
+            pipeline.push(
+                {
+                    $match: { "userId.full_name": toCleanRegExp(filter.debouncedName) }
+                }
+            )
         }
 
-        const result = await this._model.find(query)
-            .skip((page - 1) * limit)
-            .limit(limit)
-            .sort({ createdAt: -1 })
-            .populate<{ userId: IUser }>("userId")
-            .exec()
-        const total = await this._model.countDocuments(query)
+        pipeline.push(
+            {
+                $facet: {
+                    data: [
+                        { $sort: { createdAt: -1 } },
+                        { $skip: skip },
+                        { $limit: limit }
+                    ],
+                    totalCount: [
+                        { $count: "count" }
+                    ]
+                }
+            }
+        )
+        const [aggregateResult] = await this._model.aggregate<IFacetQueryResult>(pipeline)
 
-        const pagination: Pagination = {
-            total,
-            totalPages: Math.ceil(total / limit)
-        }
+        const data = (aggregateResult?.data || []) as unknown as IDesignerPopulated[]
+        const total = aggregateResult?.totalCount[0]?.count || 0;
         return {
-            data: result,
-            pagination
+            data,
+            pagination: {
+                total,
+                totalPages: Math.ceil(total / limit)
+            }
         }
     }
+
 
     async getDesignerRequest(id: string): Promise<IDesignerPopulated | null> {
         const result = await this._model.findById(id).populate<{ userId: IUser }>("userId").exec()
