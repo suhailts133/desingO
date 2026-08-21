@@ -9,6 +9,7 @@ import { PaymentWebhookService } from "../../services/stripe/paymentWebhookServi
 import { PaymentController } from "../../controllers/proposal/paymentController";
 import authenticate from "../../middlewares/auth";
 import { TranscationRepository } from "../../repositories/common/transactionRepository";
+import { UserRepository } from "../../repositories/auth/userRepository";
 
 const router = Router()
 
@@ -18,7 +19,8 @@ const gateway = new StripePaymentGateway(stripe)
 const proposalRepo = new ProposalRepository()
 const paymentRepo = new PaymentRepository()
 const transactionRepo = new TranscationRepository()
-const paymentService = new PaymentService(transactionRepo, gateway, proposalRepo, paymentRepo)
+const userRepo = new UserRepository()
+const paymentService = new PaymentService(userRepo, transactionRepo, gateway, proposalRepo, paymentRepo)
 const webhookService = new PaymentWebhookService(stripe, paymentService)
 const controller = new PaymentController(paymentService, webhookService)
 

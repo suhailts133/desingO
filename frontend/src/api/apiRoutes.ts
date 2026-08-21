@@ -79,7 +79,9 @@ export const API_ROUTES = {
         DESIGNER: "/active-job/designer"
     },
     PROPOSAL: {
+        UPLOAD_FLOOR_PLAN: "/proposal/upload-floor-plan",
         CREATE: "/proposal/create",
+        UPDATE: "/proposal/update",
         MY_PROPOSAL: "/proposal",
         PREFILL_DATA: "/proposal/prefill",
         APPROVE_REJECT: "/proposal/approve-reject",

@@ -2,9 +2,10 @@ import type { VersionAcceptOrRejectDTO } from "../../DTO/proposal/version";
 import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
 import type { IApiResponse } from "../../interfaces/base/IApiResponse";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload";
+import type { ITransactionRepository } from "../../interfaces/base/ITransaction";
 import type { IProposalRepository, IServiceVersionRepository } from "../../interfaces/proposal/IProposalRepository";
 import type { IProposalVersionService } from "../../interfaces/proposal/IProposalService";
-import { CLOUDINARY_FOLDER_NAME, USER_ROLES } from "../../shared/enums/commonEnums";
+import { CLOUDINARY_FOLDER_NAME, TRANSACTION_TYPE, USER_ROLES } from "../../shared/enums/commonEnums";
 import { CONTRACT_STATUS, ServicePaymentStatus, ServiceStatus, VERSION_STATUS } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
@@ -12,7 +13,7 @@ import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 
 export class ProposalVersionService implements IProposalVersionService {
-    constructor(private _proposalRepo: IProposalRepository, private _serviceVersionRepo: IServiceVersionRepository, private _imageUploder: IImageUploaderService, private _userRepo: IUserRepository) { }
+    constructor(private _transactionRepo: ITransactionRepository, private _proposalRepo: IProposalRepository, private _serviceVersionRepo: IServiceVersionRepository, private _imageUploder: IImageUploaderService, private _userRepo: IUserRepository) { }
 
     async uploadProposalImage(sourceId: string, ServiceNumber: number, serviceImages: Express.Multer.File[]): Promise<IApiResponse> {
         const proposal = await this._proposalRepo.getProposal(sourceId)
@@ -77,25 +78,43 @@ export class ProposalVersionService implements IProposalVersionService {
             if (!updateCurrentServiceStatus) {
                 throw new AppError(PROPOSAL_MESSAGES.SERVICE.CANNOT_COMPLETE, RESPONSE_CODE.NOT_FOUND)
             }
-
+            const admin = await this._userRepo.findByRole(USER_ROLES.ADMIN)
+            if (!admin) {
+                throw new AppError(ADMIN_MESSAGES.ADMIN.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+            }
             const designerAmount = paymentDetails.designerPayout
             const platformFee = paymentDetails.platformCommission
 
             const designerNewWalletAmount = proposal.designerId.wallet + designerAmount
             const updatedWalletDesigner = await this._userRepo.updateUser(proposal.designerId.id, { wallet: designerNewWalletAmount })
+
             if (!updatedWalletDesigner) {
                 throw new AppError(PROPOSAL_MESSAGES.PAYMENT.PAYOUT_DESIGNER_FAILED, RESPONSE_CODE.NOT_FOUND)
             }
+            await this._transactionRepo.createTransaction({
+                sourceUserId: admin.id,
+                destinationUserId: updatedWalletDesigner.id,
+                amount: designerAmount,
+                type: TRANSACTION_TYPE.PAYOUT,
+                proposalId: proposal.id
+            })
 
-            const admin = await this._userRepo.findByRole(USER_ROLES.ADMIN)
-            if (!admin) {
-                throw new AppError(ADMIN_MESSAGES.ADMIN.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
-            }
+
             const adminNewWalletAmount = admin.wallet + platformFee
             const updatedAdminWallet = await this._userRepo.updateUser(admin.id, { wallet: adminNewWalletAmount })
             if (!updatedAdminWallet) {
                 throw new AppError(PROPOSAL_MESSAGES.PAYMENT.PAYOUT_ADMIN_FAILED, RESPONSE_CODE.NOT_FOUND)
             }
+
+            await this._transactionRepo.createTransaction({
+                sourceUserId: admin.id,
+                destinationUserId: admin.id,
+                amount: platformFee,
+                type: TRANSACTION_TYPE.COMMISSION,
+                proposalId: proposal.id
+            })
+
+
             const newService = proposal.services.find(e => e.order === updatedVersion.serviceOrder + 1)
             if (newService) {
                 const updatedProposal = await this._proposalRepo.acceptOrRejectServiceResult(proposal.sourceId.toString(), newService.order, ServiceStatus.OPEN)

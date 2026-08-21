@@ -2,11 +2,11 @@ import type { IProposalService, IProposalVersionService } from "../../interfaces
 import type { Request, Response } from "express"
 import { RespsonseHelper } from "../../shared/helpers/responseHelper"
 import { RESPONSE_CODE } from "../../shared/enums/statusCode"
-import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ServiceResultDTO } from "../../DTO/proposal/proposal";
+import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ServiceResultDTO, UpdateProposalDTO } from "../../DTO/proposal/proposal";
 
 import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError"
-import { createProposalValidation } from "../../validators/proposal/proposalValidator";
+import { createProposalValidation, updateProposalValidation } from "../../validators/proposal/proposalValidator";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { isObjectId } from "../../shared/helpers/extraFunctions";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
@@ -27,10 +27,20 @@ export class ProposalController {
 
     /**
    * for create new PRoposal
-   * @route POST /proposal/create
-   * @param req.body {@link CreateProposalDTO}
+   * @route PATCH /proposal/update
+   * @param req.body {@link UpdateProposalDTO}
    * @throws {AppError} 400 if there is any issue with req.body
   */
+    updateProposal = asyncHandler(async (req: Request, res: Response) => {
+        const { error, value } = updateProposalValidation.validate(req.body, { stripUnknown: true })
+        if (error) {
+            throw new AppError(error.details[0]?.message || "Missing fields or Invalid Data", RESPONSE_CODE.BAD_REQUEST)
+        }
+        const validated = value as UpdateProposalDTO
+        const result = await this._proposalService.updateProposal(validated)
+        RespsonseHelper.success(res, result)
+    })
+
     createProposal = asyncHandler(async (req: Request, res: Response) => {
         const { error, value } = createProposalValidation.validate(req.body, { stripUnknown: true })
         if (error) {
@@ -92,15 +102,41 @@ export class ProposalController {
         if (!isObjectId(jobId)) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
-        const source = req.params.slug as 'jobRequest' | 'direct_hire';
-
-        if (source !== "jobRequest" && source !== "direct_hire") {
-            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL_INPUT.UNKONW_DATA, RESPONSE_CODE.BAD_REQUEST)
-        }
-        Logger.info(`${source} ${jobId}`)
-        const result = source === "jobRequest" ? await this._proposalService.getProposalInputForJobRequest(jobId) : await this._proposalService.getProposalTemplateForDirecHire(jobId)
+        const result = await this._proposalService.getProposalTemplate(jobId)
         RespsonseHelper.success(res, result)
     })
+
+    /**
+ * to upload result for the service
+ * @route PATCH /proposal/upload-floor-plan
+ * @param req.body.proposalId jobid
+ * @param req.files.serviceResult the service upload result
+ * @throws {AppError} 400 if there is any issue with the req.body
+ * @throws {AppError} 400 if there is no items in req.files.serviceReult
+*/
+    uploadFloorPlan = asyncHandler(async (req: Request, res: Response) => {
+
+        const { proposalId } = req.body as { proposalId: string }
+        if (!proposalId) {
+            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        if (!isObjectId(proposalId)) {
+
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        const files = req.files as {
+            floorPlans: Express.Multer.File[]
+        }
+
+        const floorPlanResult: Express.Multer.File[] = files.floorPlans ?? []
+        if (floorPlanResult.length === 0) {
+            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.FLOOR_PLAN_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        const result = await this._proposalService.uploadFloorPlan(proposalId, floorPlanResult);
+        RespsonseHelper.success(res, result)
+    })
+
+
 
     /**
  * to upload result for the service

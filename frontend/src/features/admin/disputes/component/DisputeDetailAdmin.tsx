@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-import { Check, X } from "lucide-react";
 import type { DisputeStatus } from "../../../proposal/proposalInterface";
 import { useGetDisputeDetailQuery } from "../adminDispueEndpoint";
 import DisputeVerdictModal from "./DisputeVerditModal";

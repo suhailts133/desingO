@@ -27,7 +27,7 @@ export class ProposalMapper {
                 status: d.status,
                 uploadedImages: d.uploadedImages,
                 currentVersion: d.currentVersion,
-                expectedDeliveryDate: d.expectedDeliveryDate.toDateString(),
+                expectedDeliveryDate: d.expectedDeliveryDate.toISOString(),
                 ...(d.actualDeliveryDate && { actualDeliveryDate: d.actualDeliveryDate.toDateString() }),
                 paymentStatus: d.paymentStatus,
                 ...(d.paidAt && { paidAt: d.paidAt.toDateString() }),
@@ -41,7 +41,11 @@ export class ProposalMapper {
         return {
             id: data.id,
             sourceId: data.sourceId.toString(),
-            sourceType: data.sourceType,
+            totalArea: data.totalArea,
+            unit: data.unit,
+            siteVisitingRequired: data.siteVisitingNeeded,
+            ...(data.floorPlan && { floorPlans: data.floorPlan.map(e => e.path) }),
+            ...(data.expectedSiteVisitingDate && { expectedSiteVisitingDate: data.expectedSiteVisitingDate.toISOString() }),
 
             clientId: data.clientId.id,
             clientName: data.clientId.full_name,
@@ -60,7 +64,7 @@ export class ProposalMapper {
             contractStatus: data.contractStatus,
             ...(data.overallRejectionReason && { overallRejectionReason: data.overallRejectionReason }),
             ...(data.clientAcceptedAt && { clientAcceptedAt: data.clientAcceptedAt.toDateString() }),
-            ...(data.expectedCompletionDate && { expectedCompletionDate: data.expectedCompletionDate.toDateString() }),
+            ...(data.expectedCompletionDate && { expectedCompletionDate: data.expectedCompletionDate.toISOString() }),
             ...(data.actualCompletionDate && { actualCompletionDate: data.actualCompletionDate.toDateString() }),
             createdAt: data.createdAt.toDateString(),
 

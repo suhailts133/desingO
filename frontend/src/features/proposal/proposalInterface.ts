@@ -26,6 +26,12 @@ export interface DisputeFormDTO {
         file: File[];
     }[];
 }
+
+export interface FloorPlans {
+    floorPlans: {
+        file: File[];
+    }[];
+}
 export interface AcceptOrRejectDisputeDTO {
     status: "Resolved" | "Redo",
     disputeId: string
@@ -57,11 +63,11 @@ export interface ServiceItem {
 
 export interface CreateProposalDTO {
     sourceId: string
-    sourceType: "jobRequest" | "direct_hire"
     drawingFeePerSqFt: number;
     expectedCompletionDate: Date;
+    siteVisitingNeeded: boolean,
+    expectedSiteVisitingDate?: Date
     services: ServiceItem[]
-
 }
 
 
@@ -72,13 +78,13 @@ export interface ProposalInputData {
     maxPrice: number
     timeLine: string
     services: string[];
-    sqft: number
+    totalArea: number;
+    unit: "ft" | "m"
+    siteVisitingRequired: boolean
 }
-
 
 export interface ProposalInputDataPayload {
     jobId: string
-    sourceType: 'jobRequest' | 'direct_hire'
 }
 
 
@@ -95,11 +101,14 @@ export interface ProposalAcceptOrRejectDTO {
 export interface ProposalDetailDTO {
     id: string
     sourceId: string
-    sourceType: "jobRequest" | "direct_hire"
     clientId: string
     designerId: string
     sourceName: string
-
+    totalArea: number,
+    unit: "ft" | "m"
+    siteVisitingRequired: boolean
+    expectedSiteVisitingDate?: string
+    floorPlans?: string[]
     drawingFeePerSqFt: number
     totalDrawingFee: number
     totalExecutionFee: number
@@ -192,3 +201,49 @@ export interface Message {
     createdAt: string
 }
 
+
+
+
+export interface ServiceItemDTO {
+    serviceName: string
+    order: number
+    price: number
+    executionPrice: number
+    expectedDeliveryDate: Date | string
+}
+
+export interface UpdateProposalDTO {
+    proposalId: string
+    sourceId: string
+    drawingFeePerSqFt: number
+    expectedCompletionDate: Date | string
+    siteVisitingNeeded: boolean
+    expectedSiteVisitingDate?: Date | string
+    services: ServiceItemDTO[]
+}
+
+
+export interface ProposalDetailsResponse {
+    id: string
+    sourceId: string
+    drawingFeePerSqFt: number
+    expectedCompletionDate: string
+    siteVisitingNeeded: boolean
+    expectedSiteVisitingDate?: string
+    services: {
+        serviceName: string
+        order: number
+        price: number
+        executionPrice: number
+        expectedDeliveryDate: string
+    }[]
+
+    jobDetails: {
+        minPrice: number
+        maxPrice: number
+        timeLine: string
+        services: string[]
+        totalArea: number
+        unit: "ft" | "m"
+    }
+}

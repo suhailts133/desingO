@@ -34,6 +34,7 @@ export class TranscationRepository extends BaseRepository<ITransaction> implemen
 
         const [result, total] = await Promise.all([
             this._model.find(query)
+                .sort({ createdAt: -1 })
                 .populate<{ destinationUserId: IUser }>("destinationUserId")
                 .populate<{ sourceUserId: IUser }>("sourceUserId")
                 .skip(skip)

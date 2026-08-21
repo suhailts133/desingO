@@ -41,7 +41,7 @@ export enum DISPUTE_STATUS {
     OPEN = "Open",
     UNDER_REVIEW = "Under Review",
     RESOLVED = "Resolved",
-    ESCALATED = "Escalated",
+    REDO = "Redo",
     AWAITING_CONFIRMATION = "Awaiting Confirmation"
 }
 

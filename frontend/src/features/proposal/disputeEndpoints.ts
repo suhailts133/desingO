@@ -10,7 +10,8 @@ export const disputeEndpoints = baseApi.injectEndpoints({
                 url: API_ROUTES.DISPUTE.REPORT,
                 method: "POST",
                 body: formData
-            })
+            }),
+            invalidatesTags:["proposal"]
         }),
 
         getDispute: builder.query<IApiResponse<DisputeResponseDTO>, string>({
@@ -24,7 +25,8 @@ export const disputeEndpoints = baseApi.injectEndpoints({
                 url:API_ROUTES.DISPUTE.ACCEPT_OR_REJECT,
                 method:"PATCH",
                 body
-            })
+            }),
+            
         })
 
 

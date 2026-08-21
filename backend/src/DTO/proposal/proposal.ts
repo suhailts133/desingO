@@ -11,13 +11,42 @@ export interface ServiceItem {
 }
 
 
+
+
+export interface UpdateProposalDTO {
+    proposalId: string
+    sourceId: string
+    drawingFeePerSqFt: number
+    expectedCompletionDate: Date
+    siteVisitingNeeded: boolean
+    expectedSiteVisitingDate?: Date
+    services: ServiceItem[]
+}
+
+export interface UpdateProposalRepoDataDTO {
+    unit: "ft" | "m";
+    totalArea: number;
+    totalDrawingFee: number;
+    totalExecutionFee: number;
+    overallRejectionReason: string
+    contractStatus: ContractStatus;
+    platformFee: number;
+    remainingPlatformFee: number;
+    totalContractValue: number;
+    expectedCompletionDate: Date;
+    siteVisitingNeeded: boolean
+    expectedSiteVisitingDate?: Date
+    services: IServiceItem[];
+
+}
+
 export interface CreateProposalDTO {
     sourceId: string
-    sourceType: "jobRequest" | "direct_hire"
     drawingFeePerSqFt: number;
     expectedCompletionDate: Date;
+    siteVisitingNeeded: boolean,
+    expectedSiteVisitingDate?: Date
     services: ServiceItem[]
-
 }
 
 
@@ -38,11 +67,13 @@ export type GetProposalDTO = Omit<IProposal, "clientId" | "designerId"> & {
 export interface CreateProposalRepoDataDTO extends Omit<CreateProposalDTO, "services"> {
     clientId: string
     designerId: string
+    totalArea: number
     totalDrawingFee: number
     totalExecutionFee: number
     totalContractValue: number
     sourceName: string
     platformFee: number;
+    unit: "ft" | "m"
     remainingPlatformFee: number;
     services: IServiceItem[]
 }
@@ -53,7 +84,9 @@ export interface ProposalInputData {
     maxPrice: number
     timeLine: string
     services: string[];
-    sqft: number
+    totalArea: number;
+    unit: "ft" | "m"
+    siteVisitingRequired: boolean
 }
 
 
@@ -61,7 +94,6 @@ export interface ProposalInputData {
 export interface ProposalDetailDTO {
     id: string
     sourceId: string
-    sourceType: "jobRequest" | "direct_hire"
     clientId: string
     designerId: string
     clientName: string
@@ -69,8 +101,11 @@ export interface ProposalDetailDTO {
     clientProfile?: string
     designerProfile?: string
     sourceName: string
-
-
+    totalArea: number;
+    unit: "ft" | "m"
+    siteVisitingRequired: boolean
+    expectedSiteVisitingDate?: string
+    floorPlans?: string[]
     drawingFeePerSqFt: number
     totalDrawingFee: number
     totalExecutionFee: number
@@ -151,3 +186,4 @@ export interface ServiceResultDTO {
     serviceNumber: number;
     sourceId: string;
 }
+

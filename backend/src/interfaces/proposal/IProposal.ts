@@ -10,7 +10,7 @@ export type EscrowStatus = "Held" | "Released" | "Refunded" | "Disputed"
 
 export type ContractStatus = "Sent" | "Accepted" | "Rejected" | "Ongoing" | "Completed" | "Disputed" | "Expired"
 
-export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Redo" | "Awaiting Confirmation" 
+export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Redo" | "Awaiting Confirmation"
 
 
 export interface IServiceReview {
@@ -81,6 +81,11 @@ export interface IProposal {
     platformFee: number;
     remainingPlatformFee: number;
     clientAcceptedAt?: Date;
+    totalArea: number
+    unit: "ft" | "m"
+    siteVisitingNeeded: boolean,
+    expectedSiteVisitingDate?: Date
+    floorPlan?: ImageUploadResult[]
     expectedCompletionDate: Date;
     actualCompletionDate?: Date;
     createdAt: Date;

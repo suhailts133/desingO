@@ -3,10 +3,11 @@ import { DisputeMapper } from "../../dtoMappers/proposal/disputeMapper";
 import type { IAdminDisputeService } from "../../interfaces/admin/IDisputeService";
 import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
+import type { ITransactionRepository } from "../../interfaces/base/ITransaction";
 import type { IDisputeRepository } from "../../interfaces/proposal/IDispute";
 import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
-import { USER_ROLES } from "../../shared/enums/commonEnums";
-import { DISPUTE_SOLUTION, DISPUTE_STATUS, USER_TYPE } from "../../shared/enums/proposalEnums";
+import { TRANSACTION_TYPE, USER_ROLES } from "../../shared/enums/commonEnums";
+import { DISPUTE_SOLUTION, DISPUTE_STATUS } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
 import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
@@ -21,7 +22,7 @@ import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
  * Manages fetching dispute logs, retrieving full context for individual disputes,
  */
 export class DisputeManagementService implements IAdminDisputeService {
-    constructor(private _disputeRepo: IDisputeRepository, private _proposalRepo: IProposalRepository, private _userRepo: IUserRepository) { }
+    constructor(private _transactionRepo: ITransactionRepository, private _disputeRepo: IDisputeRepository, private _proposalRepo: IProposalRepository, private _userRepo: IUserRepository) { }
 
 
     /**
@@ -76,73 +77,106 @@ export class DisputeManagementService implements IAdminDisputeService {
   */
     async disputeSolution(data: DisputeSolutionDTO): Promise<IApiResponse<DisputeSolutionResponseDTO>> {
         if (data.refundAmount < 0) {
-            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.ZERO, RESPONSE_CODE.CONFILT);
+            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.ZERO, RESPONSE_CODE.BAD_REQUEST);
         }
+
         const dispute = await this._disputeRepo.findDispute(data.disputeId);
         if (!dispute) {
-            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
         }
-        const service = dispute.proposalId.services.find(e => e.order === dispute.serviceOrder)
+
+        const proposal = dispute.proposalId;
+        if (!proposal || !proposal.services) {
+            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+        }
+
+        const service = proposal.services.find((e) => e.order === dispute.serviceOrder);
         if (!service) {
-            throw new AppError(PROPOSAL_MESSAGES.SERVICE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+            throw new AppError(PROPOSAL_MESSAGES.SERVICE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
         }
-        let reporterId: string
-        if (dispute.raisedBy === USER_TYPE.CUSTOMER) {
-            reporterId = dispute.customerId.id
-        } else {
-            reporterId = dispute.designerId.id
-        }
+
         const serviceEscrow = service.escrow;
         if (!serviceEscrow) {
-            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.PAYMENT_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.PAYMENT_NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
         }
+
+     
+        const customerId = dispute.customerId?.id ?? dispute.customerId.id.toString() ?? dispute.customerId;
+
+        let finalRefundAmount = 0;
+
         if (data.resolutionType === DISPUTE_SOLUTION.REFUND || data.resolutionType === DISPUTE_SOLUTION.FULL_REFUND) {
+            finalRefundAmount = data.resolutionType === DISPUTE_SOLUTION.FULL_REFUND
+                ? serviceEscrow.designerPayout
+                : data.refundAmount;
+
+            if (data.resolutionType === DISPUTE_SOLUTION.REFUND && finalRefundAmount >= serviceEscrow.designerPayout) {
+                throw new AppError(PROPOSAL_MESSAGES.DISPUTE.REFEUND_EXCEEDS, RESPONSE_CODE.CONFILT);
+            }
+
             const admin = await this._userRepo.findByRole(USER_ROLES.ADMIN);
             if (!admin) {
                 throw new AppError(ADMIN_MESSAGES.ADMIN.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
             }
 
-            const reporter = await this._userRepo.findUserById(reporterId);
-            if (!reporter) {
+            const customer = await this._userRepo.findUserById(customerId);
+            if (!customer) {
                 throw new AppError(AUTH_MESSAGES.USER.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
             }
 
-            const refundAmount = data.resolutionType === DISPUTE_SOLUTION.FULL_REFUND ? serviceEscrow.designerPayout : data.refundAmount;
-
-            if (data.resolutionType === DISPUTE_SOLUTION.REFUND && refundAmount >= serviceEscrow.designerPayout) {
-                throw new AppError(PROPOSAL_MESSAGES.DISPUTE.REFEUND_EXCEEDS, RESPONSE_CODE.CONFILT);
-            }
-
-            const updatedAdminWallet = await this._userRepo.updateUser(admin.id, { wallet: admin.wallet + serviceEscrow.platformCommission });
-
+            
+            const updatedAdminWallet = await this._userRepo.updateUser(admin.id, {
+                wallet: admin.wallet + serviceEscrow.platformCommission
+            });
             if (!updatedAdminWallet) {
-                throw new AppError(PROPOSAL_MESSAGES.PAYMENT.PAYOUT_ADMIN_FAILED, RESPONSE_CODE.NOT_FOUND);
+                throw new AppError(PROPOSAL_MESSAGES.PAYMENT.PAYOUT_ADMIN_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
             }
 
-            const updatedReporter = await this._userRepo.updateUser(reporterId, { wallet: reporter.wallet + refundAmount });
+            await this._transactionRepo.createTransaction({
+                sourceUserId: admin.id,
+                destinationUserId: admin.id,
+                amount: serviceEscrow.platformCommission,
+                type: TRANSACTION_TYPE.COMMISSION,
+                proposalId: proposal.id 
+            });
 
-            if (!updatedReporter) {
-                throw new AppError(PROPOSAL_MESSAGES.PAYMENT.PAYOUT_DESIGNER_FAILED, RESPONSE_CODE.NOT_FOUND);
+         
+            const updatedCustomer = await this._userRepo.updateUser(customerId, {
+                wallet: customer.wallet + finalRefundAmount
+            });
+            if (!updatedCustomer) {
+                throw new AppError(PROPOSAL_MESSAGES.PAYMENT.PAYOUT_DESIGNER_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
             }
+
+            await this._transactionRepo.createTransaction({
+                sourceUserId: admin.id,
+                destinationUserId: customerId,
+                amount: finalRefundAmount,
+                type: TRANSACTION_TYPE.REFUND,
+                proposalId: proposal.id ?? proposal.id ?? proposal
+            });
         }
+
         const updatedDispute = await this._disputeRepo.updateDispute(data.disputeId, {
             resolution: data.resolution,
-            refundAmount: data.refundAmount,
+            refundAmount: finalRefundAmount,
             resolutionType: data.resolutionType,
             status: DISPUTE_STATUS.AWAITING_CONFIRMATION
-        })
+        });
+
         if (!updatedDispute) {
-            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
         }
+
         const responseData: DisputeSolutionResponseDTO = {
-            refundAmount: data.refundAmount,
+            refundAmount: finalRefundAmount,
             resolution: data.resolution,
             resolutionType: data.resolutionType,
             disputeId: updatedDispute.id,
             status: updatedDispute.status
-        }
+        };
 
-        return { message: PROPOSAL_MESSAGES.DISPUTE.UPDATION_SUCCESS, data: responseData }
+        return { message: PROPOSAL_MESSAGES.DISPUTE.UPDATION_SUCCESS, data: responseData };
     }
 
 }

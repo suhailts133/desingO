@@ -10,8 +10,8 @@ export interface IProposalRepository {
     createProposal(data: CreateProposalRepoDataDTO): Promise<IProposal>
     getProposal(sourceId: string): Promise<GetProposalDTO | null>
     getProposalbyId(id: string): Promise<IProposal | null>
-    updateProposal(proposalId:string, data:Partial<IProposal>):Promise<IProposal | null>
-    acceptOrRejectProposal(sourceId: string, contractStatus: ContractStatus, overallRejectionReason?: string): Promise<IProposal | null>
+    updateProposal(proposalId: string, data: Partial<IProposal>): Promise<IProposal | null>
+    acceptOrRejectProposal(sourceId: string, contractStatus: ContractStatus, shouldUpdateService: boolean, overallRejectionReason?: string): Promise<IProposal | null>;
     updateService(sourceId: string, order: number, status: ProposalServiceStatus, escrow: Partial<IEscrow>): Promise<IProposal | null>
     updateServiceVersion(sourceId: string, order: number, status: ProposalServiceStatus, newVersion: number): Promise<IProposal | null>
     acceptOrRejectServiceResult(sourceId: string, order: number, status: ProposalServiceStatus): Promise<IProposal | null>
