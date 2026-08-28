@@ -1,4 +1,4 @@
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, type SubmitErrorHandler } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useSearchParams } from "react-router-dom";
 import { UserCheck } from "lucide-react";
@@ -25,9 +25,7 @@ export default function JobRequestForm() {
     const designerId = searchParams.get("designerId") ?? undefined;
     const designId = searchParams.get("designId") ?? undefined;
     const sourceType: Source_type = searchParams.get("source") === "DIRECT_HIRE" || Boolean(designerId) ? "DIRECT_HIRE" : "JOB_REQUEST";
-
     const isDirectHire = sourceType === "DIRECT_HIRE";
-
     const methods = useForm<IJobRequest>({
         resolver: joiResolver(jobRequestValidation),
         defaultValues: {
@@ -65,16 +63,18 @@ export default function JobRequestForm() {
     const { handleSubmit } = methods;
     const { handleSubmission, isLoading } = usePostJob();
     const handleResponse = useHandleResponse();
-    const onInvalid = (errors: any) => {
-        console.error("Form Validation Failed:", errors);
-    };
+
     const onSubmit = async (data: IJobRequest) => {
         const formData = createJobFormData(data);
         console.log([...formData.entries()])
         const result = await handleSubmission(formData);
         handleResponse(result.success, isDirectHire ? "Direct Hire Request Sent" : "Job Posted Successfully", result.message, -1);
     };
+    const onInvalid: SubmitErrorHandler<IJobRequest> = (errors) => {
+        console.log('Form is invalid! Joi Errors:', errors);
 
+
+    };
     return (
         <div className="min-h-screen w-full flex justify-center items-start py-10 px-4 bg-seashell-tint/40">
             <div className="w-full max-w-3xl bg-snow-white shadow-2xl rounded-2xl p-6 sm:p-10 border border-blush-pale">

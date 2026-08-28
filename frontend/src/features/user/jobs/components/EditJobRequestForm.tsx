@@ -1,6 +1,6 @@
 import { useEffect, useState, type ChangeEvent } from "react";
 import { useParams } from "react-router-dom";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, type SubmitErrorHandler } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { AlertCircle, UserCheck, ImageIcon, FileText, Plus, X, Trash2, Upload } from "lucide-react";
 import Zoom from "react-medium-image-zoom";
@@ -22,6 +22,7 @@ import DeliverablesSection from "../components/DeliverablesSection";
 import AestheticsAndItemsSection from "../components/AestheticsAndItemsSection";
 import HouseholdProfileSection from "../components/HouseholdProfileSection";
 import LocationBudgetSection from "../components/LocationBudgetSection";
+import type { ImageUploadResult } from "../../../designer/profile/designerProfileInterface";
 
 const toOption = (label: string): SelectOption => ({ value: label, label });
 const toOptions = (labels: string[] = []): SelectOption[] => labels.map(toOption);
@@ -30,28 +31,66 @@ type ExistingFileItem = { type: "existing"; path: string; filename: string };
 type NewFileItem = { type: "new"; file: File; preview: string };
 type FileItem = ExistingFileItem | NewFileItem;
 
+
+type JobRequestDetail = NonNullable<ReturnType<typeof useGetAJobRequestDetailQuery>["data"]>["data"];
+
+
 export default function EditJobRequestForm() {
     const { id } = useParams<{ id: string }>();
-
-    const { data, isLoading: isFetching, error } = useGetAJobRequestDetailQuery(id!, { skip: !id });
-    const { handleUpdation, isEditing } = useEditJobRequest();
-    const handleResponse = useHandleResponse();
+    const { data, isLoading: isFetching, error } = useGetAJobRequestDetailQuery(id ?? "", { skip: !id });
 
     const job = data?.data;
 
-    const [referenceImages, setReferenceImages] = useState<FileItem[]>([]);
-    const [floorPlans, setFloorPlans] = useState<FileItem[]>([]);
+    if (isFetching) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="flex flex-col items-center gap-3 text-gray-400">
+                    <svg className="size-8 animate-spin" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    <p className="text-sm">Loading job request...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error || !job) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p className="text-sm text-red-500 flex items-center gap-2">
+                    <AlertCircle size={16} /> Failed to load job request.
+                </p>
+            </div>
+        );
+    }
+
+    return <EditJobRequestFormFields key={job.id} job={job} jobId={id!} />;
+}
+
+function EditJobRequestFormFields({ job, jobId }: { job: JobRequestDetail; jobId: string }) {
+    console.log(job)
+    const { handleUpdation, isEditing } = useEditJobRequest();
+    const handleResponse = useHandleResponse();
+
+    const [referenceImages, setReferenceImages] = useState<FileItem[]>(() =>
+        (job.referenceImages ?? []).map((img: ImageUploadResult) => ({
+            type: "existing" as const,
+            path: img.path,
+            filename: img.filename,
+        }))
+    );
+    const [floorPlans, setFloorPlans] = useState<FileItem[]>(() =>
+        (job.floorPlans ?? []).map((plan: ImageUploadResult) => ({
+            type: "existing" as const,
+            path: plan.path,
+            filename: plan.filename,
+        }))
+    );
 
     const methods = useForm<IJobRequest>({
         resolver: joiResolver(editJobRequestValidation),
-    });
-
-    const { handleSubmit, reset } = methods;
-
-    useEffect(() => {
-        if (!job) return;
-
-        reset({
+        defaultValues: {
             sourceType: job.sourceType,
             designerId: job.designerId,
             designId: job.designId,
@@ -92,28 +131,12 @@ export default function EditJobRequestForm() {
             timeline: toOption(job.timeline),
             minBudget: job.minBudget,
             maxBudget: job.maxBudget,
-        });
-    }, [job, reset]);
+        },
+    });
 
-    useEffect(() => {
-        if (!job) return;
-        setReferenceImages(
-            (job.referenceImages ?? []).map((img) => ({
-                type: "existing" as const,
-                path: img.path,
-                filename: img.filename,
-            }))
-        );
-        setFloorPlans(
-            (job.floorPlans ?? []).map((plan) => ({
-                type: "existing" as const,
-                path: plan.path,
-                filename: plan.filename,
-            }))
-        );
-    }, [job]);
+    const { handleSubmit } = methods;
 
-    // Revoke object URLs on unmount / change, same as old edit form
+
     useEffect(() => {
         return () => {
             referenceImages.forEach((item) => {
@@ -174,8 +197,8 @@ export default function EditJobRequestForm() {
         });
     };
 
-
     const onSubmit = async (fields: IJobRequest) => {
+        console.log(fields, "lol")
         const formData = new FormData();
 
         formData.append("projectTitle", fields.projectTitle);
@@ -251,35 +274,14 @@ export default function EditJobRequestForm() {
             formData.append(`oldFloorPlans[${i}][filename]`, img.filename);
         });
         console.log([...formData.entries()])
-        const result = await handleUpdation({ formdata: formData, id: id! });
+        const result = await handleUpdation({ formdata: formData, id: jobId });
         handleResponse(result.success, "Update successful", result.message, -1);
     };
+    const onInvalid: SubmitErrorHandler<IJobRequest> = (errors) => {
+        console.log('Form is invalid! Joi Errors:', errors);
 
 
-    if (isFetching) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="flex flex-col items-center gap-3 text-gray-400">
-                    <svg className="size-8 animate-spin" viewBox="0 0 24 24" fill="none">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                    <p className="text-sm">Loading job request...</p>
-                </div>
-            </div>
-        );
-    }
-
-    if (error || !job) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <p className="text-sm text-red-500 flex items-center gap-2">
-                    <AlertCircle size={16} /> Failed to load job request.
-                </p>
-            </div>
-        );
-    }
-
+    };
     const isDirectHire = job.sourceType === "DIRECT_HIRE";
 
     return (
@@ -300,7 +302,7 @@ export default function EditJobRequestForm() {
                 </div>
 
                 <FormProvider {...methods}>
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                    <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-8">
                         <ProjectOverviewSection />
                         <hr className="border-blush-pale" />
 
@@ -309,7 +311,6 @@ export default function EditJobRequestForm() {
 
                         <SpaceScopeSection hideFloorPlanUpload />
 
-                        {/* Floor plans — local state, same pattern as old edit form's reference images */}
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <label className="block text-sm font-Jost-Semibold text-soft-black">
@@ -332,7 +333,7 @@ export default function EditJobRequestForm() {
                                         id="floorPlanEdit"
                                         multiple
                                         hidden
-                                        accept="image/*,application/pdf"
+                                        accept="application/pdf"
                                         onChange={handleFloorPlanUpload}
                                     />
                                 </>
@@ -380,7 +381,7 @@ export default function EditJobRequestForm() {
 
                         <LocationBudgetSection />
 
-                        {/* Reference images — local state, same pattern as old edit form */}
+
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <label className="block text-sm font-Jost-Semibold text-soft-black">

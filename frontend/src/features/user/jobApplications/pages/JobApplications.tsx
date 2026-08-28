@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useState } from "react";
 import JobApplicationCard from "../../jobApplications/components/JobApplicationCard";
 import { useGetAllJobApplicationsQuery } from "../jobApplicationEndpoints";

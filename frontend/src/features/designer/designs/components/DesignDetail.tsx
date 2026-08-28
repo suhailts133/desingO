@@ -1,38 +1,37 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ChevronLeft, Tag, Wallet, Layers, Wrench, User, ChevronDown, Calendar, Heart } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetDesignDetailQuery } from "../designEndpoints";
 import Zoom from "react-medium-image-zoom";
-import "react-medium-image-zoom/dist/styles.css"
+import "react-medium-image-zoom/dist/styles.css";
 import { useToggleSaveDesign } from "../../../common/hooks/useToggleSaveDesign";
 import { useDecodeAccessToken } from "../../../../helpers/decodeAccessToken";
 
 export default function DesignDetail() {
     const { id } = useParams<{ id: string }>();
-    const { role } = useDecodeAccessToken()
-    const navigate = useNavigate()
-    const { data, isLoading, error } = useGetDesignDetailQuery(id!, { skip: !id })
-    const [servicesOpen, setServicesOpen] = useState(false);
-    const [activeImage, setActiveImage] = useState<string | null>(null);
+    const { role } = useDecodeAccessToken();
+    const navigate = useNavigate();
+    const { data, isLoading, error } = useGetDesignDetailQuery(id!, { skip: !id });
 
-    const [isSaved, setIsSaved] = useState<boolean>(false)
-    const { isToggling, handleToggling } = useToggleSaveDesign()
+    const [servicesOpen, setServicesOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [savedOverride, setSavedOverride] = useState<boolean | null>(null);
+
+    const { isToggling, handleToggling } = useToggleSaveDesign();
     const design = data?.data;
 
-    useEffect(() => {
-        if (design) {
-            setActiveImage(design.coverImage.path)
-            setIsSaved(design.isSaved)
-        }
-    }, [design])
-
-
     if (isLoading) {
-        return <div className="p-10 text-center animate-pulse text-gray-400">Loading Design Details...</div>;
+        return <div className="p-10 text-center animate-pulse text-gray-400 font-Jost">Loading Design Details...</div>;
     }
     if (error || !design) {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Design not found.</div>;
     }
+
+
+    const activeImage = selectedImage ?? design.coverImage.path;
+    const isSaved = savedOverride ?? design.isSaved ?? false;
+    const allImages = [design.coverImage.path, ...design.gallery.map((e) => e.path)];
+
     const handleDirectHire = () => {
         const params = new URLSearchParams({
             designerId: design.designerId,
@@ -44,75 +43,80 @@ export default function DesignDetail() {
     };
 
     const toggleSave = async (e: React.MouseEvent) => {
-        e.stopPropagation()
-        const result = await handleToggling({ designId: design.id, isSaved: !isSaved })
+        e.stopPropagation();
+        const nextSaved = !isSaved;
+        setSavedOverride(nextSaved);
+
+        const result = await handleToggling({ designId: design.id, isSaved: nextSaved });
         if (result !== undefined) {
-            setIsSaved(result)
+            setSavedOverride(result);
+        } else {
+            setSavedOverride(design.isSaved);
         }
-    }
-    const allImages = [design.coverImage.path, ...design.gallery.map(e => e.path)];
+    };
 
     return (
-        <div className="max-w-5xl mx-auto px-4 py-10">
-
-            {/* Back */}
-            <button onClick={() => navigate(-1)} className="flex items-center mb-4 text-sm text-soft-black hover:underline">
+        <div className="max-w-5xl mx-auto px-4 py-10 font-Jost">
+            {/* Back Button */}
+            <button
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-1 mb-4 text-sm text-soft-black hover:underline cursor-pointer"
+            >
                 <ChevronLeft className="w-4 h-4" />
                 Back
             </button>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                {/* LEFT / MAIN COLUMN */}
                 <div className="lg:col-span-2 space-y-5">
-
+                    {/* Media Display */}
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-
-
-                        <div className="relative w-full overflow-hidden">
+                        <div className="relative w-full aspect-16/10 bg-gray-50 flex items-center justify-center overflow-hidden">
                             <Zoom>
                                 <img
-                                    src={activeImage || design.coverImage.path}
+                                    src={activeImage}
                                     alt={design.designName}
-                                    className="w-full h-auto object-contain transition-all duration-500"
+                                    className="w-full h-full object-cover transition-all duration-300"
                                 />
                             </Zoom>
 
-                            {/* wishlist icon*/}
+                            {/* Wishlist Button */}
                             <button
                                 onClick={toggleSave}
                                 disabled={isToggling}
                                 aria-label={isSaved ? "Unsave design" : "Save design"}
                                 className={`absolute top-3 right-3 w-9 h-9 rounded-full bg-snow-white border border-blush-light/40
-                                    flex items-center justify-center transition-all duration-200 hover:bg-blush-pale shadow-sm
-                                    ${isSaved ? "opacity-100" : "opacity-70 hover:opacity-100"}`}
+                                    flex items-center justify-center transition-all duration-200 hover:bg-blush-pale shadow-sm cursor-pointer
+                                    ${isSaved ? "opacity-100" : "opacity-80 hover:opacity-100"}`}
                             >
                                 <Heart
                                     size={16}
-                                    className={`transition-colors duration-200 ${isSaved
-                                        ? "fill-blush-deep text-blush-deep"
-                                        : "text-blush-deep"
+                                    className={`transition-colors duration-200 ${isSaved ? "fill-blush-deep text-blush-deep" : "text-blush-deep"
                                         }`}
                                 />
                             </button>
                         </div>
 
                         {/* Thumbnail Strip */}
-                        <div className="px-4 py-3 flex gap-2 overflow-x-auto scrollbar-hide">
-                            {allImages.map((img, i) => (
-                                <button
-                                    key={i}
-                                    onClick={() => setActiveImage(img)}
-                                    className={`shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${activeImage === img
-                                        ? "border-soft-black shadow-md"
-                                        : "border-transparent opacity-60 hover:opacity-100"
-                                        }`}
-                                >
-                                    <img src={img} alt={`Gallery ${i}`} className="w-full h-full object-cover" />
-                                </button>
-                            ))}
-                        </div>
+                        {allImages.length > 1 && (
+                            <div className="px-4 py-3 flex gap-2 overflow-x-auto scrollbar-hide border-t border-gray-100">
+                                {allImages.map((img, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => setSelectedImage(img)}
+                                        className={`shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer ${activeImage === img
+                                                ? "border-soft-black shadow-md opacity-100"
+                                                : "border-transparent opacity-60 hover:opacity-100"
+                                            }`}
+                                    >
+                                        <img src={img} alt={`Gallery ${i}`} className="w-full h-full object-cover" />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
+                    {/* Title & Badges */}
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-5">
                         <h1 className="font-Jost-Semibold text-2xl text-soft-black leading-snug mb-3">
                             {design.designName}
@@ -126,10 +130,10 @@ export default function DesignDetail() {
                                 <Layers className="w-3.5 h-3.5 text-slate-500" /> {design.spaceType}
                             </span>
                             <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
-                                <Wallet className="w-3.5 h-3.5 text-slate-500" /> Budget ₹{design.minPrice.toLocaleString("en-IN")} - {design.maxPrice.toLocaleString("es-IN")}
+                                <Wallet className="w-3.5 h-3.5 text-slate-500" /> Budget ₹{design.minPrice.toLocaleString("en-IN")} - ₹{design.maxPrice.toLocaleString("en-IN")}
                             </span>
                             <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
-                                <Calendar className="w-3.5 h-3.5 text-slate-500" /> Posted On {design.createdAt}
+                                <Calendar className="w-3.5 h-3.5 text-slate-500" /> Posted on {new Date(design.createdAt).toLocaleDateString()}
                             </span>
                         </div>
                     </div>
@@ -137,7 +141,7 @@ export default function DesignDetail() {
                     {/* Description */}
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-5">
                         <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-gray-400 mb-3">About this Design</h2>
-                        <p className="text-sm text-gray-600 leading-relaxed">{design.description}</p>
+                        <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{design.description}</p>
                     </div>
 
                     {/* Design Styles */}
@@ -152,7 +156,7 @@ export default function DesignDetail() {
                         </div>
                     </div>
 
-                    {/* Services */}
+                    {/* Services Accordion */}
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-5">
                         <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-gray-400 mb-3">
                             Services Included
@@ -160,7 +164,7 @@ export default function DesignDetail() {
                         <div className="border border-gray-200 rounded-xl overflow-hidden">
                             <button
                                 onClick={() => setServicesOpen(!servicesOpen)}
-                                className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-sm text-gray-700"
+                                className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-sm text-gray-700 cursor-pointer"
                             >
                                 <div className="flex items-center gap-2">
                                     <Wrench className="w-3.5 h-3.5 text-slate-500" />
@@ -191,12 +195,10 @@ export default function DesignDetail() {
                             </div>
                         </div>
                     </div>
-
                 </div>
 
-                {/* RIGHT COLUMN */}
-                <div className="space-y-5">
-
+                {/* RIGHT COLUMN (Sticky Sidebar) */}
+                <div className="space-y-5 sticky top-6">
                     {/* Designer Card */}
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-5">
                         <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-gray-400 mb-4">Designer</h2>
@@ -209,12 +211,10 @@ export default function DesignDetail() {
                             </div>
 
                             {role === "Customer" && (
-                                <button className="auth-button w-full" onClick={handleDirectHire}>
+                                <button className="auth-button w-full cursor-pointer" onClick={handleDirectHire}>
                                     Hire this Designer
                                 </button>
                             )}
-
-
                         </div>
                     </div>
 
@@ -225,7 +225,10 @@ export default function DesignDetail() {
                             {[
                                 { label: "Property", value: design.propertyType },
                                 { label: "Space", value: design.spaceType },
-                                { label: "Starting Price", value: `₹${design.minPrice.toLocaleString("en-IN")} - ${design.maxPrice.toLocaleString("en-IN")}` },
+                                {
+                                    label: "Starting Price",
+                                    value: `₹${design.minPrice.toLocaleString("en-IN")} - ₹${design.maxPrice.toLocaleString("en-IN")}`,
+                                },
                                 { label: "Styles", value: design.designStyles.join(", ") },
                             ].map(({ label, value }) => (
                                 <li key={label} className="flex items-start justify-between gap-2">
@@ -235,11 +238,8 @@ export default function DesignDetail() {
                             ))}
                         </ul>
                     </div>
-
                 </div>
             </div>
-
-
         </div>
     );
 }

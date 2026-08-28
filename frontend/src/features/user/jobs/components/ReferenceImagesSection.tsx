@@ -1,40 +1,37 @@
-import { useEffect, useState, type ChangeEvent } from "react";
-import { useFormContext, useFieldArray } from "react-hook-form";
+import { useEffect, useMemo, type ChangeEvent } from "react";
+import { useFormContext, useFieldArray, useWatch } from "react-hook-form";
 import { ImageIcon, Plus, X } from "lucide-react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import type { IJobRequest } from "../jobInterface";
 
 export default function ReferenceImagesSection() {
-    const { control, watch, formState: { errors } } = useFormContext<IJobRequest>();
+    const { control, formState: { errors } } = useFormContext<IJobRequest>();
 
     const { fields: refrenceFields, append, remove: refrenceRemove } = useFieldArray({ control, name: "referenceImages" });
 
-    const [refrenceImagesPreview, setRefrenceImagesPreview] = useState<string[]>([]);
+    const watchImages = useWatch({ control, name: "referenceImages" });
 
-    const watchImages = watch("referenceImages");
 
-    
-    useEffect(() => {
-        if (!watchImages) return;
-        
-        const newPreviews = watchImages.map((item: any) => {
-            if (item.url) return item.url; 
-            if (item.file && item.file[0]) return URL.createObjectURL(item.file[0]); 
+    const refrenceImagesPreview = useMemo<(string | null)[]>(() => {
+        if (!watchImages) return [];
+
+        return watchImages.map((item) => {
+            if (item.url) return item.url;
+            if (item.file && item.file[0]) return URL.createObjectURL(item.file[0]);
             return null;
         });
+    }, [watchImages]);
 
-        setRefrenceImagesPreview(newPreviews);
-
-       
+    useEffect(() => {
         return () => {
-            newPreviews.forEach((url: string | null) => {
+            refrenceImagesPreview.forEach((url) => {
                 if (url && url.startsWith("blob:")) {
                     URL.revokeObjectURL(url);
                 }
             });
         };
-    }, [watchImages]);
+    }, [refrenceImagesPreview]);
 
     const handleRefrenceImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = Array.from(e.target.files || []);
@@ -84,7 +81,7 @@ export default function ReferenceImagesSection() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-xl border border-dashed border-gray-200">
                     {refrenceFields.map((field, index) => {
                         const previewSrc = refrenceImagesPreview[index];
-                        const isNew = previewSrc?.startsWith('blob:'); // Check if it's a newly uploaded file
+                        const isNew = previewSrc?.startsWith('blob:');
 
                         return (
                             <div key={field.id} className="relative aspect-square rounded-lg overflow-hidden bg-white shadow-sm group">
@@ -93,12 +90,11 @@ export default function ReferenceImagesSection() {
                                         <Zoom>
                                             <img
                                                 src={previewSrc}
-                                                className="w-full h-full object-cover" // Switched to object-cover for cleaner squares
+                                                className="w-full h-full object-cover"
                                                 alt={`Gallery ${index}`}
                                             />
                                         </Zoom>
-                                        
-                                        {/* Badge to show if it's a Saved image or a New upload */}
+
                                         <span className={`absolute top-1 left-1 z-10 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase ${isNew ? 'bg-green-500' : 'bg-gray-500/70'}`}>
                                             {isNew ? 'New' : 'Saved'}
                                         </span>

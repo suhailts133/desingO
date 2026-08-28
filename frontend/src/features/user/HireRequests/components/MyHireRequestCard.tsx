@@ -13,7 +13,7 @@ const statusStyles: Record<GetMyHireDesignerRequestResponseDTO["status"], string
 }
 
 export default function MyHireRequestCard({ request }: Props) {
-    const { id, length, width, ceilingHeight, unit, notes, status, rejectionReason, services, coverImage, designName, designId, createdOn, timeLine, } = request
+    const {  length, width, ceilingHeight, unit, notes, status, rejectionReason, services, coverImage, designName, designId, createdOn, timeLine, } = request
 
     const navigate = useNavigate()
 

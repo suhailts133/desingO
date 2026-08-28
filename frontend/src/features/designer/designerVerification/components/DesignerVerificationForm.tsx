@@ -1,6 +1,6 @@
 import { joiResolver } from "@hookform/resolvers/joi"
 import type { IDesignerProfile } from "../designerVerificationInterFace"
-import { useForm, useFieldArray } from "react-hook-form"
+import { useForm, useFieldArray, useWatch } from "react-hook-form"
 import { DesignerprofileValidations } from "../../../../validations/designerVerificationValidation"
 import { INDIAN_STATES } from "../indianStates"
 import { Plus, Trash2 } from "lucide-react"
@@ -13,25 +13,18 @@ import SubmitButton from "../../../../shared/common/SubmitButton"
 import { useHandleResponse } from "../../../../helpers/useHandleResponse"
 
 export default function DesignerVerificationForm() {
-  const { register, handleSubmit, watch, control, formState: { errors } } = useForm<IDesignerProfile>({
+  const { register, handleSubmit, control, formState: { errors } } = useForm<IDesignerProfile>({
     resolver: joiResolver(DesignerprofileValidations, { abortEarly: false, allowUnknown: false }),
     mode: "onBlur"
   })
-  const watchedGovtId = watch("governmentIdImage");
+  const watchedGovtId = useWatch({ control, name: "governmentIdImage" });
   const { handleVerification, isLoading } = useDesignerVerification()
   const handleResponse = useHandleResponse()
-  const {
-    fields: educationFields,
-    append: educationAppend,
-    remove: educationRemove
-  } = useFieldArray({ control, name: "education" })
+  const { fields: educationFields, append: educationAppend, remove: educationRemove } = useFieldArray({ control, name: "education" })
 
-  const {
-    fields: workExperienceFields,
-    append: workExperienceAppend,
-    remove: workExperienceRemove
-  } = useFieldArray({ control, name: "workExperience" })
-
+  const { fields: workExperienceFields, append: workExperienceAppend, remove: workExperienceRemove } = useFieldArray({ control, name: "workExperience" })
+  const workExperienceValues = useWatch({ control, name: "workExperience", });
+  const educationValues = useWatch({ control, name: "education", });
   const onSubmit = async (data: IDesignerProfile) => {
     const formData = new FormData()
     formData.append("phone", data.phone)
@@ -120,7 +113,8 @@ export default function DesignerVerificationForm() {
           </div>
 
           {educationFields.map((field, index) => {
-            const certImage = watch(`education.${index}.certificateImage`);
+            const rawproof = educationValues?.[index]?.certificateImage
+            const proofFileName = rawproof?.[0]?.name
             return (
               <div key={field.id} className="space-y-3 border border-gray-400 rounded-lg p-4">
                 <div className="flex items-center justify-between">
@@ -137,7 +131,7 @@ export default function DesignerVerificationForm() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <InputField min={1970} max={new Date().getFullYear()} placeholder="e.g. 2022" type="number" label="pass out year" registration={register(`education.${index}.completionYear`, { valueAsNumber: true })} error={errors.education?.[index]?.completionYear?.message} />
-                  <FileInputField label="Certificate Image" placeholder="Choose certificate..." fileName={certImage?.[0]?.name} registration={register(`education.${index}.certificateImage`)} error={errors.education?.[index]?.certificateImage?.message} />
+                  <FileInputField label="Certificate Image" placeholder="Choose certificate..." fileName={proofFileName} registration={register(`education.${index}.certificateImage`)} error={errors.education?.[index]?.certificateImage?.message} />
                 </div>
               </div>
             )
@@ -169,7 +163,8 @@ export default function DesignerVerificationForm() {
           </div>
 
           {workExperienceFields.map((field, index) => {
-            const workExp = watch(`workExperience.${index}.proofImage`);
+            const rawProof = workExperienceValues?.[index]?.proofImage;
+            const proofFileName = rawProof?.[0]?.name
             return (
               <div key={field.id} className="space-y-3 border border-gray-400 rounded-lg p-4">
                 <div className="flex items-center justify-between">
@@ -187,7 +182,7 @@ export default function DesignerVerificationForm() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <InputField min={0} max={50} placeholder="e.g. 2" type="number" label="Years of Experience" registration={register(`workExperience.${index}.yearsOfExperience`, { valueAsNumber: true })} error={errors.workExperience?.[index]?.yearsOfExperience?.message} />
-                  <FileInputField label="Proof Image" placeholder="Choose proof of experience..." fileName={workExp?.[0]?.name} registration={register(`workExperience.${index}.proofImage`)} error={errors.workExperience?.[index]?.proofImage?.message} />
+                  <FileInputField label="Proof Image" placeholder="Choose proof of experience..." fileName={proofFileName} registration={register(`workExperience.${index}.proofImage`)} error={errors.workExperience?.[index]?.proofImage?.message} />
                 </div>
               </div>
             )

@@ -8,11 +8,6 @@ export interface AdminUserQueryParams extends AdminUserFilter {
   page: number;
 }
 
-export interface AdminUserManagementFilter {
-  name?: string;
-  role: "All" | "Customer" | "Designer";
-  status: "All" | "Active" | "Blocked";
-}
 
 
 

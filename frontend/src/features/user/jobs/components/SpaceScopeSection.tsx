@@ -1,5 +1,5 @@
 import React from "react";
-import { useFormContext, useFieldArray } from "react-hook-form";
+import { useFormContext, useFieldArray, useWatch } from "react-hook-form";
 import { Layers, Upload, Trash2, FileText } from "lucide-react";
 import { InputField } from "../../../../shared/form/InputField";
 import { ReactSelectField } from "../../../../shared/form/ReactSelectField";
@@ -13,10 +13,9 @@ interface SpaceScopeSectionProps {
 
 
 export default function SpaceScopeSection({ hideFloorPlanUpload = false }: SpaceScopeSectionProps) {
-    const { control, register, watch, setValue, formState: { errors } } = useFormContext<IJobRequest>();
-    const requiresSiteVisit = watch("requiresSiteVisitMeasurement");
-    const areaUnit = watch("areaUnit");
-
+    const { control, register, setValue, formState: { errors } } = useFormContext<IJobRequest>();
+    const requiresSiteVisit = useWatch({ control, name: "requiresSiteVisitMeasurement" });
+    const areaUnit = useWatch({ control, name: "areaUnit" });
     const { fields: planFields, append: appendPlan, remove: removePlan } = useFieldArray({
         control,
         name: "floorPlans",
@@ -70,7 +69,7 @@ export default function SpaceScopeSection({ hideFloorPlanUpload = false }: Space
                 isMulti={true}
                 control={control}
                 options={SPACE_OPTIONS}
-                error={errors.selectedRooms?.message as any}
+                error={errors.selectedRooms?.message}
             />
 
             <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-3">
@@ -86,10 +85,10 @@ export default function SpaceScopeSection({ hideFloorPlanUpload = false }: Space
                     </label>
                 </div>
 
-                {!requiresSiteVisit && !hideFloorPlanUpload  && (
+                {!requiresSiteVisit && !hideFloorPlanUpload && (
                     <div className="pt-2">
                         <label className="block text-xs font-Jost-Semibold text-gray-500 mb-1">
-                            Upload Blueprint / Builder Layout PDFto 25MB
+                            Upload Blueprint / Builder Layout PDF up to 25MB
                         </label>
                         <label className="flex items-center justify-center gap-2 border-2 border-dashed border-blush-light rounded-xl p-4 cursor-pointer hover:border-blush-deep bg-white transition-colors">
                             <Upload className="w-5 h-5 text-blush-deep" />
@@ -106,23 +105,15 @@ export default function SpaceScopeSection({ hideFloorPlanUpload = false }: Space
                         {planFields.length > 0 && (
                             <div className="mt-2 space-y-1">
                                 {planFields.map((field, idx) => {
-                                    const item = watch(`floorPlans.${idx}`) as any;
-                                    const isSaved = Boolean(item?.url);
-                                    const fileName = item?.file?.[0]?.name;
+                                    const fileName = field.file?.[0]?.name;
 
                                     return (
                                         <div key={field.id} className="flex items-center justify-between p-2 bg-white rounded-lg border text-xs">
                                             <span className="flex items-center gap-2 truncate text-soft-black font-medium">
                                                 <FileText className="w-4 h-4 text-blush-deep shrink-0" />
-                                                {isSaved ? (
-                                                    <a href={item.url} target="_blank" rel="noopener noreferrer" className="truncate hover:underline">
-                                                        {item.filename || `View existing plan ${idx + 1}`}
-                                                    </a>
-                                                ) : (
-                                                    fileName || `Plan File ${idx + 1}`
-                                                )}
-                                                <span className={`shrink-0 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase ${isSaved ? "bg-gray-500/70" : "bg-green-500"}`}>
-                                                    {isSaved ? "Saved" : "New"}
+                                                {fileName || `Plan File ${idx + 1}`}
+                                                <span className="shrink-0 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase bg-green-500">
+                                                    New
                                                 </span>
                                             </span>
                                             <button type="button" onClick={() => removePlan(idx)} className="text-error hover:text-red-700">

@@ -1,10 +1,11 @@
 import { joiResolver } from '@hookform/resolvers/joi';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, useWatch } from 'react-hook-form';
 import { type ChangeEvent } from 'react';
 import { FileText, Plus, X } from 'lucide-react';
 import SubmitButton from '../../../shared/common/SubmitButton';
 import type { FloorPlans } from '../proposalInterface';
-import { floorPlanValidation } from '../../../validations/floorplanValidation';
+import { floorPlanValidation } from '../../../validations/floorPlanValidation';
+
 
 type Props = {
     isOpen: boolean;
@@ -14,17 +15,17 @@ type Props = {
 };
 
 export default function UploadFloorPlan({ isOpen, onClose, onConfirm, isLoading }: Props) {
-    if (!isOpen) return null;
 
-    const { handleSubmit, control, watch, formState: { errors } } = useForm<FloorPlans>({
+    const { handleSubmit, control, formState: { errors } } = useForm<FloorPlans>({
         resolver: joiResolver(floorPlanValidation),
         mode: 'onBlur',
         defaultValues: { floorPlans: [] }
     });
 
     const { fields, append, remove } = useFieldArray({ control, name: "floorPlans" });
-    const watchedFloorPlans = watch("floorPlans");
+    const watchedFloorPlans = useWatch({ control, name: "floorPlans" });
 
+    if (!isOpen) return null;
     const handlePdfUpload = (e: ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = Array.from(e.target.files || []);
         const remainingSlots = 10 - fields.length;

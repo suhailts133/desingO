@@ -33,7 +33,7 @@ export default function AestheticsAndItemsSection() {
           isMulti={true}
           control={control}
           options={STYLE_OPTIONS}
-          error={errors.designStyles?.message as any}
+          error={errors.designStyles?.message}
         />
 
         <ReactSelectField

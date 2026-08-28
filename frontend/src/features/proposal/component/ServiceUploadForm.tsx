@@ -1,28 +1,24 @@
 import { joiResolver } from '@hookform/resolvers/joi';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, useWatch } from 'react-hook-form';
 import type { IServiceResult } from '../proposalInterface';
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import SubmitButton from '../../../shared/common/SubmitButton';
 import { serviceResultUploadValidatin } from '../../../validations/proposalValidation';
 import { ImageIcon, Plus, X } from 'lucide-react';
-import { useEffect, useState, type ChangeEvent } from 'react';
+import { useEffect, useMemo, type ChangeEvent } from 'react';
 
 type Props = {
     sourceId: string;
     serviceNumber: number;
     isOpen: boolean;
     onClose: () => void;
-    onConfirm: (data: IServiceResult) => void; 
+    onConfirm: (data: IServiceResult) => void;
     isLoading: boolean;
 };
 
 export default function ServiceUploadForm({ onClose, isOpen, onConfirm, isLoading }: Props) {
-    if (!isOpen) return null;
-
-    const [outputPreviews, setOutputPreviews] = useState<string[]>([]);
-
-    const {  handleSubmit, control, watch, formState: { errors } } = useForm<IServiceResult>({
+    const { handleSubmit, control, formState: { errors } } = useForm<IServiceResult>({
         resolver: joiResolver(serviceResultUploadValidatin),
         mode: 'onBlur',
         defaultValues: { serviceResult: [] }
@@ -30,20 +26,18 @@ export default function ServiceUploadForm({ onClose, isOpen, onConfirm, isLoadin
 
     const { fields, append, remove } = useFieldArray({ control, name: "serviceResult" });
 
-    const watchedResults = watch("serviceResult");
+    const watchedResults = useWatch({ control, name: "serviceResult" });
+
+    const outputPreviews = useMemo(() =>
+        (watchedResults ?? [])
+            .filter(item => item.file && item.file[0])
+            .map(item => URL.createObjectURL(item.file[0])),
+        [watchedResults]);
 
     useEffect(() => {
-        if (!watchedResults) return;
-
-        const previews = watchedResults
-            .filter(item => item.file && item.file[0])
-            .map(item => URL.createObjectURL(item.file[0]));
-
-        setOutputPreviews(previews);
-
-        return () => previews.forEach(url => URL.revokeObjectURL(url));
-    }, [watchedResults]);
-
+        return () => outputPreviews.forEach(url => URL.revokeObjectURL(url));
+    }, [outputPreviews]);
+    if (!isOpen) return null;
     const handleGalleryUpload = (e: ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = Array.from(e.target.files || []);
         selectedFiles.forEach(file => {
@@ -52,7 +46,7 @@ export default function ServiceUploadForm({ onClose, isOpen, onConfirm, isLoadin
         e.target.value = "";
     };
 
-    const onSubmit = (data: IServiceResult) => { 
+    const onSubmit = (data: IServiceResult) => {
         onConfirm(data);
     };
 
@@ -69,7 +63,7 @@ export default function ServiceUploadForm({ onClose, isOpen, onConfirm, isLoadin
                         {fields.length < 10 && (
                             <>
                                 <label
-                                    htmlFor="serviceOutput" 
+                                    htmlFor="serviceOutput"
                                     className="flex items-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer hover:border-primary transition-colors"
                                 >
                                     <div className="bg-gray-100 p-1.5 rounded-md">
@@ -86,7 +80,7 @@ export default function ServiceUploadForm({ onClose, isOpen, onConfirm, isLoadin
 
                                 <input
                                     type="file"
-                                    id="serviceOutput" 
+                                    id="serviceOutput"
                                     multiple
                                     hidden
                                     onChange={handleGalleryUpload}

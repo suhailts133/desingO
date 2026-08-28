@@ -52,7 +52,7 @@ export default function ProposalPage() {
     const sourceId = location.state?.sourceId as string | undefined
     const activeJobId = location.state?.activeJobId as string | undefined
 
-    const { data, isLoading, error, refetch } = useGetProposalQuery(id!, { skip: !id })
+    const { data, isLoading, error, refetch } = useGetProposalQuery(id ?? "", { skip: !id })
 
     const proposal = data?.data
 
@@ -62,8 +62,8 @@ export default function ProposalPage() {
         data: disputeData,
         isLoading: isDisputeLoading,
         error: disputeError
-        
-} = useGetDisputeQuery(proposal?.id ?? "", { skip: !proposal || contractStatus !== "Disputed" })
+
+    } = useGetDisputeQuery(proposal?.id ?? "", { skip: !proposal || contractStatus !== "Disputed" })
     const disputedData = disputeData?.data
     const handleResponse = useHandleResponse()
     const { ispaymentDataLoading, clientSecret, paymentIntentError, handlePaymentIntent, reset } = useCreateIntent()
@@ -171,7 +171,7 @@ export default function ProposalPage() {
                 formData.append("floorPlans", file)
             }
         })
-        // console.log([...formData.entries()])
+
         const result = await handleFloorPlanSubmission(formData)
         handleResponse(result.success, "Floor Plan Uploaded", result.message)
         setUploadFloorPlan(null)
@@ -179,27 +179,33 @@ export default function ProposalPage() {
 
     const handleRaiseIssue = async (data: DisputeFormDTO) => {
         if (!dispute) return
-        const formData = new FormData();
+
         const service = proposal?.services.find((e) =>
             ["Open", "In Progress", "Uploaded", "Redo"].includes(e.status)
         );
+
+        if (!service || !proposal?.sourceId) {
+            handleResponse(false, "", "Unable to submit — missing service or proposal information")
+            return
+        }
+
+        const formData = new FormData();
         formData.append("reason", data.reason)
         formData.append("type", data.type.label)
-        formData.append("order", `${service?.order!}`)
-        formData.append("sourceId", proposal?.sourceId!)
+        formData.append("order", `${service.order}`)
+        formData.append("sourceId", proposal.sourceId)
         data.evidence.forEach(item => {
             const file = item.file?.[0]
             if (file) {
                 formData.append("evidence", file)
             }
         })
-        console.log([...formData.entries()])
+
         const result = await handleReportIssue(formData)
         handleResponse(result.success, "The issue has been noted", result.message)
-
         setDispute(null)
     }
-
+    
     const handlePay = async (serviceName: string, amount: number, payemnetSourceId: string) => {
         setPayingService({ serviceName, amount })
         const success = await handlePaymentIntent(payemnetSourceId)

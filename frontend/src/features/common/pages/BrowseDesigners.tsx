@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useGetAllDesignersQuery } from "../commonEndpoints";
 import DesignerCard from "../components/cards/DesignerCard";
 import type { DesingerFilterForm } from "../commonInterface";
@@ -9,13 +9,13 @@ import DesignerFilter from "../components/filters/DesignerFilter";
 export default function BrowseDesigners() {
     const [page, setPage] = useState(1);
     const [debouncedName, setDebouncedName] = useState("");
-    const { watch, reset, register } = useForm<DesingerFilterForm>({
+    const { control, reset, register } = useForm<DesingerFilterForm>({
         defaultValues: {
             full_name: ""
         },
     });
 
-    const full_name = watch("full_name");
+    const full_name = useWatch({ control, name: "full_name" })
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedName(full_name);

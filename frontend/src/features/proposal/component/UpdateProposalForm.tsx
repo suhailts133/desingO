@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from "react"
-import { useForm, useFieldArray, Controller } from "react-hook-form"
+import { useState, useEffect } from "react"
+import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form"
 import { joiResolver } from "@hookform/resolvers/joi"
 import { useParams, useNavigate } from "react-router-dom"
 import { Plus, Trash2, GripVertical, ChevronDown, ChevronLeft, Info } from "lucide-react"
@@ -16,13 +16,13 @@ export default function UpdateProposalForm() {
     const navigate = useNavigate()
     const [dropdownOpen, setDropdownOpen] = useState(false)
 
-    // 1. Fetch current proposal details
+
     const { data: proposalData, isLoading: isProposalLoading, error: proposalError } = useGetProposalQuery(id!, { skip: !id })
     const proposal: ProposalDetailDTO | undefined = proposalData?.data
 
-    // 2. Fetch original job prefill data to get all catalog services
+
     const { data: prefillData, isLoading: isPrefillLoading } = useGetProposalPrefillDataQuery(
-        { jobId: proposal?.sourceId! },
+        { jobId: proposal?.sourceId ?? "" },
         { skip: !proposal?.sourceId }
     )
     const prefill = prefillData?.data
@@ -30,17 +30,11 @@ export default function UpdateProposalForm() {
     const { handleUpdateProposal, isProposalUpdating } = useUpdateProposal()
     const handleResponse = useHandleResponse()
 
-    // Convert area to sqft
-    const effectiveSqFt = useMemo(() => {
-        if (!proposal?.totalArea) return 0
-        return convertToSqFt(proposal.totalArea, proposal.unit)
-    }, [proposal?.totalArea, proposal?.unit])
-
+    const effectiveSqFt = !proposal?.totalArea ? 0 : convertToSqFt(proposal.totalArea, proposal.unit)
     const {
         register,
         control,
         handleSubmit,
-        watch,
         reset,
         formState: { errors },
     } = useForm<UpdateProposalDTO>({
@@ -60,7 +54,6 @@ export default function UpdateProposalForm() {
         name: "services",
     })
 
-    // Reset form values with fetched proposal data
     useEffect(() => {
         if (proposal) {
             reset({
@@ -87,11 +80,11 @@ export default function UpdateProposalForm() {
         }
     }, [proposal, reset])
 
-    const siteVisitingNeeded = watch("siteVisitingNeeded")
-    const watchedServices = watch("services") || []
-    const drawingFeePerSqFt = watch("drawingFeePerSqFt") || 0
+    const siteVisitingNeeded = useWatch({ control, name: "siteVisitingNeeded" })
+    const watchedServices = useWatch({ control, name: "services" }) || []
+    const drawingFeePerSqFt = useWatch({ control, name: "drawingFeePerSqFt" }) || 0
 
-    // Compute added services and available remaining services from job prefill
+
     const addedServiceNames = fields.map((f) => f.serviceName)
     const availableServices = (prefill?.services ?? []).filter((s) => !addedServiceNames.includes(s))
 
@@ -110,7 +103,6 @@ export default function UpdateProposalForm() {
         remove(index)
     }
 
-    // Calculations based on converted SqFt
     const totalDrawingFee = drawingFeePerSqFt * effectiveSqFt
     const totalServicePrice = watchedServices.reduce((acc, s) => acc + (Number(s.price) || 0), 0)
     const totalExecutionPrice = watchedServices.reduce((acc, s) => acc + (Number(s.executionPrice) || 0), 0)
@@ -127,7 +119,6 @@ export default function UpdateProposalForm() {
             price: Number(service.price) || 0,
             executionPrice: Number(service.executionPrice) || 0,
         }))
-        console.log(formData)
         const result = await handleUpdateProposal(formData)
         handleResponse(result.success, "Proposal updated successfully", result.message, -1)
     }

@@ -2,7 +2,7 @@ import { Eye, Search } from "lucide-react";
 import { useGetAllDesignerRequestsQuery } from "../adminDesignerVerificationEndpoints"
 import type { AdminDesignersResponseDTO } from "../adminDesignerVerificationInterfaces";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import type { AdminDesignerVerificationFilter } from "../../users/adminUserInterface";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { adminDesignerVerificationFilter } from "../../../../validations/adminValidations";
@@ -13,11 +13,13 @@ export default function DesignerVerificationTable() {
     const [page, setPage] = useState(1);
     const [debouncedName, setDebouncedName] = useState("");
 
-    const { register, watch, formState: { errors } } = useForm<AdminDesignerVerificationFilter>({
+    const { register, control, formState: { errors } } = useForm<AdminDesignerVerificationFilter>({
         resolver: joiResolver(adminDesignerVerificationFilter),
         defaultValues: { name: "", status: "All" }
     })
-    const { name, status } = watch()
+    const name = useWatch({ control, name: "name" })
+    const status = useWatch({ control, name: "status" })
+
     const { data, isLoading, error } = useGetAllDesignerRequestsQuery({ debouncedName, status, page });
     const navigate = useNavigate()
     useEffect(() => {

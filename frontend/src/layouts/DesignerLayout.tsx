@@ -17,7 +17,7 @@ export default function DesignerLayout() {
     if (!name && !email) {
       dispatch(logOut());
     }
-  }, [name, email]);
+  }, [name, email, dispatch]);
 
 
   if (!isAuthenticated || !accessToken) {
@@ -30,8 +30,8 @@ export default function DesignerLayout() {
 
   return (
     <div className="fixed inset-0 flex overflow-hidden">
-     
-       <DesignerSidebar name={name} email={email}/>
+
+      <DesignerSidebar name={name} email={email} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <main className="flex-1 overflow-y-auto p-8 flex justify-center  bg-off-white ">

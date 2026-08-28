@@ -1,7 +1,7 @@
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 import { Compass } from "lucide-react";
 import { InputField } from "../../../../shared/form/InputField";
-import type { IJobRequest } from "../jobInterface";
+import type { ConstructionStage, IJobRequest, RenovationLevel } from "../jobInterface";
 
 const RENOVATION_LEVELS = [
     { id: "DECOR_ONLY", title: "Cosmetic Refresh", desc: "Paint, styling, loose furniture" },
@@ -16,10 +16,10 @@ const NEW_BUILD_STAGES = [
 ] as const;
 
 export default function SpaceStatusSection() {
-    const { register, watch, setValue, formState: { errors } } = useFormContext<IJobRequest>();
-    const projectType = watch("projectType");
-    const renovationLevel = watch("renovationDetails.level");
-    const newbuildStage = watch("newbuildDetails.stage");
+    const { register, control, setValue, formState: { errors } } = useFormContext<IJobRequest>();
+    const projectType = useWatch({ control, name: "projectType" });
+    const renovationLevel = useWatch({ control, name: "renovationDetails.level" });
+    const newbuildStage = useWatch({ control, name: "newbuildDetails.stage" });
 
     return (
         <div className="space-y-4">
@@ -36,10 +36,10 @@ export default function SpaceStatusSection() {
                                 <button
                                     type="button"
                                     key={lvl.id}
-                                    onClick={() => setValue("renovationDetails.level", lvl.id as any)}
+                                    onClick={() => setValue("renovationDetails.level", lvl.id as RenovationLevel)}
                                     className={`p-3 text-left rounded-lg border text-xs ${renovationLevel === lvl.id
-                                            ? "bg-blush-pale border-blush-deep text-soft-black font-semibold"
-                                            : "bg-white border-gray-200 text-gray-600"
+                                        ? "bg-blush-pale border-blush-deep text-soft-black font-semibold"
+                                        : "bg-white border-gray-200 text-gray-600"
                                         }`}
                                 >
                                     <div className="font-semibold text-sm">{lvl.title}</div>
@@ -80,10 +80,10 @@ export default function SpaceStatusSection() {
                                 <button
                                     type="button"
                                     key={stg.id}
-                                    onClick={() => setValue("newbuildDetails.stage", stg.id as any)}
+                                    onClick={() => setValue("newbuildDetails.stage", stg.id as ConstructionStage)}
                                     className={`p-3 text-left rounded-lg border text-xs ${newbuildStage === stg.id
-                                            ? "bg-blush-pale border-blush-deep text-soft-black font-semibold"
-                                            : "bg-white border-gray-200 text-gray-600"
+                                        ? "bg-blush-pale border-blush-deep text-soft-black font-semibold"
+                                        : "bg-white border-gray-200 text-gray-600"
                                         }`}
                                 >
                                     <div className="font-semibold text-sm">{stg.title}</div>

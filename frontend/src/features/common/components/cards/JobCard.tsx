@@ -1,4 +1,4 @@
-import { MapPin, BedDouble, IndianRupee, ArrowUpRight, User, Wallet } from "lucide-react"
+import { MapPin, BedDouble, IndianRupee, ArrowUpRight, User } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import type { JobsCommonResponseDTO } from "../../../user/jobs/jobInterface"
 

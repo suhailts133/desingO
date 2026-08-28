@@ -1,5 +1,5 @@
 import { joiResolver } from '@hookform/resolvers/joi';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import type { ReviewPayloadFields } from '../proposalInterface';
 import { reviewValidation } from '../../../validations/reviewValdiation';
 import SubmitButton from '../../../shared/common/SubmitButton';
@@ -22,16 +22,16 @@ const starLabels: Record<number, string> = {
 };
 
 export default function WriteReviewModal({ onClose, isOpen, onConfirm, isLoading }: Props) {
-    if (!isOpen) return null;
-
-    const { register, handleSubmit, control, watch, formState: { errors }, } = useForm<ReviewPayloadFields>({
+    
+    const { register, handleSubmit, control, formState: { errors }, } = useForm<ReviewPayloadFields>({
         resolver: joiResolver(reviewValidation),
         mode: 'onBlur',
         defaultValues: { rating: 0, comment: '' },
     });
-
-    const selectedRating = watch('rating');
-
+    
+    const selectedRating = useWatch({control,name:'rating'});
+    if (!isOpen) return null;
+    
     const onSubmit = (data: ReviewPayloadFields) => {
         onConfirm(data);
     };

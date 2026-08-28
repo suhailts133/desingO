@@ -6,19 +6,20 @@ import { rejectionReasonValidaiton } from '../../../../validations/jobApplicatio
 type props = {
     isOpen: boolean
     onClose: () => void
-    onConfirm: (data:RejectionPayload) => void,
-    isLoading?:boolean
+    onConfirm: (data: RejectionPayload) => void,
+    isLoading?: boolean
 }
 
-export default function RejectJobApplicationModal({ onClose, isOpen,onConfirm ,isLoading}: props) {
-    if (!isOpen) {
-        return null
-    }
+export default function RejectJobApplicationModal({ onClose, isOpen, onConfirm, isLoading }: props) {
+
     const { register, handleSubmit, formState: { errors } } = useForm<RejectionPayload>({
         resolver: joiResolver(rejectionReasonValidaiton),
         mode: "onBlur"
     });
-
+    
+    if (!isOpen) {
+        return null
+    }
     const onRejectSubmit = async (data: RejectionPayload) => {
         onConfirm(data)
 
@@ -43,7 +44,7 @@ export default function RejectJobApplicationModal({ onClose, isOpen,onConfirm ,i
                     <div className="flex flex-col gap-3 pt-4">
                         {!isLoading ? (<button
                             type="submit"
-                        
+
                             className="auth-button">
                             Confirm & Reject
                         </button>) : (

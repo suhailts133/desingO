@@ -1,5 +1,5 @@
-import { useState, useEffect, type ChangeEvent } from "react";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useEffect, type ChangeEvent, useMemo } from "react";
+import { useForm, Controller, useFieldArray, useWatch } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
@@ -16,28 +16,30 @@ const animatedComponents = makeAnimated();
 
 export default function DesignForm() {
 
-    const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
-    const { register, control, handleSubmit, watch, formState: { errors } } = useForm<IDesign>({
+    const { register, control, handleSubmit, formState: { errors } } = useForm<IDesign>({
         resolver: joiResolver(designValidation),
         defaultValues: { gallery: [] }
     });
 
     const { fields, append, remove } = useFieldArray({ control, name: "gallery" });
-    const { handleSubmission, designError, designSuccess, isLoading } = useAddDesign()
-    const watchGallery = watch("gallery");
-    const watchedCover = watch("coverImage");
-    useEffect(() => {
-        if (!watchGallery) return;
+    const { handleSubmission, designError, designSuccess, isLoading } = useAddDesign();
+    const watchGallery = useWatch({ control, name: "gallery" });
+    const watchedCover = useWatch({ control, name: "coverImage" });
 
-        const previews = watchGallery
+
+    const galleryPreviews = useMemo(() => {
+        if (!watchGallery) return [];
+        return watchGallery
             .filter(item => item.file && item.file[0])
             .map(item => URL.createObjectURL(item.file[0]));
-
-        setGalleryPreviews(previews);
-
-        return () => previews.forEach(url => URL.revokeObjectURL(url));
     }, [watchGallery]);
 
+
+    useEffect(() => {
+        return () => {
+            galleryPreviews.forEach(url => URL.revokeObjectURL(url));
+        };
+    }, [galleryPreviews]);
 
 
     const getCoverName = () => {
@@ -345,7 +347,7 @@ export default function DesignForm() {
 
 
                     <SubmitButton isLoading={isLoading} label="Submit" loadingLabel="verifying" type="submit" />
-               
+
                 </form>
                 {designError && <p className="text-sm text-error text-center">{designError}</p>}
                 {designSuccess && <p className="text-sm text-success text-center">{designSuccess}</p>}

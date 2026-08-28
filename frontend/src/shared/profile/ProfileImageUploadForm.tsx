@@ -1,5 +1,5 @@
 import { joiResolver } from "@hookform/resolvers/joi";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useState, useCallback, useEffect } from "react";
 import { ImageIcon } from "lucide-react";
 import type { IProfileImage } from "../../features/designer/profile/designerProfileInterface";
@@ -17,17 +17,16 @@ type Props = {
 };
 
 export default function ProfileImageUploadForm({ onClose, isOpen, updateImage, errorMessage, successMessage, isLoading }: Props) {
-    if (!isOpen) return null;
 
     const [croppedAreaPixels, setCroppedAreaPixels] =
         useState<CroppedAreaPixels | null>(null);
 
-    const { register, handleSubmit, watch, formState: { errors }, } = useForm<IProfileImage>({
+    const { register, handleSubmit, control, formState: { errors }, } = useForm<IProfileImage>({
         resolver: joiResolver(profileImageValidation),
         mode: "onBlur",
     });
 
-    const watchedProfileImage = watch("profileImage");
+    const watchedProfileImage = useWatch({ control, name: "profileImage" });
     const previewSrc =
         watchedProfileImage?.[0]
             ? URL.createObjectURL(watchedProfileImage[0])
@@ -46,6 +45,7 @@ export default function ProfileImageUploadForm({ onClose, isOpen, updateImage, e
         }
     }, [successMessage, onClose]);
 
+    if (!isOpen) return null;
     const onSubmit = async () => {
         if (!previewSrc || !croppedAreaPixels) return;
         try {

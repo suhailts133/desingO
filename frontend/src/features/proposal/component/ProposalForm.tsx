@@ -1,5 +1,5 @@
-import { useState, useMemo, useEffect } from "react"
-import { useForm, useFieldArray, Controller } from "react-hook-form"
+import { useState, useEffect } from "react"
+import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form"
 import { joiResolver } from "@hookform/resolvers/joi"
 import { useLocation, useNavigate } from "react-router-dom"
 import { Plus, Trash2, GripVertical, ChevronDown, ChevronLeft, Info } from "lucide-react"
@@ -11,7 +11,6 @@ import type { CreateProposalDTO } from "../proposalInterface"
 import { useHandleResponse } from "../../../helpers/useHandleResponse"
 import { convertToSqFt } from "../../../helpers/sqFtConverter"
 
-// 1. Interfaces & Types
 export interface ProposalInputData {
     jobId: string
     minPrice: number
@@ -23,10 +22,7 @@ export interface ProposalInputData {
     siteVisitingRequired?: boolean
 }
 
-// 2. Unit Conversion Utility
 
-
-// 3. Main Component
 export default function ProposalForm() {
     const location = useLocation()
     const navigate = useNavigate()
@@ -40,13 +36,9 @@ export default function ProposalForm() {
     const { isProposalCreating, handleSubmission } = useCreateProposal()
 
     const prefill = data?.data
-    console.log(prefill, "lol")
-    const effectiveSqFt = useMemo(() => {
-        if (!prefill?.totalArea) return 0
-        return convertToSqFt(prefill.totalArea, prefill.unit)
-    }, [prefill?.totalArea, prefill?.unit])
+    const effectiveSqFt = prefill?.totalArea ? convertToSqFt(prefill.totalArea, prefill.unit) : 0
 
-    const {reset, register, control, handleSubmit, watch, formState: { errors }, } = useForm<CreateProposalDTO>({
+    const { reset, register, control, handleSubmit, formState: { errors }, } = useForm<CreateProposalDTO>({
         resolver: joiResolver(proposalValidation),
         defaultValues: {
             sourceId: sourceId || "",
@@ -58,21 +50,21 @@ export default function ProposalForm() {
     })
 
     useEffect(() => {
-        if(!prefill) return
+        if (!prefill) return
         reset({
-            sourceId:sourceId || "",
-            drawingFeePerSqFt:0,
-            siteVisitingNeeded:prefill.siteVisitingRequired,
-            expectedSiteVisitingDate:undefined,
-            services:[]
+            sourceId: sourceId || "",
+            drawingFeePerSqFt: 0,
+            siteVisitingNeeded: prefill.siteVisitingRequired,
+            expectedSiteVisitingDate: undefined,
+            services: []
         })
-    }, [prefill, reset])
+    }, [prefill, reset, sourceId])
 
     const handleResponse = useHandleResponse()
 
-    const siteVisitingNeeded = watch("siteVisitingNeeded")
-    const watchedServices = watch("services") || []
-    const drawingFeePerSqFt = watch("drawingFeePerSqFt") || 0
+    const siteVisitingNeeded = useWatch({ control, name: "siteVisitingNeeded" })
+    const watchedServices = useWatch({ control, name: "services" }) || []
+    const drawingFeePerSqFt = useWatch({ control, name: "drawingFeePerSqFt" }) || 0
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -102,11 +94,11 @@ export default function ProposalForm() {
         handleResponse(result.success, "Proposal Created", result.message, -2)
     }
 
-    // Calculations based on converted SqFt
+
     const totalDrawingFee = drawingFeePerSqFt * effectiveSqFt
     const totalServicePrice = watchedServices.reduce((acc, s) => acc + (Number(s.price) || 0), 0)
     const totalExecutionPrice = watchedServices.reduce((acc, s) => acc + (Number(s.executionPrice) || 0), 0)
-    const totalContractValue =  totalServicePrice + totalExecutionPrice
+    const totalContractValue = totalServicePrice + totalExecutionPrice
 
     if (!sourceId) {
         return (

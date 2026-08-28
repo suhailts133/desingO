@@ -1,18 +1,31 @@
-import { Controller, type Control } from "react-hook-form";
 import Select from "react-select";
 import { SlidersHorizontal, X } from "lucide-react";
 import { PROPERTY_OPTIONS, STYLE_OPTIONS, SPACE_OPTIONS } from "../../../designer/designs/designData";
-import { SORT_OPTIONS } from "../../baseData";
-import type { DesignFilterForm } from "../../../designer/designs/designInterface";
+import { SORT_OPTIONS, type OptionType } from "../../baseData";
+import type { SingleValue, MultiValue } from "react-select";
 
 interface Props {
-    control: Control<DesignFilterForm>;
+    designStyles: OptionType[] | null;
+    propertyTypes: OptionType[] | null;
+    spaceTypes: OptionType[] | null;
+    sortBy: OptionType;
+    onFilterChange: (key: string, value: string | string[] | null) => void;
     onClear: () => void;
     filtersVisible: boolean;
     setFiltersVisible: (visible: boolean) => void;
 }
 
-export default function DesignFilters({ control, onClear, filtersVisible, setFiltersVisible }: Props) {
+export default function DesignFilters({ designStyles, propertyTypes, spaceTypes, sortBy, onFilterChange, onClear, filtersVisible, setFiltersVisible }: Props) {
+    const handleMultiSelectChange = (key: "designStyles" | "propertyTypes" | "spaceTypes", selected: MultiValue<OptionType>) => {
+        const labels = selected.map((opt) => opt.label);
+
+        onFilterChange(key, labels.length ? labels : null);
+    };
+
+    const handleSortChange = (selected: SingleValue<OptionType>) => {
+        onFilterChange("sortBy", selected?.value ?? SORT_OPTIONS[0].value);
+    };
+
     return (
         <div className="bg-white border-b border-gray-100 px-6 py-5">
             <div className="max-w-7xl mx-auto">
@@ -32,46 +45,53 @@ export default function DesignFilters({ control, onClear, filtersVisible, setFil
 
                     <div className={`flex flex-wrap items-center gap-3 ${filtersVisible ? "opacity-100" : "hidden"}`}>
                         <div className="min-w-50">
-                            <Controller
-                                name="designStyles"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select {...field} isMulti options={STYLE_OPTIONS} placeholder="Design Style" isClearable />
-                                )}
+                            <Select
+                                value={designStyles}
+                                onChange={(val) => handleMultiSelectChange("designStyles", val)}
+                                isMulti
+                                options={STYLE_OPTIONS}
+                                placeholder="Design Style"
+                                isClearable
                             />
                         </div>
+
                         <div className="min-w-50">
-                            <Controller
-                                name="propertyTypes"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select {...field} isMulti options={PROPERTY_OPTIONS} placeholder="Property Type" isClearable />
-                                )}
+                            <Select
+                                value={propertyTypes}
+                                onChange={(val) => handleMultiSelectChange("propertyTypes", val)}
+                                isMulti
+                                options={PROPERTY_OPTIONS}
+                                placeholder="Property Type"
+                                isClearable
                             />
                         </div>
+
                         <div className="min-w-50">
-                            <Controller
-                                name="spaceTypes"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select {...field} isMulti options={SPACE_OPTIONS} placeholder="Space Type" isClearable />
-                                )}
+                            <Select
+                                value={spaceTypes}
+                                onChange={(val) => handleMultiSelectChange("spaceTypes", val)}
+                                isMulti
+                                options={SPACE_OPTIONS}
+                                placeholder="Space Type"
+                                isClearable
                             />
                         </div>
                     </div>
 
                     <div className="ml-auto flex items-center gap-4">
-                        <button onClick={onClear} className="text-sm text-gray-400 hover:text-red-500 flex items-center gap-1">
+                        <button
+                            onClick={onClear}
+                            className="text-sm text-gray-400 hover:text-red-500 flex items-center gap-1 cursor-pointer"
+                        >
                             <X className="w-4 h-4" /> Clear
                         </button>
 
                         <div className="min-w-45">
-                            <Controller
-                                name="sortBy"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select {...field} options={SORT_OPTIONS} isSearchable={false} />
-                                )}
+                            <Select
+                                value={sortBy}
+                                onChange={handleSortChange}
+                                options={SORT_OPTIONS}
+                                isSearchable={false}
                             />
                         </div>
                     </div>

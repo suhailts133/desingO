@@ -3,15 +3,15 @@ import { useAuthenticate } from "../helpers/authentication";
 import { useEffect } from "react";
 
 export default function AdminAuthLayout() {
-  const {authenticateAccessToken,getNewAccessToken} = useAuthenticate()
+  const { isAccessTokenValid, getNewAccessToken } = useAuthenticate()
   useEffect(() => {
-    if(!authenticateAccessToken()){
+    if (!isAccessTokenValid()) {
       getNewAccessToken()
     }
-  },[])
+  }, [isAccessTokenValid, getNewAccessToken])
 
 
-  if (authenticateAccessToken()) {
+  if (isAccessTokenValid()) {
     return <Navigate to="/admin/dashboard" />
   } else {
     return (

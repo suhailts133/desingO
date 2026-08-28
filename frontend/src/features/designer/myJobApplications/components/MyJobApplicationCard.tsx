@@ -15,7 +15,7 @@ const statusStyles: Record<JobApplicationStatus, string> = {
 }
 
 export default function MyJobApplicationCard({ application, onDelete }: Props) {
-    const { status, rejectionReason, jobId, jobTitle, propertyType, timeLine, numberOfRooms, id, description, createdOn } = application
+    const { status, rejectionReason, jobId, jobTitle, propertyType, timeLine, numberOfRooms, description, createdOn } = application
     const navigate = useNavigate();
     const getjobDetail = (id: string) => {
         navigate(`/jobs/${id}`)
@@ -75,7 +75,7 @@ export default function MyJobApplicationCard({ application, onDelete }: Props) {
                                 title="View"
                             >
                                 <ArrowUpRight size={16} className="text-soft-black/30 group-hover:text-blush-deep transition-colors duration-200" />
-                      
+
                             </button>
 
                         </div>

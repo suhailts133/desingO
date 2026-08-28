@@ -1,45 +1,52 @@
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { SORT_OPTIONS } from "../baseData";
-import type { JOBFilterForm } from "../../user/jobs/jobInterface";
 import { useGetAllJobsCommonQuery } from "../../user/jobs/jobEndpoints";
 import JobCard from "../components/cards/JobCard";
 import Pagination from "../../../shared/common/Pagination";
 import JobFilter from "../components/filters/JobFilter";
+import { useSearchParams } from "react-router-dom";
+import { createFilterChangeHandler } from "../../../helpers/handleFilterChagne";
 
 
 export default function BrowseJobs() {
     const [filtersVisible, setFiltersVisible] = useState(true);
-    const [page, setPage] = useState(1);
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    const { control, watch, reset } = useForm<JOBFilterForm>({
-        defaultValues: {
-            designStyles: null,
-            propertyTypes: null,
-            timeLines: null,
-            sortBy: SORT_OPTIONS[0],
-        },
-    });
+    const page = Number(searchParams.get("page") ?? "1");
+    const sortByValue = searchParams.get("sortBy") ?? SORT_OPTIONS[0].value;
+    const designStylesParam = searchParams.get("designStyles");
+    const propertyTypesParam = searchParams.get("propertyTypes");
+    const timeLinesParam = searchParams.get("timeLines");
 
-    const watchedFilters = watch();
+
+    const designStyles = designStylesParam ? designStylesParam.split(",").map((v) => ({ label: v, value: v })) : null;
+    const propertyTypes = propertyTypesParam ? propertyTypesParam.split(",").map((v) => ({ label: v, value: v })) : null;
+    const timeLines = timeLinesParam ? timeLinesParam.split(",").map((v) => ({ label: v, value: v })) : null;
+    const selectedSort = SORT_OPTIONS.find((s) => s.value === sortByValue) ?? SORT_OPTIONS[0];
 
 
     const { data, isLoading, error } = useGetAllJobsCommonQuery({
-        ...watchedFilters,
-        page
+        page,
+        designStyles,
+        propertyTypes,
+        timeLines,
+        sortBy: selectedSort,
     });
 
-    useEffect(() => {
-        setPage(1);
-    }, [watchedFilters.designStyles, watchedFilters.propertyTypes, watchedFilters.timeLines, watchedFilters.sortBy]);
 
     const jobs = data?.data
 
-    console.log(jobs)
+    const onFilterChange = createFilterChangeHandler(setSearchParams);
+    const handlePageChange = (newPage: number) => {
+        setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            next.set("page", String(newPage));
+            return next;
+        });
+    };
 
     const handleClearAll = () => {
-        reset({ designStyles: null, propertyTypes: null, timeLines: null, sortBy: SORT_OPTIONS[0] });
-        setPage(1);
+        setSearchParams({ page: "1" });
     };
 
     if (isLoading) {
@@ -57,7 +64,11 @@ export default function BrowseJobs() {
         <div className="min-h-screen bg-gray-50/60 font-Jost">
 
             <JobFilter
-                control={control}
+                designStyles={designStyles}
+                propertyTypes={propertyTypes}
+                timeLines={timeLines}
+                sortBy={selectedSort}
+                onFilterChange={onFilterChange}
                 onClear={handleClearAll}
                 filtersVisible={filtersVisible}
                 setFiltersVisible={setFiltersVisible}
@@ -79,8 +90,8 @@ export default function BrowseJobs() {
                 totalItem={totalJobs}
                 whichItem="jobs"
                 totalPages={totalPages}
-                onDecrease={() => setPage(p => p - 1)}
-                onIncrease={() => setPage(p => p + 1)}
+                onDecrease={() => handlePageChange(Math.max(1, page - 1))}
+                onIncrease={() => handlePageChange(Math.min(totalPages, page + 1))}
             />
         </div>
     );

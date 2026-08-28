@@ -3,15 +3,15 @@ import { useAuthenticate } from "../helpers/authentication";
 import { useEffect } from "react";
 
 export default function AuthLayout() {
-  const {authenticateAccessToken,getNewAccessToken} = useAuthenticate()
+  const {isAccessTokenValid,getNewAccessToken} = useAuthenticate()
   useEffect(() => {
-    if(!authenticateAccessToken()){
+    if(!isAccessTokenValid()){
       getNewAccessToken()
     }
-  },[])
+  },[isAccessTokenValid,getNewAccessToken])
 
 
-  if (authenticateAccessToken()) {
+  if (isAccessTokenValid()) {
     return <Navigate to="/" />
   } else {
     return (

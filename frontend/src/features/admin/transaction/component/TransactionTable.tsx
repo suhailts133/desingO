@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import type { AllTransactionDTO, TransactionFilter } from "../transactionInterface";
 import Pagination from "../../../../shared/common/Pagination";
 import { useGetAllTransactionQuery } from "../transactionEndpoint";
+import { useSearchParams } from "react-router-dom";
 
 const transactionTypeStyle: Record<Exclude<AllTransactionDTO["type"], "All">, string> = {
     "Payment": "bg-blue-50 text-blue-700 border-blue-200",
@@ -12,17 +11,11 @@ const transactionTypeStyle: Record<Exclude<AllTransactionDTO["type"], "All">, st
 }
 
 export default function TransactionTable() {
-    const [page, setPage] = useState(1);
+    const [searchParms, setSearchParmas] = useSearchParams();
 
-    const { register, watch } = useForm<Pick<TransactionFilter, "type">>({
-        defaultValues: { type: "All" },
-    });
+    const page = searchParms.get("page") ?? "1"
+    const type = (searchParms.get("type") as TransactionFilter["type"]) ?? "All"
 
-    const { type } = watch();
-
-    useEffect(() => {
-        setPage(1);
-    }, [type]);
 
     const { data, isLoading, error } = useGetAllTransactionQuery({
         page: String(page),
@@ -32,6 +25,23 @@ export default function TransactionTable() {
     const transactions = data?.data;
     const totalTransactions = data?.total ?? 0;
     const totalPages = data?.totalPages ?? 1;
+
+    const handleFilterChange = (key: "type", value: string) => {
+        setSearchParmas((prev) => {
+            const next = new URLSearchParams(prev)
+            next.set(key, value)
+            next.set("page", "1")
+            return next
+        })
+    }
+
+    const handlePageChange = (newPage: number) => {
+        setSearchParmas((prev) => {
+            const next = new URLSearchParams(prev)
+            next.set("page", String(newPage))
+            return next
+        })
+    }
 
     if (isLoading) return <p>Loading...</p>;
     if (error || !transactions) return <p>Error loading transactions</p>;
@@ -46,7 +56,7 @@ export default function TransactionTable() {
             <form>
                 <div className="rounded-2xl flex items-center justify-center gap-3 mb-5 bg-white/50 p-5">
                     <div className="w-45">
-                        <select className="auth-input" {...register("type")}>
+                        <select className="auth-input" value={type} onChange={e => handleFilterChange("type", e.target.value)}>
                             <option value="All">All types</option>
                             <option value="Payment">Payment</option>
                             <option value="Commission">Commission</option>
@@ -92,12 +102,12 @@ export default function TransactionTable() {
                 </table>
 
                 <Pagination
-                    page={page}
+                    page={Number(page)}
                     totalItem={totalTransactions}
                     whichItem="transactions"
                     totalPages={totalPages}
-                    onDecrease={() => setPage(p => p - 1)}
-                    onIncrease={() => setPage(p => p + 1)}
+                    onDecrease={() => handlePageChange(Math.max(1, Number(page) - 1))}
+                    onIncrease={() => handlePageChange(Math.min(totalPages, Number(page) + 1))}
                 />
             </div>
         </div>

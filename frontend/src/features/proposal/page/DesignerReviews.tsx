@@ -1,4 +1,4 @@
-import { Star, User } from "lucide-react"
+import { Star } from "lucide-react"
 import type { ReviewsLIST } from "../proposalInterface"
 import ReviewCard from "../component/ReviewCard"
 

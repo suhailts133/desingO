@@ -1,5 +1,5 @@
 import { joiResolver } from '@hookform/resolvers/joi';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { disputeSolutionValidation } from '../../../../validations/disputeValidation';
 import type { DisputeSolutionDTO } from '../adminDisputeInterface';
 import SubmitButton from '../../../../shared/common/SubmitButton';
@@ -10,7 +10,7 @@ type Props = {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: (data: DisputeSolutionDTO) => void;
-    isLoading:boolean
+    isLoading: boolean
 
 };
 
@@ -23,17 +23,17 @@ const RESOLUTION_TYPE_OPTIONS = [
 
 ];
 
-export default function DisputeVerdictModal({ disputeId, isOpen, onClose, onConfirm,isLoading }: Props) {
-    if (!isOpen) return null;
+export default function DisputeVerdictModal({ disputeId, isOpen, onClose, onConfirm, isLoading }: Props) {
 
-    const { register, handleSubmit, watch, formState: { errors } } = useForm<DisputeSolutionDTO>({
+    const { register, handleSubmit, control, formState: { errors } } = useForm<DisputeSolutionDTO>({
         resolver: joiResolver(disputeSolutionValidation),
         mode: "onBlur",
         defaultValues: { disputeId, resolutionType: "", resolution: "", refundAmount: 0 }
     });
 
-    const resolutionType = watch("resolutionType");
+    const resolutionType = useWatch({ control, name: "resolutionType" })
 
+    if (!isOpen) return null;
     const onVerdictSubmit = async (data: DisputeSolutionDTO) => {
         onConfirm({ ...data, disputeId });
     };
@@ -82,7 +82,7 @@ export default function DisputeVerdictModal({ disputeId, isOpen, onClose, onConf
 
                     <div className="flex flex-col gap-3 pt-4">
                         <SubmitButton type='submit' isLoading={isLoading} label='Confirm Verdict' loadingLabel='Submitting' />
-                    
+
                         <button type="button" onClick={onClose} className="text-gray-500 hover:text-gray-800 text-sm font-medium">Cancel</button>
                     </div>
                 </form>

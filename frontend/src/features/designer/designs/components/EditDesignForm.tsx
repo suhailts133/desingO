@@ -12,18 +12,11 @@ import { editDesignValidation } from "../../../../validations/designValidation";
 import { STYLE_OPTIONS, SERVICE_OPTIONS, PROPERTY_OPTIONS, SPACE_OPTIONS } from "../designData";
 import { useGetDesignDetailQuery } from "../designEndpoints";
 import { useEditDesign } from "../hooks/useEditDesign";
-import type { EditDesignFields, SelectOption } from "../designInterface";
+import type { CoverState, DesignDetailResponseDTO, EditDesignFields, GalleryItem, SelectOption } from "../designInterface";
 import toast from "react-hot-toast";
 
 const animatedComponents = makeAnimated();
 
-type ExistingGalleryItem = { type: "existing"; path: string; filename: string };
-type NewGalleryItem = { type: "new"; file: File; preview: string };
-type GalleryItem = ExistingGalleryItem | NewGalleryItem;
-
-type ExistingCover = { type: "existing"; path: string; filename: string };
-type NewCover = { type: "new"; file: File; preview: string };
-type CoverState = ExistingCover | NewCover;
 
 const labelToOption = (label: string, options: SelectOption[]): SelectOption =>
   options.find(opt => opt.label === label) ?? { value: label, label };
@@ -31,57 +24,10 @@ const labelToOption = (label: string, options: SelectOption[]): SelectOption =>
 const labelsToOptions = (labels: string[], options: SelectOption[]): SelectOption[] =>
   labels.map(label => labelToOption(label, options));
 
+
 export default function EditDesignForm() {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading: isFetching, error } = useGetDesignDetailQuery(id!, { skip: !id });
-  const { handleUpdation, updateError, isEditing } = useEditDesign();
-  const navigate = useNavigate();
-
-  const [cover, setCover] = useState<CoverState | null>(null);
-  const [gallery, setGallery] = useState<GalleryItem[]>([]);
-
-  const { register, control, handleSubmit, reset, formState: { errors } } = useForm<EditDesignFields>({
-    resolver: joiResolver(editDesignValidation),
-  });
-
-  const defaultData = data?.data;
-
-  useEffect(() => {
-    if (!defaultData) return;
-    reset({
-      name: defaultData.designName,
-      minPrice: defaultData.minPrice,
-      maxPrice: defaultData.maxPrice,
-      description: defaultData.description,
-      designStyles: labelsToOptions(defaultData.designStyles, STYLE_OPTIONS),
-      services: labelsToOptions(defaultData.services, SERVICE_OPTIONS),
-      spaceType: labelToOption(defaultData.spaceType, SPACE_OPTIONS),
-      propertyType: labelToOption(defaultData.propertyType, PROPERTY_OPTIONS),
-    });
-  }, [defaultData, reset]);
-
-  useEffect(() => {
-    if (!defaultData) return;
-    setCover({
-      type: "existing",
-      path: defaultData.coverImage.path,
-      filename: defaultData.coverImage.filename,
-    });
-    setGallery(
-      defaultData.gallery.map(img => ({
-        type: "existing" as const,
-        path: img.path,
-        filename: img.filename,
-      }))
-    );
-  }, [defaultData]);
-
-  useEffect(() => {
-    return () => {
-      gallery.forEach(item => { if (item.type === "new") URL.revokeObjectURL(item.preview); });
-      if (cover?.type === "new") URL.revokeObjectURL(cover.preview);
-    };
-  }, [gallery, cover]);
 
   if (isFetching) {
     return (
@@ -107,10 +53,56 @@ export default function EditDesignForm() {
     );
   }
 
+
+  return <EditDesignFormInner key={id} id={id!} defaultData={data.data as DesignDetailResponseDTO} />;
+}
+
+
+function EditDesignFormInner({ id, defaultData }: { id: string; defaultData: DesignDetailResponseDTO }) {
+  const { handleUpdation, updateError, isEditing } = useEditDesign();
+  const navigate = useNavigate();
+
+  const [cover, setCover] = useState<CoverState>({
+    type: "existing",
+    path: defaultData.coverImage.path,
+    filename: defaultData.coverImage.filename,
+  });
+
+  const [gallery, setGallery] = useState<GalleryItem[]>(
+    defaultData.gallery.map(img => ({
+      type: "existing" as const,
+      path: img.path,
+      filename: img.filename,
+    }))
+  );
+
+  const { register, control, handleSubmit, formState: { errors } } = useForm<EditDesignFields>({
+    resolver: joiResolver(editDesignValidation),
+    defaultValues: {
+      name: defaultData.designName,
+      minPrice: defaultData.minPrice,
+      maxPrice: defaultData.maxPrice,
+      description: defaultData.description,
+      designStyles: labelsToOptions(defaultData.designStyles, STYLE_OPTIONS),
+      services: labelsToOptions(defaultData.services, SERVICE_OPTIONS),
+      spaceType: labelToOption(defaultData.spaceType, SPACE_OPTIONS),
+      propertyType: labelToOption(defaultData.propertyType, PROPERTY_OPTIONS),
+    },
+  });
+
+  // This effect is legitimate: it's cleaning up an external resource
+  // (blob object URLs), not deriving/syncing state from props.
+  useEffect(() => {
+    return () => {
+      gallery.forEach(item => { if (item.type === "new") URL.revokeObjectURL(item.preview); });
+      if (cover.type === "new") URL.revokeObjectURL(cover.preview);
+    };
+  }, [gallery, cover]);
+
   const handleCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (cover?.type === "new") URL.revokeObjectURL(cover.preview);
+    if (cover.type === "new") URL.revokeObjectURL(cover.preview);
     setCover({ type: "new", file, preview: URL.createObjectURL(file) });
     e.target.value = "";
   };
@@ -138,8 +130,6 @@ export default function EditDesignForm() {
   };
 
   const onSubmit = async (fields: EditDesignFields) => {
-    if (!cover) return;
-
     const formData = new FormData();
     formData.append("name", fields.name);
     formData.append("spaceType", fields.spaceType.label);
@@ -163,13 +153,13 @@ export default function EditDesignForm() {
         formData.append("gallery", item.file);
       }
     });
-    
+
     keptImages.forEach((item, i) => {
       formData.append(`keptGallery[${i}][path]`, item.path);
       formData.append(`keptGallery[${i}][filename]`, item.filename);
     });
 
-    const result = await handleUpdation({ formdata: formData, id: id! });
+    const result = await handleUpdation({ formdata: formData, id });
     if (result) {
       toast.success("Design updated successfully!");
       navigate("/designer/designs");
@@ -178,19 +168,19 @@ export default function EditDesignForm() {
     }
   };
 
-  const coverSrc = cover?.type === "new" ? cover.preview : cover?.path;
-  const coverIsChanged = cover?.type === "new";
-  const coverFileName = cover?.type === "new" ? cover.file.name : cover?.filename || "No file selected";
+  const coverSrc = cover.type === "new" ? cover.preview : cover.path;
+  const coverIsChanged = cover.type === "new";
+  const coverFileName = cover.type === "new" ? cover.file.name : cover.filename || "No file selected";
 
   return (
     <div className="min-h-screen w-full flex justify-center items-start py-10 px-4">
       <div className="w-full max-w-2xl bg-white/50 backdrop-blur-2xl shadow-blush/30 rounded-xl shadow-2xl p-8">
-        
+
         <h2 className="text-4xl font-semibold text-center font-Dynalight-Regular mb-2 text-soft-black">designO</h2>
         <p className="text-center text-gray-400 font-Jost-Semibold mb-8 text-sm uppercase tracking-widest">Edit design</p>
 
         <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-          
+
           {/* Design Name */}
           <div>
             <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Design Name</label>

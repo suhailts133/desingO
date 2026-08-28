@@ -17,8 +17,7 @@ export default function AdminLayout() {
     if (!name && !email) {
       dispatch(logOut());
     }
-  }, [name, email]);
-
+  }, [name, email, dispatch]);
 
   if (!isAuthenticated || !accessToken) {
     return <Navigate to="/auth/admin-login" />;

@@ -1,6 +1,6 @@
 import { joiResolver } from '@hookform/resolvers/joi';
-import { useForm, useFieldArray, Controller } from 'react-hook-form';
-import { useEffect, useState, type ChangeEvent } from 'react';
+import { useForm, useFieldArray, Controller, useWatch } from 'react-hook-form';
+import { useEffect, useMemo, type ChangeEvent } from 'react';
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import Select from "react-select";
@@ -26,29 +26,28 @@ const DISPUTE_TYPE_OPTIONS = [
     { value: 'other', label: 'Other' },
 ];
 
-export default function DisputeForm({ isOpen, onClose, onConfirm ,isLoading}: Props) {
-    if (!isOpen) return null;
+export default function DisputeForm({ isOpen, onClose, onConfirm, isLoading }: Props) {
 
-    const [evidencePreviews, setEvidencePreviews] = useState<string[]>([]);
-
-    const { register, handleSubmit, control, watch, formState: { errors } } = useForm<DisputeFormDTO>({
+    const { register, handleSubmit, control, formState: { errors } } = useForm<DisputeFormDTO>({
         resolver: joiResolver(disputeRaiseBodyValidation),
         mode: 'onBlur',
         defaultValues: { evidence: [] }
     });
 
     const { fields, append, remove } = useFieldArray({ control, name: "evidence" });
-    const watchedEvidence = watch("evidence");
+    const watchedEvidence = useWatch({ control, name: "evidence" });
+
+    const evidencePreviews = useMemo(() =>
+        (watchedEvidence ?? [])
+            .filter(item => item.file && item.file[0])
+            .map(item => URL.createObjectURL(item.file[0])),
+        [watchedEvidence]);
 
     useEffect(() => {
-        if (!watchedEvidence) return;
-        const previews = watchedEvidence
-            .filter(item => item.file && item.file[0])
-            .map(item => URL.createObjectURL(item.file[0]));
-        setEvidencePreviews(previews);
-        return () => previews.forEach(url => URL.revokeObjectURL(url));
-    }, [watchedEvidence]);
+        return () => evidencePreviews.forEach(url => URL.revokeObjectURL(url));
+    }, [evidencePreviews]);
 
+    if (!isOpen) return null;
     const handleGalleryUpload = (e: ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = Array.from(e.target.files || []);
         selectedFiles.forEach(file => append({ file: [file] }));

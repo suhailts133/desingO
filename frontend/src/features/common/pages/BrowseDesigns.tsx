@@ -1,39 +1,55 @@
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import DesignCard from "../components/cards/DesignCard";
-import type { DesignFilterForm } from "../../designer/designs/designInterface";
 import { useGetAllDesignsCommonQuery } from "../../designer/designs/designEndpoints";
 import { SORT_OPTIONS } from "../baseData";
 import Pagination from "../../../shared/common/Pagination";
 import DesignFilter from "../components/filters/DesignFilter";
 import DesignCardSkeleton from "../skeltons/DesignCardSkeleton";
+import { createFilterChangeHandler } from "../../../helpers/handleFilterChagne";
 
 export default function BrowseDesigns() {
     const [filtersVisible, setFiltersVisible] = useState(true);
-    const [page, setPage] = useState(1);
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    const { control, watch, reset } = useForm<DesignFilterForm>({
-        defaultValues: {
-            designStyles: null,
-            propertyTypes: null,
-            spaceTypes: null,
-            sortBy: SORT_OPTIONS[0],
-        },
-    });
+    const page = Number(searchParams.get("page") ?? "1");
+    const sortByValue = searchParams.get("sortBy") ?? SORT_OPTIONS[0].value;
+    const designStylesParam = searchParams.get("designStyles");
+    const propertyTypesParam = searchParams.get("propertyTypes");
+    const spaceTypesParam = searchParams.get("spaceTypes");
 
-    const watchedFilters = watch();
+    const designStyles = designStylesParam ? designStylesParam.split(",").map((v) => ({ label: v, value: v })) : null;
+
+    const propertyTypes = propertyTypesParam ? propertyTypesParam.split(",").map((v) => ({ label: v, value: v })) : null;
+
+    const spaceTypes = spaceTypesParam ? spaceTypesParam.split(",").map((v) => ({ label: v, value: v })) : null;
+
+    const selectedSort = SORT_OPTIONS.find((s) => s.value === sortByValue) ?? SORT_OPTIONS[0];
+
+
     const { data, isLoading, error } = useGetAllDesignsCommonQuery({
-        ...watchedFilters,
-        page
+        page,
+        designStyles,
+        propertyTypes,
+        spaceTypes,
+        sortBy: selectedSort,
     });
 
-    useEffect(() => {
-        setPage(1);
-    }, [watchedFilters.designStyles, watchedFilters.propertyTypes, watchedFilters.spaceTypes, watchedFilters.sortBy]);
+    const totalDesigns = data?.total ?? 0;
+    const totalPages = data?.totalPages ?? 1;
+
+    const onFilterChange = createFilterChangeHandler(setSearchParams);
+    const handlePageChange = (newPage: number) => {
+        setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            next.set("page", String(newPage));
+            return next;
+        });
+    };
+
 
     const handleClearAll = () => {
-        reset({ designStyles: null, propertyTypes: null, spaceTypes: null, sortBy: SORT_OPTIONS[0] });
-        setPage(1);
+        setSearchParams({ page: "1" });
     };
 
     if (error) return <div className="p-10 text-center text-red-500">Error loading designs.</div>;
@@ -41,7 +57,11 @@ export default function BrowseDesigns() {
     return (
         <div className="min-h-screen bg-gray-50/60 font-Jost">
             <DesignFilter
-                control={control}
+                designStyles={designStyles}
+                propertyTypes={propertyTypes}
+                spaceTypes={spaceTypes}
+                sortBy={selectedSort}
+                onFilterChange={onFilterChange}
                 onClear={handleClearAll}
                 filtersVisible={filtersVisible}
                 setFiltersVisible={setFiltersVisible}
@@ -51,9 +71,9 @@ export default function BrowseDesigns() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {isLoading
                         ? Array.from({ length: 8 }).map((_, i) => (
-                            <DesignCardSkeleton key={i}/>
+                            <DesignCardSkeleton key={i} />
                         ))
-                        : data?.data?.map(item => (
+                        : data?.data?.map((item) => (
                             <DesignCard design={item} key={item.id} />
                         ))
                     }
@@ -62,11 +82,11 @@ export default function BrowseDesigns() {
 
             <Pagination
                 page={page}
-                totalItem={data?.total ?? 0}
+                totalItem={totalDesigns}
                 whichItem="designs"
-                totalPages={data?.totalPages ?? 1}
-                onDecrease={() => setPage(p => p - 1)}
-                onIncrease={() => setPage(p => p + 1)}
+                totalPages={totalPages}
+                onDecrease={() => handlePageChange(Math.max(1, page - 1))}
+                onIncrease={() => handlePageChange(Math.min(totalPages, page + 1))}
             />
         </div>
     );

@@ -1,19 +1,29 @@
-import { Controller, type Control } from "react-hook-form";
-import Select from "react-select";
+import Select, { type MultiValue, type SingleValue } from "react-select";
 import { SlidersHorizontal, X } from "lucide-react";
 import { PROPERTY_OPTIONS, STYLE_OPTIONS } from "../../../designer/designs/designData";
 import { TIMELINE_OPTIONS } from "../../../user/jobs/jobData";
-import { SORT_OPTIONS } from "../../baseData";
-import type { JOBFilterForm } from "../../../user/jobs/jobInterface";
-
+import { SORT_OPTIONS, type OptionType } from "../../baseData";
 type Props = {
-    control: Control<JOBFilterForm>
-    onClear: () => void
-    filtersVisible: boolean,
-    setFiltersVisible: (visible: boolean) => void
+    designStyles: OptionType[] | null;
+    propertyTypes: OptionType[] | null;
+    timeLines: OptionType[] | null;
+    sortBy: OptionType;
+    onFilterChange: (key: string, value: string | string[] | null) => void;
+    onClear: () => void;
+    filtersVisible: boolean;
+    setFiltersVisible: (visible: boolean) => void;
 }
 
-export default function JobFilter({ control, onClear, filtersVisible, setFiltersVisible }: Props) {
+export default function JobFilter({ designStyles, propertyTypes, timeLines, sortBy, onFilterChange, onClear, filtersVisible, setFiltersVisible }: Props) {
+
+    const handleMultiSelectChange = (key: "designStyles" | "propertyTypes" | "timeLines", selected: MultiValue<OptionType>) => {
+        const labels = selected.map((opt) => opt.label);
+
+        onFilterChange(key, labels.length ? labels : null);
+    };
+    const handleSortChange = (selected: SingleValue<OptionType>) => {
+        onFilterChange("sortBy", selected?.value ?? SORT_OPTIONS[0].value);
+    };
     return (
         <div className="bg-white border-b border-gray-100 px-6 py-5">
             <div className="max-w-7xl mx-auto">
@@ -33,31 +43,34 @@ export default function JobFilter({ control, onClear, filtersVisible, setFilters
 
                     <div className={`flex flex-wrap items-center gap-3 ${filtersVisible ? "opacity-100" : "hidden"}`}>
                         <div className="min-w-50">
-                            <Controller
-                                name="designStyles"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select {...field} isMulti options={STYLE_OPTIONS} placeholder="Design Style" isClearable />
-                                )}
+                            <Select
+                                value={designStyles}
+                                onChange={(val) => handleMultiSelectChange("designStyles", val)}
+                                isMulti
+                                options={STYLE_OPTIONS}
+                                placeholder="Design Style"
+                                isClearable
                             />
                         </div>
                         <div className="min-w-50">
-                            <Controller
-                                name="propertyTypes"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select {...field} isMulti options={PROPERTY_OPTIONS} placeholder="Property Type" isClearable />
-                                )}
+                            <Select
+                                value={propertyTypes}
+                                onChange={(val) => handleMultiSelectChange("propertyTypes", val)}
+                                isMulti
+                                options={PROPERTY_OPTIONS}
+                                placeholder="Property Type"
+                                isClearable
                             />
                         </div>
                         <div className="min-w-50">
-                            <Controller
-                                name="timeLines"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select {...field} isMulti options={TIMELINE_OPTIONS} placeholder="Time Line" isClearable />
-                                )}
-                            />
+                            <Select
+                                value={timeLines}
+                                onChange={val => handleMultiSelectChange("timeLines", val)}
+                                isMulti
+                                options={TIMELINE_OPTIONS}
+                                placeholder="Time Line"
+                                isClearable />
+
                         </div>
                     </div>
 
@@ -67,12 +80,11 @@ export default function JobFilter({ control, onClear, filtersVisible, setFilters
                         </button>
 
                         <div className="min-w-45">
-                            <Controller
-                                name="sortBy"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select {...field} options={SORT_OPTIONS} isSearchable={false} />
-                                )}
+                            <Select
+                                value={sortBy}
+                                onChange={handleSortChange}
+                                options={SORT_OPTIONS}
+                                isSearchable={false}
                             />
                         </div>
                     </div>

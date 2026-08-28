@@ -17,7 +17,7 @@ export default function CustomerLayout() {
         if (!name && !email) {
             dispatch(logOut());
         }
-    }, [name, email]);
+    }, [name, email,dispatch]);
 
 
     if (!isAuthenticated || !accessToken) {

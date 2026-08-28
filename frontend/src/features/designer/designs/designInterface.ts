@@ -38,6 +38,15 @@ export interface DesignResponseDTO {
 }
 
 
+export type ExistingGalleryItem = { type: "existing"; path: string; filename: string };
+export type NewGalleryItem = { type: "new"; file: File; preview: string };
+export type GalleryItem = ExistingGalleryItem | NewGalleryItem;
+export type ExistingCover = { type: "existing"; path: string; filename: string };
+export type NewCover = { type: "new"; file: File; preview: string };
+export type CoverState = ExistingCover | NewCover;
+
+
+
 
 export interface DesignDetailResponseDTO {
   id: string;
@@ -59,21 +68,21 @@ export interface DesignDetailResponseDTO {
 
 
 export interface HireDesignerDTO {
-    id: string,
-    userId: string
-    userName: string,
-    profileImage?: string,
-    totalArea: number
-    rooms: number
-    areaUnit: "ft" | "m";
-    projectTitle: string
-    maxBudget: number
-    minBudget: number
-    createdAt: string
-    timeLine: string
-    rejectionReason?: string
-    projectType: "Renovation" | "New_Build";
-    status: "Pending" | "Ongoing" | "Closed" | "Rejected" | "Accepted"
+  id: string,
+  userId: string
+  userName: string,
+  profileImage?: string,
+  totalArea: number
+  rooms: number
+  areaUnit: "ft" | "m";
+  projectTitle: string
+  maxBudget: number
+  minBudget: number
+  createdAt: string
+  timeLine: string
+  rejectionReason?: string
+  projectType: "Renovation" | "New_Build";
+  status: "Pending" | "Ongoing" | "Closed" | "Rejected" | "Accepted"
 }
 
 
