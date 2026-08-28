@@ -18,7 +18,7 @@ export default function ChangePassword() {
     mode: "onBlur"
   })
   const location = useLocation();
-  const email = location.state?.email
+  const email = location.state?.email 
   const { handleChangePassword, error, isLoading } = useChangePassword()
 
   const onSubmit = async (data: IPassword) => {
