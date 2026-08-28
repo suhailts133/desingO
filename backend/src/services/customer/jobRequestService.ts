@@ -49,7 +49,8 @@ export class JobRequestService implements IJobRequestService {
 
         const reference: ImageUploadResult[] = await this._imageUploder.uploadMany(refrenceImages ?? [], CLOUDINARY_FOLDER_NAME.GALLERY)
         const floorplans: ImageUploadResult[] = await this._imageUploder.uploadMany(floorPlanImages ?? [], CLOUDINARY_FOLDER_NAME.FLOOR_PLANS)
-
+        console.log(data.designId , "Designid")
+        console.log(data.designerId , "Designerid")
         const result = await this._jobRequestRepo.createJobRequest(userId, data, reference, floorplans);
         if (!result) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.JOB_REQUEST_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)

@@ -28,14 +28,15 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
     }
 
     async createJobRequest(userId: string, data: ICreateJobRequest, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<boolean> {
+        const { designId, designerId, ...restOfData } = data;
         const result = await this.create({
-            ...data,
+            ...restOfData,
             referenceImages: referenceImages ?? [],
             floorPlans: floorplans ?? [],
             userId: new mongoose.Types.ObjectId(userId),
-            designerId: new mongoose.Types.ObjectId(data.designerId),
-            designId: new mongoose.Types.ObjectId(data.designId)
-        })
+            ...(data.designerId && { designerId: new mongoose.Types.ObjectId(data.designerId) }),
+            ...(data.designId && { designId: new mongoose.Types.ObjectId(data.designId) })
+        });
         return !!result
     }
 
@@ -58,7 +59,7 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
             .limit(limit)
             .sort({ createdAt: 1 })
             .exec()
-        const total = await this._model.countDocuments({ userId });
+        const total = await this._model.countDocuments({ userId,sourceType});
 
         const pagination: Pagination = {
             total,

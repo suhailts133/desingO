@@ -14,7 +14,6 @@ import { AUTH_MESSAGES } from "../../shared/messages/authMessages"
 
 
 
-
 // handle all design related routes
 export class DesignController {
 
