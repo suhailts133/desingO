@@ -8,15 +8,30 @@ import { AppError } from "../../shared/errors/appError";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { disputeSolutionValidation } from "../../validators/proposal/disputeValidation";
+
+/**
+ * handle all admin dispute managemnt related routes
+ */
 export class DisputeManagementController {
     constructor(private _disputeService: IAdminDisputeService) { }
 
-
+    /**
+     * get all disputes
+     * @route GET /admin/disputes/
+     * @param req.query {@link DisputeAdminFilters}
+     */
     getAllDispute = asyncHandler(async (req: Request, res: Response) => {
         const result = await this._disputeService.getAllDispute(req.query as DisputeAdminFilters)
         RespsonseHelper.successWithPagination(res, result)
     })
 
+
+    /**
+     * get a dispute detail
+     * @route GET /admin/disputes/:id
+     * @param req.params.id - dispute id
+     * @throws {AppError} 400 if there is any issue with the disputeId
+     */
     getDisputeDetail = asyncHandler(async (req: Request, res: Response) => {
         const id = req.params.id as string
         if (!isObjectId(id)) {
@@ -28,6 +43,12 @@ export class DisputeManagementController {
     })
 
 
+    /**
+     * give resolution for the dispute
+     * @route GET /admin/disputes/give-verdit
+     * @param req.body {@link DisputeSolutionDTO}
+     * @throws {AppError} 400 if there is any problem with the req.body
+     */
     giveVerdit = asyncHandler(async (req: Request, res: Response) => {
         const { error, value } = disputeSolutionValidation.validate(req.body)
         if (error) {

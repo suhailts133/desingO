@@ -34,8 +34,8 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
             referenceImages: referenceImages ?? [],
             floorPlans: floorplans ?? [],
             userId: new mongoose.Types.ObjectId(userId),
-            ...(data.designerId && { designerId: new mongoose.Types.ObjectId(data.designerId) }),
-            ...(data.designId && { designId: new mongoose.Types.ObjectId(data.designId) })
+            ...(designerId && { designerId: new mongoose.Types.ObjectId(designerId) }),
+            ...(designId && { designId: new mongoose.Types.ObjectId(designId) })
         });
         return !!result
     }

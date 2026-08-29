@@ -7,15 +7,25 @@ import { RespsonseHelper } from "../../shared/helpers/responseHelper";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
 import { PROFILE_MESSAGES } from "../../shared/messages/profileMessages";
 
+/**
+ * this controller handle profile image changing
+ */
 export class ProfileImageController {
     constructor(private _profileImageService: IProfileImageService) { }
 
+    /**
+     * to chanage profile iamge
+     * @route PATCH /profile/change-profile-image
+     * @params req.file - new image
+     * @throws {AppError} 401 if there is any issue with the userId
+     * @throws {AppError} 400 if req.file not found
+     */
     changeProfileImage = asyncHandler(async (req: Request, res: Response) => {
         const userId = req.user?.userId;
         if (!userId) {
             throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED);
         }
-        
+
         const file = req.file as Express.Multer.File;
 
         if (!file) {
