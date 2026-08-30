@@ -23,7 +23,7 @@ export interface DisputeResponseDTO {
     raisedBy: "Customer" | "Designer";
     serviceOrder: number;
     reason: string;
-    contractStatus:string,
+    contractStatus?:string,
     evidence: string[];
     status: DisputeStatus;
     resolution?: string;

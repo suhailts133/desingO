@@ -28,8 +28,9 @@ export interface IDispute {
 export interface IDisputeRepository {
     createDispute(data: DisputeRepoDTO): Promise<IDispute>
     updateDispute(id: string, data: Partial<DisputeUpdateDTO>): Promise<IDispute | null>
-    getAllDispute(filters?: DisputeAdminFilters): Promise<{ data: DisputePopulated[]; pagination: Pagination; }>
+    getAllDisputeForAdmin(filters?: DisputeAdminFilters): Promise<{ data: DisputePopulated[]; pagination: Pagination; }>
     findDispute(id: string): Promise<DisputePopulatedAll | null>
+    getAllDispute(proposalId: string): Promise<DisputePopulatedAll[]>
     findDisputeByProposalId(id: string): Promise<DisputePopulatedAll | null>
 }
 
@@ -38,5 +39,6 @@ export interface IDisputeService {
     createDispute(data: DisputeRaiseDTO, reporterId: string): Promise<IApiResponse<DisputeResponseDTO>>
     AcceptOrRejectDispute(data: AcceptOrRejectDisputeDTO): Promise<IApiResponse<DisputeStatus>>
     getDispute(proposalId: string): Promise<IApiResponse<DisputeResponseDTO>>
+    getAllDisputePerProposal(proposalId: string): Promise<IApiResponse<DisputeResponseDTO[]>>
 }
 

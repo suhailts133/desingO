@@ -68,6 +68,6 @@ export enum VERSION_STATUS {
 
 
 export enum DISPUTE_SOLUTION {
-    FULL_REFUND = "Full Refund",
+    FULL_REFUND = "Full_Refund",
     REFUND = "Refund",
 }

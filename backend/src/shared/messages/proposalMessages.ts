@@ -1,6 +1,7 @@
 export const PROPOSAL_MESSAGES = {
 
     DISPUTE: {
+        ALREADY_RESOLVED_OR_AWATING_CONFIRMATION:"This dispute is already solved or awaiting confrimation",
         ONGOING: "A Dispute is already on going please wait till it get resolved.",
         SUCCESS: "Successfully reported the issue.",
         NOT_FOUND: "Dispute not found.",

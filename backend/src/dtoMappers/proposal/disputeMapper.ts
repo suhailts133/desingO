@@ -4,10 +4,10 @@ import type { IServiceItem } from "../../interfaces/proposal/IProposal";
 
 export class DisputeMapper {
 
-    static toDisputeResponseDTO(data: IDispute | DisputePopulatedAll, CStatus:string): DisputeResponseDTO {
+    static toDisputeResponseDTO(data: IDispute | DisputePopulatedAll, CStatus?: string): DisputeResponseDTO {
         return {
             id: data.id,
-            contractStatus:CStatus,
+            ...(CStatus && { contractStatus: CStatus }),
             raisedBy: data.raisedBy,
             reason: data.reason,
             evidence: data.evidence.map(e => e.path),
@@ -16,6 +16,10 @@ export class DisputeMapper {
             ...(data.resolution && { resolution: data.resolution }),
             ...(data.resolutionType && { resolutionType: data.resolutionType }),
         }
+    }
+
+    static toDisputeDTOList(data: DisputePopulatedAll[]): DisputeResponseDTO[] {
+        return data.map(dispute => DisputeMapper.toDisputeResponseDTO(dispute))
     }
 
     static toAdminDisputeDTOList(data: DisputePopulated[]): AllDisputeAdminDTO[] {
@@ -42,7 +46,7 @@ export class DisputeMapper {
             uploadedImages: serviceImages,
             currentVersion: serviceData.currentVersion,
             expectedDeliveryDate: serviceData.expectedDeliveryDate.toDateString(),
-           
+
             ...(serviceData.actualDeliveryDate && {
                 actualDeliveryDate: serviceData.actualDeliveryDate.toDateString(),
             }),
@@ -86,8 +90,8 @@ export class DisputeMapper {
             designerId: data.designerId.id,
             ...(customerProfileImage && { customerImage: customerProfileImage }),
             ...(designerProfileImage && { designerImage: designerProfileImage }),
-             ...(data.resolutionType  && {resolutionType:data.resolutionType}),
-             ...(data.resolution  && {resolution:data.resolution}),
+            ...(data.resolutionType && { resolutionType: data.resolutionType }),
+            ...(data.resolution && { resolution: data.resolution }),
             currentService: service
         }
     }

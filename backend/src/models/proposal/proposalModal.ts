@@ -4,24 +4,12 @@ import { serviceItemSchema } from "./schemas/serviceItemSchema"
 import { imageFormatSchema } from "./schemas/imageFormatSchema"
 
 const proposalSchema = new Schema<IProposal>({
-    sourceId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true
-    },
-
-    clientId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
-    },
-    designerId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
-    },
-    disputeId: {
-        type: String
-    },
+    
+    sourceId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    clientId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    designerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    disputeId: { type: String },
+    disputeCount: { type: Number, default: 0 },
     floorPlan: { type: [imageFormatSchema], default: [] },
     totalArea: { type: Number, required: true },
     unit: { type: String, enum: ["ft", "m"], required: true },
