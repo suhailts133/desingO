@@ -74,11 +74,29 @@ export class DisputeController {
       */
     getDispute = asyncHandler(async (req: Request, res: Response) => {
         const proposalId = req.params.id as string
-        if(!isObjectId(proposalId)){
+        if (!isObjectId(proposalId)) {
             throw new AppError(PROPOSAL_MESSAGES.DISPUTE.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
-       
+
         const result = await this._disputeService.getDispute(proposalId)
         RespsonseHelper.success(res, result)
     })
+
+    /**
+       * for fetching all the dispute
+       * @route GET /dispute/
+       * @param req.body.proposalId disputeid
+       * @throws {AppError} 400 if there is any issue with req.body
+      */
+    getAllDispute = asyncHandler(async (req: Request, res: Response) => {
+        const { proposalId } = req.body;
+        if (!isObjectId(proposalId)) {
+            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
+
+        const result = await this._disputeService.getAllDisputePerProposal(proposalId)
+        RespsonseHelper.success(res, result)
+    })
+
+
 }

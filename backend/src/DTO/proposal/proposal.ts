@@ -98,6 +98,7 @@ export interface ProposalDetailDTO {
     designerId: string
     clientName: string
     designerName: string
+    disputeCount: number
     clientProfile?: string
     designerProfile?: string
     sourceName: string

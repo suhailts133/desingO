@@ -71,6 +71,7 @@ export interface IProposal {
     clientId: mongoose.Types.ObjectId;
     designerId: mongoose.Types.ObjectId;
     disputeId: string;
+    disputeCount:number
     drawingFeePerSqFt: number;
     totalDrawingFee: number;
     services: IServiceItem[];

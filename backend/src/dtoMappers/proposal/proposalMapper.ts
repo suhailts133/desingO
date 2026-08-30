@@ -43,6 +43,7 @@ export class ProposalMapper {
             sourceId: data.sourceId.toString(),
             totalArea: data.totalArea,
             unit: data.unit,
+            disputeCount: data.disputeCount,
             siteVisitingRequired: data.siteVisitingNeeded,
             ...(data.floorPlan && { floorPlans: data.floorPlan.map(e => e.path) }),
             ...(data.expectedSiteVisitingDate && { expectedSiteVisitingDate: data.expectedSiteVisitingDate.toISOString() }),

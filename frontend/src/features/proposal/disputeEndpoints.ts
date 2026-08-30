@@ -11,23 +11,38 @@ export const disputeEndpoints = baseApi.injectEndpoints({
                 method: "POST",
                 body: formData
             }),
-            invalidatesTags:["proposal"]
+            invalidatesTags: ["proposal"]
         }),
 
         getDispute: builder.query<IApiResponse<DisputeResponseDTO>, string>({
-            query:(proposalId) => ({
+            query: (proposalId) => ({
                 url: `${API_ROUTES.DISPUTE.GET_DISPUTE}/${proposalId}`,
-                method:"GET"
-            })
+                method: "GET"
+            }),
+            providesTags: ["disputeNormal"]
         }),
-        acceptOrRejectDisputeVerdit:builder.mutation<IApiResponse<DisputeStatus>, AcceptOrRejectDisputeDTO>({
-            query:(body) => ({
-                url:API_ROUTES.DISPUTE.ACCEPT_OR_REJECT,
-                method:"PATCH",
+
+        acceptOrRejectDisputeVerdit: builder.mutation<IApiResponse<DisputeStatus>, AcceptOrRejectDisputeDTO>({
+            query: (body) => ({
+                url: API_ROUTES.DISPUTE.ACCEPT_OR_REJECT,
+                method: "PATCH",
                 body
             }),
-            
-        })
+            invalidatesTags: (_result, _error, arg) => {
+                if (arg.status === "Redo") {
+                    return ["proposal", "disputeNormal"]
+                }
+                return ["proposal"]
+            }
+        }),
+
+        getAllDispute: builder.query<IApiResponse<DisputeResponseDTO[]>, string>({
+            query: (proposalId) => ({
+                url: API_ROUTES.DISPUTE.GET_ALL_DISPUTE,
+                method: "GET",
+                body: { proposalId }
+            })
+        }),
 
 
 

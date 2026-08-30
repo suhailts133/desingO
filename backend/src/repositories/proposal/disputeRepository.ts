@@ -28,7 +28,7 @@ export class DisputeRepository extends BaseRepository<IDispute> implements IDisp
     }
 
 
-    async getAllDispute(filters: DisputeAdminFilters): Promise<{ data: DisputePopulated[]; pagination: Pagination; }> {
+    async getAllDisputeForAdmin(filters: DisputeAdminFilters): Promise<{ data: DisputePopulated[]; pagination: Pagination; }> {
         const page = filters.page ? Number(filters.page) : 1;
         const limit = 6
         const skip = (page - 1) * limit
@@ -73,6 +73,14 @@ export class DisputeRepository extends BaseRepository<IDispute> implements IDisp
 
     async findDisputeByProposalId(id: string): Promise<DisputePopulatedAll | null> {
         return await this._model.findOne({ proposalId: id })
+            .populate<{ customerId: IUser }>("customerId")
+            .populate<{ designerId: IUser }>("designerId")
+            .populate<{ proposalId: IProposal }>("proposalId")
+    }
+
+
+    async getAllDispute(proposalId: string): Promise<DisputePopulatedAll[]> {
+        return await this._model.find({ proposalId })
             .populate<{ customerId: IUser }>("customerId")
             .populate<{ designerId: IUser }>("designerId")
             .populate<{ proposalId: IProposal }>("proposalId")
