@@ -43,7 +43,7 @@ export interface DisputeResponseDTO {
     raisedBy: "Customer" | "Designer";
     serviceOrder: number;
     reason: string;
-    contractStatus: string,
+    contractStatus?: string,
     evidence: string[];
     status: DisputeStatus;
     resolution?: string;
@@ -103,6 +103,7 @@ export interface ProposalDetailDTO {
     sourceId: string
     clientId: string
     designerId: string
+    disputeCount: number
     sourceName: string
     totalArea: number,
     unit: "ft" | "m"

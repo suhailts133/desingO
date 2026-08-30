@@ -21,11 +21,11 @@ const raisedByStyle: Record<DisputeResponseDTO["raisedBy"], string> = {
 interface DisputeCardProps {
     dispute: DisputeResponseDTO
     onConfirm: (data: AcceptOrRejectDisputeDTO) => void
-
-    isResponding: boolean
+    isResponding: boolean,
+    role: "Customer" | "Designer" | "Admin" | null
 }
 
-export default function DisputeCard({ dispute, onConfirm, isResponding }: DisputeCardProps) {
+export default function DisputeCard({ dispute, onConfirm, isResponding ,role}: DisputeCardProps) {
     const [expanded, setExpanded] = useState(false)
     const [approveDispute, setApproveDispute] = useState<string | null>(null)
     const [rejectDispute, setRejectDispute] = useState<string | null>(null)
@@ -121,7 +121,7 @@ export default function DisputeCard({ dispute, onConfirm, isResponding }: Disput
                         onClick={() => setExpanded(!expanded)}
                         className="text-xs font-Jost-Semibold text-green-700 uppercase tracking-widest"
                     >
-                        Resolution {dispute.resolutionType ? `· ${dispute.resolutionType}` : ""}
+                        Resolution {dispute.resolutionType ? `· ${dispute.resolution}` : ""}
                     </button>
                     {dispute.resolution && (expanded || !dispute.evidence.length) && (
                         <p className="text-sm text-green-700 mt-1">{dispute.resolution}</p>
@@ -129,7 +129,7 @@ export default function DisputeCard({ dispute, onConfirm, isResponding }: Disput
                 </div>
             )}
 
-            {dispute.status === "Awaiting Confirmation" && (
+            {dispute.status === "Awaiting Confirmation" && dispute.raisedBy === role && (
                 <div className="flex items-center gap-3 pt-1">
                     <button
                         type="button"
@@ -139,7 +139,7 @@ export default function DisputeCard({ dispute, onConfirm, isResponding }: Disput
                     >
                         <Check className="w-3.5 h-3.5" />
                         Confirm Resolution
-                    </button> 
+                    </button>
                     <button
                         type="button"
                         onClick={() => setRejectDispute(dispute.id)}

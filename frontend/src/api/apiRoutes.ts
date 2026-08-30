@@ -99,6 +99,7 @@ export const API_ROUTES = {
     DISPUTE: {
         REPORT: "/dispute/report-issue",
         GET_DISPUTE: "/dispute",
+        GET_ALL_DISPUTE: "/dispute",
         ACCEPT_OR_REJECT: "/dispute/accept-reject",
     }
 } as const

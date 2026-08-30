@@ -58,12 +58,7 @@ export default function ProposalPage() {
 
     const contractStatus = proposal?.contractStatus
 
-    const {
-        data: disputeData,
-        isLoading: isDisputeLoading,
-        error: disputeError
-
-    } = useGetDisputeQuery(proposal?.id ?? "", { skip: !proposal || contractStatus !== "Disputed" })
+    const { data: disputeData, isLoading: isDisputeLoading, error: disputeError } = useGetDisputeQuery(proposal?.id ?? "", { skip: !proposal || contractStatus !== "Disputed" })
     const disputedData = disputeData?.data
     const handleResponse = useHandleResponse()
     const { ispaymentDataLoading, clientSecret, paymentIntentError, handlePaymentIntent, reset } = useCreateIntent()
@@ -73,7 +68,9 @@ export default function ProposalPage() {
     const { isVersionApprovingOrRejecting, handleVersionApprovalOrRejection } = useApproveOrRejectVersion()
     const { isReviewing, handleWriteReview } = useWriteReview()
     const { isUploading, handleServiceResultUpload } = useUploadResult()
+
     const { handleVerditSubmit, isChecking } = useAcceptOrRejectVerdit()
+    
     const { isReporting, handleReportIssue } = useReportIssue()
     const { isFloorPlanUploading, handleFloorPlanSubmission } = useUploadFloorPlan()
     const [chatOpen, setChatOpen] = useState(false)
@@ -92,9 +89,11 @@ export default function ProposalPage() {
     const [payingService, setPayingService] = useState<{ serviceName: string; amount: number } | null>(null)
 
     const activeDispute = disputedData
+    
     const handleVerdit = async (data: AcceptOrRejectDisputeDTO) => {
         await handleVerditSubmit(data)
     }
+
     const handleApprovalProposal = async () => {
         if (!approveProposal) return
         const result = await handleUpdateStatus({ sourceId: approveProposal.sourceId, contractStatus: "Accepted" })
@@ -205,7 +204,7 @@ export default function ProposalPage() {
         handleResponse(result.success, "The issue has been noted", result.message)
         setDispute(null)
     }
-    
+
     const handlePay = async (serviceName: string, amount: number, payemnetSourceId: string) => {
         setPayingService({ serviceName, amount })
         const success = await handlePaymentIntent(payemnetSourceId)
@@ -393,7 +392,7 @@ export default function ProposalPage() {
             )}
 
             {contractStatus === "Disputed" && activeDispute && (
-                <DisputeCard dispute={activeDispute} isResponding={isChecking} onConfirm={handleVerdit} />
+                <DisputeCard dispute={activeDispute} isResponding={isChecking} onConfirm={handleVerdit} role={role} />
             )}
 
             <ContractOverview proposal={proposal} />
