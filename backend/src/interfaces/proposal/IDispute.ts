@@ -31,6 +31,7 @@ export interface IDisputeRepository {
     getAllDisputeForAdmin(filters?: DisputeAdminFilters): Promise<{ data: DisputePopulated[]; pagination: Pagination; }>
     findDispute(id: string): Promise<DisputePopulatedAll | null>
     getAllDispute(proposalId: string): Promise<DisputePopulatedAll[]>
+    getAllDisputePerUserId(userId: string, role: "Designer" | "Customer"): Promise<IDispute[]>
     findDisputeByProposalId(id: string): Promise<DisputePopulatedAll | null>
 }
 

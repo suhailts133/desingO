@@ -16,6 +16,7 @@ const proposalSchema = new Schema<IProposal>({
     drawingFeePerSqFt: { type: Number, required: true },
     platformFee: { type: Number, required: true },
     remainingPlatformFee: { type: Number, required: true },
+    currentAmountHeld: { type: Number, required: true },
     totalDrawingFee: { type: Number, required: true },
     services: { type: [serviceItemSchema], required: true, default: [] },
     totalContractValue: { type: Number, required: true },

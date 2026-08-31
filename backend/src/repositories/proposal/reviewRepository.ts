@@ -12,6 +12,11 @@ export class ReviewRepository extends BaseRepository<IReview> implements IReview
         super(ReviewModel)
     }
 
+    async getAllReviews(designerId: string): Promise<IReview[]> {
+        return await this.find({ designerId })
+    }
+
+
     async getMyReviews(designerId: string, page?: string): Promise<{ data: IReview[]; pagination: Pagination; }> {
         const pageNO = page ? Number(page) : 1;
         const limit = 6
@@ -32,9 +37,9 @@ export class ReviewRepository extends BaseRepository<IReview> implements IReview
         return { data: result, pagination };
     }
 
-  
+
     async alreadyExsits(jobId: string, userId: string): Promise<IReview | null> {
-        return await this.findOne({jobId,userId})
+        return await this.findOne({ jobId, userId })
     }
 
     async createReview(data: ReviewRepoDTO): Promise<IReview> {

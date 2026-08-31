@@ -1,17 +1,28 @@
-import mongoose from "mongoose";
+import mongoose, { type QueryFilter, type UpdateQuery } from "mongoose";
 import type { CreateProposalRepoDataDTO, GetProposalDTO, ProposalStatusFilter, ProposalStatusUpdateRepoDTO } from "../../DTO/proposal/proposal";
-import type { ContractStatus, IEscrow, IProposal, ProposalServiceStatus } from "../../interfaces/proposal/IProposal";
+import type { ContractStatus, IEscrow, IProposal, PaymentUpdateStatus, ProposalServiceStatus } from "../../interfaces/proposal/IProposal";
 import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
 import { ProposalModel } from "../../models/proposal/proposalModal";
 import { BaseRepository } from "../baseRepository";
 import type { IUser } from "../../interfaces/auth/IUser";
-import { CONTRACT_STATUS, FIRST_SERVICE_ORDER_NUMBER, ServicePaymentStatus, ServiceStatus } from "../../shared/enums/proposalEnums";
+import { CONTRACT_STATUS, FIRST_SERVICE_ORDER_NUMBER, ServicePaymentStatus, ServiceStatus, USER_TYPE } from "../../shared/enums/proposalEnums";
 
 export class ProposalRepository extends BaseRepository<IProposal> implements IProposalRepository {
     constructor() {
         super(ProposalModel)
     }
 
+    async getProposalsByUserId(userId: string, role: "Designer" | "Customer"): Promise<IProposal[]> {
+        const objectId = new mongoose.Types.ObjectId(userId);
+        const query: QueryFilter<IProposal> = {};
+
+        if (role === USER_TYPE.CUSTOMER) {
+            query.clientId = objectId;
+        } else {
+            query.designerId = objectId;
+        }
+        return await this.find(query);
+    }
 
     async createProposal(data: CreateProposalRepoDataDTO): Promise<IProposal> {
         return await this.create({
@@ -24,6 +35,7 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
             totalContractValue: data.totalContractValue,
             totalArea: data.totalArea,
             unit: data.unit,
+            currentAmountHeld:data.currentAmountHeld,
             sourceName: data.sourceName,
             expectedCompletionDate: data.expectedCompletionDate,
             services: data.services,
@@ -65,19 +77,23 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
 
     }
 
-    async updateService(sourceId: string, order: number, status: ProposalServiceStatus, escrow: Partial<IEscrow>): Promise<IProposal | null> {
-        return await this.updateOne(
-            { sourceId, "services.order": order },
-            {
-                $set:
-                {
-                    "services.$.status": status,
-                    "services.$.paymentStatus": ServicePaymentStatus.PAID,
-                    "services.$.escrow": escrow,
-                    "services.$.paidAt": new Date(),
-                }
-            },
-        )
+    async updateService(sourceId: string, order: number, status: ProposalServiceStatus, paymentStatus: PaymentUpdateStatus, escrow: Partial<IEscrow>, feeDeduction?: number, currentAmountHeld?: number): Promise<IProposal | null> {
+        const updateDoc: UpdateQuery<IProposal> = {
+            $set: {
+                "services.$.status": status,
+                "services.$.paymentStatus": paymentStatus,
+                "services.$.escrow": escrow,
+                ...(paymentStatus === ServicePaymentStatus.PAID && { "services.$.paidAt": new Date() })
+            }
+        }
+        if (feeDeduction !== undefined && currentAmountHeld !== undefined) {
+            updateDoc.$inc = {
+                remainingPlatformFee: -feeDeduction,
+                currentAmountHeld: currentAmountHeld
+            }
+        }
+
+        return await this.updateOne({ sourceId, "services.order": order }, updateDoc)
     }
     async updateServiceVersion(sourceId: string, order: number, status: ProposalServiceStatus, newVersion: number): Promise<IProposal | null> {
         return await this.updateOne(

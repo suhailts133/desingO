@@ -99,6 +99,8 @@ export class ProposalVersionService implements IProposalVersionService {
                 proposalId: proposal.id
             })
 
+            await this._proposalRepo.updateProposal(proposal.id, { currentAmountHeld: 0 })
+
 
             const adminNewWalletAmount = admin.wallet + platformFee
             const updatedAdminWallet = await this._userRepo.updateUser(admin.id, { wallet: adminNewWalletAmount })

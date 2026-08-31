@@ -72,6 +72,7 @@ export interface CreateProposalRepoDataDTO extends Omit<CreateProposalDTO, "serv
     totalExecutionFee: number
     totalContractValue: number
     sourceName: string
+    currentAmountHeld:number
     platformFee: number;
     unit: "ft" | "m"
     remainingPlatformFee: number;

@@ -79,6 +79,7 @@ export class ProposalService implements IProposalService {
             unit: jobRequest.areaUnit,
             totalArea: jobRequest.totalCarpetArea,
             totalContractValue,
+            currentAmountHeld: 0,
             sourceName: activeJob.sourceName,
             services: data.services as unknown as IServiceItem[]
         };

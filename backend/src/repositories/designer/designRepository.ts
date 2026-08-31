@@ -22,8 +22,11 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
         });
         return !!result
     }
+    async countMyDesigns(userId: string): Promise<number> {
+        return this._model.countDocuments({ userId });
+    }
 
-    
+
     async editDesign(id: string, data: EditDesignRepoData, coverImage?: ImageUploadResult, gallery?: ImageUploadResult[]): Promise<boolean> {
         const updateData = {
             ...data,

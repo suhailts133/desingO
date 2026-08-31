@@ -101,18 +101,19 @@ export class PaymentService implements IPaymentService {
         }
 
 
-        const serviceProportion = service.price / proposal.totalContractValue
-        const servicePlatformFee = Math.round(proposal.platformFee * serviceProportion)
-        const designerPayout = service.price - servicePlatformFee
+        const serviceProportion = service.price / proposal.totalDrawingFee
+        const isFinalService = order === proposal.services.length;
+        const servicePlatformFee = isFinalService ? proposal.remainingPlatformFee : Math.round(proposal.platformFee * serviceProportion)
 
+        const designerPayout = service.price - servicePlatformFee
+     
         const escrowData: Partial<IEscrow> = {
             amountHeld: service.price,
             platformCommission: servicePlatformFee,
             designerPayout: designerPayout,
             status: EscrowStatus.HELD,
         }
-
-        await this._proposalRepo.updateService(sourceId, order, ServiceStatus.IN_PROGRESS, escrowData)
+        await this._proposalRepo.updateService(sourceId, order, ServiceStatus.IN_PROGRESS, ServicePaymentStatus.PAID, escrowData, servicePlatformFee, designerPayout)
     }
 
 
@@ -128,6 +129,7 @@ export class PaymentService implements IPaymentService {
             updated.jobId.toString(),
             updated.serviceOrder,
             ServiceStatus.OPEN,
+            ServicePaymentStatus.PENDING,
             {}
         )
     }
