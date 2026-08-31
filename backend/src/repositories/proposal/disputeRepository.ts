@@ -4,6 +4,7 @@ import type { IUser } from "../../interfaces/auth/IUser";
 import type { IDispute, IDisputeRepository } from "../../interfaces/proposal/IDispute";
 import type { IProposal } from "../../interfaces/proposal/IProposal";
 import { DisputeModel } from "../../models/proposal/disputeModal";
+import { USER_TYPE } from "../../shared/enums/proposalEnums";
 import { BaseRepository } from "../baseRepository";
 import mongoose from "mongoose";
 import type { QueryFilter, SortOrder } from "mongoose";
@@ -20,6 +21,19 @@ export class DisputeRepository extends BaseRepository<IDispute> implements IDisp
             designerId: new mongoose.Types.ObjectId(data.designerId),
             customerId: new mongoose.Types.ObjectId(data.customerId),
         })
+    }
+
+
+    async getAllDisputePerUserId(userId: string, role: "Designer" | "Customer"): Promise<IDispute[]> {
+        const objectId = new mongoose.Types.ObjectId(userId);
+        const query: QueryFilter<IDispute> = {};
+
+        if (role === USER_TYPE.CUSTOMER) {
+            query.customerId = objectId;
+        } else {
+            query.designerId = objectId;
+        }
+        return await this.find(query);
     }
 
 

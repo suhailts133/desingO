@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 import type { ImageUploadResult } from "../base/IImageUpload.js";
-
-
 export type ProposalServiceStatus = "Locked" | "Open" | "In Progress" | "Uploaded" | "Redo" | "Completed"
 
 export type ProposalPaymentStatus = "Pending" | "Paid" | "Refunded"
@@ -12,6 +10,7 @@ export type ContractStatus = "Sent" | "Accepted" | "Rejected" | "Ongoing" | "Com
 
 export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Redo" | "Awaiting Confirmation"
 
+export type PaymentUpdateStatus = "Paid" | "Pending"
 
 export interface IServiceReview {
     rating: number;
@@ -71,7 +70,8 @@ export interface IProposal {
     clientId: mongoose.Types.ObjectId;
     designerId: mongoose.Types.ObjectId;
     disputeId: string;
-    disputeCount:number
+    disputeCount: number
+    currentAmountHeld: number
     drawingFeePerSqFt: number;
     totalDrawingFee: number;
     services: IServiceItem[];

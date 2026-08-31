@@ -1,3 +1,4 @@
+import type { DesignerDashboardDTO } from "../../DTO/common/dashboard";
 import type { AddDesignRequestDTO, DesignDetailResponseDTO, DesignFiles, DesignFilter, DesignGallaryDTO, EditDesign, EditDesignFiles, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO";
 import type { DesignerCardDTO, DesignerFilter } from "../../DTO/designer/designerDTO";
 import type { DesignerVerificationBodyDTO } from "../../DTO/designer/designerVerificationDTOs";
@@ -34,5 +35,8 @@ export interface IJobApplicationService {
 }
 
 
+export interface IDesignerDashboardService {
+    getDesignerDashboard(designerId: string): Promise<IApiResponse<DesignerDashboardDTO>>
+}
 
 
