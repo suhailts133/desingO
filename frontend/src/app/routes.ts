@@ -18,7 +18,7 @@ import DesignerVerificationForm from "../features/designer/designerVerification/
 import DesignerVerificationTable from "../features/admin/designerVerification/components/DesignerVerificationTable";
 import DesignerVerificationDetails from "../features/admin/designerVerification/components/DesignerVerificationDetails";
 import DesignerLayout from "../layouts/DesignerLayout";
-import DesignerDashboard from "../features/designer/dashboard/component/DesignerDashboard";
+import DesignerDashboard from "../features/designer/dashboard/pages/DesignerDashboard";
 import Designs from "../features/designer/designs/pages/Designs";
 import DesignForm from "../features/designer/designs/components/DesignForm";
 import CustomerLayout from "../layouts/CustomerLayout";

@@ -78,6 +78,11 @@ export const API_ROUTES = {
         CUSTOMER: "/active-job/customer",
         DESIGNER: "/active-job/designer"
     },
+    DASHBOARD: {
+        DESIGNER: "/dashboard/designer",
+        CUSTOMER: "/dashboard/customer",
+        ADMIN: "/dashboard/admin"
+    },
     PROPOSAL: {
         UPLOAD_FLOOR_PLAN: "/proposal/upload-floor-plan",
         CREATE: "/proposal/create",
