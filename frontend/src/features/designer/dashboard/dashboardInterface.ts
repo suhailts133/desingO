@@ -8,7 +8,7 @@ export type ProposalPaymentStatus = "Pending" | "Paid" | "Refunded"
 export interface DesignerDashboardDTO {
     userId: string
     name: string
-    activJobCount:number
+    activJobCount: number
     rating: number
     wallet: number
     moneyHeld: number
@@ -33,6 +33,9 @@ export interface OngoingDisputeDTOs {
     type: string
     reason: string
     status: DisputeStatus
+    sourceType: 'jobRequest' | 'direct_hire'
+    activeJobId: string
+    sourceId: string,
 }
 
 export interface OngoingProposalDTOs {

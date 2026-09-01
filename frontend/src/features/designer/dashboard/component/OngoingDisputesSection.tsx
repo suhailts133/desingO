@@ -1,5 +1,6 @@
 import { AlertTriangle } from "lucide-react"
 import type { OngoingDisputeDTOs } from "../dashboardInterface"
+import { useNavigate } from "react-router-dom"
 
 const statusStyles: Record<OngoingDisputeDTOs["status"], string> = {
     Open: "bg-amber-50 text-amber-700 border border-amber-200",
@@ -14,9 +15,16 @@ type Props = {
 }
 
 export default function OngoingDisputesSection({ disputes }: Props) {
-    const handleResolve = (proposalId: string) => {
-        // TODO: wire up dispute detail / resolution flow
-        console.log("resolve dispute for", proposalId)
+    const navigate = useNavigate()
+    const handleResolve = (dispute: OngoingDisputeDTOs) => {
+        console.log(dispute)
+        navigate(`/designer/proposal/${dispute.sourceId}`, {
+            state: {
+                activeJobId: dispute.activeJobId,
+                sourceType: dispute.sourceType,
+                sourceId: dispute.sourceId,
+            },
+        })
     }
 
     return (
@@ -44,7 +52,7 @@ export default function OngoingDisputesSection({ disputes }: Props) {
                                     {dispute.status}
                                 </span>
                                 <button
-                                    onClick={() => handleResolve(dispute.proposalId)}
+                                    onClick={() => handleResolve(dispute)}
                                     className="text-xs font-semibold px-3 py-1.5 rounded-full bg-blush-deep text-off-white hover:opacity-90"
                                 >
                                     View
