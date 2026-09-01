@@ -6,6 +6,7 @@ export interface DesignerDashboardDTO {
     name: string
     rating: number
     wallet: number
+    activJobCount:number
     moneyHeld: number
     completedJobCount: number
     designCount: number

@@ -4,7 +4,7 @@ import type { IUser } from "../../interfaces/auth/IUser";
 import type { IActiveJob } from "../../interfaces/customer/ICustomer";
 import type { IDispute } from "../../interfaces/proposal/IDispute";
 import type { IReview } from "../../interfaces/proposal/IProposal";
-import { ACTIVE_JOB_PROPOSAL_STATUS } from "../../shared/enums/commonEnums";
+import { ACTIVE_JOB_PROPOSAL_STATUS, ACTIVE_JOB_STATUS } from "../../shared/enums/commonEnums";
 import { CONTRACT_STATUS, DISPUTE_STATUS, ServiceStatus } from "../../shared/enums/proposalEnums";
 
 export class DashboardMapper {
@@ -17,6 +17,7 @@ export class DashboardMapper {
 
         const completedJobCount = proposals.filter(p => p.contractStatus === CONTRACT_STATUS.COMPLETED).length;
 
+        const activJobCount = activeJobs.filter(aj => aj.status === ACTIVE_JOB_STATUS.ACTIVE).length
 
 
         const pendingProposals: PendingProposalDTOs[] = activeJobs.filter(aj => aj.proposalStatus !== ACTIVE_JOB_PROPOSAL_STATUS.CREATED)
@@ -53,6 +54,7 @@ export class DashboardMapper {
         return {
             userId: user.id,
             rating,
+            activJobCount,
             name: user.full_name,
             wallet: user.wallet,
             moneyHeld,
