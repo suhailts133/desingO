@@ -23,7 +23,7 @@ export interface DisputeResponseDTO {
     raisedBy: "Customer" | "Designer";
     serviceOrder: number;
     reason: string;
-    contractStatus?:string,
+    contractStatus?: string,
     evidence: string[];
     status: DisputeStatus;
     resolution?: string;
@@ -72,6 +72,10 @@ export type DisputePopulatedAll = Omit<IDispute, "customerId" | "designerId" | "
 
 }
 
+export type DisputePopulateProposal = Omit<IDispute, "proposalId"> & {
+    proposalId: IProposal
+}
+
 
 export interface AllDisputeAdminDTO {
     id: string
@@ -89,8 +93,8 @@ export interface DisputeDetailAdminDTO {
     raisedBy: "Customer" | "Designer";
     reason: string;
     type: string
-    resolutionType?:string
-    resolution?:string
+    resolutionType?: string
+    resolution?: string
     status: DisputeStatus;
     createdAt: string;
     evidence: string[],
@@ -131,8 +135,8 @@ export interface DisputeSolutionDTO {
 }
 
 export interface DisputeSolutionResponseDTO extends DisputeSolutionDTO {
-    status:DisputeStatus
-    
+    status: DisputeStatus
+
 }
 
 

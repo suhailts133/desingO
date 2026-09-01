@@ -1,5 +1,5 @@
 import type { Pagination } from "../../DTO/admin/adminDTO";
-import type { DisputeAdminFilters, DisputePopulated, DisputePopulatedAll, DisputeRepoDTO, DisputeUpdateDTO } from "../../DTO/proposal/dispute";
+import type { DisputeAdminFilters, DisputePopulated, DisputePopulatedAll, DisputePopulateProposal, DisputeRepoDTO, DisputeUpdateDTO } from "../../DTO/proposal/dispute";
 import type { IUser } from "../../interfaces/auth/IUser";
 import type { IDispute, IDisputeRepository } from "../../interfaces/proposal/IDispute";
 import type { IProposal } from "../../interfaces/proposal/IProposal";
@@ -24,7 +24,7 @@ export class DisputeRepository extends BaseRepository<IDispute> implements IDisp
     }
 
 
-    async getAllDisputePerUserId(userId: string, role: "Designer" | "Customer"): Promise<IDispute[]> {
+    async getAllDisputePerUserId(userId: string, role: "Designer" | "Customer"): Promise<DisputePopulateProposal[]> {
         const objectId = new mongoose.Types.ObjectId(userId);
         const query: QueryFilter<IDispute> = {};
 
@@ -33,7 +33,7 @@ export class DisputeRepository extends BaseRepository<IDispute> implements IDisp
         } else {
             query.designerId = objectId;
         }
-        return await this.find(query);
+        return await this._model.find(query).populate<{ proposalId: IProposal }>("proposalId").exec()
     }
 
 

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { Star, Wallet, Lock, CheckCircle2, Palette, ChevronRight, Sparkles } from "lucide-react"
+import { Star, Wallet, Lock, CheckCircle2, Palette, ChevronRight, Sparkles ,Briefcase} from "lucide-react"
 import StatCard from "../component/StatCard"
 import type { DesignerDashboardDTO } from "../dashboardInterface"
 
@@ -19,7 +19,7 @@ export default function DesignerStatsOverview({ data }: Props) {
 
     const pendingCount = data.pendingProposals.length
     const disputeCount = data.ongoingDisputes.length
-    const activeCount = data.ongoingProposals.length
+    const activeCount = data.activJobCount
 
     const focusLine = (() => {
         if (pendingCount > 0) {
@@ -58,12 +58,13 @@ export default function DesignerStatsOverview({ data }: Props) {
                 </button>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                 <StatCard icon={Star} label="Rating" value={data.rating.toFixed(1)} />
                 <StatCard icon={Wallet} label="Wallet" value={`₹${data.wallet.toLocaleString("en-IN")}`} />
                 <StatCard icon={Lock} label="Money held" value={`₹${data.moneyHeld.toLocaleString("en-IN")}`} />
                 <StatCard icon={CheckCircle2} label="Completed jobs" value={data.completedJobCount} />
                 <StatCard icon={Palette} label="Designs" value={data.designCount} />
+                <StatCard icon={Briefcase} label="Active Jobs" value={activeCount} />
             </div>
         </div>
     )

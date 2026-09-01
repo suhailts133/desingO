@@ -1,15 +1,15 @@
 import type { DesignerDashboardDTO, OngoingDisputeDTOs, OngoingProposalDTOs, PendingProposalDTOs } from "../../DTO/common/dashboard";
+import type { DisputePopulateProposal } from "../../DTO/proposal/dispute";
 import type { IProposalSourcePopulated } from "../../DTO/proposal/proposal";
 import type { IUser } from "../../interfaces/auth/IUser";
 import type { IActiveJob } from "../../interfaces/customer/ICustomer";
-import type { IDispute } from "../../interfaces/proposal/IDispute";
 import type { IReview } from "../../interfaces/proposal/IProposal";
-import { ACTIVE_JOB_PROPOSAL_STATUS } from "../../shared/enums/commonEnums";
+import { ACTIVE_JOB_PROPOSAL_STATUS, ACTIVE_JOB_STATUS } from "../../shared/enums/commonEnums";
 import { CONTRACT_STATUS, DISPUTE_STATUS, ServiceStatus } from "../../shared/enums/proposalEnums";
 
 export class DashboardMapper {
 
-    static designerDashboardDTO(designCount: number, user: IUser, proposals: IProposalSourcePopulated[], reviews: IReview[], disputes: IDispute[], activeJobs: IActiveJob[]): DesignerDashboardDTO {
+    static designerDashboardDTO(designCount: number, user: IUser, proposals: IProposalSourcePopulated[], reviews: IReview[], disputes: DisputePopulateProposal[], activeJobs: IActiveJob[]): DesignerDashboardDTO {
 
         const rating = reviews.length ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
 
@@ -17,6 +17,7 @@ export class DashboardMapper {
 
         const completedJobCount = proposals.filter(p => p.contractStatus === CONTRACT_STATUS.COMPLETED).length;
 
+        const activJobCount = activeJobs.filter(aj => aj.status === ACTIVE_JOB_STATUS.ACTIVE).length
 
 
         const pendingProposals: PendingProposalDTOs[] = activeJobs.filter(aj => aj.proposalStatus !== ACTIVE_JOB_PROPOSAL_STATUS.CREATED)
@@ -31,7 +32,10 @@ export class DashboardMapper {
 
         const ongoingDisputes: OngoingDisputeDTOs[] = disputes.filter(d => d.status !== DISPUTE_STATUS.RESOLVED)
             .map(d => ({
-                proposalId: d.proposalId.toString(),
+                proposalId: d.proposalId.id,
+                sourceId: d.proposalId.sourceId.toString(),
+                activeJobId: d.proposalId.activeJobId.toString(),
+                sourceType: d.proposalId.sourceType,
                 type: d.type,
                 reason: d.reason,
                 status: d.status,
@@ -53,6 +57,7 @@ export class DashboardMapper {
         return {
             userId: user.id,
             rating,
+            activJobCount,
             name: user.full_name,
             wallet: user.wallet,
             moneyHeld,

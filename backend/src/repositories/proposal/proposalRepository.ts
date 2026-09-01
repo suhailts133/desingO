@@ -32,6 +32,7 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
             clientId: new mongoose.Types.ObjectId(data.clientId),
             designerId: new mongoose.Types.ObjectId(data.designerId),
             drawingFeePerSqFt: data.drawingFeePerSqFt,
+            sourceType: data.sourceType,
             totalDrawingFee: data.totalDrawingFee,
             totalExecutionFee: data.totalExecutionFee,
             totalContractValue: data.totalContractValue,

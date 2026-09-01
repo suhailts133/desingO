@@ -38,7 +38,6 @@ export default function PendingProposalsSection({ proposals }: Props) {
             return
         }
 
-        // CREATED or REJECTED → open the existing proposal
         navigate(`/designer/proposal/${job.sourceId}`, {
             state: {
                 activeJobId: job.activeJobId,

@@ -1,5 +1,5 @@
 import type { Pagination } from "../../DTO/admin/adminDTO";
-import type { AcceptOrRejectDisputeDTO, DisputeAdminFilters, DisputePopulated, DisputePopulatedAll, DisputeRaiseDTO, DisputeRepoDTO, DisputeResponseDTO, DisputeUpdateDTO } from "../../DTO/proposal/dispute";
+import type { AcceptOrRejectDisputeDTO, DisputeAdminFilters, DisputePopulated, DisputePopulatedAll, DisputePopulateProposal, DisputeRaiseDTO, DisputeRepoDTO, DisputeResponseDTO, DisputeUpdateDTO } from "../../DTO/proposal/dispute";
 import type { IApiResponse } from "../base/IApiResponse";
 import type { ImageUploadResult } from "../base/IImageUpload";
 import type { DisputeStatus } from "./IProposal";
@@ -31,7 +31,7 @@ export interface IDisputeRepository {
     getAllDisputeForAdmin(filters?: DisputeAdminFilters): Promise<{ data: DisputePopulated[]; pagination: Pagination; }>
     findDispute(id: string): Promise<DisputePopulatedAll | null>
     getAllDispute(proposalId: string): Promise<DisputePopulatedAll[]>
-    getAllDisputePerUserId(userId: string, role: "Designer" | "Customer"): Promise<IDispute[]>
+    getAllDisputePerUserId(userId: string, role: "Designer" | "Customer"): Promise<DisputePopulateProposal[]>
     findDisputeByProposalId(id: string): Promise<DisputePopulatedAll | null>
 }
 

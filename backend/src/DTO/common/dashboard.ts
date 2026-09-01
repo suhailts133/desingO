@@ -6,6 +6,7 @@ export interface DesignerDashboardDTO {
     name: string
     rating: number
     wallet: number
+    activJobCount: number
     moneyHeld: number
     completedJobCount: number
     designCount: number
@@ -28,6 +29,9 @@ export interface OngoingDisputeDTOs {
     type: string
     reason: string
     status: DisputeStatus
+    sourceType: 'jobRequest' | 'direct_hire'
+    activeJobId: string
+    sourceId: string,
 }
 
 export interface OngoingProposalDTOs {
