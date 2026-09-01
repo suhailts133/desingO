@@ -64,20 +64,21 @@ export type GetProposalDTO = Omit<IProposal, "clientId" | "designerId"> & {
     clientId: IUser
     designerId: IUser
 }
-export type IProposalSourcePopulated = Omit<IProposal, "sourceId" > & {
-    sourceId:IJobRequest
+export type IProposalSourcePopulated = Omit<IProposal, "sourceId"> & {
+    sourceId: IJobRequest
 }
 
 export interface CreateProposalRepoDataDTO extends Omit<CreateProposalDTO, "services"> {
     clientId: string
     designerId: string
-    activeJobId:string
+    activeJobId: string
     totalArea: number
+    sourceType: "jobRequest" | "direct_hire"
     totalDrawingFee: number
     totalExecutionFee: number
     totalContractValue: number
     sourceName: string
-    currentAmountHeld:number
+    currentAmountHeld: number
     platformFee: number;
     unit: "ft" | "m"
     remainingPlatformFee: number;

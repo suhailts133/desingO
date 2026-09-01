@@ -20,6 +20,9 @@ export class DisputeRepository extends BaseRepository<IDispute> implements IDisp
             proposalId: new mongoose.Types.ObjectId(data.proposalId),
             designerId: new mongoose.Types.ObjectId(data.designerId),
             customerId: new mongoose.Types.ObjectId(data.customerId),
+            sourceId: new mongoose.Types.ObjectId(data.sourceId),
+            activeJobId: new mongoose.Types.ObjectId(data.activeJobId),
+            sourceType:data.sourceType
         })
     }
 
