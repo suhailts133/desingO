@@ -11,8 +11,8 @@ import authRoutes from "./routes/common/authRoutes"
 // admin routes
 import userRoutes from "./routes/admin/userRoutes"
 import designerVerificationRoutes from "./routes/admin/designerVerificationRoutes"
-import disputeManagementRoutes from "./routes/admin/adminDisputeRoutes" 
-import transactionRoutes from "./routes/admin/transactionRoutes" 
+import disputeManagementRoutes from "./routes/admin/adminDisputeRoutes"
+import transactionRoutes from "./routes/admin/transactionRoutes"
 // designer routes
 import designerRoutes from "./routes/designer/designerRoutes"
 import designRoutes from "./routes/designer/designRoutes"
@@ -24,10 +24,11 @@ import hireDesignerRoute from "./routes/user/hireDesignerRoutes"
 import activeJobsRoute from "./routes/user/activeJobRoutes"
 // common routes
 import profileRoutes from "./routes/common/profileRoutes"
-import disputeRoutes from "./routes/proposal/disputeRoutes"
+import dashboardRoutes from "./routes/common/dashboardRoutes"
 //benchmark routes
 import designBMRoutes from "./routes/benchmark/designBMRoutes"
 // proposalRoutes
+import disputeRoutes from "./routes/proposal/disputeRoutes"
 import paymentRoutes from "./routes/proposal/paymentRoutes"
 import proposalRoutes from "./routes/proposal/proposalRoutes"
 import reviewRoutes from "./routes/proposal/reviewRoutes"
@@ -72,6 +73,7 @@ app.use("/api/active-job", activeJobsRoute)
 
 app.use("/api/review", reviewRoutes)
 app.use("/api/dispute", disputeRoutes)
+app.use("/api/dashboard", dashboardRoutes)
 app.use(globalErrorHandler)
 
 

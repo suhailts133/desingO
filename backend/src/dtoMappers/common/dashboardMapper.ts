@@ -1,14 +1,66 @@
-// import type { DesignerDashboardDTO } from "../../DTO/common/dashboard";
-// import type { IUser } from "../../interfaces/auth/IUser";
-// import type { IActiveJob } from "../../interfaces/customer/ICustomer";
-// import type { IDispute } from "../../interfaces/proposal/IDispute";
-// import type { IProposal, IReview } from "../../interfaces/proposal/IProposal";
+import type { DesignerDashboardDTO, OngoingDisputeDTOs, OngoingProposalDTOs, PendingProposalDTOs } from "../../DTO/common/dashboard";
+import type { IProposalSourcePopulated } from "../../DTO/proposal/proposal";
+import type { IUser } from "../../interfaces/auth/IUser";
+import type { IActiveJob } from "../../interfaces/customer/ICustomer";
+import type { IDispute } from "../../interfaces/proposal/IDispute";
+import type { IReview } from "../../interfaces/proposal/IProposal";
+import { ACTIVE_JOB_PROPOSAL_STATUS } from "../../shared/enums/commonEnums";
+import { CONTRACT_STATUS, DISPUTE_STATUS, ServiceStatus } from "../../shared/enums/proposalEnums";
 
-// export class DashboardMapper {
+export class DashboardMapper {
 
-//     static designerDashboardDTO(designCount:number, user: IUser, proposals: IProposal[], reviews: IReview[], disputes: IDispute[], activeJobs: IActiveJob[]): DesignerDashboardDTO {
-//         const cardInfo = {
-//             wallet:user.wallet
-//         }
-//      }
-// }
+    static designerDashboardDTO(designCount: number, user: IUser, proposals: IProposalSourcePopulated[], reviews: IReview[], disputes: IDispute[], activeJobs: IActiveJob[]): DesignerDashboardDTO {
+
+        const rating = reviews.length ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
+
+        const moneyHeld = proposals.reduce((sum, p) => sum + p.currentAmountHeld, 0);
+
+        const completedJobCount = proposals.filter(p => p.contractStatus === CONTRACT_STATUS.COMPLETED).length;
+
+
+
+        const pendingProposals: PendingProposalDTOs[] = activeJobs.filter(aj => aj.proposalStatus !== ACTIVE_JOB_PROPOSAL_STATUS.CREATED)
+            .map(aj => ({
+                sourceId: aj.sourceId.toString(),
+                sourceType: aj.sourceType,
+                activeJobId: aj.id,
+                jobName: aj.sourceName,
+                proposalStatus: aj.proposalStatus,
+            }));
+
+
+        const ongoingDisputes: OngoingDisputeDTOs[] = disputes.filter(d => d.status !== DISPUTE_STATUS.RESOLVED)
+            .map(d => ({
+                proposalId: d.proposalId.toString(),
+                type: d.type,
+                reason: d.reason,
+                status: d.status,
+            }));
+
+        const ongoingProposals: OngoingProposalDTOs[] = proposals.flatMap(p => p.services.filter(s => s.status !== ServiceStatus.COMPLETED && s.status !== ServiceStatus.LOCKED)
+            .map(s => ({
+                proposalId: p.id,
+                activeJobId: p.activeJobId.toString(),
+                jobId: p.sourceId.id,
+                sourceType: p.sourceId.sourceType,
+                jobName: p.sourceName,
+                serviceName: s.serviceName,
+                status: s.status,
+                paymentStatus: s.paymentStatus,
+            }))
+        );
+
+        return {
+            userId: user.id,
+            rating,
+            name: user.full_name,
+            wallet: user.wallet,
+            moneyHeld,
+            completedJobCount,
+            designCount,
+            pendingProposals,
+            ongoingDisputes,
+            ongoingProposals,
+        };
+    }
+}

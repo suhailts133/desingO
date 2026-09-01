@@ -4,8 +4,9 @@ import { serviceItemSchema } from "./schemas/serviceItemSchema"
 import { imageFormatSchema } from "./schemas/imageFormatSchema"
 
 const proposalSchema = new Schema<IProposal>({
-    
-    sourceId: { type: mongoose.Schema.Types.ObjectId, required: true },
+
+    sourceId: { type: mongoose.Schema.Types.ObjectId, ref:"JobRequest", required: true },
+    activeJobId: { type: mongoose.Schema.Types.ObjectId, ref: "ActiveJob", required: true },
     clientId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     designerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     disputeId: { type: String },

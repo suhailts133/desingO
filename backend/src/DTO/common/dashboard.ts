@@ -1,21 +1,23 @@
-import type { DisputeStatus, EscrowStatus, ProposalPaymentStatus, ProposalServiceStatus } from "../../interfaces/proposal/IProposal"
+import type { Source_type } from "../../interfaces/customer/ICustomer"
+import type { DisputeStatus, ProposalPaymentStatus, ProposalServiceStatus } from "../../interfaces/proposal/IProposal"
 
 export interface DesignerDashboardDTO {
     userId: string
+    name: string
     rating: number
     wallet: number
     moneyHeld: number
-    activeJobCount: number
     completedJobCount: number
     designCount: number
-    pendingProposals: PendingProposalDTOs
-    ongoingDisputes: OngoingDisputeDTOs
-    ongoingProposals: OngoingProposalDTOs
+    pendingProposals: PendingProposalDTOs[]
+    ongoingDisputes: OngoingDisputeDTOs[]
+    ongoingProposals: OngoingProposalDTOs[]
 
 }
 
 export interface PendingProposalDTOs {
     sourceId: string,
+    activeJobId: string
     sourceType: 'jobRequest' | 'direct_hire'
     jobName: string
     proposalStatus: "NOT_CREATED" | "CREATED" | "REJECTED"
@@ -30,10 +32,11 @@ export interface OngoingDisputeDTOs {
 
 export interface OngoingProposalDTOs {
     proposalId: string
+    sourceType: Source_type
     jobName: string
+    activeJobId: string
     jobId: string;
     serviceName: string
     status: ProposalServiceStatus
     paymentStatus: ProposalPaymentStatus
-    escrowStatus: EscrowStatus
 }
