@@ -73,6 +73,7 @@ export class ProposalService implements IProposalService {
             clientId: activeJob.userId.toString(),
             designerId: activeJob.designerId.toString(),
             totalDrawingFee,
+            activeJobId:activeJob.id,
             platformFee: calculatedPlatformFee,
             remainingPlatformFee: calculatedPlatformFee,
             totalExecutionFee,

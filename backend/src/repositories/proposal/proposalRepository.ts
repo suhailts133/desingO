@@ -1,18 +1,19 @@
 import mongoose, { type QueryFilter, type UpdateQuery } from "mongoose";
-import type { CreateProposalRepoDataDTO, GetProposalDTO, ProposalStatusFilter, ProposalStatusUpdateRepoDTO } from "../../DTO/proposal/proposal";
+import type { CreateProposalRepoDataDTO, GetProposalDTO, IProposalSourcePopulated, ProposalStatusFilter, ProposalStatusUpdateRepoDTO } from "../../DTO/proposal/proposal";
 import type { ContractStatus, IEscrow, IProposal, PaymentUpdateStatus, ProposalServiceStatus } from "../../interfaces/proposal/IProposal";
 import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
 import { ProposalModel } from "../../models/proposal/proposalModal";
 import { BaseRepository } from "../baseRepository";
 import type { IUser } from "../../interfaces/auth/IUser";
 import { CONTRACT_STATUS, FIRST_SERVICE_ORDER_NUMBER, ServicePaymentStatus, ServiceStatus, USER_TYPE } from "../../shared/enums/proposalEnums";
+import type { IJobRequest } from "../../interfaces/customer/ICustomer";
 
 export class ProposalRepository extends BaseRepository<IProposal> implements IProposalRepository {
     constructor() {
         super(ProposalModel)
     }
 
-    async getProposalsByUserId(userId: string, role: "Designer" | "Customer"): Promise<IProposal[]> {
+    async getProposalsByUserId(userId: string, role: "Designer" | "Customer"): Promise<IProposalSourcePopulated[]> {
         const objectId = new mongoose.Types.ObjectId(userId);
         const query: QueryFilter<IProposal> = {};
 
@@ -21,12 +22,13 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
         } else {
             query.designerId = objectId;
         }
-        return await this.find(query);
+        return await this._model.find(query).populate<{ sourceId: IJobRequest }>("sourceId").exec();
     }
 
     async createProposal(data: CreateProposalRepoDataDTO): Promise<IProposal> {
         return await this.create({
             sourceId: new mongoose.Types.ObjectId(data.sourceId),
+            activeJobId: new mongoose.Types.ObjectId(data.activeJobId),
             clientId: new mongoose.Types.ObjectId(data.clientId),
             designerId: new mongoose.Types.ObjectId(data.designerId),
             drawingFeePerSqFt: data.drawingFeePerSqFt,
@@ -35,7 +37,7 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
             totalContractValue: data.totalContractValue,
             totalArea: data.totalArea,
             unit: data.unit,
-            currentAmountHeld:data.currentAmountHeld,
+            currentAmountHeld: data.currentAmountHeld,
             sourceName: data.sourceName,
             expectedCompletionDate: data.expectedCompletionDate,
             services: data.services,

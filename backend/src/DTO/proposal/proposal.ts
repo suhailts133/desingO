@@ -1,4 +1,5 @@
 import type { IUser } from "../../interfaces/auth/IUser";
+import type { IJobRequest } from "../../interfaces/customer/ICustomer";
 import type { ContractStatus, IProposal, IServiceItem, ProposalPaymentStatus, ProposalServiceStatus, VersionStatus } from "../../interfaces/proposal/IProposal";
 
 export interface ServiceItem {
@@ -63,10 +64,14 @@ export type GetProposalDTO = Omit<IProposal, "clientId" | "designerId"> & {
     clientId: IUser
     designerId: IUser
 }
+export type IProposalSourcePopulated = Omit<IProposal, "sourceId" > & {
+    sourceId:IJobRequest
+}
 
 export interface CreateProposalRepoDataDTO extends Omit<CreateProposalDTO, "services"> {
     clientId: string
     designerId: string
+    activeJobId:string
     totalArea: number
     totalDrawingFee: number
     totalExecutionFee: number

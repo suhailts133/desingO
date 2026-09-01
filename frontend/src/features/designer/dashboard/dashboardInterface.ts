@@ -1,5 +1,9 @@
-import type { Source_type } from "../../interfaces/customer/ICustomer"
-import type { DisputeStatus, ProposalPaymentStatus, ProposalServiceStatus } from "../../interfaces/proposal/IProposal"
+import type { ProposalServiceStatus } from "../../admin/disputes/adminDisputeInterface"
+import type { DisputeStatus } from "../../proposal/proposalInterface"
+import type { Source_type } from "../../user/jobs/jobInterface"
+
+
+export type ProposalPaymentStatus = "Pending" | "Paid" | "Refunded"
 
 export interface DesignerDashboardDTO {
     userId: string
@@ -32,9 +36,9 @@ export interface OngoingDisputeDTOs {
 
 export interface OngoingProposalDTOs {
     proposalId: string
+    activeJobId: string
     sourceType: Source_type
     jobName: string
-    activeJobId: string
     jobId: string;
     serviceName: string
     status: ProposalServiceStatus

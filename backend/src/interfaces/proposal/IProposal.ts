@@ -65,6 +65,7 @@ export interface IServiceItem {
 export interface IProposal {
     id: string;
     sourceId: mongoose.Types.ObjectId
+    activeJobId: mongoose.Types.ObjectId
     sourceType: "jobRequest" | "direct_hire",
     sourceName: string
     clientId: mongoose.Types.ObjectId;

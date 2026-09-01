@@ -1,6 +1,6 @@
 import type { Pagination } from "../../DTO/admin/adminDTO";
 import type { paymentRepoDTO } from "../../DTO/proposal/payment";
-import type { CreateProposalRepoDataDTO, GetProposalDTO } from "../../DTO/proposal/proposal";
+import type { CreateProposalRepoDataDTO, GetProposalDTO, IProposalSourcePopulated } from "../../DTO/proposal/proposal";
 import type { ReviewRepoDTO } from "../../DTO/proposal/review";
 import type { CreateServiceVersionRepoDTO, VersionAcceptOrRejectDTO } from "../../DTO/proposal/version";
 import type { IPayment, PaymentStatus } from "./IPayment";
@@ -15,7 +15,7 @@ export interface IProposalRepository {
     updateService(sourceId: string, order: number, status: ProposalServiceStatus, paymentStatus: PaymentUpdateStatus, escrow: Partial<IEscrow>, feeDeduction?: number, currentAmountHeld?: number): Promise<IProposal | null>
     updateServiceVersion(sourceId: string, order: number, status: ProposalServiceStatus, newVersion: number): Promise<IProposal | null>
     acceptOrRejectServiceResult(sourceId: string, order: number, status: ProposalServiceStatus): Promise<IProposal | null>
-    getProposalsByUserId(userId: string, role: "Designer" | "Customer"): Promise<IProposal[]>
+    getProposalsByUserId(userId: string, role: "Designer" | "Customer"): Promise<IProposalSourcePopulated[]>
 }
 
 export interface IReviewRepository {
