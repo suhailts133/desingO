@@ -58,7 +58,7 @@ export default function DesignerStatsOverview({ data }: Props) {
                 </button>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                 <StatCard icon={Star} label="Rating" value={data.rating.toFixed(1)} />
                 <StatCard icon={Wallet} label="Wallet" value={`₹${data.wallet.toLocaleString("en-IN")}`} />
                 <StatCard icon={Lock} label="Money held" value={`₹${data.moneyHeld.toLocaleString("en-IN")}`} />
