@@ -5,7 +5,7 @@ import { imageFormatSchema } from "./schemas/imageFormatSchema"
 
 const proposalSchema = new Schema<IProposal>({
 
-    sourceId: { type: mongoose.Schema.Types.ObjectId, ref:"JobRequest", required: true },
+    sourceId: { type: mongoose.Schema.Types.ObjectId, ref: "JobRequest", required: true },
     activeJobId: { type: mongoose.Schema.Types.ObjectId, ref: "ActiveJob", required: true },
     clientId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     designerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -28,6 +28,7 @@ const proposalSchema = new Schema<IProposal>({
         default: "Sent",
         required: true
     },
+    sourceType: { type: String, enum: ['jobRequest', 'direct_hire'], required: true },
     overallRejectionReason: { type: String },
     sourceName: { type: String, required: true },
     siteVisitingNeeded: { type: Boolean, default: false },
