@@ -12,6 +12,10 @@ export const API_ROUTES = {
         GOOGLE_LOGIN: "/auth/google",
         REFRESH_TOKEN: "/auth/refresh"
     },
+    RECOMENDATION:{
+        DESIGN:"/recomendation/designs",
+        JOBS:"/recomendation/jobs",
+    },
     ADMIN: {
         GET_ALL_USERS: "/admin/users",
         GET_ALL_USER: "/admin/users",

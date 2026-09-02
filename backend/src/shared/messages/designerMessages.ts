@@ -1,6 +1,8 @@
 export const DESIGNER_MESSAGES = {
 
     DESIGNS: {
+        RECOMENDED: "fetched recomended designs.",
+        RECENT: "fetched recent designs.",
         ID_REQUIRED: "Design ID is required.",
         DESIGN_NOT_FOUND: "Design not found. Please contact support.",
         GET_ALL_DESIGNS: "Designs fetched successfully.",

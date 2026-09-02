@@ -23,9 +23,11 @@ export interface IDesignRepository {
     getDesign(designId: string): Promise<IDesignPopulated | null>,
     getAllDesigns(designFilter?: DesignFilter): Promise<{ data: IDesignPopulated[], pagination: Pagination }>;
     deleteADesign(id: string): Promise<boolean>;
-    countMyDesigns(userId:string):Promise<number>
+    countMyDesigns(userId: string): Promise<number>
     editDesign(id: string, data: EditDesignRepoData, coverImage?: ImageUploadResult, gallery?: ImageUploadResult[]): Promise<boolean>
     computeAvgPriceBySpaceType(): Promise<SpaceTypeAvg[]>
+    findMostRecent(limit: number): Promise<IDesignPopulated[]>;
+    findCandidatesExcluding(excludedIds: string[]): Promise<IDesignPopulated[]>;
 }
 
 

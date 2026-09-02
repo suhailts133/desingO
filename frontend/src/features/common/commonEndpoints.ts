@@ -1,6 +1,7 @@
 import { API_ROUTES } from "../../api/apiRoutes";
 import { baseApi } from "../../api/baseApi";
-import type { IApiResponse, IApiResponseWithPagination } from "../../api/responseType";
+import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../../api/responseType";
+import type { GetAllDesignCommonResponseDTO } from "../designer/designs/designInterface";
 import type { DesignerCardDTO, DesignerFilter, DesignGallaryDTO, ISavedDesignDTO } from "./commonInterface";
 
 export const commonApis = baseApi.injectEndpoints({
@@ -16,8 +17,8 @@ export const commonApis = baseApi.injectEndpoints({
             })
         }),
 
-        getDesignGallary: builder.query<IApiResponseWithPagination<DesignGallaryDTO[]>, {id:string, page:number}>({
-            query: ({id, page}) => ({
+        getDesignGallary: builder.query<IApiResponseWithPagination<DesignGallaryDTO[]>, { id: string, page: number }>({
+            query: ({ id, page }) => ({
                 url: `${API_ROUTES.DESIGNS.DESIGN_GALLARY}/${id}`,
                 method: "GET",
                 params: {
@@ -25,19 +26,26 @@ export const commonApis = baseApi.injectEndpoints({
                 }
             })
         }),
-        getDesignerDetail:builder.query<IApiResponse<DesignerCardDTO>, string>({
-            query:(designerId) => ({
-                url:API_ROUTES.DESIGNER.GET_DESIGNER_DETAIL(designerId),
-                method:"GET"
+        getDesignerDetail: builder.query<IApiResponse<DesignerCardDTO>, string>({
+            query: (designerId) => ({
+                url: API_ROUTES.DESIGNER.GET_DESIGNER_DETAIL(designerId),
+                method: "GET"
             })
         }),
-        saveDesign:builder.mutation<IApiResponse<boolean>,ISavedDesignDTO>({
-            query:(body) => ({
-                url:API_ROUTES.SAVE_DESIGNS.ADD_REMOVE,
-                method:"PATCH",
-                body:body
+        saveDesign: builder.mutation<IApiResponse<boolean>, ISavedDesignDTO>({
+            query: (body) => ({
+                url: API_ROUTES.SAVE_DESIGNS.ADD_REMOVE,
+                method: "PATCH",
+                body: body
             }),
-            invalidatesTags:["savedDesigns"]
+            invalidatesTags: ["savedDesigns"]
+        }),
+
+        recommendDesigns: builder.query<IApiResponseWithRecomendation<GetAllDesignCommonResponseDTO[]>, void>({
+            query:() => ({
+                url:API_ROUTES.RECOMENDATION.DESIGN,
+                method:"GET"
+            })
         })
     })
 })
@@ -47,5 +55,6 @@ export const {
     useGetAllDesignersQuery,
     useGetDesignerDetailQuery,
     useGetDesignGallaryQuery,
-    useSaveDesignMutation
+    useSaveDesignMutation,
+    useRecommendDesignsQuery
 } = commonApis

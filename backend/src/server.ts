@@ -25,6 +25,7 @@ import activeJobsRoute from "./routes/user/activeJobRoutes"
 // common routes
 import profileRoutes from "./routes/common/profileRoutes"
 import dashboardRoutes from "./routes/common/dashboardRoutes"
+import recomendationRoutes from "./routes/common/recomendationRoutes"
 //benchmark routes
 import designBMRoutes from "./routes/benchmark/designBMRoutes"
 // proposalRoutes
@@ -74,6 +75,7 @@ app.use("/api/active-job", activeJobsRoute)
 app.use("/api/review", reviewRoutes)
 app.use("/api/dispute", disputeRoutes)
 app.use("/api/dashboard", dashboardRoutes)
+app.use("/api/recomendation", recomendationRoutes)
 app.use(globalErrorHandler)
 
 

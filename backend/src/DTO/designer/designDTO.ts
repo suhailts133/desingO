@@ -47,6 +47,7 @@ export interface createDesignDTO extends AddDesignRequestDTO {
     userId: string;
     coverImage: ImageUploadResult;
     gallery: ImageUploadResult[]
+    embedding:number[]
 }
 
 

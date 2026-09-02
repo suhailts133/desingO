@@ -1,25 +1,27 @@
-import ActiveJobCard from "../../../shared/common/ActiveJobCard";
+import { useRecommendDesignsQuery } from "../commonEndpoints";
+import DesignCard from "../components/cards/DesignCard";
+import DesignCardSkeleton from "../skeltons/DesignCardSkeleton";
 
 export default function Home() {
 
+  const { data, isLoading, error } = useRecommendDesignsQuery()
 
+  if (error) {
+    return <div>error</div>
+  }
   return (
     <div className="m-6">
-      home
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-        <ActiveJobCard data={{
-          id: "job_001",
-          sourceType: "jobRequest",
-          sourceName: "Living Room Redesign",
-          sourceId: "src_9f3a21bc",
-          profileImage:"https://cdn-front.freepik.com/home/anon-rvmp/creative-suite/photography/change-location.webp",
-          userName: "Arjun Menon",
-          status: "Active",
-          startedAt: "12 May 2025",
-          proposalStatus:"CREATED"
-        }} />
-
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {isLoading
+            ? Array.from({ length: 8 }).map((_, i) => (
+              <DesignCardSkeleton key={i} />
+            ))
+            : data?.data?.map((item) => (
+              <DesignCard design={item} key={item.id} />
+            ))
+          }
+        </div>
       </div>
     </div>
   )

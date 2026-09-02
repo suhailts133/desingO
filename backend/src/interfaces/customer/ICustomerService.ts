@@ -1,7 +1,8 @@
+import type { GetAllDesignCommonResponseDTO } from "../../DTO/designer/designDTO";
 import type { ActiveJobFilter, ActiveJobResponseDTO } from "../../DTO/user/activeJobDTO";
 import type { AcceptOrRejectHireDesignerDTO, getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
 import type { EditJobRequest, HireDesignerDTO, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO";
-import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse";
+import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../base/IApiResponse";
 import type { WarningDTO } from "../benchmark/IBenchMark";
 import type { MessageRole } from "../chat/IChat";
 import type { HireDesignerPayload, ICreateJobRequest, Source_type } from "./ICustomer";
@@ -31,4 +32,10 @@ export interface IActiveJobService {
     getCustomerActiveJobs(id: string, filter?: ActiveJobFilter): Promise<IApiResponseWithPagination<ActiveJobResponseDTO[]>>
     getDesignerActiveJobs(id: string, filter?: ActiveJobFilter): Promise<IApiResponseWithPagination<ActiveJobResponseDTO[]>>
     validateJobForChat(activeJobId: string, userId: string): Promise<MessageRole>
+}
+
+
+export interface ICustomerInteractionService {
+    _getCustomerTasteVector(customerId: string): Promise<number[] | null>
+    getRecomendedDesigns(customerId: string): Promise<IApiResponseWithRecomendation<GetAllDesignCommonResponseDTO[]>>
 }

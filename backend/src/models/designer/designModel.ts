@@ -27,6 +27,7 @@ const designSchema = new Schema<IDesign>({
     coverImage: { type: imageFormatSchema, required: true },
     gallery: { type: [imageFormatSchema], required: true, default: [] },
     designStyles: { type: [String], required: true, default: [] },
+    embedding: { type: [Number], default: [] },
     services: { type: [String], required: true, default: [] },
 
 }, { timestamps: true })

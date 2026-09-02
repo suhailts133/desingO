@@ -15,6 +15,21 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
         super(DesignModel)
     }
 
+
+    async findCandidatesExcluding(excludedIds: string[]): Promise<IDesignPopulated[]> {
+        return await this._model.find({ _id: { $nin: excludedIds }, embedding: { $exists: true, $not: { $size: 0 } } })
+            .populate<{ userId: IUser }>("userId")
+            .exec()
+    }
+
+    async findMostRecent(limit: number): Promise<IDesignPopulated[]> {
+        return await this._model.find()
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .populate<{ userId: IUser }>("userId")
+            .exec()
+    }
+
     async createDesign(data: createDesignDTO): Promise<boolean> {
         const result = await this.create({
             ...data,
@@ -143,5 +158,7 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
 
         return result;
     }
+
+
 
 }
