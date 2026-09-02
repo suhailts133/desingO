@@ -9,3 +9,8 @@ export interface IApiResponseWithPagination<T> extends IApiResponse<T> {
     total: number;
     totalPages: number;
 }
+
+export interface IApiResponseWithRecomendation<T> extends IApiResponse<T> {
+    DataType: "JOB" | "DESIGN";
+    type: "RECOMENDED" | "RECENT";
+}

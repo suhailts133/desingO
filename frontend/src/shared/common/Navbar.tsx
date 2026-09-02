@@ -31,7 +31,7 @@ export default function Navbar() {
 
         {/* Logo */}
         <div className="font-Dynalight-Regular pl-1 text-md sm:text-lg md:text-2xl">
-          designO
+          <Link to="/">designO</Link>
         </div>
 
         {/* Desktop Nav Links */}
