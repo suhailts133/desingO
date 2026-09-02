@@ -12,6 +12,20 @@ export class DesignMapper {
             maxPrice: data.maxPrice.toString()
         }))
     }
+    static toDesignsNotSavedDTOlist(designs: IDesignPopulated[]): GetAllDesignCommonResponseDTO[] {
+        return designs.map(data => ({
+            id: data.id,
+            name: data.name,
+            spaceType: data.spaceType,
+            designStyles: data.designStyles,
+            coverImage: data.coverImage.path,
+            minPrice: data.minPrice.toString(),
+            maxPrice: data.maxPrice.toString(),
+            designerName: data.userId.full_name,
+            isSaved: false
+
+        }))
+    }
     static toDesignsDTOlist(designs: IDesignPopulated[], saved: Set<string>): GetAllDesignCommonResponseDTO[] {
         return designs.map(data => ({
             id: data.id,

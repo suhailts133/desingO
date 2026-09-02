@@ -3,7 +3,7 @@ import type { AddDesignRequestDTO, DesignDetailResponseDTO, DesignFiles, DesignF
 import type { DesignerCardDTO, DesignerFilter } from "../../DTO/designer/designerDTO";
 import type { DesignerVerificationBodyDTO } from "../../DTO/designer/designerVerificationDTOs";
 import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO";
-import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse";
+import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../base/IApiResponse";
 import type { WarningDTO } from "../benchmark/IBenchMark";
 import type { DesignerVerificationFiles } from "./IDesigner";
 
@@ -22,6 +22,7 @@ export interface IDesignService {
     getDesignDetail(designId: string, userId?: string): Promise<IApiResponse<DesignDetailResponseDTO>>
     getAllDesigns(userId?: string, designFilter?: DesignFilter): Promise<IApiResponseWithPagination<GetAllDesignCommonResponseDTO[]>>
     deleteADesign(id: string): Promise<IApiResponse>
+    getRecentDesigns(): Promise<IApiResponseWithRecomendation<GetAllDesignCommonResponseDTO[]>>
     getDesignGallary(designerId: string, page?: string): Promise<IApiResponseWithPagination<DesignGallaryDTO[]>>
 }
 

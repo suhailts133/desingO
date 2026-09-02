@@ -55,7 +55,7 @@ export interface IJobRequest {
     designerId?: mongoose.Types.ObjectId
     designId?: mongoose.Types.ObjectId
     projectTitle: string;
-    rejectionReason?:string
+    rejectionReason?: string
     propertyType: string;
     projectType: ProjectType
     sourceType: Source_type
@@ -143,8 +143,6 @@ export type HireDesignerPayload = {
     timeLine: string;
 };
 
-
-
 export interface IActiveJob {
     id: string
     userId: mongoose.Types.ObjectId
@@ -159,4 +157,14 @@ export interface IActiveJob {
     cancelledAt?: Date
     createdAt: Date
 }
+
+export interface ICustomerInteraction {
+    id: string
+    customerId: mongoose.Types.ObjectId
+    designId: mongoose.Types.ObjectId
+    action: "View" | "Save" | "Hire"
+    weight: number
+    createdAt: Date
+}
+
 

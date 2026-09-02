@@ -68,6 +68,7 @@ export interface IDesign {
   district: string;
   services: string[];
   designStyles: string[]
+  embedding: number[],
   description: string
   coverImage: ImageUploadResult;
   gallery: ImageUploadResult[];

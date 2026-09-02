@@ -82,3 +82,16 @@ export enum JOB_SOURCE_TYPE {
     JOB_REQUEST = "JOB_REQUEST",
     DIRECT_HIRE = "DIRECT_HIRE"
 }
+
+
+
+export enum RECOMENDATION_TYPE {
+    RECOMMENDED = "RECOMENDED",
+    RECENT = "RECENT"
+}
+
+
+export enum RECOMENDATION_DATA_TYPE {
+    JOB = "JOB",
+    DESIGN = "DESIGN"
+}
