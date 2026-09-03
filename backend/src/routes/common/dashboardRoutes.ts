@@ -8,6 +8,9 @@ import { ProposalRepository } from "../../repositories/proposal/proposalReposito
 import { ReviewRepository } from "../../repositories/proposal/reviewRepository";
 import { ActiveJobRepository } from "../../repositories/common/activeJobRepository";
 import { DesignRepository } from "../../repositories/designer/designRepository";
+import { CustomerDashboardService } from "../../services/customer/customerDashboardService";
+import customerAuthentication from "../../middlewares/customerAuth";
+import { JobRequestRepository } from "../../repositories/customer/jobRequestRepository";
 
 const router = Router()
 
@@ -18,9 +21,12 @@ const userRepo = new UserRepository()
 const proposalRepo = new ProposalRepository()
 const reviewRepo = new ReviewRepository()
 const activeJobRepo = new ActiveJobRepository()
+const jobRepo = new JobRequestRepository()
 const designerDashboardService = new DesignerDashboardService(designRepo, disputeRepo, userRepo, proposalRepo, reviewRepo, activeJobRepo)
-const dashboardController = new DashboardController(designerDashboardService)
+const customerDashboardService = new CustomerDashboardService(jobRepo, disputeRepo, userRepo, proposalRepo, activeJobRepo)
+const dashboardController = new DashboardController(designerDashboardService, customerDashboardService)
 
 router.get("/designer", designerAuthentication, dashboardController.getDesignerDashboard)
+router.get("/customer", customerAuthentication, dashboardController.getCustomerDashboard)
 
 export default router

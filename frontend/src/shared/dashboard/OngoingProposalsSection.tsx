@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { Briefcase } from "lucide-react"
-import type { OngoingProposalDTOs } from "../dashboardInterface"
+import type { OngoingProposalDTOs } from "../../features/designer/dashboard/dashboardInterface"
 
 const statusStyles: Record<OngoingProposalDTOs["status"], string> = {
     Locked: "bg-gray-100 text-gray-700 border border-gray-200",
@@ -19,13 +19,16 @@ const paymentStyles: Record<OngoingProposalDTOs["paymentStatus"], string> = {
 
 type Props = {
     proposals: OngoingProposalDTOs[]
+    role: "Customer" | "Designer" | "Admin" | null
 }
 
-export default function OngoingProposalsSection({ proposals }: Props) {
+export default function OngoingProposalsSection({ proposals, role }: Props) {
     const navigate = useNavigate()
 
+
     const viewProposal = (proposal: OngoingProposalDTOs) => {
-        navigate(`/designer/proposal/${proposal.jobId}`, {
+        const basePath = role === "Designer" ? "/designer/proposal" : "/customer/proposal"
+        navigate(`${basePath}/${proposal.jobId}`, {
             state: {
                 sourceType: proposal.sourceType === "JOB_REQUEST" ? "jobRequest" : "direct_hire",
                 activeJobId: proposal.activeJobId,

@@ -16,6 +16,11 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
         super(JobRequestModel)
     }
 
+    async countJobs(userId: string): Promise<number> {
+        return this._model.countDocuments({ userId});
+    }
+
+
     async updateHireRequest(id: string, data: Partial<IJobRequest>): Promise<IJobRequest | null> {
         return await this.update(id, data)
     }
@@ -59,7 +64,7 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
             .limit(limit)
             .sort({ createdAt: 1 })
             .exec()
-        const total = await this._model.countDocuments({ userId,sourceType});
+        const total = await this._model.countDocuments({ userId, sourceType });
 
         const pagination: Pagination = {
             total,

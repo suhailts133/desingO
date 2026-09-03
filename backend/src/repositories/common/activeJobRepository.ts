@@ -15,12 +15,17 @@ export class ActiveJobRepository extends BaseRepository<IActiveJob> implements I
         super(ActiveJobModel)
     }
 
+    async countCustomerActiveJobs(userId: string): Promise<number> {
+        return this._model.countDocuments({ userId, status: ACTIVE_JOB_STATUS.ACTIVE });
+    }
+
+
     async getActiveJobBySource(id: string): Promise<IActiveJob | null> {
         return this.findOne({ sourceId: id })
     }
 
     async updateActiveJob(jobId: string, data: Partial<IActiveJob>): Promise<IActiveJob | null> {
-        const result = await this.updateOne({sourceId:jobId}, data)
+        const result = await this.updateOne({ sourceId: jobId }, data)
         return result
     }
 
@@ -60,7 +65,7 @@ export class ActiveJobRepository extends BaseRepository<IActiveJob> implements I
 
     async getCustomerActiveJobs(customerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulated[], pagination: Pagination }> {
         const query: QueryFilter<IActiveJob> = { sourceType: filter?.sourceType ?? "jobRequest", userId: customerId };
-      
+
         const page = filter?.page ? Number(filter.page) : 1;
         const limit = 6
         const skip = (page - 1) * limit;
@@ -88,7 +93,7 @@ export class ActiveJobRepository extends BaseRepository<IActiveJob> implements I
     async getDesignerActiveJobs(designerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulated[], pagination: Pagination }> {
 
         const query: QueryFilter<IActiveJob> = { sourceType: filter?.sourceType ?? "jobRequest", designerId: designerId };
-       
+
         const page = filter?.page ? Number(filter.page) : 1;
         const limit = 6
         const skip = (page - 1) * limit;

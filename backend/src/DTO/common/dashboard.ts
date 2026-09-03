@@ -1,6 +1,24 @@
 import type { Source_type } from "../../interfaces/customer/ICustomer"
 import type { DisputeStatus, ProposalPaymentStatus, ProposalServiceStatus } from "../../interfaces/proposal/IProposal"
 
+
+
+export interface CustomerDashboardDTO {
+    userId: string
+    name: string
+    wallet: number
+    totalJobCount:number
+    totalMoneySpent: number
+    activJobCount: number
+    moneyHeld: number
+    completedJobCount: number
+    ongoingDisputes: OngoingDisputeDTOs[]
+    ongoingProposals: OngoingProposalDTOs[]
+}
+
+
+
+
 export interface DesignerDashboardDTO {
     userId: string
     name: string
