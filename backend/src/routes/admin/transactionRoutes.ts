@@ -12,5 +12,6 @@ const transactionController = new TransactionController(transactionService)
 
 
 router.get("/", adminAuthentication, transactionController.getAllTransaction)
+router.get("/report", adminAuthentication, transactionController.getReport)
 
 export default router

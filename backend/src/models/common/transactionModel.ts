@@ -16,7 +16,8 @@ export const transactionSchema = new Schema<ITransaction>({
     destinationUserId: {
         type: Schema.Types.ObjectId,
         ref: "User",
-       
+        required: true,
+
     },
     proposalId: {
         type: Schema.Types.ObjectId,

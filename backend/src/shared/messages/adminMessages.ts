@@ -25,7 +25,10 @@ export const ADMIN_MESSAGES = {
     },
 
     TRANSACTION:{
-        FETCH_ALL:"fetched all transactions"
+        FETCH_ALL:"fetched all transactions",
+        REPORT:"fetched transaction report",
+        DATE_NOT_FOUND:"from and to is required for custom range",
+        DATE_MISMATCH:"'from' date cannot be after 'to' date",
     }
 
 
