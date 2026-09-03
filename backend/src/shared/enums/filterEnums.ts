@@ -6,3 +6,12 @@ export const JOB_REQUEST_FILTERS = {
     AZ: "az",
     ZA: "za"
 } as const
+
+
+export enum TRANSACTION_REPORT_GROUP_TYPE {
+    DAY = "day",
+    WEEK = "week",
+    MONTH = "month",
+    YEAR = "year",
+    CUSTOM = "custom",
+}

@@ -1,14 +1,40 @@
 import mongoose, { type QueryFilter } from "mongoose";
-import type { TransactionFilter, TransactionPopulated, TransactionRepoDTO } from "../../DTO/common/transaction";
+import { DATE_FORMAT_BY_GROUP, type AggregatedBucketRaw, type ReportFilters, type TransactionFilter, type TransactionPopulated, type TransactionRepoDTO } from "../../DTO/common/transaction";
 import type { ITransaction, ITransactionRepository } from "../../interfaces/base/ITransaction";
 import { TransactionModel } from "../../models/common/transactionModel";
 import { BaseRepository } from "../baseRepository";
 import type { Pagination } from "../../DTO/admin/adminDTO";
 import type { IUser } from "../../interfaces/auth/IUser";
 
+
 export class TranscationRepository extends BaseRepository<ITransaction> implements ITransactionRepository {
     constructor() {
         super(TransactionModel)
+    }
+
+    async getTransactionReport(filters: ReportFilters): Promise<AggregatedBucketRaw[]> {
+        const bucketKey = filters.groupBy === "custom" ? "day" : filters.groupBy;
+        const dateFormat = DATE_FORMAT_BY_GROUP[bucketKey];
+        const match: QueryFilter<ITransaction> = {
+            createdAt: { $gte: new Date(filters.from), $lte: new Date(filters.to) }
+        }
+        if (filters.type) match.type = filters.type;
+
+        return await this._model.aggregate([
+            { $match: match },
+            {
+                $group: {
+                    _id: {
+                        period: { $dateToString: { format: dateFormat, date: "$createdAt" } },
+                        type: "$type"
+                    },
+                    totalAmount: { $sum: "$amount" },
+                    count: { $sum: 1 }
+                },
+            },
+            { $sort: { "_id.period": 1 } }
+        ])
+
     }
 
     async createTransaction(data: TransactionRepoDTO): Promise<ITransaction> {
