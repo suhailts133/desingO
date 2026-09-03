@@ -79,7 +79,7 @@ export type JobsCommonResponseDTO = Omit<JobsResponseDTO, "status"> & {
 }
 
 
-export type JobDetailResponseDTO = Omit<IJobRequest, "designId" | "userId" | "designerId" | "createdAt"> & {
+export type JobDetailResponseDTO = Omit<IJobRequest, "designId" | "userId" | "designerId" | "createdAt" | "embedding"> & {
     userId: string;
     userName: string;
     designerId?: string;

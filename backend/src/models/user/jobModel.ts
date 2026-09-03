@@ -63,7 +63,7 @@ const jobRequestSchema = new Schema<IJobRequest>({
     preferredMaterials: { type: [String], default: [] },
     householdProfile: { type: householdProfileSchema, required: true },
 
-
+    embedding: { type: [Number], default: [] },
     services: { type: [String], required: true, default: [] },
     minBudget: { type: Number, required: true, min: 0 },
     maxBudget: { type: Number, required: true, min: 0 },

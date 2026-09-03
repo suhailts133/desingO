@@ -13,6 +13,7 @@ import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
 import Logger from "../../config/logger.js";
 import { directHireApprovalOrRejectionValidation, directHireQueryFilters } from "../../validators/user/hireDesignerValidator.js";
 import type { AcceptOrRejectHireDesigner } from "../../DTO/user/hireDesignerDTO.js";
+import { USER_TYPE } from "../../shared/enums/proposalEnums.js";
 export class JobController {
     constructor(private _jobRequestService: IJobRequestService) { }
 
@@ -118,14 +119,17 @@ export class JobController {
 
     getJobDetails = asyncHandler(async (req: Request, res: Response) => {
         const jobRequestId = req.params.id as string;
-        console.log(jobRequestId)
         if (!jobRequestId) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         if (!isObjectId(jobRequestId)) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
-        const result = await this._jobRequestService.getJobRequestDetail(jobRequestId)
+        const role = req.user?.role
+        const userId = req.user?.userId
+        const designerId = role && role === USER_TYPE.DESIGNER ? userId : undefined
+       
+        const result = await this._jobRequestService.getJobRequestDetail(jobRequestId, designerId)
         RespsonseHelper.success(res, result)
     })
 

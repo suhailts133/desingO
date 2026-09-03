@@ -1,20 +1,30 @@
 import type { EditJobRepoData, EditJobRequest, HireDesignerDTO, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
-import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
+import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../../interfaces/base/IApiResponse";
 import type { ICreateJobRequest, Source_type } from "../../interfaces/customer/ICustomer";
 import type { IActiveJobRepository, IJobRepository } from "../../interfaces/customer/ICustomerRepository";
 import type { IJobRequestService } from "../../interfaces/customer/ICustomerService";
 import { AppError } from "../../shared/errors/appError";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload";
-import { CLOUDINARY_FOLDER_NAME, JOB_REQUEST_STATUS, SOURCE_TYPE } from "../../shared/enums/commonEnums";
+import { CLOUDINARY_FOLDER_NAME, JOB_REQUEST_STATUS, RECOMENDATION_DATA_TYPE, RECOMENDATION_TYPE, SOURCE_TYPE } from "../../shared/enums/commonEnums";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { JobRequestMapper } from "../../dtoMappers/user/jobRequestMapper";
 import type { AcceptOrRejectHireDesignerDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
+import { getBudgetTier } from "../../shared/helpers/budgetTier";
+import { generateEmbedding } from "../../shared/helpers/embedding";
+import type { IDesignerInteractionRepository } from "../../interfaces/designer/IDesignerRepository";
+import { JOB_INTERACTION, JOB_INTERACTION_TYPE } from "../../shared/enums/interactionEnum";
 
 export class JobRequestService implements IJobRequestService {
-    constructor(private _jobRequestRepo: IJobRepository, private _imageUploder: IImageUploaderService, private _activeJobRepo: IActiveJobRepository) { }
+    constructor(private _designerInteractionRepo: IDesignerInteractionRepository, private _jobRequestRepo: IJobRepository, private _imageUploder: IImageUploaderService, private _activeJobRepo: IActiveJobRepository) { }
 
 
+
+    async getRecentJobs(): Promise<IApiResponseWithRecomendation<JobsCommonResponseDTO[]>> {
+        const jobs = await this._jobRequestRepo.findMostRecent()
+        const jobsData = JobRequestMapper.toJobRequestsDTOlist(jobs);
+        return { message: JOB_MESSAGES.JOB_REQUEST.RECENT, data: jobsData, type: RECOMENDATION_TYPE.RECENT, DataType: RECOMENDATION_DATA_TYPE.JOB }
+    }
 
     async acceptOrRejectHireRequest(id: string, data: AcceptOrRejectHireDesignerDTO): Promise<IApiResponse> {
         const jobRequest = await this._jobRequestRepo.getJobRequest(id)
@@ -49,8 +59,9 @@ export class JobRequestService implements IJobRequestService {
 
         const reference: ImageUploadResult[] = await this._imageUploder.uploadMany(refrenceImages ?? [], CLOUDINARY_FOLDER_NAME.GALLERY)
         const floorplans: ImageUploadResult[] = await this._imageUploder.uploadMany(floorPlanImages ?? [], CLOUDINARY_FOLDER_NAME.FLOOR_PLANS)
-
-        const result = await this._jobRequestRepo.createJobRequest(userId, data, reference, floorplans);
+        const textToEmbedd = `${data.propertyType}  ${data.designStyles.join(" ")} ${getBudgetTier(data.minBudget, data.maxBudget)}`
+        const embedding = await generateEmbedding(textToEmbedd) ?? [];
+        const result = await this._jobRequestRepo.createJobRequest(userId, data, embedding, reference, floorplans);
         if (!result) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.JOB_REQUEST_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
@@ -145,10 +156,19 @@ export class JobRequestService implements IJobRequestService {
     }
 
 
-    async getJobRequestDetail(jobId: string): Promise<IApiResponse<JobDetailResponseDTO>> {
+    async getJobRequestDetail(jobId: string, designerId?: string): Promise<IApiResponse<JobDetailResponseDTO>> {
         const result = await this._jobRequestRepo.getJobRequest(jobId);
         if (!result) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NO_CONTENT)
+        }
+        if (designerId) {
+            await this._designerInteractionRepo.createInteraction({
+                designerId,
+                jobId,
+                weight: JOB_INTERACTION.VIEW, action: JOB_INTERACTION_TYPE.VIEW
+            })
+          
+
         }
         const jobData = JobRequestMapper.toJobRequestDTO(result)
         return { message: JOB_MESSAGES.JOB_REQUEST.JOB_REQUEST, data: jobData };

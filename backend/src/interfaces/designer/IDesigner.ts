@@ -99,3 +99,14 @@ export type IJobApplicationPopulatedWithJobAndUser = Omit<IJobApplication, 'jobI
 
 
 
+
+export interface IDesignerInteraction {
+  id: string
+  designerId: mongoose.Types.ObjectId
+  jobId: mongoose.Types.ObjectId
+  action: "View" | "Applied" | "Accepted"
+  weight: number
+  createdAt: Date
+}
+
+

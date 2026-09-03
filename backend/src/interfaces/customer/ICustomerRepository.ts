@@ -8,7 +8,7 @@ import type { ImageUploadResult } from "../base/IImageUpload";
 import type { IActiveJob, ICreateJobRequest, IHireDesigner, ICustomerInteraction, IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, Source_type } from "./ICustomer";
 
 export interface IJobRepository {
-    createJobRequest(userId: string, data: ICreateJobRequest, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<boolean>;
+    createJobRequest(userId: string, data: ICreateJobRequest, embedding: number[], referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<boolean>;
     getjobRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<{ data: IJobRequestCustomerPopulated[], pagination: Pagination }>
     getMyJobs(userId: string, sourceType: Source_type, page?: string): Promise<{ data: IJobRequest[], pagination: Pagination }>
     getAllJobs(JobFilter?: JobFilter): Promise<{ data: IJobRequestPopulated[], pagination: Pagination }>;
@@ -17,9 +17,9 @@ export interface IJobRepository {
     editJobRequest(id: string, data: EditJobRepoData, referenceImages?: ImageUploadResult[], finalFloorPlans?: ImageUploadResult[]): Promise<boolean>
     changeStatus(id: string, status: string): Promise<IJobRequest | null>
     updateHireRequest(id: string, data: Partial<IJobRequest>): Promise<IJobRequest | null>
-    countJobs(userId:string):Promise<number>
-
-
+    countJobs(userId: string): Promise<number>
+    findMostRecent(): Promise<IJobRequestPopulated[]>;
+    findCandidatesExcluding(): Promise<IJobRequestPopulated[]>
 }
 
 export interface IHireDesignerRepository {

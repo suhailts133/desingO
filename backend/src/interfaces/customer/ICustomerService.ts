@@ -12,11 +12,12 @@ export interface IJobRequestService {
     addJobRequest(userId: string, data: ICreateJobRequest, refrenceImages?: Express.Multer.File[], floorPlanImages?: Express.Multer.File[]): Promise<IApiResponse>
     editJobRequest(jobId: string, data: EditJobRequest, refrenceImages?: Express.Multer.File[], floorPlanImages?: Express.Multer.File[]): Promise<IApiResponse>
     getMyJobs(userId: string, sourceType: Source_type, page?: string): Promise<IApiResponseWithPagination<JobsResponseDTO[]>>
-    getJobRequestDetail(jobId: string): Promise<IApiResponse<JobDetailResponseDTO>>
+    getJobRequestDetail(jobId: string, designerId?: string): Promise<IApiResponse<JobDetailResponseDTO>>
     getAllJobs(JobFilter?: JobFilter): Promise<IApiResponseWithPagination<JobsCommonResponseDTO[]>>
     deleteAJob(id: string): Promise<IApiResponse>
     getjobRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<IApiResponseWithPagination<HireDesignerDTO[]>>
     acceptOrRejectHireRequest(id: string, data: AcceptOrRejectHireDesignerDTO): Promise<IApiResponse>
+    getRecentJobs(): Promise<IApiResponseWithRecomendation<JobsCommonResponseDTO[]>>
 }
 
 

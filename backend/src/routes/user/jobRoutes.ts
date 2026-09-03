@@ -7,6 +7,8 @@ import multer from "multer";
 import { CloudinaryService } from "../../services/common/cloudinaryService";
 import { ActiveJobRepository } from "../../repositories/common/activeJobRepository";
 import designerAuthentication from "../../middlewares/designerAuth";
+import { DesignerInteractionRepository } from "../../repositories/designer/designerInteractionRepository";
+import optionalAuth from "../../middlewares/optionalAuth";
 const upload = multer({ storage: multer.memoryStorage() });
 
 
@@ -16,7 +18,8 @@ const router = Router()
 const jobRequestRepo = new JobRequestRepository()
 const activeJobrepo = new ActiveJobRepository()
 const imageUpload = new CloudinaryService()
-const jobrequestService = new JobRequestService(jobRequestRepo, imageUpload, activeJobrepo)
+const designerInteractionRepo = new DesignerInteractionRepository()
+export const jobrequestService = new JobRequestService(designerInteractionRepo, jobRequestRepo, imageUpload, activeJobrepo)
 const jobController = new JobController(jobrequestService)
 
 router.get("/", jobController.getAllJobs)
@@ -32,6 +35,6 @@ router.patch("/edit-job/:id", authenticate, upload.fields([
 ]), jobController.editJobRequest)
 
 router.get("/design/request/:id", jobController.getRequestPerDesign)
-router.get("/:id", jobController.getJobDetails)
+router.get("/:id", optionalAuth, jobController.getJobDetails)
 router.delete("/:id", authenticate, jobController.deleteAJob)
 export default router
