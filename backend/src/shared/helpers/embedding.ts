@@ -1,6 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
-import Logger from "../../config/logger";
 dotenv.config();
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
@@ -16,8 +15,6 @@ export async function generateEmbedding(text: string): Promise<number[] | null> 
                 taskType,
             },
         });
-        console.log(response.metadata)
-
         return response.embeddings?.[0]?.values ?? null;
     } catch (err) {
         console.error("Embedding generation failed:", err);

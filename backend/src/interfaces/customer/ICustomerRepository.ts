@@ -17,6 +17,7 @@ export interface IJobRepository {
     editJobRequest(id: string, data: EditJobRepoData, referenceImages?: ImageUploadResult[], finalFloorPlans?: ImageUploadResult[]): Promise<boolean>
     changeStatus(id: string, status: string): Promise<IJobRequest | null>
     updateHireRequest(id: string, data: Partial<IJobRequest>): Promise<IJobRequest | null>
+    countJobs(userId:string):Promise<number>
 
 
 }
@@ -34,6 +35,7 @@ export interface IHireDesignerRepository {
 
 
 export interface IActiveJobRepository {
+    countCustomerActiveJobs(userId: string): Promise<number>
     getActiveJob(id: string): Promise<IActiveJob | null>
     updateActiveJob(jobId: string, data: Partial<IActiveJob>): Promise<IActiveJob | null>
     getActiveJobBySource(id: string): Promise<IActiveJob | null>

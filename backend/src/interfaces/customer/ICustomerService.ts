@@ -1,3 +1,4 @@
+import type { CustomerDashboardDTO } from "../../DTO/common/dashboard";
 import type { GetAllDesignCommonResponseDTO } from "../../DTO/designer/designDTO";
 import type { ActiveJobFilter, ActiveJobResponseDTO } from "../../DTO/user/activeJobDTO";
 import type { AcceptOrRejectHireDesignerDTO, getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
@@ -38,4 +39,10 @@ export interface IActiveJobService {
 export interface ICustomerInteractionService {
     _getCustomerTasteVector(customerId: string): Promise<number[] | null>
     getRecomendedDesigns(customerId: string): Promise<IApiResponseWithRecomendation<GetAllDesignCommonResponseDTO[]>>
+}
+
+
+
+export interface ICustomerDashboardService {
+    getCustomerDashboard(customer: string): Promise<IApiResponse<CustomerDashboardDTO>>
 }

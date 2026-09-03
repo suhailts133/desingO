@@ -10,7 +10,6 @@ export interface ITransaction {
     id: string;
     amount: number;
     type: TransactionType;
-
     sourceUserId: mongoose.Types.ObjectId;
     destinationUserId?: mongoose.Types.ObjectId;
     proposalId?: mongoose.Types.ObjectId;
