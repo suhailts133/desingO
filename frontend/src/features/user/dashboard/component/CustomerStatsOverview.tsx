@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom"
-import { Star, Wallet, Lock, CheckCircle2, Palette, ChevronRight, Sparkles ,Briefcase} from "lucide-react"
+import { Wallet, Lock, CheckCircle2, ChevronRight, Sparkles, Briefcase, Receipt, ClipboardList } from "lucide-react"
 import StatCard from "../../../../shared/dashboard/StatCard"
-import type { DesignerDashboardDTO } from "../dashboardInterface"
+import type { CustomerDashboardDTO } from "../customerDashboardInterface"
 
 type Props = {
-    data: DesignerDashboardDTO
+    data: CustomerDashboardDTO
 }
 
 function getGreeting() {
@@ -14,22 +14,18 @@ function getGreeting() {
     return "Good evening"
 }
 
-export default function DesignerStatsOverview({ data }: Props) {
+export default function CustomerStatsOverview({ data }: Props) {
     const navigate = useNavigate()
 
-    const pendingCount = data.pendingProposals.length
     const disputeCount = data.ongoingDisputes.length
     const activeCount = data.activJobCount
 
     const focusLine = (() => {
-        if (pendingCount > 0) {
-            return `${pendingCount} proposal${pendingCount > 1 ? "s" : ""} waiting on you — let's get those moving.`
-        }
         if (disputeCount > 0) {
             return `${disputeCount} dispute${disputeCount > 1 ? "s" : ""} need${disputeCount > 1 ? "" : "s"} your attention.`
         }
         if (activeCount > 0) {
-            return `${activeCount} project${activeCount > 1 ? "s" : ""} currently in motion. Keep the momentum going.`
+            return `${activeCount} project${activeCount > 1 ? "s" : ""} currently in motion.`
         }
         return "You're all caught up. Great time to pick up something new."
     })()
@@ -59,12 +55,13 @@ export default function DesignerStatsOverview({ data }: Props) {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                <StatCard icon={Star} label="Rating" value={data.rating.toFixed(1)} />
+
                 <StatCard icon={Wallet} label="Wallet" value={`₹${data.wallet.toLocaleString("en-IN")}`} />
                 <StatCard icon={Lock} label="Money held" value={`₹${data.moneyHeld.toLocaleString("en-IN")}`} />
+                <StatCard icon={Receipt} label="Total Money Spend" value={`₹${data.totalMoneySpent.toLocaleString("en-IN")}`} />
                 <StatCard icon={CheckCircle2} label="Completed jobs" value={data.completedJobCount} />
-                <StatCard icon={Palette} label="Designs" value={data.designCount} />
                 <StatCard icon={Briefcase} label="Active Jobs" value={activeCount} />
+                <StatCard icon={ClipboardList} label="total Jobs" value={data.totalJobCount} />
             </div>
         </div>
     )

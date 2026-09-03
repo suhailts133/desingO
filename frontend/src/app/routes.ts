@@ -22,7 +22,7 @@ import DesignerDashboard from "../features/designer/dashboard/pages/DesignerDash
 import Designs from "../features/designer/designs/pages/Designs";
 import DesignForm from "../features/designer/designs/components/DesignForm";
 import CustomerLayout from "../layouts/CustomerLayout";
-import CustomerDashboard from "../features/user/dashboard/CustomerDashboard";
+import CustomerDashboard from "../features/user/dashboard/page/CustomerDashboard";
 import Jobs from "../features/user/jobs/page/Jobs";
 import JobRequestForm from "../features/user/jobs/page/JobRequestForm";
 import JobRequestDetail from "../features/user/jobs/components/JobRequestDetail";
