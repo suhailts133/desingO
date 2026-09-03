@@ -3,6 +3,7 @@ import type { AddDesignRequestDTO, DesignDetailResponseDTO, DesignFiles, DesignF
 import type { DesignerCardDTO, DesignerFilter } from "../../DTO/designer/designerDTO";
 import type { DesignerVerificationBodyDTO } from "../../DTO/designer/designerVerificationDTOs";
 import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO";
+import type { JobsCommonResponseDTO } from "../../DTO/user/jobsDTO";
 import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../base/IApiResponse";
 import type { WarningDTO } from "../benchmark/IBenchMark";
 import type { DesignerVerificationFiles } from "./IDesigner";
@@ -41,3 +42,7 @@ export interface IDesignerDashboardService {
 }
 
 
+export interface IDesignerInteractionService {
+    _getDesignerTasteVector(designerId: string): Promise<number[] | null>
+    getRecomendedJobs(designerId: string): Promise<IApiResponseWithRecomendation<JobsCommonResponseDTO[]>>
+}

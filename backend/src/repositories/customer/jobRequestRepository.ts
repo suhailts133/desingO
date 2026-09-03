@@ -16,8 +16,24 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
         super(JobRequestModel)
     }
 
+    async findCandidatesExcluding(): Promise<IJobRequestPopulated[]> {
+        return await this._model.find({ status: JOB_REQUEST_STATUS.PENDING, embedding: { $exists: true, $not: { $size: 0 } } })
+            .populate<{ userId: IUser }>("userId")
+            .populate<{ designerId: IUser }>("designerId")
+            .exec()
+    }
+
+
     async countJobs(userId: string): Promise<number> {
-        return this._model.countDocuments({ userId});
+        return this._model.countDocuments({ userId });
+    }
+
+    async findMostRecent(): Promise<IJobRequestPopulated[]> {
+        return await this._model.find({ status: JOB_REQUEST_STATUS.PENDING })
+            .sort({ createdAt: -1 })
+            .populate<{ userId: IUser }>("userId")
+            .populate<{ designerId: IUser }>("designerId")
+            .exec()
     }
 
 
@@ -32,10 +48,11 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
         return res
     }
 
-    async createJobRequest(userId: string, data: ICreateJobRequest, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<boolean> {
+    async createJobRequest(userId: string, data: ICreateJobRequest, embedding: number[], referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<boolean> {
         const { designId, designerId, ...restOfData } = data;
         const result = await this.create({
             ...restOfData,
+            embedding,
             referenceImages: referenceImages ?? [],
             floorPlans: floorplans ?? [],
             userId: new mongoose.Types.ObjectId(userId),

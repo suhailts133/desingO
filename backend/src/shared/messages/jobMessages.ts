@@ -12,7 +12,9 @@ export const JOB_MESSAGES = {
     },
 
     JOB_REQUEST: {
-        SOURCE_INVALID:"Invalid source type",
+        RECOMENDED: "fetched recomended jobs.",
+        RECENT: "fetched recent jobs.",
+        SOURCE_INVALID: "Invalid source type",
         ID_REQUIRED: "Job request id is required.",
         NOT_FOUND: "Job request not found.",
         ACCEPTED_CANT_UPDATE: "The job request is accepted so cant update.",

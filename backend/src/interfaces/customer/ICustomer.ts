@@ -83,6 +83,7 @@ export interface IJobRequest {
     status: JobStatus
     createdAt: Date,
     services: string[]
+    embedding: number[],
     referenceImages: ImageUploadResult[]
 }
 

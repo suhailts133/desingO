@@ -10,3 +10,14 @@ export enum DESIGIN_INTERACTION_TYPE {
     SAVE = "Save",
     HIRE = "Hire",
 }
+export enum JOB_INTERACTION {
+    VIEW = 1,
+    APPLIED = 3,
+    ACCPTED = 4,
+}
+
+export enum JOB_INTERACTION_TYPE {
+    VIEW = "View",
+    APPLIED = "Applied",
+    ACCPTED = "Accepted",
+}
