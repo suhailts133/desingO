@@ -1,7 +1,8 @@
 
 import { API_ROUTES } from "../../../api/apiRoutes";
 import { baseApi } from "../../../api/baseApi";
-import type { IApiResponseWithPagination } from "../../../api/responseType";
+import type { IApiResponse, IApiResponseWithPagination } from "../../../api/responseType";
+import type { ReportQueryParams, ReportResponseDto } from "../dashboard/adminDashboardInterface";
 import type { AllTransactionDTO, TransactionFilter } from "./transactionInterface";
 
 
@@ -17,16 +18,23 @@ export const transactionAPi = baseApi.injectEndpoints({
                     ...(type && type !== "All" && { type })
                 }
             }),
-
+        }),
+        transactionReport: builder.query<IApiResponse<ReportResponseDto>, ReportQueryParams>({
+            query: (params) => ({
+                url: API_ROUTES.ADMIN.TRANSACTION_REPORT,
+                method: "GET",
+                params,
+            }),
         }),
 
-       
+
 
     })
 })
 
 
 export const {
-    useGetAllTransactionQuery
+    useGetAllTransactionQuery,
+    useTransactionReportQuery
 
 } = transactionAPi

@@ -21,6 +21,7 @@ export const API_ROUTES = {
         GET_ALL_USER: "/admin/users",
         GET_ALL_DISPUTES: "/admin/disputes",
         GET_ALL_TRANSACTION: "/admin/transaction",
+        TRANSACTION_REPORT: "/admin/transaction/report",
         GET_DISPUTE: "/admin/disputes",
         GIVE_VERDIT: "/admin/disputes/give-verdit",
         TOGGLE_USER_STATUS: '/admin/users/toggle-status',
