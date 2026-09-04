@@ -4,7 +4,7 @@ import { useToggleStatus } from "../hooks/useToggleStatus"
 import { useState } from "react"
 import ConfirmModal from "../../../../shared/modals/ConfirmModal"
 import StatCard from "../../../../shared/dashboard/StatCard"
-import { User, Wallet, ArrowLeft, Mail, Shield, Calendar, Fingerprint, AlertCircle } from "lucide-react"
+import { User, Wallet, ArrowLeft, Mail, Shield, Calendar, AlertCircle } from "lucide-react"
 
 export default function UserDetail() {
     const { id } = useParams<{ id: string }>()
@@ -17,7 +17,7 @@ export default function UserDetail() {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center min-h-[400px]">
+            <div className="flex items-center justify-center min-h-100">
                 <div className="flex items-center gap-3 text-gray-500 animate-pulse">
                     <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
                     <span className="text-sm font-medium">Loading user profile...</span>

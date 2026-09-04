@@ -1,7 +1,7 @@
 import type { AllTransactionDTO, TransactionFilter } from "../transactionInterface";
 import Pagination from "../../../../shared/common/Pagination";
 import { useGetAllTransactionQuery } from "../transactionEndpoint";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 const transactionTypeStyle: Record<Exclude<AllTransactionDTO["type"], "All">, string> = {
     "Payment": "bg-blue-50 text-blue-700 border-blue-200",
@@ -10,12 +10,24 @@ const transactionTypeStyle: Record<Exclude<AllTransactionDTO["type"], "All">, st
     "Refund": "bg-error/10 text-error border-error/20",
 }
 
+const getRoleBadgeStyle = (role: string) => {
+    switch (role) {
+        case "Designer":
+            return "bg-peach/20 text-blush-deep border border-peach/30";
+        case "Admin":
+            return "bg-amber-50 text-amber-700 border border-amber-200";
+        case "Customer":
+        default:
+            return "bg-blush/20 text-soft-black border border-blush/30";
+    }
+}
+
 export default function TransactionTable() {
     const [searchParms, setSearchParmas] = useSearchParams();
+    const navigate = useNavigate();
 
-    const page = searchParms.get("page") ?? "1"
-    const type = (searchParms.get("type") as TransactionFilter["type"]) ?? "All"
-
+    const page = searchParms.get("page") ?? "1";
+    const type = (searchParms.get("type") as TransactionFilter["type"]) ?? "All";
 
     const { data, isLoading, error } = useGetAllTransactionQuery({
         page: String(page),
@@ -28,20 +40,26 @@ export default function TransactionTable() {
 
     const handleFilterChange = (key: "type", value: string) => {
         setSearchParmas((prev) => {
-            const next = new URLSearchParams(prev)
-            next.set(key, value)
-            next.set("page", "1")
-            return next
-        })
-    }
+            const next = new URLSearchParams(prev);
+            next.set(key, value);
+            next.set("page", "1");
+            return next;
+        });
+    };
 
     const handlePageChange = (newPage: number) => {
         setSearchParmas((prev) => {
-            const next = new URLSearchParams(prev)
-            next.set("page", String(newPage))
-            return next
-        })
-    }
+            const next = new URLSearchParams(prev);
+            next.set("page", String(newPage));
+            return next;
+        });
+    };
+
+    const handleUserClick = (role: string, id: string) => {
+        if (role === "Customer" || role === "Designer") {
+            navigate(`/admin/users/${id}`);
+        }
+    };
 
     if (isLoading) return <p>Loading...</p>;
     if (error || !transactions) return <p>Error loading transactions</p>;
@@ -72,7 +90,7 @@ export default function TransactionTable() {
                 <table className="w-full">
                     <thead className="border-b-2 border-soft-black/20">
                         <tr className="border-b border-white/25 bg-white/20 backdrop-blur-2xl">
-                            {["ID", "Type", "Amount"].map((h) => (
+                            {["Sender", "Sender Role", "Recipient", "Recipient Role", "Type", "Amount"].map((h) => (
                                 <th key={h} className="text-left px-5 py-3.5 text-xs font-Jost-Semibold text-soft-black/50 uppercase tracking-widest">
                                     {h}
                                 </th>
@@ -80,24 +98,56 @@ export default function TransactionTable() {
                         </tr>
                     </thead>
                     <tbody>
-                        {transactions?.map((transaction: AllTransactionDTO, i: number) => (
-                            <tr
-                                key={transaction.id}
-                                className={`${i % 2 === 0 ? "bg-white/50" : ""} transition-colors duration-150 hover:bg-white/20 ${i !== transactions.length - 1 ? "border-b border-white/20" : ""}`}
-                            >
-                                <td className="px-5 py-3.5">
-                                    <p className="text-soft-black/60 text-sm font-mono">{transaction.id}</p>
-                                </td>
-                                <td className="px-5 py-3.5">
-                                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-Jost-Semibold border ${transactionTypeStyle[transaction.type as Exclude<AllTransactionDTO["type"], "All">]}`}>
-                                        {transaction.type}
-                                    </span>
-                                </td>
-                                <td className="px-5 py-3.5">
-                                    <p className="font-Jost-Semibold text-soft-black text-sm">₹{transaction.amount}</p>
-                                </td>
-                            </tr>
-                        ))}
+                        {transactions?.map((transaction: AllTransactionDTO, i: number) => {
+                            const isSourceClickable = transaction.sourceRole === "Customer" || transaction.sourceRole === "Designer";
+                            const isDestinationClickable = transaction.destinationRole === "Customer" || transaction.destinationRole === "Designer";
+
+                            return (
+                                <tr
+                                    key={transaction.id}
+                                    className={`${i % 2 === 0 ? "bg-white/50" : ""} transition-colors duration-150 hover:bg-white/20 ${i !== transactions.length - 1 ? "border-b border-white/20" : ""}`}
+                                >
+                                    <td className="px-5 py-3.5">
+                                        <button
+                                            type="button"
+                                            disabled={!isSourceClickable}
+                                            onClick={() => handleUserClick(transaction.sourceRole, transaction.sourceId)}
+                                            className={`font-Jost-Semibold text-sm text-left ${isSourceClickable ? "text-primary hover:underline cursor-pointer" : "text-soft-black cursor-default"}`}
+                                        >
+                                            {transaction.sourceName}
+                                        </button>
+                                    </td>
+                                    <td className="px-5 py-3.5">
+                                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-Jost-Semibold ${getRoleBadgeStyle(transaction.sourceRole)}`}>
+                                            {transaction.sourceRole}
+                                        </span>
+                                    </td>
+                                    <td className="px-5 py-3.5">
+                                        <button
+                                            type="button"
+                                            disabled={!isDestinationClickable}
+                                            onClick={() => handleUserClick(transaction.destinationRole, transaction.destinationId)}
+                                            className={`font-Jost-Semibold text-sm text-left ${isDestinationClickable ? "text-primary hover:underline cursor-pointer" : "text-soft-black cursor-default"}`}
+                                        >
+                                            {transaction.designationName}
+                                        </button>
+                                    </td>
+                                    <td className="px-5 py-3.5">
+                                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-Jost-Semibold ${getRoleBadgeStyle(transaction.destinationRole)}`}>
+                                            {transaction.destinationRole}
+                                        </span>
+                                    </td>
+                                    <td className="px-5 py-3.5">
+                                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-Jost-Semibold border ${transactionTypeStyle[transaction.type as Exclude<AllTransactionDTO["type"], "All">]}`}>
+                                            {transaction.type}
+                                        </span>
+                                    </td>
+                                    <td className="px-5 py-3.5">
+                                        <p className="font-Jost-Semibold text-soft-black text-sm">₹{transaction.amount}</p>
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
 
