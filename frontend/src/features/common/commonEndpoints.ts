@@ -2,6 +2,7 @@ import { API_ROUTES } from "../../api/apiRoutes";
 import { baseApi } from "../../api/baseApi";
 import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../../api/responseType";
 import type { GetAllDesignCommonResponseDTO } from "../designer/designs/designInterface";
+import type { JobsCommonResponseDTO } from "../user/jobs/jobInterface";
 import type { DesignerCardDTO, DesignerFilter, DesignGallaryDTO, ISavedDesignDTO } from "./commonInterface";
 
 export const commonApis = baseApi.injectEndpoints({
@@ -46,7 +47,13 @@ export const commonApis = baseApi.injectEndpoints({
                 url:API_ROUTES.RECOMENDATION.DESIGN,
                 method:"GET"
             })
-        })
+        }),
+        recommendJobs: builder.query<IApiResponseWithRecomendation<JobsCommonResponseDTO[]>, void>({
+            query:() => ({
+                url:API_ROUTES.RECOMENDATION.JOBS,
+                method:"GET"
+            })
+        }),
     })
 })
 
@@ -56,5 +63,6 @@ export const {
     useGetDesignerDetailQuery,
     useGetDesignGallaryQuery,
     useSaveDesignMutation,
-    useRecommendDesignsQuery
+    useRecommendDesignsQuery,
+    useRecommendJobsQuery
 } = commonApis
