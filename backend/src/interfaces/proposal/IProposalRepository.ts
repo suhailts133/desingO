@@ -4,12 +4,13 @@ import type { CreateProposalRepoDataDTO, GetProposalDTO, IProposalSourcePopulate
 import type { ReviewRepoDTO } from "../../DTO/proposal/review";
 import type { CreateServiceVersionRepoDTO, VersionAcceptOrRejectDTO } from "../../DTO/proposal/version";
 import type { IPayment, PaymentStatus } from "./IPayment";
-import type { ContractStatus, IEscrow, IProposal, IReview, IServiceVersion, PaymentUpdateStatus, ProposalServiceStatus } from "./IProposal";
+import type { ContractStatus, EscrowStatus, IEscrow, IProposal, IReview, IServiceVersion, PaymentUpdateStatus, ProposalServiceStatus } from "./IProposal";
 
 export interface IProposalRepository {
     createProposal(data: CreateProposalRepoDataDTO): Promise<IProposal>
     getProposal(sourceId: string): Promise<GetProposalDTO | null>
     getProposalbyId(id: string): Promise<IProposal | null>
+    changeEscrowStatus(sourceId: string, order: number, escrowStatus: EscrowStatus):Promise<IProposal | null>
     updateProposal(proposalId: string, data: Partial<IProposal>): Promise<IProposal | null>
     acceptOrRejectProposal(sourceId: string, contractStatus: ContractStatus, shouldUpdateService: boolean, overallRejectionReason?: string): Promise<IProposal | null>;
     updateService(sourceId: string, order: number, status: ProposalServiceStatus, paymentStatus: PaymentUpdateStatus, escrow: Partial<IEscrow>, feeDeduction?: number, currentAmountHeld?: number): Promise<IProposal | null>

@@ -10,6 +10,7 @@ export class ProposalMapper {
 
             const groupedVersions: AllVersion[] = serviceVersions.map(v => ({
                 versionNumber: v.version,
+                uploadedAt: v.createdAt.toDateString(),
                 versionData: {
                     serviceOrder: v.serviceOrder,
                     versionId: v.id,
@@ -20,6 +21,8 @@ export class ProposalMapper {
             }))
 
             return {
+                ...(d.escrow?.status && { escrowStatus: d.escrow.status }),
+                ...(d.escrow?.designerPayout && { amountHeld: d.escrow.designerPayout }),
                 serviceName: d.serviceName,
                 order: d.order,
                 price: d.price,

@@ -25,7 +25,7 @@ const imageUploaderService = new CloudinaryService()
 const serviceVersionRepo = new ServiceVersionRepository()
 const transactionRepo = new TranscationRepository()
 const proposalService = new ProposalService(proposalRepo, activeJobRepo, jobRepo, serviceVersionRepo, imageUploaderService)
-const proposalVersionService = new ProposalVersionService(transactionRepo, proposalRepo, serviceVersionRepo, imageUploaderService, userRepo)
+const proposalVersionService = new ProposalVersionService(activeJobRepo,transactionRepo, proposalRepo, serviceVersionRepo, imageUploaderService, userRepo)
 const proposalController = new ProposalController(proposalService, proposalVersionService)
 
 
