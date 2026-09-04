@@ -19,6 +19,12 @@ export interface AllTransactionDTO {
   id: string;
   amount: number;
   type: TransactionType;
+  sourceName: string
+  sourceRole: string
+  sourceId: string
+  designationName: string
+  destinationRole: string
+  destinationId: string
 }
 
 export type TransactionPopulated = Omit<ITransaction, "sourceUserId" | "destinationUserId"> & {
