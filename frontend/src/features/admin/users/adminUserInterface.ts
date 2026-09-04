@@ -24,14 +24,15 @@ export interface AdminDesignerQueryParams {
 
 
 export interface AdminUsersResponseDTO {
-  full_name: string,
-  email: string,
-  id: string,
-  role: string,
-  is_blocked: boolean,
-  joinedAt: string
+  id: string;
+  full_name: string;
+  email: string;
+  role: string;
+  is_blocked: boolean;
+  wallet: number;
+  profileImage?: string;
+  joinedAt: string;
 }
-
 
 export interface ToggleStatusPayload extends AdminUserToggleStatusResposne {
   id: string,
