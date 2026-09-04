@@ -9,7 +9,7 @@ import ForgetPassword from "../features/auth/components/ForgetPassword";
 import ChangePassword from "../features/auth/components/ChangePassword";
 import AdminLayout from "../layouts/AdminLayout";
 import UsersTable from "../features/admin/users/components/UsersTable";
-import Dashboard from "../features/admin/dashboard/Dashboard";
+import Dashboard from "../features/admin/dashboard/page/Dashboard";
 import AdminLoginForm from "../features/auth/components/AdminLoginForm";
 import UserDetail from "../features/admin/users/components/UserDetail";
 import AdminAuthLayout from "../layouts/AdminAuthLayout";
