@@ -1,6 +1,9 @@
-export const CHAT_MESSAGES = {
+export const SOCKET_MESSAGES = {
     CHAT: {
         CANNOT_CHAT: 'Chat is only available for active jobs',
         NOT_PARTICIPANT: 'You are not a participant in this chat'
+    },
+    NOTIFICATION: {
+        NOT_FOUND: "Notification not found"
     }
 } as const

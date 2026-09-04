@@ -1,11 +1,11 @@
 import type { Server } from "socket.io";
 import type { AuthSocket } from "../SocketType";
-import type { IChatService } from "../../interfaces/chat/IChatService";
+import type { IChatService, INotificationService } from "../../interfaces/socket/ISocketService";
 import { handleSocketError } from "../../shared/errors/socketErrorHandler.js";
-import type { ChatRoomPayload, LeaveRoomPayload, SendMessagePayload, SendMessageRequestDTO } from "../../DTO/chat/chatDTO";
+import type { ChatRoomPayload, LeaveRoomPayload, SendMessagePayload, SendMessageRequestDTO } from "../../DTO/socket/chatDTO";
 export class ChatController {
 
-    constructor(private _io: Server, private _socket: AuthSocket, private _chatService: IChatService) { }
+    constructor(private _io: Server, private _socket: AuthSocket, private _chatService: IChatService, private _notificationService: INotificationService) { }
 
     /**
      * Joins a specific chat room for an active job and retrieves message history.
@@ -22,8 +22,8 @@ export class ChatController {
             const history = await this._chatService.getHistory(
                 payload.activeJobId,
                 this._socket.user?.userId as string,
-                payload.before)       
-                
+                payload.before)
+
             this._socket.join(payload.activeJobId)
             this._socket.emit("message_history", history)
         } catch (error) {
@@ -48,8 +48,17 @@ export class ChatController {
                 content: payload.content,
                 senderId: this._socket.user?.userId as string
             }
-            const newMessage = await this._chatService.saveMessage(msg)
+            const { message: newMessage, recipientId } = await this._chatService.saveMessage(msg)
             this._io.to(payload.activeJobId).emit("new_message", newMessage)
+
+            const notification = await this._notificationService.notify({
+                recipientId,
+                senderId: msg.senderId,
+                title: "New message",
+                message: msg.content.slice(0, 80),
+                activeId: newMessage.activeJobId
+            });
+            this._io.to(`user:${recipientId}`).emit("new_notification", notification)
         } catch (error) {
             handleSocketError(error, this._socket)
         }
@@ -67,7 +76,7 @@ export class ChatController {
             if (typeof payload === 'string') {
                 payload = JSON.parse(payload) as ChatRoomPayload;
             }
-          
+
             const messages = await this._chatService.getHistory(
                 payload.activeJobId,
                 this._socket.user?.userId as string,

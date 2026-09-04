@@ -1,13 +1,13 @@
 import type { ActiveJobFilter, ActiveJobResponseDTO } from "../../DTO/user/activeJobDTO";
 import { ActiveJobMapper } from "../../dtoMappers/common/activeJobMapper";
 import type { IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
-import type { MessageRole } from "../../interfaces/chat/IChat";
+import type { JobChatValidation, MessageRole } from "../../interfaces/socket/ISocket";
 import type { IActiveJobRepository } from "../../interfaces/customer/ICustomerRepository";
 import type { IActiveJobService } from "../../interfaces/customer/ICustomerService";
 import { ACTIVE_JOB_STATUS, USER_ROLES } from "../../shared/enums/commonEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
-import { CHAT_MESSAGES } from "../../shared/messages/chatMessage";
+import { SOCKET_MESSAGES } from "../../shared/messages/socketMessage";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 
 export class ActiveJobService implements IActiveJobService {
@@ -19,7 +19,7 @@ export class ActiveJobService implements IActiveJobService {
         return { message: JOB_MESSAGES.ACTIVE_JOB.FETCH_ALL, data: activeJobData, total: pagination.total, totalPages: pagination.totalPages }
 
     }
-    async validateJobForChat(activeJobId: string, userId: string): Promise<MessageRole> {
+    async validateJobForChat(activeJobId: string, userId: string): Promise<JobChatValidation> {
 
         const job = await this._activeJobRepo.getActiveJob(activeJobId);
 
@@ -29,13 +29,24 @@ export class ActiveJobService implements IActiveJobService {
 
 
         if (job.status !== ACTIVE_JOB_STATUS.ACTIVE) {
-            throw new AppError(CHAT_MESSAGES.CHAT.CANNOT_CHAT, RESPONSE_CODE.BAD_REQUEST);
+            throw new AppError(SOCKET_MESSAGES.CHAT.CANNOT_CHAT, RESPONSE_CODE.BAD_REQUEST);
         }
 
-        if (job.userId.toString() === userId) return USER_ROLES.CUSTOMER;
-        if (job.designerId.toString() === userId) return USER_ROLES.DESIGNER;
+        if (job.userId.toString() === userId) {
+            return {
+                role: USER_ROLES.CUSTOMER,
+                recipientId: job.designerId.toString()
+            }
 
-        throw new AppError(CHAT_MESSAGES.CHAT.NOT_PARTICIPANT, RESPONSE_CODE.FORBIDDEN);
+        }
+        if (job.designerId.toString() === userId) {
+            return {
+                role: USER_ROLES.DESIGNER,
+                recipientId: job.userId.toString()
+            }
+        }
+
+        throw new AppError(SOCKET_MESSAGES.CHAT.NOT_PARTICIPANT, RESPONSE_CODE.FORBIDDEN);
     }
 
 

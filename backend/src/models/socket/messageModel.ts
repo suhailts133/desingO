@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import type { IMessage } from "../../interfaces/chat/IChat";
+import type { IMessage } from "../../interfaces/socket/ISocket";
 
 const messageSchema = new Schema<IMessage>({
     activeJobId: { type: Schema.Types.ObjectId, ref: "ActiveJob", required: true, index: true },
