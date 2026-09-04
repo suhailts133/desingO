@@ -8,6 +8,12 @@ export class TransactionMapper {
         return data.map(d => ({
             id: d.id,
             amount: d.amount,
+            sourceName:d.sourceUserId.full_name,
+            sourceId:d.sourceUserId.id,
+            sourceRole:d.sourceUserId.role,
+            designationName:d.destinationUserId.full_name,
+            destinationId:d.destinationUserId.id,
+            destinationRole:d.destinationUserId.role,
             type: d.type
         }));
     }
