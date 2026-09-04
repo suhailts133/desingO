@@ -144,6 +144,8 @@ export interface ProposalServiceItemDTO {
     actualDeliveryDate?: string
     paymentStatus: PaymentStatus
     paidAt?: string
+    escrowStatus?: EscrowStatus
+    amountHeld?: number
 }
 
 export interface VersionDTO {
@@ -160,6 +162,7 @@ export type VersionStatus = "Pending" | "Rejected" | "Approved"
 
 export interface AllVersion {
     versionNumber: number
+    uploadedAt: string
     versionData: VersionDTO
 }
 
