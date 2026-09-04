@@ -1,6 +1,6 @@
 import type { IUser } from "../../interfaces/auth/IUser";
 import type { IJobRequest } from "../../interfaces/customer/ICustomer";
-import type { ContractStatus, IProposal, IServiceItem, ProposalPaymentStatus, ProposalServiceStatus, VersionStatus } from "../../interfaces/proposal/IProposal";
+import type { ContractStatus, EscrowStatus, IProposal, IServiceItem, ProposalPaymentStatus, ProposalServiceStatus, VersionStatus } from "../../interfaces/proposal/IProposal";
 
 export interface ServiceItem {
     serviceName: string;
@@ -146,6 +146,7 @@ export interface VersionDTO {
 
 export interface AllVersion {
     versionNumber: number
+    uploadedAt:string
     versionData: VersionDTO
 }
 
@@ -162,6 +163,8 @@ export interface ProposalServiceItemDTO {
     actualDeliveryDate?: string
     paymentStatus: ProposalPaymentStatus
     paidAt?: string
+    escrowStatus?:EscrowStatus
+    amountHeld?:number
 }
 
 

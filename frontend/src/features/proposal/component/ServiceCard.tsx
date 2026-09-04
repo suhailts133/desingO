@@ -1,7 +1,8 @@
 import { useState } from "react"
 import VersionCard from "./VersionCard"
-import type { ProposalServiceItemDTO, ServiceStatus, PaymentStatus } from "../proposalInterface"
+import type { ProposalServiceItemDTO, ServiceStatus, PaymentStatus, EscrowStatus } from "../proposalInterface"
 import { dateFormater } from "../../../helpers/dateFormater"
+import EscrowStatusBadge from "./EscrowStatusBadge"
 
 type Role = "Designer" | "Admin" | "Customer"
 
@@ -13,6 +14,12 @@ interface ServiceCardProps {
     onVerify: (versionId: string) => void
     onRedo: (versionId: string) => void
     onUpload: (serviceNumber: number, serviceName: string) => void
+}
+const escrowStatusStyle: Record<EscrowStatus, string> = {
+    "Held": "bg-amber-50 text-amber-700 border-amber-200",
+    "Released": "bg-green-50 text-green-700 border-green-200",
+    "Refunded": "bg-blue-50 text-blue-700 border-blue-200",
+    "Disputed": "bg-red-50 text-red-700 border-red-200",
 }
 
 const statusStyle: Record<ServiceStatus, string> = {
@@ -66,6 +73,13 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
                     <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full border ${statusStyle[service.status]}`}>
                         {service.status}
                     </span>
+                    {role === "Designer" && service.escrowStatus && (
+                        <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full border ${escrowStatusStyle[service.escrowStatus]}`}>
+                            {service.escrowStatus}
+                        </span>
+                    )}
+
+
                 </div>
             </div>
 
@@ -77,8 +91,14 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
             </div>
 
             {/* Pricing */}
-            <div className="text-xs text-black mb-3">
-                ₹{service.price.toLocaleString("en-IN")} service &nbsp;+&nbsp; ₹{service.executionPrice.toLocaleString("en-IN")} execution
+            <div className="mb-3 space-y-1.5">
+                <div className="text-xs text-black">
+                    ₹{service.price.toLocaleString("en-IN")} service &nbsp;+&nbsp; ₹{service.executionPrice.toLocaleString("en-IN")} execution
+                </div>
+
+                {role === "Designer" && service.escrowStatus && service.amountHeld && (
+                    <EscrowStatusBadge amount={service.amountHeld} status={service.escrowStatus} />
+                )}
             </div>
 
             {/* Versions */}

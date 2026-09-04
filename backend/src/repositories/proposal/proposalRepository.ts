@@ -1,6 +1,6 @@
 import mongoose, { type QueryFilter, type UpdateQuery } from "mongoose";
 import type { CreateProposalRepoDataDTO, GetProposalDTO, IProposalSourcePopulated, ProposalStatusFilter, ProposalStatusUpdateRepoDTO } from "../../DTO/proposal/proposal";
-import type { ContractStatus, IEscrow, IProposal, PaymentUpdateStatus, ProposalServiceStatus } from "../../interfaces/proposal/IProposal";
+import type { ContractStatus, EscrowStatus, IEscrow, IProposal, PaymentUpdateStatus, ProposalServiceStatus } from "../../interfaces/proposal/IProposal";
 import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
 import { ProposalModel } from "../../models/proposal/proposalModal";
 import { BaseRepository } from "../baseRepository";
@@ -78,6 +78,16 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
             }
         })
 
+    }
+
+    async changeEscrowStatus(sourceId: string, order: number, escrowStatus: EscrowStatus): Promise<IProposal | null> {
+        const updateDoc: UpdateQuery<IProposal> = {
+            $set: {
+                "services.$.escrow.status": escrowStatus
+            }
+        }
+
+        return await this.updateOne({ sourceId, "services.order": order }, updateDoc)
     }
 
     async updateService(sourceId: string, order: number, status: ProposalServiceStatus, paymentStatus: PaymentUpdateStatus, escrow: Partial<IEscrow>, feeDeduction?: number, currentAmountHeld?: number): Promise<IProposal | null> {

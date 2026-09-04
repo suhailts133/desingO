@@ -27,6 +27,10 @@ export class ProposalService implements IProposalService {
         if (!proposal.siteVisitingNeeded) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.SITE_VIST_NOT_NEEDED, RESPONSE_CODE.BAD_REQUEST)
         }
+        if (proposal.floorPlan && proposal.floorPlan.length > 0) {
+           await this._imageUploder.deleteMany(proposal.floorPlan.map(e => e.filename))
+
+        }
         const floorPlanfiles: ImageUploadResult[] = await this._imageUploder.uploadMany(floorPlans ?? [], CLOUDINARY_FOLDER_NAME.FLOOR_PLANS)
         const updatedProposal = await this._proposalRepo.updateProposal(proposalId, { floorPlan: floorPlanfiles })
         if (!updatedProposal) {

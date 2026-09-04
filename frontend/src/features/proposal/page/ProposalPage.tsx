@@ -70,7 +70,7 @@ export default function ProposalPage() {
     const { isUploading, handleServiceResultUpload } = useUploadResult()
 
     const { handleVerditSubmit, isChecking } = useAcceptOrRejectVerdit()
-    
+
     const { isReporting, handleReportIssue } = useReportIssue()
     const { isFloorPlanUploading, handleFloorPlanSubmission } = useUploadFloorPlan()
     const [chatOpen, setChatOpen] = useState(false)
@@ -80,6 +80,7 @@ export default function ProposalPage() {
     const [review, setReview] = useState<{ sourceId: string } | null>(null)
     const [dispute, setDispute] = useState<{ sourceId: string } | null>(null)
     const [uploadFloorPlan, setUploadFloorPlan] = useState<string | null>(null)
+    const [updateFloorPlan, setUpdateFloorPlan] = useState<string | null>(null)
     const [uploadingService, setUploadingService] = useState<{
         sourceId: string;
         serviceNumber: number;
@@ -89,7 +90,7 @@ export default function ProposalPage() {
     const [payingService, setPayingService] = useState<{ serviceName: string; amount: number } | null>(null)
 
     const activeDispute = disputedData
-    
+
     const handleVerdit = async (data: AcceptOrRejectDisputeDTO) => {
         await handleVerditSubmit(data)
     }
@@ -174,6 +175,21 @@ export default function ProposalPage() {
         const result = await handleFloorPlanSubmission(formData)
         handleResponse(result.success, "Floor Plan Uploaded", result.message)
         setUploadFloorPlan(null)
+    }
+    const handleUpdateFloorPlan = async (data: FloorPlans) => {
+        if (!updateFloorPlan) return
+        const formData = new FormData();
+        formData.append("proposalId", updateFloorPlan)
+        data.floorPlans.forEach(item => {
+            const file = item.file?.[0]
+            if (file) {
+                formData.append("floorPlans", file)
+            }
+        })
+
+        const result = await handleFloorPlanSubmission(formData)
+        handleResponse(result.success, "Floor Plan updated", result.message)
+        setUpdateFloorPlan(null)
     }
 
     const handleRaiseIssue = async (data: DisputeFormDTO) => {
@@ -309,6 +325,14 @@ export default function ProposalPage() {
                 onClose={() => setUploadFloorPlan(null)}
                 onConfirm={handlFloorPlan}
                 isLoading={isFloorPlanUploading}
+                title="upload"
+            />
+            <UploadFloorPlan
+                isOpen={!!updateFloorPlan}
+                onClose={() => setUpdateFloorPlan(null)}
+                onConfirm={handleUpdateFloorPlan}
+                isLoading={isFloorPlanUploading}
+                title="upload"
             />
 
 
@@ -373,6 +397,15 @@ export default function ProposalPage() {
                     <div>
                         <button onClick={() => setUploadFloorPlan(proposal.id)} className="soft-black-button">
                             Upload Floor plan
+                        </button>
+                    </div>
+                )
+            }
+            {
+                proposal.contractStatus !== "Sent" && proposal.siteVisitingRequired && proposal.floorPlans && proposal.floorPlans.length > 0 && role === "Designer" && (
+                    <div>
+                        <button onClick={() => setUpdateFloorPlan(proposal.id)} className="soft-black-button">
+                            Update Floor plan
                         </button>
                     </div>
                 )
