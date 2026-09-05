@@ -5,7 +5,7 @@ import type { AcceptOrRejectHireDesignerDTO, getHireDesignerPerDesignResponseDTO
 import type { EditJobRequest, HireDesignerDTO, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO";
 import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../base/IApiResponse";
 import type { WarningDTO } from "../benchmark/IBenchMark";
-import type { JobChatValidation, MessageRole } from "../socket/ISocket";
+import type { JobChatValidation } from "../socket/ISocket";
 import type { HireDesignerPayload, ICreateJobRequest, Source_type } from "./ICustomer";
 
 export interface IJobRequestService {

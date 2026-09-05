@@ -1,7 +1,7 @@
 import type { ActiveJobFilter, ActiveJobResponseDTO } from "../../DTO/user/activeJobDTO";
 import { ActiveJobMapper } from "../../dtoMappers/common/activeJobMapper";
 import type { IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
-import type { JobChatValidation, MessageRole } from "../../interfaces/socket/ISocket";
+import type { JobChatValidation } from "../../interfaces/socket/ISocket";
 import type { IActiveJobRepository } from "../../interfaces/customer/ICustomerRepository";
 import type { IActiveJobService } from "../../interfaces/customer/ICustomerService";
 import { ACTIVE_JOB_STATUS, USER_ROLES } from "../../shared/enums/commonEnums";
