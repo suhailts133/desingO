@@ -19,6 +19,7 @@
     "@stripe/stripe-js": "^9.8.0",
     "@tailwindcss/vite": "^4.2.1",
     "axios": "^1.13.6",
+    "file-saver": "^2.0.5",
     "joi": "^18.0.2",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.575.0",
@@ -35,11 +36,13 @@
     "react-select": "^5.10.2",
     "recharts": "^3.10.1",
     "socket.io-client": "^4.8.3",
-    "tailwindcss": "^4.2.1"
+    "tailwindcss": "^4.2.1",
+    "write-excel-file": "^4.1.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@tailwindcss/forms": "^0.5.11",
+    "@types/file-saver": "^2.0.7",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
