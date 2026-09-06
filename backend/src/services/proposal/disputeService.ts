@@ -8,7 +8,7 @@ import type { IDisputeRepository, IDisputeService } from "../../interfaces/propo
 import type { DisputeStatus } from "../../interfaces/proposal/IProposal";
 import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
 import { CLOUDINARY_FOLDER_NAME, TRANSACTION_TYPE, TRANSACTION_UNIQUE_ID, USER_ROLES } from "../../shared/enums/commonEnums";
-import { CONTRACT_STATUS, DISPUTE_SOLUTION, DISPUTE_STATUS, USER_TYPE } from "../../shared/enums/proposalEnums";
+import { CONTRACT_STATUS, DISPUTE_SOLUTION, DISPUTE_STATUS, EscrowStatus, USER_TYPE } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
 import { generateUniqueId } from "../../shared/helpers/extraFunctions";
@@ -106,6 +106,15 @@ export class DisputeService implements IDisputeService {
             throw new AppError(PROPOSAL_MESSAGES.DISPUTE.DECISION_PENDING, RESPONSE_CODE.BAD_REQUEST);
         }
 
+        const claimed = await this._disputeRepo.updateDisputeIfStatus(
+            data.disputeId,
+            DISPUTE_STATUS.AWAITING_CONFIRMATION,
+            { status: data.status }
+        );
+        if (!claimed) {
+            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.DECISION_PENDING, RESPONSE_CODE.BAD_REQUEST);
+        }
+
         if (data.status === "Resolved") {
             const isMonetary = dispute.resolutionType === DISPUTE_SOLUTION.REFUND || dispute.resolutionType === DISPUTE_SOLUTION.FULL_REFUND;
 
@@ -124,15 +133,18 @@ export class DisputeService implements IDisputeService {
                 if (!serviceEscrow) {
                     throw new AppError(PROPOSAL_MESSAGES.DISPUTE.PAYMENT_NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
                 }
-                if (dispute.refundAmount === undefined || dispute.refundAmount === null) {
-                    throw new AppError(PROPOSAL_MESSAGES.DISPUTE.PAYMENT_NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+                if (serviceEscrow.status === EscrowStatus.RELEASED) {
+
+                    throw new AppError(PROPOSAL_MESSAGES.DISPUTE.PAYMENT_ALREADY_SETTLED, RESPONSE_CODE.BAD_REQUEST);
                 }
 
-                let reporterId: string;
-                if (dispute.raisedBy === USER_TYPE.CUSTOMER) {
-                    reporterId = dispute.customerId.id;
-                } else {
-                    reporterId = dispute.designerId.id;
+                const isCustomerRaised = dispute.raisedBy === USER_TYPE.CUSTOMER;
+                const reporterId = isCustomerRaised ? dispute.customerId.id : dispute.designerId.id;
+                const reporterLabel = isCustomerRaised ? USER_ROLES.CUSTOMER : USER_ROLES.DESIGNER;
+
+                const reporter = await this._userRepo.findUserById(reporterId);
+                if (!reporter) {
+                    throw new AppError(AUTH_MESSAGES.USER.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
                 }
 
                 const admin = await this._userRepo.findByRole(USER_ROLES.ADMIN);
@@ -140,54 +152,72 @@ export class DisputeService implements IDisputeService {
                     throw new AppError(ADMIN_MESSAGES.ADMIN.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
                 }
 
-                const reporter = await this._userRepo.findUserById(reporterId);
-                if (!reporter) {
-                    throw new AppError(AUTH_MESSAGES.USER.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+                if (!isCustomerRaised) {
+                    const updatedAdminWallet = await this._userRepo.incrementWallet(admin.id, serviceEscrow.platformCommission);
+                    if (!updatedAdminWallet) {
+                        throw new AppError(PROPOSAL_MESSAGES.PAYMENT.PAYOUT_ADMIN_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+                    }
+
+                    await this._transactionRepo.createTransaction({
+                        sourceUserId: proposal.clientId.toString() ?? admin.id,
+                        destinationUserId: admin.id,
+                        amount: serviceEscrow.platformCommission,
+                        TransactionId: generateUniqueId(TRANSACTION_UNIQUE_ID.COMMISSION),
+                        type: TRANSACTION_TYPE.COMMISSION,
+                        proposalId: proposal.id
+                    });
                 }
 
-                const updatedAdminWallet = await this._userRepo.updateUser(admin.id, { wallet: admin.wallet + serviceEscrow.platformCommission });
-                if (!updatedAdminWallet) {
-                    throw new AppError(PROPOSAL_MESSAGES.PAYMENT.PAYOUT_ADMIN_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+                let payoutAmount: number;
+                if (isCustomerRaised) {
+                    payoutAmount = dispute.refundAmount === undefined || dispute.refundAmount === null ? serviceEscrow.amountHeld : dispute.refundAmount;
+                } else {
+                    if (dispute.refundAmount === undefined || dispute.refundAmount === null) {
+                        throw new AppError(PROPOSAL_MESSAGES.DISPUTE.PAYMENT_NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+                    }
+                    payoutAmount = dispute.refundAmount;
                 }
 
-                await this._transactionRepo.createTransaction({
-                    sourceUserId: admin.id,
-                    destinationUserId: admin.id,
-                    amount: serviceEscrow.platformCommission,
-                    TransactionId: generateUniqueId(TRANSACTION_UNIQUE_ID.COMMISSION),
-                    type: TRANSACTION_TYPE.COMMISSION,
-                    proposalId: proposal.id
-                });
+                if (payoutAmount > serviceEscrow.amountHeld) {
+                    throw new AppError(PROPOSAL_MESSAGES.DISPUTE.INVALID_REFUND_AMOUNT, RESPONSE_CODE.BAD_REQUEST);
+                }
 
-                const updatedReporter = await this._userRepo.updateUser(reporterId, { wallet: reporter.wallet + dispute.refundAmount });
+                const updatedReporter = await this._userRepo.incrementWallet(reporterId, payoutAmount);
                 if (!updatedReporter) {
-                    throw new AppError(PROPOSAL_MESSAGES.PAYMENT.PAYOUT_DESIGNER_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+                    const errorMessage = reporterLabel === USER_ROLES.CUSTOMER ? PROPOSAL_MESSAGES.PAYMENT.PAYOUT_CUSTOMER_FAILED : PROPOSAL_MESSAGES.PAYMENT.PAYOUT_DESIGNER_FAILED
+                    throw new AppError(errorMessage, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
                 }
 
                 await this._transactionRepo.createTransaction({
-                    sourceUserId: admin.id,
+                    sourceUserId: proposal.clientId.toString() ?? admin.id,
                     destinationUserId: reporterId,
-                    amount: dispute.refundAmount,
-                    type: TRANSACTION_TYPE.REFUND,
-                    TransactionId: generateUniqueId(TRANSACTION_UNIQUE_ID.COMMISSION),
+                    amount: payoutAmount,
+                    type: isCustomerRaised ? TRANSACTION_TYPE.REFUND : TRANSACTION_TYPE.PAYOUT,
+                    TransactionId: generateUniqueId(
+                        isCustomerRaised ? TRANSACTION_UNIQUE_ID.REFUND : TRANSACTION_UNIQUE_ID.PAYOUT
+                    ),
                     proposalId: proposal.id
                 });
+
+
+                const escrowUpdated = await this._propsalRepo.changeEscrowStatus(proposal.sourceId.toString(), dispute.serviceOrder, EscrowStatus.RELEASED);
+                if (!escrowUpdated) {
+                    throw new AppError(PROPOSAL_MESSAGES.DISPUTE.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+                }
             }
         }
 
-        const updatedDispute = await this._disputeRepo.updateDispute(data.disputeId, { status: data.status });
-        if (!updatedDispute) {
-            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
-        }
-
-        if (updatedDispute.status === DISPUTE_STATUS.RESOLVED) {
-            const proposalStatusUpdated = await this._propsalRepo.updateProposal(updatedDispute.proposalId.toString(), { contractStatus: CONTRACT_STATUS.ONGOING });
+        if (data.status === DISPUTE_STATUS.RESOLVED) {
+            const proposalStatusUpdated = await this._propsalRepo.updateProposal(
+                dispute.proposalId.toString(),
+                { contractStatus: CONTRACT_STATUS.ONGOING }
+            );
             if (!proposalStatusUpdated) {
                 throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.UPDATE_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
             }
         }
 
-        return { message: PROPOSAL_MESSAGES.DISPUTE.UPDATION_SUCCESS, data: updatedDispute.status };
+        return { message: PROPOSAL_MESSAGES.DISPUTE.UPDATION_SUCCESS, data: data.status };
     }
 
 }

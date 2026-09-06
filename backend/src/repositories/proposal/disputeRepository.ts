@@ -2,7 +2,7 @@ import type { Pagination } from "../../DTO/admin/adminDTO";
 import type { DisputeAdminFilters, DisputePopulated, DisputePopulatedAll, DisputePopulateProposal, DisputeRepoDTO, DisputeUpdateDTO } from "../../DTO/proposal/dispute";
 import type { IUser } from "../../interfaces/auth/IUser";
 import type { IDispute, IDisputeRepository } from "../../interfaces/proposal/IDispute";
-import type { IProposal } from "../../interfaces/proposal/IProposal";
+import type { DisputeStatus, IProposal } from "../../interfaces/proposal/IProposal";
 import { DisputeModel } from "../../models/proposal/disputeModal";
 import { USER_TYPE } from "../../shared/enums/proposalEnums";
 import { BaseRepository } from "../baseRepository";
@@ -23,6 +23,9 @@ export class DisputeRepository extends BaseRepository<IDispute> implements IDisp
         })
     }
 
+    async updateDisputeIfStatus(id: string, expectedStatus: DisputeStatus, updates: Partial<IDispute>): Promise<IDispute | null> {
+        return await this.updateOne({ id, status: expectedStatus }, updates)
+    }
 
     async getAllDisputePerUserId(userId: string, role: "Designer" | "Customer"): Promise<DisputePopulateProposal[]> {
         const objectId = new mongoose.Types.ObjectId(userId);

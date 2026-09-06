@@ -1,7 +1,7 @@
 export const PROPOSAL_MESSAGES = {
 
     DISPUTE: {
-        ALREADY_RESOLVED_OR_AWATING_CONFIRMATION:"This dispute is already solved or awaiting confrimation",
+        ALREADY_RESOLVED_OR_AWATING_CONFIRMATION: "This dispute is already solved or awaiting confrimation",
         ONGOING: "A Dispute is already on going please wait till it get resolved.",
         SUCCESS: "Successfully reported the issue.",
         NOT_FOUND: "Dispute not found.",
@@ -16,6 +16,8 @@ export const PROPOSAL_MESSAGES = {
         REFEUND_EXCEEDS: "Refend amount exceed the aloted payout.",
         ZERO: "Refend amount cannot to less then zero",
         ID_REQUIRED: "Dispute Id required",
+        INVALID_REFUND_AMOUNT: "Refund amount exceeds the amount held in escrow",
+        PAYMENT_ALREADY_SETTLED: "Payment for this dispute has already been settled",
     },
 
     VERSION: {
@@ -79,6 +81,7 @@ export const PROPOSAL_MESSAGES = {
         PAYOUT_NOT_FOUND: 'payout amount not found contact support',
         PAYOUT_DESIGNER_FAILED: 'Cannot pay designer contact support',
         PAYOUT_ADMIN_FAILED: 'Cannot pay admin contact support',
+        PAYOUT_CUSTOMER_FAILED: "Failed to process payout to customer",
         STRIPE_META_DATA_NOT_FOUND: "Missing jobId or serviceOrder in payment metadata",
     },
     ESCROW: {
