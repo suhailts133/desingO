@@ -40,7 +40,6 @@ export interface DisputeRepoDTO {
     evidence: ImageUploadResult[];
     customerId: string
     designerId: string
-
 }
 
 export interface DisputeUpdateDTO {
