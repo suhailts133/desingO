@@ -8,7 +8,7 @@ export class DesignerMapper {
             id: designer._id.toString(),
             full_name: designer.userId.full_name,
             status: designer.status,
-            createdAt: designer.createdAt.toISOString(),
+            createdAt: designer.createdAt.toLocaleDateString(),
         }))
     }
     static toDesignerDetailDto(designer: IDesignerPopulated): AdminDesignerRequestResponseDTO {
