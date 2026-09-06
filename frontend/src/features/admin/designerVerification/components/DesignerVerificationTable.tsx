@@ -1,6 +1,6 @@
-import { Eye, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useGetAllDesignerRequestsQuery } from "../adminDesignerVerificationEndpoints"
-import type { AdminDesignersResponseDTO } from "../adminDesignerVerificationInterfaces";
+import { designerVerificationColumns, designerVerificationStatusTone, type AdminDesignersResponseDTO } from "../adminDesignerVerificationInterfaces";
 import { useNavigate } from "react-router-dom";
 import { useForm, useWatch } from "react-hook-form";
 import type { AdminDesignerVerificationFilter } from "../../users/adminUserInterface";
@@ -8,6 +8,14 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { adminDesignerVerificationFilter } from "../../../../validations/adminValidations";
 import { useEffect, useState } from "react";
 import Pagination from "../../../../shared/common/Pagination";
+import { StatusBadge } from "../../../../shared/table/StatusBadge";
+import ViewButton from "../../../../shared/table/ViewButton";
+import TableBody from "../../../../shared/table/TableBody";
+import TableHeader from "../../../../shared/table/TableHeader";
+
+
+
+
 
 export default function DesignerVerificationTable() {
     const [page, setPage] = useState(1);
@@ -31,15 +39,17 @@ export default function DesignerVerificationTable() {
     }, [name])
 
 
-    const getDesignerRequest = (id: string) => {
-        navigate(`/admin/designer-requests/${id}`)
-    }
-    const result = data?.data;
+
+    const designerApplicationData = data?.data;
     const totalResult = data?.total ?? 0;
     const totalPages = data?.totalPages ?? 1
 
+    const cellRenderers = {
+        status: (d: AdminDesignersResponseDTO) => <StatusBadge label={d.status} tone={designerVerificationStatusTone[d.status]} />,
+        view: (d: AdminDesignersResponseDTO) => <ViewButton onClick={() => navigate(`/admin/designer-requests/${d.id}`)} />,
+    };
     if (isLoading) return <p>Loading...</p>;
-    if (error) return <p>Error loading designer Requests</p>;
+    if (error || !designerApplicationData) return <p>Error loading designer Requests</p>;
     return (
         <div className="min-h-screen">
             <h1 className="font-Jost-Semibold text-3xl text-soft-black">Design Verification</h1>
@@ -79,55 +89,10 @@ export default function DesignerVerificationTable() {
             {/* table */}
             <div className="bg-white/20 backdrop-blur-2xl border border-white/30 rounded-2xl shadow-[0_8px_32px_rgba(216,160,144,0.15)] overflow-hidden">
                 <table className="w-full">
-                    <thead className="border-b-2 border-soft-black/20">
-                        <tr className="border-b border-white/25 bg-white/20 backdrop-blur-2xl">
-                            {["Name", "Joined", "Status", "View"].map(h => (
-                                <th key={h} className="text-left px-5 py-3.5 text-xs font-Jost-Semibold text-soft-black/50 uppercase tracking-widest">
-                                    {h}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {result?.map((data: AdminDesignersResponseDTO, i: number) => (
-                            <tr
-                                key={data.id}
-                                className={`${i % 2 === 0 ? "bg-white/50" : ""}  transition-colors duration-150 hover:bg-white/20 ${i !== (result.length - 1) ? "border-b border-white/20" : ""}`}
-                            >
-
-                                <td className="px-5 py-3.5">
-                                    <p className="font-Jost-Semibold text-soft-black text-sm">{data.full_name}</p>
-                                </td>
-
-                                <td className="px-5 py-3.5">
-                                    <p className="text-soft-black/60 text-sm">{new Date(data.createdAt).toLocaleDateString()}</p>
-                                </td>
-
-                                <td className="px-5 py-3.5">
-                                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-Jost-Semibold ${data.status === "Approved"
-                                        ? "bg-success/10 text-success border border-success/20"
-                                        : data.status === "Rejected"
-                                            ? "bg-error/10 text-error border border-error/20"
-                                            : "bg-yellow-500/10 text-yellow-500 border border-yellow-500/20"
-                                        }`}>
-                                        <span className={`w-1.5 h-1.5 rounded-full ${data.status === "Approved"
-                                            ? "bg-success"
-                                            : data.status === "Rejected"
-                                                ? "bg-error"
-                                                : "bg-yellow-500"
-                                            }`} />
-                                        {data.status}
-                                    </span>
-                                </td>
-                                <td className="px-5 py-3.5">
-                                    <button onClick={() => getDesignerRequest(data.id)} className="hover:cursor-pointer flex items-center justify-center w-8 h-8 rounded-lg bg-white/30 backdrop-blur-sm border border-white/40 text-soft-black/60 hover:text-blush-deep hover:bg-white/60 transition-all duration-200">
-                                        <Eye size={15} strokeWidth={1.8} />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
+                    <TableHeader columns={designerVerificationColumns} />
+                    <TableBody data={designerApplicationData} columns={designerVerificationColumns} cellRenderers={cellRenderers} keyExtractor={(u) => u.id} />
                 </table>
+
 
 
                 <Pagination
