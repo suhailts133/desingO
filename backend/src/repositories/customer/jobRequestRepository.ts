@@ -4,7 +4,7 @@ import type { IJobRepository } from "../../interfaces/customer/ICustomerReposito
 import { JobRequestModel } from "../../models/user/jobModel";
 import { BaseRepository } from "../baseRepository";
 import type { Pagination } from "../../DTO/admin/adminDTO";
-import type { EditJobRepoData, JobFilter } from "../../DTO/user/jobsDTO";
+import type { createJobRepoDTO, EditJobRepoData, JobFilter } from "../../DTO/user/jobsDTO";
 import type { IUser } from "../../interfaces/auth/IUser";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
 import { JOB_REQUEST_FILTERS } from "../../shared/enums/filterEnums";
@@ -48,11 +48,10 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
         return res
     }
 
-    async createJobRequest(userId: string, data: ICreateJobRequest, embedding: number[], referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<boolean> {
-        const { designId, designerId, ...restOfData } = data;
+    async createJobRequest(data: createJobRepoDTO, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<boolean> {
+        const { userId, designId, designerId, ...restOfData } = data;
         const result = await this.create({
             ...restOfData,
-            embedding,
             referenceImages: referenceImages ?? [],
             floorPlans: floorplans ?? [],
             userId: new mongoose.Types.ObjectId(userId),

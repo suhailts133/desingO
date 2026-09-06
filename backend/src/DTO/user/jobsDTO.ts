@@ -1,7 +1,7 @@
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload"
-import type { IHouseholdProfile, IJobRequest, INewBuildDetails, IRenovationDetails, Source_type } from "../../interfaces/customer/ICustomer"
+import type { ICreateJobRequest, IHouseholdProfile, IJobRequest, INewBuildDetails, IRenovationDetails, Source_type } from "../../interfaces/customer/ICustomer"
 
-export type JobStatus = "Pending" | "Closed" | "Ongoing" | "Rejected" |"Accepted"
+export type JobStatus = "Pending" | "Closed" | "Ongoing" | "Rejected" | "Accepted"
 
 export interface JobsResponseDTO {
     id: string
@@ -97,3 +97,10 @@ export interface JobFilter {
     timeLines?: string
     sortBy?: string
 }
+
+
+export type createJobRepoDTO = ICreateJobRequest & {
+    embedding: number[];
+    jobNumber: string;
+    userId:string
+};

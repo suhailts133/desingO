@@ -38,7 +38,7 @@ const jobRequestSchema = new Schema<IJobRequest>({
     propertyType: { type: String, required: true },
     projectType: { type: String, enum: ["Renovation", "New_Build"], required: true },
     sourceType: { type: String, enum: ["JOB_REQUEST", "DIRECT_HIRE"], required: true },
-
+    jobNumber: { type: String, required: true },
 
     city: { type: String, required: true, trim: true },
     district: { type: String, required: true, trim: true },

@@ -52,6 +52,7 @@ export interface IItemDimensions {
 export interface IJobRequest {
     id: string;
     userId: mongoose.Types.ObjectId
+    jobNumber:string
     designerId?: mongoose.Types.ObjectId
     designId?: mongoose.Types.ObjectId
     projectTitle: string;
@@ -97,7 +98,7 @@ export type IJobRequestCustomerPopulated = Omit<IJobRequest, "userId"> & {
 }
 
 
-export type ICreateJobRequest = Omit<IJobRequest, "id" | "userId" | "status" | "designerId" | "designId"> & {
+export type ICreateJobRequest = Omit<IJobRequest, "id" | "userId" | "status" | "designerId" | "designId" |"jobNumber"> & {
     designId?: string
     designerId?: string
 }
