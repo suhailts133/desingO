@@ -1,9 +1,15 @@
-import { Eye, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import type { AdminUserFilter, AdminUsersResponseDTO } from "../adminUserInterface";
+import { userColumns, type AdminUserFilter, type AdminUsersResponseDTO } from "../adminUserInterface";
 import { useGetAllusersQuery } from "../adminUsersEndpoints";
 import Pagination from "../../../../shared/common/Pagination";
+import { StatusBadge } from "../../../../shared/table/StatusBadge";
+import ViewButton from "../../../../shared/table/ViewButton";
+import TableHeader from "../../../../shared/table/TableHeader";
+import TableBody from "../../../../shared/table/TableBody";
+
+
 
 export default function UsersTable() {
   const navigate = useNavigate();
@@ -42,7 +48,7 @@ export default function UsersTable() {
     return () => clearTimeout(timer);
   }, [searchInput, debouncedName, setSearchParams]);
 
-  
+
   const { data, isLoading, error } = useGetAllusersQuery({
     page,
     debouncedName: debouncedName || undefined,
@@ -54,7 +60,7 @@ export default function UsersTable() {
   const totalUsers = data?.total ?? 0;
   const totalPages = data?.totalPages ?? 1;
 
-  
+
   const handleFilterChange = (
     key: keyof Omit<AdminUserFilter, "debouncedName">,
     value: string
@@ -74,6 +80,17 @@ export default function UsersTable() {
       next.set("page", String(newPage));
       return next;
     });
+  };
+
+  const cellRenderers = {
+    
+    role: (u: AdminUsersResponseDTO) => (
+      <StatusBadge label={u.role} tone={u.role === "Designer" ? "warning" : "info"} />
+    ),
+    status: (u: AdminUsersResponseDTO) => (
+      <StatusBadge label={u.is_blocked ? "Blocked" : "Active"} tone={u.is_blocked ? "error" : "success"} withDot />
+    ),
+    view: (u: AdminUsersResponseDTO) => <ViewButton onClick={() => navigate(`/admin/users/${u.id}`)} />,
   };
 
   if (isLoading) return <p>Loading...</p>;
@@ -128,71 +145,8 @@ export default function UsersTable() {
       {/* Table */}
       <div className="bg-white/20 backdrop-blur-2xl border border-white/30 rounded-2xl shadow-[0_8px_32px_rgba(216,160,144,0.15)] overflow-hidden">
         <table className="w-full">
-          <thead className="border-b-2 border-soft-black/20">
-            <tr className="border-b border-white/25 bg-white/20 backdrop-blur-2xl">
-              {["Name", "Email", "Joined", "Role", "Status", "View"].map((h) => (
-                <th
-                  key={h}
-                  className="text-left px-5 py-3.5 text-xs font-Jost-Semibold text-soft-black/50 uppercase tracking-widest"
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user: AdminUsersResponseDTO, i: number) => (
-              <tr
-                key={user.id}
-                className={`${i % 2 === 0 ? "bg-white/50" : ""} transition-colors duration-150 hover:bg-white/20 ${i !== users.length - 1 ? "border-b border-white/20" : ""}`}
-              >
-                <td className="px-5 py-3.5">
-                  <p className="font-Jost-Semibold text-soft-black text-sm">{user.full_name}</p>
-                </td>
-                <td className="px-5 py-3.5">
-                  <p className="text-soft-black/60 text-sm">{user.email}</p>
-                </td>
-                <td className="px-5 py-3.5">
-                  <p className="text-soft-black/60 text-sm">
-                    {new Date(user.joinedAt).toLocaleDateString()}
-                  </p>
-                </td>
-                <td className="px-5 py-3.5">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-Jost-Semibold ${
-                      user.role === "Designer"
-                        ? "bg-peach/20 text-blush-deep border border-peach/30"
-                        : "bg-blush/20 text-soft-black border border-blush/30"
-                    }`}
-                  >
-                    {user.role}
-                  </span>
-                </td>
-                <td className="px-5 py-3.5">
-                  <span
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-Jost-Semibold ${
-                      !user.is_blocked
-                        ? "bg-success/10 text-success border border-success/20"
-                        : "bg-error/10 text-error border border-error/20"
-                    }`}
-                  >
-                    <span
-                      className={`w-1.5 h-1.5 rounded-full ${!user.is_blocked ? "bg-success" : "bg-error"}`}
-                    />
-                    {!user.is_blocked ? "Active" : "Blocked"}
-                  </span>
-                </td>
-                <td className="px-5 py-3.5">
-                  <button
-                    onClick={() => navigate(`/admin/users/${user.id}`)}
-                    className="hover:cursor-pointer flex items-center justify-center w-8 h-8 rounded-lg bg-white/30 backdrop-blur-sm border border-white/40 text-soft-black/60 hover:text-blush-deep hover:bg-white/60 transition-all duration-200"
-                  >
-                    <Eye size={15} strokeWidth={1.8} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+          <TableHeader columns={userColumns} />
+          <TableBody data={users} columns={userColumns} cellRenderers={cellRenderers} keyExtractor={(u) => u.id} />
         </table>
 
         <Pagination
@@ -204,6 +158,6 @@ export default function UsersTable() {
           onIncrease={() => handlePageChange(Math.min(totalPages, page + 1))}
         />
       </div>
-    </div>
+    </div >
   );
 }

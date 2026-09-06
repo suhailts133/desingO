@@ -1,22 +1,18 @@
-import { Eye } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import type { AllDisputeAdminDTO, DisputeAdminFilters } from "../adminDisputeInterface";
-
+import { disputeColumns, disputeStatusTone, type AllDisputeAdminDTO, type DisputeAdminFilters } from "../adminDisputeInterface";
 import Pagination from "../../../../shared/common/Pagination";
 import { useGetAllDIsputeQuery } from "../adminDispueEndpoint";
+import { StatusBadge} from "../../../../shared/table/StatusBadge";
+import ViewButton from "../../../../shared/table/ViewButton";
+import TableHeader from "../../../../shared/table/TableHeader";
+import TableBody from "../../../../shared/table/TableBody";
+import { roleTone } from "../../users/adminUserInterface";
 
-const disputeStatusStyle: Record<AllDisputeAdminDTO["status"], string> = {
-  "Open": "bg-error/10 text-error border-error/20",
-  "Under Review": "bg-blue-50 text-blue-700 border-blue-200",
-  "Resolved": "bg-success/10 text-success border-success/20",
-  "Redo": "bg-amber-50 text-amber-700 border-amber-200",
-  "Awaiting Confirmation": "bg-purple-50 text-purple-700 border-purple-200",
-};
 
 export default function DisputeTable() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  
+
   const page = searchParams.get("page") ?? "1";
   const status = (searchParams.get("status") as DisputeAdminFilters["status"]) ?? "All";
   const sort = (searchParams.get("sort") as DisputeAdminFilters["sort"]) ?? "desc";
@@ -48,6 +44,11 @@ export default function DisputeTable() {
     });
   };
 
+  const cellRenderers = {
+    raisedBy: (d: AllDisputeAdminDTO) => <StatusBadge label={d.raisedBy} tone={roleTone[d.raisedBy]} />,
+    status: (d: AllDisputeAdminDTO) => <StatusBadge label={d.status} tone={disputeStatusTone[d.status]} />,
+    view: (d: AllDisputeAdminDTO) => <ViewButton onClick={() => navigate(`/admin/disputes/${d.id}`)} />,
+  };
   if (isLoading) return <p>Loading...</p>;
   if (error || !disputes) return <p>Error loading disputes</p>;
 
@@ -89,63 +90,8 @@ export default function DisputeTable() {
       {/* Table */}
       <div className="bg-white/20 backdrop-blur-2xl border border-white/30 rounded-2xl shadow-[0_8px_32px_rgba(216,160,144,0.15)] overflow-hidden">
         <table className="w-full">
-          <thead className="border-b-2 border-soft-black/20">
-            <tr className="border-b border-white/25 bg-white/20 backdrop-blur-2xl">
-              {["Type", "Reason", "Raised By", "Status", "Created", "View"].map((h) => (
-                <th
-                  key={h}
-                  className="text-left px-5 py-3.5 text-xs font-Jost-Semibold text-soft-black/50 uppercase tracking-widest"
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {disputes.map((dispute: AllDisputeAdminDTO, i: number) => (
-              <tr
-                key={dispute.id}
-                className={`${i % 2 === 0 ? "bg-white/50" : ""} transition-colors duration-150 hover:bg-white/20 ${i !== disputes.length - 1 ? "border-b border-white/20" : ""}`}
-              >
-                <td className="px-5 py-3.5">
-                  <p className="font-Jost-Semibold text-soft-black text-sm">{dispute.type}</p>
-                </td>
-                <td className="px-5 py-3.5 max-w-xs">
-                  <p className="text-soft-black/60 text-sm truncate">{dispute.reason}</p>
-                </td>
-                <td className="px-5 py-3.5">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-Jost-Semibold ${dispute.raisedBy === "Designer"
-                        ? "bg-peach/20 text-blush-deep border border-peach/30"
-                        : "bg-blush/20 text-soft-black border border-blush/30"
-                      }`}
-                  >
-                    {dispute.raisedBy}
-                  </span>
-                </td>
-                <td className="px-5 py-3.5">
-                  <span
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-Jost-Semibold border ${disputeStatusStyle[dispute.status]}`}
-                  >
-                    {dispute.status}
-                  </span>
-                </td>
-                <td className="px-5 py-3.5">
-                  <p className="text-soft-black/60 text-sm">
-                    {new Date(dispute.createdAt).toLocaleDateString()}
-                  </p>
-                </td>
-                <td className="px-5 py-3.5">
-                  <button
-                    onClick={() => navigate(`/admin/disputes/${dispute.id}`)}
-                    className="hover:cursor-pointer flex items-center justify-center w-8 h-8 rounded-lg bg-white/30 backdrop-blur-sm border border-white/40 text-soft-black/60 hover:text-blush-deep hover:bg-white/60 transition-all duration-200"
-                  >
-                    <Eye size={15} strokeWidth={1.8} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+          <TableHeader columns={disputeColumns} />
+          <TableBody data={disputes} columns={disputeColumns} cellRenderers={cellRenderers} keyExtractor={(u) => u.id} />
         </table>
 
         <Pagination

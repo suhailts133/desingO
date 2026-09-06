@@ -32,7 +32,7 @@ export class UserMapper {
             role: user.role,
             ...(profileImage && { profileImage }),
             is_blocked: user.is_blocked,
-            joinedAt: user.createdAt.toISOString()
+            joinedAt: user.createdAt.toLocaleDateString()
         };
     }
     static toAdminUserDTOlist(users: IUser[]): AdminUsersResponseDTO[] {
