@@ -8,10 +8,11 @@ import type { GateWayData, IPaymentGateway } from "../../interfaces/proposal/IPa
 import type { IEscrow } from "../../interfaces/proposal/IProposal";
 import type { IPaymentRepository, IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
 import type { IPaymentService } from "../../interfaces/proposal/IProposalService";
-import { TRANSACTION_TYPE, USER_ROLES } from "../../shared/enums/commonEnums";
+import { TRANSACTION_TYPE, TRANSACTION_UNIQUE_ID, USER_ROLES } from "../../shared/enums/commonEnums";
 import { EscrowStatus, Payment_Status, ServicePaymentStatus, ServiceStatus } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
+import { generateUniqueId } from "../../shared/helpers/extraFunctions";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 
@@ -54,6 +55,7 @@ export class PaymentService implements IPaymentService {
         const payment = await this._paymentRepo.createPayment(paymentRepo)
         const transactionData: TransactionRepoDTO = {
             amount: payment.amount,
+            TransactionId: generateUniqueId(TRANSACTION_UNIQUE_ID.PAYMENT),
             sourceUserId: payment.customerId.toString(),
             destinationUserId: admin.id,
             type: TRANSACTION_TYPE.PAYMENT
@@ -106,7 +108,7 @@ export class PaymentService implements IPaymentService {
         const servicePlatformFee = isFinalService ? proposal.remainingPlatformFee : Math.round(proposal.platformFee * serviceProportion)
 
         const designerPayout = service.price - servicePlatformFee
-     
+
         const escrowData: Partial<IEscrow> = {
             amountHeld: service.price,
             platformCommission: servicePlatformFee,

@@ -68,7 +68,6 @@ export class JobRequestService implements IJobRequestService {
             userId,
             embedding,
             jobNumber: generateUniqueId(data.designerId ? JOB_REQUEST_UNIQUE_ID.DIRECT_HIRE : JOB_REQUEST_UNIQUE_ID.JOB_REQUEST)
-
         }
 
         const result = await this._jobRequestRepo.createJobRequest(repoData, reference, floorplans);

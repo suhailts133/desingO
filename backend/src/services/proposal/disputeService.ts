@@ -7,10 +7,11 @@ import type { ITransactionRepository } from "../../interfaces/base/ITransaction"
 import type { IDisputeRepository, IDisputeService } from "../../interfaces/proposal/IDispute";
 import type { DisputeStatus } from "../../interfaces/proposal/IProposal";
 import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
-import { CLOUDINARY_FOLDER_NAME, TRANSACTION_TYPE, USER_ROLES } from "../../shared/enums/commonEnums";
+import { CLOUDINARY_FOLDER_NAME, TRANSACTION_TYPE, TRANSACTION_UNIQUE_ID, USER_ROLES } from "../../shared/enums/commonEnums";
 import { CONTRACT_STATUS, DISPUTE_SOLUTION, DISPUTE_STATUS, USER_TYPE } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
+import { generateUniqueId } from "../../shared/helpers/extraFunctions";
 import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
@@ -153,6 +154,7 @@ export class DisputeService implements IDisputeService {
                     sourceUserId: admin.id,
                     destinationUserId: admin.id,
                     amount: serviceEscrow.platformCommission,
+                    TransactionId: generateUniqueId(TRANSACTION_UNIQUE_ID.COMMISSION),
                     type: TRANSACTION_TYPE.COMMISSION,
                     proposalId: proposal.id
                 });
@@ -167,6 +169,7 @@ export class DisputeService implements IDisputeService {
                     destinationUserId: reporterId,
                     amount: dispute.refundAmount,
                     type: TRANSACTION_TYPE.REFUND,
+                    TransactionId: generateUniqueId(TRANSACTION_UNIQUE_ID.COMMISSION),
                     proposalId: proposal.id
                 });
             }
