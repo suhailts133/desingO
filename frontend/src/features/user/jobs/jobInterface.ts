@@ -252,9 +252,10 @@ export interface JobsQueryParms {
     propertyTypes?: { label: string, value: string }[] | null
     timeLines?: { label: string, value: string }[] | null
     sortBy?: { label: string, value: string } | null
+    lat?: number | null
+    lng?: number | null
+    radiusKm?: string | null
 }
-
-
 
 
 
@@ -278,6 +279,7 @@ export interface JobsResponseDTO {
 export type JobsCommonResponseDTO = Omit<JobsResponseDTO, "status"> & {
     name: string,
     createdAt: string
+    distanceInKm?:number
     designStyles: string[]
 }
 

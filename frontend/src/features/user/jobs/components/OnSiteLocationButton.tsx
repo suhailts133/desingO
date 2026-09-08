@@ -12,8 +12,8 @@ export default function OnsiteLocationButton({ onResolved }: OnsiteLocationButto
     const handleClick = async () => {
         try {
             onResolved(await getCurrentLocation());
-        } catch {
-            // error already surfaced via hook's `error` state
+        } catch (error){
+          console.log(error)
         }
     };
 

@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
+import { useUserCoordinates } from "../../../../shared/hooks/useUserCoordinates";
 
 const OPENCAGE_API_KEY = import.meta.env.VITE_OPENCAGE_API_KEY;
 
@@ -60,37 +61,12 @@ async function reverseGeocode(lat: number, lng: number): Promise<ResolvedLocatio
 }
 
 export function useCurrentLocation() {
-  const [isLocating, setIsLocating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { getCoordinates, isLocating, error } = useUserCoordinates();
 
-  const getCurrentLocation = useCallback((): Promise<ResolvedLocation> => {
-    setError(null);
-    setIsLocating(true);
-
-    return new Promise((resolve, reject) => {
-      if (!navigator.geolocation) {
-        const err = "Geolocation is not supported by this browser.";
-        setError(err);
-        setIsLocating(false);
-        reject(new Error(err));
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition(
-        async (pos) => {
-          const resolved = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
-          setIsLocating(false);
-          resolve(resolved);
-        },
-        (err) => {
-          setIsLocating(false);
-          setError(err.message);
-          reject(err);
-        },
-        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-      );
-    });
-  }, []);
+  const getCurrentLocation = useCallback(async (): Promise<ResolvedLocation> => {
+    const { latitude, longitude } = await getCoordinates();
+    return reverseGeocode(latitude, longitude);
+  }, [getCoordinates]);
 
   return { getCurrentLocation, isLocating, error };
 }

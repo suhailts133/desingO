@@ -13,20 +13,20 @@ export const jobsApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["jobs"]
         }),
-        editJob: builder.mutation<IApiResponse, {formdata:FormData, id:string}>({
-            query: ({formdata, id}) => ({
+        editJob: builder.mutation<IApiResponse, { formdata: FormData, id: string }>({
+            query: ({ formdata, id }) => ({
                 url: `${API_ROUTES.JOB.EDIT_JOB}/${id}`,
                 method: "PATCH",
-                body:formdata
+                body: formdata
             }),
             invalidatesTags: ["jobs"]
         }),
 
-        getMyJobs: builder.query<IApiResponseWithPagination<JobsResponseDTO[]>, { page: number, sourceType:Source_type }>({
-            query: ({ page,sourceType }) => ({
+        getMyJobs: builder.query<IApiResponseWithPagination<JobsResponseDTO[]>, { page: number, sourceType: Source_type }>({
+            query: ({ page, sourceType }) => ({
                 url: API_ROUTES.JOB.MY_JOBS,
                 method: "GET",
-                params: { page,sourceType }
+                params: { page, sourceType }
             }),
             providesTags: ["jobs"]
         }),
@@ -63,6 +63,9 @@ export const jobsApi = baseApi.injectEndpoints({
                         ...(propertyTypes && { propertyTypes }),
                         ...(timeLines && { timeLines }),
                         ...(sortBy && { sortBy }),
+                        ...(args.lat != null && { lat: args.lat }),
+                        ...(args.lng != null && { lng: args.lng }),
+                        ...(args.radiusKm && { radiusKm: args.radiusKm }),
                     },
                 }
             }
@@ -74,7 +77,7 @@ export const jobsApi = baseApi.injectEndpoints({
             query: (jobId) => ({
                 url: API_ROUTES.JOB_APPLICATION.APPLY,
                 method: "POST",
-                body: {jobId}
+                body: { jobId }
             }),
             invalidatesTags: ["myJobApplications"]
         })
