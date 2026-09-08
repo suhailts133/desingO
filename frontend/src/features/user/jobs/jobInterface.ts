@@ -85,6 +85,8 @@ export interface INewBuildDetails {
 }
 export type Source_type = "JOB_REQUEST" | "DIRECT_HIRE"
 export interface IJobRequest {
+    latitude: number;
+    longitude: number;
     projectTitle: string;
     description: string;
     projectType: ProjectType;

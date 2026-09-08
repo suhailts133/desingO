@@ -50,7 +50,6 @@ import TransactionTable from "../features/admin/transaction/component/Transactio
 import ChatPage from "../features/proposal/chat/ChatPage";
 import UpdateProposalForm from "../features/proposal/component/UpdateProposalForm";
 
-
 const router = createBrowserRouter([
     {
         path: "/",
@@ -65,6 +64,7 @@ const router = createBrowserRouter([
             { path: "designers/:id", Component: DesignerDetail },
             { path: "chat/:id", Component: ChatPage },
             { path: "proposal/edit/:id", Component: UpdateProposalForm },
+           
 
         ]
     },

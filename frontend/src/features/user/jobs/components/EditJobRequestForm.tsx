@@ -201,6 +201,9 @@ function EditJobRequestFormFields({ job, jobId }: { job: JobRequestDetail; jobId
         console.log(fields, "lol")
         const formData = new FormData();
 
+        formData.append("latitude",String(fields.latitude))
+        formData.append("longitude",String(fields.longitude))
+
         formData.append("projectTitle", fields.projectTitle);
         formData.append("projectType", fields.projectType);
         formData.append("description", fields.description);

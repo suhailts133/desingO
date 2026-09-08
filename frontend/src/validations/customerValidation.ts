@@ -113,6 +113,12 @@ export const jobRequestValidation = Joi.object<IJobRequest>({
     "string.min": "Title must be at least 3 characters",
     "any.required": "Project title is required",
   }),
+  latitude: Joi.number().required().messages({
+    "any.required": "Please set your project location using the buttons above",
+  }),
+  longitude: Joi.number().required().messages({
+    "any.required": "Please set your project location using the buttons above",
+  }),
 
   description: Joi.string().trim().min(20).max(1500).required().messages({
     "string.empty": "Description is required",
