@@ -1,5 +1,5 @@
 import mongoose, { type QueryFilter, type SortOrder } from "mongoose";
-import type { ICreateJobRequest, IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, Source_type } from "../../interfaces/customer/ICustomer";
+import type { IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, Source_type } from "../../interfaces/customer/ICustomer";
 import type { IJobRepository } from "../../interfaces/customer/ICustomerRepository";
 import { JobRequestModel } from "../../models/user/jobModel";
 import { BaseRepository } from "../baseRepository";
@@ -49,9 +49,13 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
     }
 
     async createJobRequest(data: createJobRepoDTO, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<boolean> {
-        const { userId, designId, designerId, ...restOfData } = data;
+        const { userId, designId, designerId, latitude, longitude, ...restOfData } = data;
         const result = await this.create({
             ...restOfData,
+            location: {
+                type: "Point",
+                coordinates: [Number(longitude), Number(latitude)],
+            },
             referenceImages: referenceImages ?? [],
             floorPlans: floorplans ?? [],
             userId: new mongoose.Types.ObjectId(userId),
@@ -62,8 +66,13 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
     }
 
     async editJobRequest(id: string, data: EditJobRepoData, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<boolean> {
+        const { latitude, longitude, ...restOfData } = data;
         const updateData: QueryFilter<IJobRequest> = {
-            ...data,
+            ...restOfData,
+            location: {
+                type: "Point",
+                coordinates: [Number(longitude), Number(latitude)],
+            },
             referenceImages: referenceImages ?? [],
             floorPlans: floorplans ?? []
         }

@@ -45,7 +45,10 @@ const jobRequestSchema = new Schema<IJobRequest>({
     state: { type: String, required: true, trim: true },
     pincode: { type: String, required: true, trim: true },
     phone: { type: String, required: true, trim: true },
-
+    location: {
+        type: { type: String, enum: ["Point"], default: "Point" },
+        coordinates: { type: [Number], required: true },
+    },
 
     totalCarpetArea: { type: Number, required: true, min: 0 },
     areaUnit: { type: String, enum: ["ft", "m"], default: "ft" },
@@ -77,4 +80,6 @@ const jobRequestSchema = new Schema<IJobRequest>({
 },
     { timestamps: true }
 );
+jobRequestSchema.index({ location: "2dsphere" });
+
 export const JobRequestModel = mongoose.model<IJobRequest>("JobRequest", jobRequestSchema)

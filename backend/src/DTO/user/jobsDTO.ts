@@ -21,6 +21,8 @@ export interface JobsResponseDTO {
 
 export interface EditJobRequest {
 
+    latitude: number
+    longitude: number
     sourceType: "JOB_REQUEST" | "DIRECT_HIRE";
     designerId?: string;
     designId?: string;
@@ -102,5 +104,5 @@ export interface JobFilter {
 export type createJobRepoDTO = ICreateJobRequest & {
     embedding: number[];
     jobNumber: string;
-    userId:string
+    userId: string
 };
