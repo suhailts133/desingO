@@ -96,6 +96,8 @@ export interface IJobRequest {
 export type IJobRequestPopulated = Omit<IJobRequest, "userId" | "designerId"> & {
     userId: IUser
     designerId: IUser
+    _id?: mongoose.Types.ObjectId | string;
+    distanceInMeters?: number;
 }
 
 export type IJobRequestCustomerPopulated = Omit<IJobRequest, "userId"> & {

@@ -15,6 +15,7 @@ import { generateEmbedding } from "../../shared/helpers/embedding";
 import type { IDesignerInteractionRepository } from "../../interfaces/designer/IDesignerRepository";
 import { JOB_INTERACTION, JOB_INTERACTION_TYPE } from "../../shared/enums/interactionEnum";
 import { generateUniqueId } from "../../shared/helpers/extraFunctions";
+import { date } from "joi";
 
 export class JobRequestService implements IJobRequestService {
     constructor(private _designerInteractionRepo: IDesignerInteractionRepository, private _jobRequestRepo: IJobRepository, private _imageUploder: IImageUploaderService, private _activeJobRepo: IActiveJobRepository) { }
@@ -188,7 +189,7 @@ export class JobRequestService implements IJobRequestService {
     async getAllJobs(JobFilter?: JobFilter): Promise<IApiResponseWithPagination<JobsCommonResponseDTO[]>> {
 
         const result = await this._jobRequestRepo.getAllJobs(JobFilter)
-        const jobsData = JobRequestMapper.toJobRequestsDTOlist(result.data)
+        const jobsData = JobRequestMapper.toJobRequestsDTOlist(result.data)  
         return {
             message: JOB_MESSAGES.JOB_REQUEST.ALL_JOB_REQUEST,
             data: jobsData,

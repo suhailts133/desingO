@@ -11,7 +11,7 @@ export interface IJobRepository {
     createJobRequest(data: createJobRepoDTO, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<boolean>;
     getjobRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<{ data: IJobRequestCustomerPopulated[], pagination: Pagination }>
     getMyJobs(userId: string, sourceType: Source_type, page?: string): Promise<{ data: IJobRequest[], pagination: Pagination }>
-    getAllJobs(JobFilter?: JobFilter): Promise<{ data: IJobRequestPopulated[], pagination: Pagination }>;
+    getAllJobs(jobFilter?: JobFilter): Promise<{ data: IJobRequestPopulated[], pagination: Pagination }>;
     deleteAJob(id: string): Promise<boolean>;
     getJobRequest(id: string): Promise<IJobRequestPopulated | null>
     editJobRequest(id: string, data: EditJobRepoData, referenceImages?: ImageUploadResult[], finalFloorPlans?: ImageUploadResult[]): Promise<boolean>
