@@ -1,7 +1,6 @@
 import mongoose, { Schema } from "mongoose"
 import type { IProposal } from "../../interfaces/proposal/IProposal"
 import { serviceItemSchema } from "./schemas/serviceItemSchema"
-import { imageFormatSchema } from "./schemas/imageFormatSchema"
 
 const proposalSchema = new Schema<IProposal>({
 
@@ -11,7 +10,8 @@ const proposalSchema = new Schema<IProposal>({
     designerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     disputeId: { type: String },
     disputeCount: { type: Number, default: 0 },
-    floorPlan: { type: [imageFormatSchema], default: [] },
+    floorPlanVersion: { type: Number, default: 0 },
+    isReviewd: { type: Boolean, default: false },
     totalArea: { type: Number, required: true },
     unit: { type: String, enum: ["ft", "m"], required: true },
     drawingFeePerSqFt: { type: Number, required: true },
@@ -32,6 +32,7 @@ const proposalSchema = new Schema<IProposal>({
     overallRejectionReason: { type: String },
     sourceName: { type: String, required: true },
     siteVisitingNeeded: { type: Boolean, default: false },
+    isFloorPlanApproved: { type: Boolean, default: false },
     expectedSiteVisitingDate: { type: Date },
     clientAcceptedAt: { type: Date },
     expectedCompletionDate: { type: Date, required: true },

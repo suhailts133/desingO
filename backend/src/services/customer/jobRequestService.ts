@@ -15,7 +15,6 @@ import { generateEmbedding } from "../../shared/helpers/embedding";
 import type { IDesignerInteractionRepository } from "../../interfaces/designer/IDesignerRepository";
 import { JOB_INTERACTION, JOB_INTERACTION_TYPE } from "../../shared/enums/interactionEnum";
 import { generateUniqueId } from "../../shared/helpers/extraFunctions";
-import { date } from "joi";
 
 export class JobRequestService implements IJobRequestService {
     constructor(private _designerInteractionRepo: IDesignerInteractionRepository, private _jobRequestRepo: IJobRepository, private _imageUploder: IImageUploaderService, private _activeJobRepo: IActiveJobRepository) { }

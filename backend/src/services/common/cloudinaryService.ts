@@ -1,6 +1,8 @@
 import { v2 as cloudinary } from "cloudinary";
 
 import type { ImageUploadResult, IImageUploaderService } from "../../interfaces/base/IImageUpload";
+import { AppError } from "../../shared/errors/appError";
+import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 
 
 export class CloudinaryService implements IImageUploaderService {
@@ -17,14 +19,16 @@ export class CloudinaryService implements IImageUploaderService {
             const stream = cloudinary.uploader.upload_stream(
                 { folder, resource_type: "auto" },
                 (error, result) => {
-                    if (error || !result) reject(error || new Error("Upload failed"));
-                    else resolve({ path: result.secure_url, filename: result.public_id });
+                    if (error || !result) {
+                        reject(new AppError("Failed to upload image", RESPONSE_CODE.INTERNAL_SERVER_ERROR));
+                    } else {
+                        resolve({ path: result.secure_url, filename: result.public_id });
+                    }
                 }
             );
             stream.end(file.buffer);
         });
     }
-
 
     async uploadMany(files: Express.Multer.File[], folder: string): Promise<ImageUploadResult[]> {
         return Promise.all(

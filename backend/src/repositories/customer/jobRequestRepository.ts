@@ -10,7 +10,6 @@ import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
 import { JOB_REQUEST_FILTERS } from "../../shared/enums/filterEnums";
 import { JOB_REQUEST_STATUS, JOB_SOURCE_TYPE } from "../../shared/enums/commonEnums";
 import type { HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
-import type { AggregationResult } from "@google/genai";
 
 
 export class JobRequestRepository extends BaseRepository<IJobRequest> implements IJobRepository {

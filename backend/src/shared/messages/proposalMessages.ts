@@ -1,5 +1,16 @@
 export const PROPOSAL_MESSAGES = {
 
+
+    FLOOR_PLANS: {
+        CANT_UPLOAD: "Floor Plans are already approved.",
+        SUCCESS: "Floor Plans Uploaded Successfully",
+        FAILED: "Floor Plans Upload failed",
+        NOT_FOUND: "Floor Plan not found.",
+        UPDATE_FAIL: "failed to update floorplan status.",
+        ALREDY_CHANGED: (status: string) => `Already Updated the floor Plan Status to ${status}`,
+        UPDATE_SUCCESS: "failed to  update floorplan status.",
+    },
+
     DISPUTE: {
         ALREADY_RESOLVED_OR_AWATING_CONFIRMATION: "This dispute is already solved or awaiting confrimation",
         ONGOING: "A Dispute is already on going please wait till it get resolved.",
@@ -39,6 +50,7 @@ export const PROPOSAL_MESSAGES = {
     PROPOSAL: {
         FLOOR_PLAN_REQUIRED: "Floor plan  is required.",
         FLOOR_PLAN_UPLOADED: "Floor plan uploaded.",
+        SITE_VIST_NEEDED: "Site visit measurement is required for this job request.",
         SITE_VIST_NOT_NEEDED: "Site vist is not needed floor plan is in the job request.",
         ID_REQUIRED: "proposal Id required",
         CREATION_FAILED: "Proposal creation failed.",
