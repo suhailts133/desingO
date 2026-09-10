@@ -9,7 +9,6 @@ import { RespsonseHelper } from "../../shared/helpers/responseHelper";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { isObjectId } from "../../shared/helpers/extraFunctions";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
-
 export class JobApplicationController {
     constructor(private _jobApplicationService: IJobApplicationService) { }
 
@@ -30,6 +29,8 @@ export class JobApplicationController {
             jobId: value.jobId,
         }
         const result = await this._jobApplicationService.applyForJob(data)
+       
+  
         RespsonseHelper.success(res, result)
     })
 

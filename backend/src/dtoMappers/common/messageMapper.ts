@@ -1,5 +1,5 @@
-import type { MessageResponseDTO } from "../../DTO/chat/chatDTO";
-import type { IMessage } from "../../interfaces/chat/IChat";
+import type { MessageResponseDTO } from "../../DTO/socket/chatDTO";
+import type { IMessage } from "../../interfaces/socket/ISocket";
 
 export class MessageMapper {
     static toMessageDTO(data: IMessage): MessageResponseDTO {

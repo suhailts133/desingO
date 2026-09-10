@@ -1,4 +1,4 @@
-import type { MessageRole } from "../../interfaces/chat/IChat"
+import type { MessageRole } from "../../interfaces/socket/ISocket"
 
 export interface CreateMessageDTO {
     activeJobId: string
@@ -34,3 +34,8 @@ export interface MessageResponseDTO {
     createdAt: string
 }
 
+
+export interface saveMessageResponseDTO {
+    message: MessageResponseDTO,
+    recipientId: string
+}

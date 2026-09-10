@@ -1,10 +1,11 @@
 import { useState } from "react"
-import { User, Bell, Heart, Menu, X } from "lucide-react"
+import { User, Heart, Menu, X } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "../../app/store"
 import { logOut } from "../../app/authSlice"
 import { useDecodeAccessToken } from "../../helpers/decodeAccessToken"
+import NotificationBell from "../../features/notification/components/NotificationBell"
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
@@ -24,7 +25,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className={`flex items-center justify-between ${!open ? "rounded-b-sm border border-b-gray-300" : ""}
+      <nav className={`z-50 flex items-center justify-between ${!open ? "rounded-b-sm border border-b-gray-300" : ""}
           bg-white/30 text-soft-black p-4 backdrop-blur-3xl font-semibold
           bg-linear-to-r from-blush/30 via-blush-ligh/30t to-blush-deep/30
           `}>
@@ -62,13 +63,13 @@ export default function Navbar() {
               </Link>
             </span>
           )}
-          
-            <span className="hover:scale-110 hover:border-b hover:transition-all cursor-pointer">
-              <Link to="/designers">
-                Designers
-              </Link>
-            </span>
-          
+
+          <span className="hover:scale-110 hover:border-b hover:transition-all cursor-pointer">
+            <Link to="/designers">
+              Designers
+            </Link>
+          </span>
+
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3 pr-1">
@@ -80,11 +81,7 @@ export default function Navbar() {
           </button>
 
 
-          <button className="relative flex items-center justify-center hover:text-blush-deep transition-colors duration-200" aria-label="Notifications">
-            <Bell size={16} className="sm:hidden" />
-            <Bell size={18} className="hidden sm:block" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
-          </button>
+          {isLoggedIn && <NotificationBell />}
 
           {isLoggedIn ? (
             <button

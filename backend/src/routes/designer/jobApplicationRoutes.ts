@@ -6,13 +6,16 @@ import { JobApplicationController } from "../../controllers/designer/jobApplicat
 import designerAuthentication from "../../middlewares/designerAuth";
 import authenticate from "../../middlewares/auth";
 import { ActiveJobRepository } from "../../repositories/common/activeJobRepository";
-
+import { NotificationService } from "../../services/common/notificationService";
+import { NotificationRepository } from "../../repositories/socket/notificationRepository";
 const router = Router()
 
 const jobApplicationRepo = new JobApplicationRepository()
 const jobRequestRepo = new JobRequestRepository()
 const activeJobRepo = new ActiveJobRepository()
-const jobApplicationservice = new JobApplicationService(jobApplicationRepo, jobRequestRepo, activeJobRepo)
+const notificationRepo = new NotificationRepository()
+export const notificationService = new NotificationService(notificationRepo)
+const jobApplicationservice = new JobApplicationService(jobApplicationRepo, jobRequestRepo, activeJobRepo,notificationService)
 const jobApplicationController = new JobApplicationController(jobApplicationservice);
 
 

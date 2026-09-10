@@ -3,6 +3,7 @@ import type { AddDesignRequestDTO, DesignDetailResponseDTO, DesignFiles, DesignF
 import type { DesignerCardDTO, DesignerFilter } from "../../DTO/designer/designerDTO";
 import type { DesignerVerificationBodyDTO } from "../../DTO/designer/designerVerificationDTOs";
 import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO";
+import type { NotificationResponseDTO } from "../../DTO/socket/notificationDTO";
 import type { JobsCommonResponseDTO } from "../../DTO/user/jobsDTO";
 import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../base/IApiResponse";
 import type { WarningDTO } from "../benchmark/IBenchMark";

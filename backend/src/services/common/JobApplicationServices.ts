@@ -8,13 +8,16 @@ import type { IJobApplicationService } from "../../interfaces/designer/IDesigner
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { JobApplicationMapper } from "../../dtoMappers/designer/JobApplicationMapper";
 import { JOB_APPLICATION_STATUS, SOURCE_TYPE } from "../../shared/enums/commonEnums";
+import type { CreateNotificationDTO, NotificationResponseDTO } from "../../DTO/socket/notificationDTO";
+import { SOCKET_MESSAGES } from "../../shared/messages/socketMessage";
+import { NOTIFICATION_TYPES } from "../../shared/enums/notificationEnum";
+import type { INotificationService } from "../../interfaces/socket/ISocketService";
 
 
 export class JobApplicationService implements IJobApplicationService {
-    constructor(private _jobApplicationRepo: IJobApplicationRepository, private _jobRequestRepo: IJobRepository, private _activeJobRepo: IActiveJobRepository) { }
+    constructor(private _jobApplicationRepo: IJobApplicationRepository, private _jobRequestRepo: IJobRepository, private _activeJobRepo: IActiveJobRepository, private _notificationService: INotificationService) { }
 
     async applyForJob(data: IJobApplicationRequestDTO): Promise<IApiResponse> {
-        console.log(data)
 
         const jobExists = await this._jobRequestRepo.getJobRequest(data.jobId)
         if (!jobExists) {
@@ -24,12 +27,17 @@ export class JobApplicationService implements IJobApplicationService {
         if (alreadyApplied) {
             throw new AppError(JOB_MESSAGES.JOB_APPLICATION.ALREADY_APPLIED, RESPONSE_CODE.CONFILT)
         }
-        await this._jobApplicationRepo.applyForJob(jobExists.userId.id, data);
-        return {
-            message: JOB_MESSAGES.JOB_APPLICATION.APPLIED_SUCCESS,
-            success: true,
-            statuscode: RESPONSE_CODE.OK
+        const result = await this._jobApplicationRepo.applyForJob(jobExists.userId.id, data);
+        const notification: CreateNotificationDTO = {
+            recipientId: result.customerId.toString(),
+            senderId: result.designerId.toString(),
+            title: SOCKET_MESSAGES.NOTIFICATION_TITLES.JOB_APPLICATION,
+            type: NOTIFICATION_TYPES.JOB_REQUEST,
+            message: SOCKET_MESSAGES.NOTIFICATION_MESSAGES.JOB_APPLICATION(jobExists.projectTitle).slice(0, 80),
+            activeId: result.id
         }
+        await this._notificationService.notify(notification);
+        return { message: JOB_MESSAGES.JOB_APPLICATION.APPLIED_SUCCESS, statuscode: RESPONSE_CODE.CREATED }
     }
 
     async deleteJobApplication(id: string): Promise<IApiResponse> {
@@ -63,9 +71,9 @@ export class JobApplicationService implements IJobApplicationService {
                 designerId: result.designerId.toString(),
                 sourceId: jobStatusUpdated.id,
                 sourceType: SOURCE_TYPE.JOB_REQUEST,
-                sourceName:jobStatusUpdated.projectTitle
+                sourceName: jobStatusUpdated.projectTitle
             })
-           
+
             if (!activeJob) {
                 throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
             }

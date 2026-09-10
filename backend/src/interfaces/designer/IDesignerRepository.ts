@@ -33,7 +33,7 @@ export interface IDesignRepository {
 
 
 export interface IJobApplicationRepository {
-    applyForJob(customerId: string, data: IJobApplicationRequestDTO): Promise<void>
+    applyForJob(customerId: string, data: IJobApplicationRequestDTO): Promise<IJobApplication>
     checkUserJobApplication(userId: string, jobId: string): Promise<boolean>
     deleteJobApplication(id: string): Promise<boolean>
     changeStatusForPendingUser(id: string, jobId: string): Promise<void>

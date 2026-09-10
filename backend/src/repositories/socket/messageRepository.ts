@@ -1,7 +1,7 @@
-import type { CreateMessageDTO } from "../../DTO/chat/chatDTO";
-import type { IMessage } from "../../interfaces/chat/IChat";
-import type { IMessageRepository } from "../../interfaces/chat/IChatRepository";
-import { MessageModel } from "../../models/chat/messageModel";
+import type { CreateMessageDTO } from "../../DTO/socket/chatDTO";
+import type { IMessage } from "../../interfaces/socket/ISocket";
+import type { IMessageRepository } from "../../interfaces/socket/ISocketRepository";
+import { MessageModel } from "../../models/socket/messageModel";
 import { CHAT_ENUM } from "../../shared/enums/commonEnums";
 import { BaseRepository } from "../baseRepository";
 import mongoose, { type QueryFilter } from "mongoose";

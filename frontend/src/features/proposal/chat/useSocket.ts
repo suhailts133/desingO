@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { io, Socket } from "socket.io-client"
 import { useSocketAuth } from "./useSocketAuth"
 
-export function useSocket(roomId: string, enabled: boolean) {
+export function useSocket(roomId: string | undefined, enabled: boolean) {
     const { getNewToken } = useSocketAuth()
     const getNewTokenRef = useRef(getNewToken)
     const socketRef = useRef<Socket | null>(null)
@@ -11,14 +11,12 @@ export function useSocket(roomId: string, enabled: boolean) {
     const [isConnected, setIsConnected] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
-    // Keep the ref pointed at the latest function without
-    // making the effect below depend on it.
     useEffect(() => {
         getNewTokenRef.current = getNewToken
     }, [getNewToken])
 
     useEffect(() => {
-        if (!enabled || !roomId) return
+        if (!enabled) return
         let cancelled = false
 
         const connect = async () => {
@@ -40,7 +38,9 @@ export function useSocket(roomId: string, enabled: boolean) {
             newSocket.on("connect", () => {
                 setIsConnected(true)
                 setError(null)
-                newSocket.emit("join_room", { activeJobId: roomId })
+                if (roomId) {
+                    newSocket.emit("join_room", { activeJobId: roomId })
+                }
             })
 
             newSocket.on("connect_error", async (err) => {
@@ -66,7 +66,9 @@ export function useSocket(roomId: string, enabled: boolean) {
         return () => {
             cancelled = true
             if (socketRef.current) {
-                socketRef.current.emit("leave_room", { activeJobId: roomId })
+                if (roomId) {
+                    socketRef.current.emit("leave_room", { activeJobId: roomId })
+                }
                 socketRef.current.disconnect()
                 socketRef.current = null
             }
