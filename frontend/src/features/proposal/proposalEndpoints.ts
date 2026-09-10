@@ -1,7 +1,7 @@
 import { API_ROUTES } from "../../api/apiRoutes";
 import { baseApi } from "../../api/baseApi";
 import type { IApiResponse } from "../../api/responseType";
-import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData, ProposalInputDataPayload, UpdateProposalDTO, VersionAcceptOrRejectDTO } from "./proposalInterface";
+import type { AcceptOrRejectFloorPlanDTO, CreateProposalDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData, ProposalInputDataPayload, UpdateProposalDTO, VersionAcceptOrRejectDTO } from "./proposalInterface";
 
 export const proposalApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -13,10 +13,19 @@ export const proposalApi = baseApi.injectEndpoints({
             providesTags: ["proposal"]
         }),
 
+        acceptOrRejectFloorPlan: builder.mutation<IApiResponse, AcceptOrRejectFloorPlanDTO>({
+            query: (body: AcceptOrRejectFloorPlanDTO) => ({
+                url: API_ROUTES.PROPOSAL.ACCEPT_REJECT_FLOOR_PALN,
+                method: "PATCH",
+                body
+            }),
+            invalidatesTags: ["proposal"]
+        }),
+
         uploadFloorPlan: builder.mutation<IApiResponse, FormData>({
             query: (formData: FormData) => ({
                 url: API_ROUTES.PROPOSAL.UPLOAD_FLOOR_PLAN,
-                method: "PATCH",
+                method: "POST",
                 body: formData
             }),
             invalidatesTags: ["proposal"]
@@ -81,5 +90,6 @@ export const {
     useUploadResultMutation,
     useApproveOrRejectVersionResultMutation,
     useUpdateProposalMutation,
-    useUploadFloorPlanMutation
+    useUploadFloorPlanMutation,
+    useAcceptOrRejectFloorPlanMutation
 } = proposalApi

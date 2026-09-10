@@ -1,7 +1,7 @@
 import { isApiError, UNKNOWN_ERROR } from "../../helpers/errorhandler"
 import { useCreateIntentMutation, useGetPaymentIdMutation } from "./paymentEndpoints"
-import { useApproveOrRejectVersionResultMutation, useApproveRejectMutation, useCreateProposalMutation, useUploadFloorPlanMutation, useUpdateProposalMutation, useUploadResultMutation } from "./proposalEndpoints"
-import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ReviewPayload, UpdateProposalDTO, VersionAcceptOrRejectDTO } from "./proposalInterface"
+import { useApproveOrRejectVersionResultMutation, useApproveRejectMutation, useCreateProposalMutation, useUploadFloorPlanMutation, useUpdateProposalMutation, useUploadResultMutation, useAcceptOrRejectFloorPlanMutation } from "./proposalEndpoints"
+import type { AcceptOrRejectFloorPlanDTO, CreateProposalDTO, ProposalAcceptOrRejectDTO, ReviewPayload, UpdateProposalDTO, VersionAcceptOrRejectDTO } from "./proposalInterface"
 import { useAddYourReviewMutation } from "./wishlistEndpoints"
 
 export const useProposalServices = () => {
@@ -14,7 +14,21 @@ export const useProposalServices = () => {
     const [getPaymentIdMUtation, { isLoading: isVerifying }] = useGetPaymentIdMutation()
     const [approveOrRejectVersionResultMutation, { isLoading: isVersionApprovingOrRejecting }] = useApproveOrRejectVersionResultMutation()
     const [uploadFloorPlanMutation, { isLoading: isFloorPlanUploading }] = useUploadFloorPlanMutation()
+    const [acceptOrRejectFloorPlanMutation, { isLoading: isFloorPlanVerifying }] = useAcceptOrRejectFloorPlanMutation()
 
+
+    const acceptOrRejectFloorPlan = async (body: AcceptOrRejectFloorPlanDTO) => {
+        try {
+
+            const result = await acceptOrRejectFloorPlanMutation(body).unwrap()
+            return result
+        } catch (error) {
+            if (isApiError(error)) {
+                return error.data
+            }
+            return UNKNOWN_ERROR
+        }
+    }
     const approveOrRejectVersionResult = async (body: VersionAcceptOrRejectDTO) => {
         try {
 
@@ -139,6 +153,8 @@ export const useProposalServices = () => {
         approveOrRejectVersionResult,
         isVersionApprovingOrRejecting,
         updateProposal,
-        isProposalUpdating
+        isProposalUpdating,
+        acceptOrRejectFloorPlan,
+        isFloorPlanVerifying
     }
 }
