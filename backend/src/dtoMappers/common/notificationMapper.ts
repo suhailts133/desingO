@@ -7,10 +7,11 @@ export class NotificationMapper {
             id: n.id,
             senderId: n.senderId.toString(),
             title: n.title,
+            type: n.type,
             message: n.message,
-            activeId: n.activeId.toString(),
+            ...(n.activeId && { activeId: n.activeId.toString() }),
             isRead: n.isRead,
-            createdAt: n.createdAt
+            createdAt: n.createdAt.toLocaleTimeString()
         };
     }
 

@@ -35,9 +35,9 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
 
     }
 
-    async applyForJob(customerId: string, data: IJobApplicationRequestDTO): Promise<void> {
+    async applyForJob(customerId: string, data: IJobApplicationRequestDTO): Promise<IJobApplication> {
 
-        await this.create({
+        return await this.create({
             designerId: new mongoose.Types.ObjectId(data.userId),
             customerId: new mongoose.Types.ObjectId(customerId),
             jobId: new mongoose.Types.ObjectId(data.jobId)

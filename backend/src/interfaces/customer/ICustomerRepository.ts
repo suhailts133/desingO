@@ -8,7 +8,7 @@ import type { ImageUploadResult } from "../base/IImageUpload";
 import type { IActiveJob, ICreateJobRequest, IHireDesigner, ICustomerInteraction, IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, Source_type } from "./ICustomer";
 
 export interface IJobRepository {
-    createJobRequest(userId: string, data: ICreateJobRequest, embedding: number[], referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<boolean>;
+    createJobRequest(userId: string, data: ICreateJobRequest, embedding: number[], referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<IJobRequest>;
     getjobRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<{ data: IJobRequestCustomerPopulated[], pagination: Pagination }>
     getMyJobs(userId: string, sourceType: Source_type, page?: string): Promise<{ data: IJobRequest[], pagination: Pagination }>
     getAllJobs(JobFilter?: JobFilter): Promise<{ data: IJobRequestPopulated[], pagination: Pagination }>;

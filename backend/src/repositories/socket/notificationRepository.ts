@@ -14,10 +14,11 @@ export class NotificationRepository extends BaseRepository<INotification> implem
     async createNotication(data: CreateNotificationDTO): Promise<INotification> {
         return this.create({
             title: data.title,
+            type: data.type,
             message: data.message,
             senderId: new mongoose.Types.ObjectId(data.senderId),
             recipientId: new mongoose.Types.ObjectId(data.recipientId),
-            activeId: new mongoose.Types.ObjectId(data.activeId)
+            ...(data.activeId && { activeId: new mongoose.Types.ObjectId(data.activeId) })
         });
     }
 

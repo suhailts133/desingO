@@ -10,6 +10,7 @@ import { registerChatHandlers } from "./chatHandler";
 import { NotificationService } from "../services/common/notificationService";
 import { NotificationRepository } from "../repositories/socket/notificationRepository";
 import { registerNotificationHandlers } from "./notificationHandler";
+import { setIO } from "./ioInstance";
 
 export function initSocket(httpServer: HttpServer) {
     const io = new SocketServer(httpServer, {
@@ -19,6 +20,7 @@ export function initSocket(httpServer: HttpServer) {
             credentials: true,
         }
     })
+    setIO(io)
 
     const msgRepo = new MessageRepository()
     const activeJobRepo = new ActiveJobRepository()

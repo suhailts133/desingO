@@ -3,6 +3,8 @@ import type { AuthSocket } from "../SocketType";
 import type { IChatService, INotificationService } from "../../interfaces/socket/ISocketService";
 import { handleSocketError } from "../../shared/errors/socketErrorHandler.js";
 import type { ChatRoomPayload, LeaveRoomPayload, SendMessagePayload, SendMessageRequestDTO } from "../../DTO/socket/chatDTO";
+import { NOTIFICATION_TYPES } from "../../shared/enums/notificationEnum";
+import { SOCKET_MESSAGES } from "../../shared/messages/socketMessage";
 export class ChatController {
 
     constructor(private _io: Server, private _socket: AuthSocket, private _chatService: IChatService, private _notificationService: INotificationService) { }
@@ -51,14 +53,15 @@ export class ChatController {
             const { message: newMessage, recipientId } = await this._chatService.saveMessage(msg)
             this._io.to(payload.activeJobId).emit("new_message", newMessage)
 
-            const notification = await this._notificationService.notify({
+            await this._notificationService.notify({
                 recipientId,
                 senderId: msg.senderId,
-                title: "New message",
+                title: SOCKET_MESSAGES.NOTIFICATION_TITLES.MESSAGE,
+                type: NOTIFICATION_TYPES.MESSAGE,
                 message: msg.content.slice(0, 80),
                 activeId: newMessage.activeJobId
             });
-            this._io.to(`user:${recipientId}`).emit("new_notification", notification)
+
         } catch (error) {
             handleSocketError(error, this._socket)
         }

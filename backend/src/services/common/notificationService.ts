@@ -5,12 +5,14 @@ import type { INotificationService } from "../../interfaces/socket/ISocketServic
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
 import { SOCKET_MESSAGES } from "../../shared/messages/socketMessage";
+import { getIO } from "../../socket/ioInstance";
 
 export class NotificationService implements INotificationService {
     constructor(private _notificationRepo: INotificationRepository) { }
 
     async notify(data: CreateNotificationDTO): Promise<NotificationResponseDTO> {
         const saved = await this._notificationRepo.createNotication(data);
+        getIO().to(`user:${saved.recipientId}`).emit("new_notification", saved);
         return NotificationMapper.toDTO(saved);
     }
 

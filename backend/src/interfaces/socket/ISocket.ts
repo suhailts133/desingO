@@ -9,14 +9,16 @@ export interface IMessage {
     createdAt: Date
 }
 
+export type NotificationType = "Message" | "Job_Request" | "Hire_Request" | "Proposal"
 
 export interface INotification {
     id: string
     recipientId: mongoose.Types.ObjectId;
     senderId: mongoose.Types.ObjectId;
+    type: NotificationType
     title: string;
     message: string;
-    activeId: mongoose.Types.ObjectId;
+    activeId?: mongoose.Types.ObjectId;
     isRead: boolean;
     createdAt: Date;
 }
