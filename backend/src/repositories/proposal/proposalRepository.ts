@@ -13,6 +13,7 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
         super(ProposalModel)
     }
 
+
     async getProposalsByUserId(userId: string, role: "Designer" | "Customer"): Promise<IProposalSourcePopulated[]> {
         const objectId = new mongoose.Types.ObjectId(userId);
         const query: QueryFilter<IProposal> = {};
@@ -48,15 +49,24 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
             remainingPlatformFee: data.remainingPlatformFee
         })
     }
+    async openFirstServiceAndMarkOngoing(sourceId: string): Promise<IProposal | null> {
+        return await this.updateOne(
+            { sourceId, "services.order": FIRST_SERVICE_ORDER_NUMBER },
+            {
+                $set: {
+                    "services.$.status": ServiceStatus.OPEN,
+                    contractStatus: CONTRACT_STATUS.ONGOING,
+                },
+            }
+        );
+    }
+
 
     async acceptOrRejectProposal(sourceId: string, contractStatus: ContractStatus, shouldUpdateService: boolean, overallRejectionReason?: string): Promise<IProposal | null> {
         const filter: ProposalStatusFilter = { sourceId };
+        const update: ProposalStatusUpdateRepoDTO = { contractStatus };
 
-        const update: ProposalStatusUpdateRepoDTO = {
-            contractStatus,
-        };
-
-        if (contractStatus === CONTRACT_STATUS.ACCEPTED && shouldUpdateService) {
+        if (shouldUpdateService) {
             filter["services.order"] = FIRST_SERVICE_ORDER_NUMBER;
             update["services.$.status"] = ServiceStatus.OPEN;
         }
@@ -65,9 +75,7 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
             update.overallRejectionReason = overallRejectionReason;
         }
 
-        return await this.updateOne(filter, {
-            $set: update,
-        });
+        return await this.updateOne(filter, { $set: update });
     }
 
     async acceptOrRejectServiceResult(sourceId: string, order: number, status: ProposalServiceStatus): Promise<IProposal | null> {

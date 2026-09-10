@@ -26,6 +26,7 @@ export interface IDispute {
 
 
 export interface IDisputeRepository {
+    updateDisputeIfStatus(id: string, expectedStatus: DisputeStatus, updates: Partial<IDispute>): Promise<IDispute | null>;
     createDispute(data: DisputeRepoDTO): Promise<IDispute>
     updateDispute(id: string, data: Partial<DisputeUpdateDTO>): Promise<IDispute | null>
     getAllDisputeForAdmin(filters?: DisputeAdminFilters): Promise<{ data: DisputePopulated[]; pagination: Pagination; }>

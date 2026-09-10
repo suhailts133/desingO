@@ -15,7 +15,7 @@ export class UserRepository extends BaseRepository<IUser> implements IUserReposi
 
 
     async findByRole(role: UserRole): Promise<IUser | null> {
-        return await this.findOne({role})
+        return await this.findOne({ role })
     }
     async delete(id: string): Promise<boolean> {
         const result = await this._model.findByIdAndDelete(id);
@@ -42,7 +42,10 @@ export class UserRepository extends BaseRepository<IUser> implements IUserReposi
         }
         return result
     }
-
+    
+    async incrementWallet(id: string, amount: number): Promise<IUser | null> {
+        return await this.update(id, { $inc: { wallet: amount } });
+    }
 
     async createNewUser(data: CreateUserDTO): Promise<IUser> {
         return await this.create(data);

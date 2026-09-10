@@ -5,6 +5,14 @@ export const SORT_OPTIONS = [
     { label: "Budget: High → Low", value: "price_desc" },
 ];
 
+export const RADIUS_OPTIONS: OptionType[] = [
+  { label: "Within 5 km", value: "5" },
+  { label: "Within 10 km", value: "10" },
+  { label: "Within 30 km", value: "30" },
+  { label: "Within 50 km", value: "50" },
+  { label: "Within 100 km", value: "100" },
+];
+
 export const SPACE_TYPE_AI = [
     "Living Room",
     "Drawing Room",

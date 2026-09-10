@@ -48,10 +48,16 @@ export interface IItemDimensions {
 }
 
 
+export interface ILocation {
+    type: "Point";
+    coordinates: [number, number];
+}
 
 export interface IJobRequest {
     id: string;
     userId: mongoose.Types.ObjectId
+    jobNumber: string
+    location: ILocation
     designerId?: mongoose.Types.ObjectId
     designId?: mongoose.Types.ObjectId
     projectTitle: string;
@@ -90,6 +96,8 @@ export interface IJobRequest {
 export type IJobRequestPopulated = Omit<IJobRequest, "userId" | "designerId"> & {
     userId: IUser
     designerId: IUser
+    _id?: mongoose.Types.ObjectId | string;
+    distanceInMeters?: number;
 }
 
 export type IJobRequestCustomerPopulated = Omit<IJobRequest, "userId"> & {
@@ -97,9 +105,11 @@ export type IJobRequestCustomerPopulated = Omit<IJobRequest, "userId"> & {
 }
 
 
-export type ICreateJobRequest = Omit<IJobRequest, "id" | "userId" | "status" | "designerId" | "designId"> & {
+export type ICreateJobRequest = Omit<IJobRequest, "id" | "userId" | "status" | "designerId" | "designId" | "jobNumber" | "location"> & {
     designId?: string
     designerId?: string
+    latitude: number
+    longitude: number
 }
 
 

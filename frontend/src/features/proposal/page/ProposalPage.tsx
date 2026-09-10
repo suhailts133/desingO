@@ -38,7 +38,8 @@ import { useHandleResponse } from "../../../helpers/useHandleResponse"
 import { useApproveOrRejectVersion } from "../hooks/useApproveOrRejectVersion"
 import UploadFloorPlan from "../component/UploadFloorPlan"
 import { useUploadFloorPlan } from "../hooks/useUploadFloorPlan"
-import { ExternalLink, FileText } from "lucide-react"
+import FloorPlanSection from "../component/FloorPlanSection"
+import { useAcceptOrRejectFloorPlan } from "../hooks/useAcceptOrRejectFloorPlan"
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
 
@@ -47,7 +48,9 @@ export default function ProposalPage() {
     const { role } = useDecodeAccessToken()
     const location = useLocation()
     const [approveVersion, setApproveVersion] = useState<string | null>(null)
+    const [approveFloorPlan, setApproveFloorPlan] = useState<string | null>(null)
     const [rejectVersion, setRejectVersion] = useState<string | null>(null)
+    const [rejectFloorPlan, setRejectFloorPlan] = useState<string | null>()
     const sourceType = location.state?.sourceType as "jobRequest" | "direct_hire" | undefined
     const sourceId = location.state?.sourceId as string | undefined
     const activeJobId = location.state?.activeJobId as string | undefined
@@ -73,6 +76,7 @@ export default function ProposalPage() {
 
     const { isReporting, handleReportIssue } = useReportIssue()
     const { isFloorPlanUploading, handleFloorPlanSubmission } = useUploadFloorPlan()
+    const { isFloorPlanVerifying, handleAcceptOrRejectFloorPlan } = useAcceptOrRejectFloorPlan()
     const [chatOpen, setChatOpen] = useState(false)
     const [approveProposal, setApproveProposal] = useState<{ sourceId: string } | null>(null)
 
@@ -80,7 +84,6 @@ export default function ProposalPage() {
     const [review, setReview] = useState<{ sourceId: string } | null>(null)
     const [dispute, setDispute] = useState<{ sourceId: string } | null>(null)
     const [uploadFloorPlan, setUploadFloorPlan] = useState<string | null>(null)
-    const [updateFloorPlan, setUpdateFloorPlan] = useState<string | null>(null)
     const [uploadingService, setUploadingService] = useState<{
         sourceId: string;
         serviceNumber: number;
@@ -110,6 +113,18 @@ export default function ProposalPage() {
         })
     }
 
+    const HandleApproveFloorPlan = async () => {
+        if (!approveFloorPlan) return
+        const result = await handleAcceptOrRejectFloorPlan({ status: "Approved", floorPlanId: approveFloorPlan })
+        handleResponse(result.success, "You have approved this Floor Plan.", result.message)
+        setApproveFloorPlan(null)
+    }
+    const handleRejectFloorPlan = async (data: RejectionPayload) => {
+        if (!rejectFloorPlan) return
+        const result = await handleAcceptOrRejectFloorPlan({ floorPlanId: rejectFloorPlan, status: "Rejected", rejectionReason: data.rejectionReason })
+        handleResponse(result.success, "You have reject this floor Plan.", result.message)
+        setRejectFloorPlan(null)
+    }
     const handleApproveVersion = async () => {
         if (!approveVersion) return
         const result = await handleVersionApprovalOrRejection({ status: "Approved", versionId: approveVersion })
@@ -123,6 +138,7 @@ export default function ProposalPage() {
         handleResponse(result.success, "You have reject this version.", result.message)
         setRejectVersion(null)
     }
+
 
     const handleUploadSubmit = async (data: IServiceResult) => {
         if (!uploadingService) return
@@ -176,21 +192,7 @@ export default function ProposalPage() {
         handleResponse(result.success, "Floor Plan Uploaded", result.message)
         setUploadFloorPlan(null)
     }
-    const handleUpdateFloorPlan = async (data: FloorPlans) => {
-        if (!updateFloorPlan) return
-        const formData = new FormData();
-        formData.append("proposalId", updateFloorPlan)
-        data.floorPlans.forEach(item => {
-            const file = item.file?.[0]
-            if (file) {
-                formData.append("floorPlans", file)
-            }
-        })
 
-        const result = await handleFloorPlanSubmission(formData)
-        handleResponse(result.success, "Floor Plan updated", result.message)
-        setUpdateFloorPlan(null)
-    }
 
     const handleRaiseIssue = async (data: DisputeFormDTO) => {
         if (!dispute) return
@@ -307,6 +309,13 @@ export default function ProposalPage() {
                 isLoading={isChangingStatus}
             />
 
+            <RejectJobApplicationModal
+                isOpen={!!rejectFloorPlan}
+                onClose={() => setRejectFloorPlan(null)}
+                onConfirm={handleRejectFloorPlan}
+                isLoading={isChangingStatus}
+            />
+
             <ReviewForm
                 isOpen={!!review}
                 onClose={() => setReview(null)}
@@ -324,13 +333,6 @@ export default function ProposalPage() {
                 isOpen={!!uploadFloorPlan}
                 onClose={() => setUploadFloorPlan(null)}
                 onConfirm={handlFloorPlan}
-                isLoading={isFloorPlanUploading}
-                title="upload"
-            />
-            <UploadFloorPlan
-                isOpen={!!updateFloorPlan}
-                onClose={() => setUpdateFloorPlan(null)}
-                onConfirm={handleUpdateFloorPlan}
                 isLoading={isFloorPlanUploading}
                 title="upload"
             />
@@ -374,6 +376,16 @@ export default function ProposalPage() {
                 buttonLoadingText="Accepting"
                 buttonText="Confirm & Accept"
             />
+            <ConfirmModal
+                isOpen={!!approveFloorPlan}
+                onConfirm={HandleApproveFloorPlan}
+                onClose={() => setApproveFloorPlan(null)}
+                isLoading={isFloorPlanVerifying}
+                text="Are you sure you want to accept this Floor Plan?"
+                heading="Confirm?"
+                buttonLoadingText="Accepting"
+                buttonText="Confirm & Accept"
+            />
 
             <RejectJobApplicationModal
                 isOpen={!!rejectVersion}
@@ -392,24 +404,7 @@ export default function ProposalPage() {
                 )
             }
 
-            {
-                proposal.contractStatus !== "Sent" && proposal.siteVisitingRequired && proposal.floorPlans?.length === 0 && role === "Designer" && (
-                    <div>
-                        <button onClick={() => setUploadFloorPlan(proposal.id)} className="soft-black-button">
-                            Upload Floor plan
-                        </button>
-                    </div>
-                )
-            }
-            {
-                proposal.contractStatus !== "Sent" && proposal.siteVisitingRequired && proposal.floorPlans && proposal.floorPlans.length > 0 && role === "Designer" && (
-                    <div>
-                        <button onClick={() => setUpdateFloorPlan(proposal.id)} className="soft-black-button">
-                            Update Floor plan
-                        </button>
-                    </div>
-                )
-            }
+
 
             <div>
                 <button onClick={() => setDispute({ sourceId: proposal.sourceId })} className="soft-black-button">
@@ -430,28 +425,14 @@ export default function ProposalPage() {
 
             <ContractOverview proposal={proposal} />
 
-            {proposal.floorPlans && proposal.floorPlans.length > 0 && (
-                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-5">
-                    <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-soft-black mb-3">Floor Plans</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {proposal.floorPlans.map((url, index) => (
-                            <a
-                                key={index}
-                                href={url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors"
-                            >
-                                <div className="bg-gray-50 p-1.5 rounded-lg border border-gray-200">
-                                    <FileText className="w-3.5 h-3.5 text-slate-600" />
-                                </div>
-                                <span className="text-sm text-gray-700 flex-1 truncate">Floor Plan {index + 1}.pdf</span>
-                                <ExternalLink className="w-3.5 h-3.5 text-gray-400" />
-                            </a>
-                        ))}
-                    </div>
-                </div>
-            )}
+            <FloorPlanSection
+                floorPlans={proposal.floorPlans}
+                role={role}
+                isUploading={isFloorPlanUploading}
+                onUpload={() => setUploadFloorPlan(proposal.id)}
+                onApprove={(floorPlanId) => setApproveFloorPlan(floorPlanId)}
+                onReject={(floorPlanId) => setRejectFloorPlan(floorPlanId)}
+            />
             {proposal.overallRejectionReason && (
                 <div className="bg-red-50 border border-red-200 rounded-2xl px-6 py-4">
                     <p className="text-xs font-Jost-Semibold text-red-700 uppercase tracking-widest mb-1">Rejection reason</p>

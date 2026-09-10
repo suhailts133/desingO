@@ -2,12 +2,11 @@ import type { CreateProposalDTO, CreateProposalRepoDataDTO, ProposalAcceptOrReje
 import { ProposalMapper } from "../../dtoMappers/proposal/proposalMapper";
 import { HireDesignerMapper } from "../../dtoMappers/user/hireDesignerMapper";
 import type { IApiResponse } from "../../interfaces/base/IApiResponse";
-import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload";
 import type { IActiveJobRepository, IJobRepository } from "../../interfaces/customer/ICustomerRepository";
+import type { IFloorPlanRepository } from "../../interfaces/proposal/IFloorPlan";
 import type { IServiceItem } from "../../interfaces/proposal/IProposal";
 import type { IProposalRepository, IServiceVersionRepository } from "../../interfaces/proposal/IProposalRepository";
 import type { IProposalService } from "../../interfaces/proposal/IProposalService";
-import { CLOUDINARY_FOLDER_NAME } from "../../shared/enums/commonEnums";
 import { CONTRACT_STATUS } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
@@ -17,33 +16,9 @@ import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 
 export class ProposalService implements IProposalService {
-    constructor(private _proposalRepo: IProposalRepository, private _activeRepo: IActiveJobRepository, private _jobRepo: IJobRepository, private _serviceVersionRepo: IServiceVersionRepository, private _imageUploder: IImageUploaderService) { }
+    constructor(private _floorPlanRepo: IFloorPlanRepository, private _proposalRepo: IProposalRepository, private _activeRepo: IActiveJobRepository, private _jobRepo: IJobRepository, private _serviceVersionRepo: IServiceVersionRepository) { }
 
-    async uploadFloorPlan(proposalId: string, floorPlans: Express.Multer.File[]): Promise<IApiResponse> {
-        const proposal = await this._proposalRepo.getProposalbyId(proposalId)
-        if (!proposal) {
-            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.BAD_REQUEST)
-        }
-        if (!proposal.siteVisitingNeeded) {
-            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.SITE_VIST_NOT_NEEDED, RESPONSE_CODE.BAD_REQUEST)
-        }
-        if (proposal.floorPlan && proposal.floorPlan.length > 0) {
-           await this._imageUploder.deleteMany(proposal.floorPlan.map(e => e.filename))
 
-        }
-        const floorPlanfiles: ImageUploadResult[] = await this._imageUploder.uploadMany(floorPlans ?? [], CLOUDINARY_FOLDER_NAME.FLOOR_PLANS)
-        const updatedProposal = await this._proposalRepo.updateProposal(proposalId, { floorPlan: floorPlanfiles })
-        if (!updatedProposal) {
-            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.UPDATE_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
-        }
-        const openService = await this._proposalRepo.acceptOrRejectProposal(
-            proposal.sourceId.toString(), CONTRACT_STATUS.ACCEPTED, true
-        )
-        if (!openService) {
-            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.STATUS_UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
-        }
-        return { message: PROPOSAL_MESSAGES.PROPOSAL.FLOOR_PLAN_UPLOADED }
-    }
 
     async createProposal(data: CreateProposalDTO): Promise<IApiResponse> {
         const activeJob = await this._activeRepo.getActiveJobBySource(data.sourceId);
@@ -58,6 +33,12 @@ export class ProposalService implements IProposalService {
         const jobRequest = await this._jobRepo.getJobRequest(data.sourceId)
         if (!jobRequest) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+        }
+        if (jobRequest.requiresSiteVisitMeasurement && !data.siteVisitingNeeded) {
+            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.SITE_VIST_NEEDED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        if (!jobRequest.requiresSiteVisitMeasurement && data.siteVisitingNeeded) {
+            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.SITE_VIST_NOT_NEEDED, RESPONSE_CODE.BAD_REQUEST)
         }
 
         const expectedTotalDrawingFee = data.drawingFeePerSqFt * jobRequest.totalCarpetArea;
@@ -107,6 +88,13 @@ export class ProposalService implements IProposalService {
         if (!jobRequest) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
+        if (jobRequest.requiresSiteVisitMeasurement && !data.siteVisitingNeeded) {
+            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.SITE_VIST_NEEDED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        if (!jobRequest.requiresSiteVisitMeasurement && data.siteVisitingNeeded) {
+            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.SITE_VIST_NOT_NEEDED, RESPONSE_CODE.BAD_REQUEST)
+        }
+        
         const proposal = await this._proposalRepo.getProposalbyId(proposalId)
         if (!proposal) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
@@ -154,9 +142,10 @@ export class ProposalService implements IProposalService {
         if (!result) {
             return { message: PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, data: null }
         }
+        const floorPlans = await this._floorPlanRepo.getAllFloorPlan(result.id)
         const allVersions = await this._serviceVersionRepo.findAllVersions(sourceId)
 
-        const proposalData = ProposalMapper.toProposalDetailDTO(result, allVersions)
+        const proposalData = ProposalMapper.toProposalDetailDTO(result, allVersions, floorPlans)
         return { message: PROPOSAL_MESSAGES.PROPOSAL.FETCH_SUCCESS, data: proposalData, statuscode: RESPONSE_CODE.CREATED }
     }
 
@@ -178,14 +167,16 @@ export class ProposalService implements IProposalService {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
         }
 
+        const isSiteVisiting = proposal.siteVisitingNeeded === true;
+        const isFloorPlanApproved = proposal.isFloorPlanApproved === true;
 
-        const isSaleVisiting = proposal.siteVisitingNeeded === true;
-        const hasFloorPlans = Array.isArray(proposal.floorPlan) && proposal.floorPlan.length > 0;
-        const shouldUpdateServiceStatus = isSaleVisiting && hasFloorPlans;
+        const shouldUpdateServiceStatus = !isSiteVisiting || isFloorPlanApproved;
+
+        const contractStatusToPersist = shouldUpdateServiceStatus ? CONTRACT_STATUS.ONGOING : CONTRACT_STATUS.ACCEPTED;
 
         const updated = await this._proposalRepo.acceptOrRejectProposal(
             data.sourceId,
-            data.contractStatus,
+            contractStatusToPersist,
             shouldUpdateServiceStatus,
             data.overallRejectionReason
         );

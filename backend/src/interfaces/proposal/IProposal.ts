@@ -71,6 +71,8 @@ export interface IProposal {
     clientId: mongoose.Types.ObjectId;
     designerId: mongoose.Types.ObjectId;
     disputeId: string;
+    floorPlanVersion: number
+    isFloorPlanApproved: boolean
     disputeCount: number
     currentAmountHeld: number
     drawingFeePerSqFt: number;
@@ -84,10 +86,10 @@ export interface IProposal {
     remainingPlatformFee: number;
     clientAcceptedAt?: Date;
     totalArea: number
+    isReviewd: boolean
     unit: "ft" | "m"
     siteVisitingNeeded: boolean,
     expectedSiteVisitingDate?: Date
-    floorPlan?: ImageUploadResult[]
     expectedCompletionDate: Date;
     actualCompletionDate?: Date;
     createdAt: Date;

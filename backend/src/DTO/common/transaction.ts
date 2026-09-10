@@ -5,10 +5,11 @@ export interface TransactionRepoDTO {
   amount: number;
   type: TransactionType;
   sourceUserId: string;
-  destinationUserId?: string;
+  destinationUserId: string;
   proposalId?: string;
   disputeId?: string;
   paymentReference?: string;
+  TransactionId:string
 }
 
 export interface TransactionFilter {

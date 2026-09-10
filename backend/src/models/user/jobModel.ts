@@ -38,14 +38,17 @@ const jobRequestSchema = new Schema<IJobRequest>({
     propertyType: { type: String, required: true },
     projectType: { type: String, enum: ["Renovation", "New_Build"], required: true },
     sourceType: { type: String, enum: ["JOB_REQUEST", "DIRECT_HIRE"], required: true },
-
+    jobNumber: { type: String, required: true },
 
     city: { type: String, required: true, trim: true },
     district: { type: String, required: true, trim: true },
     state: { type: String, required: true, trim: true },
     pincode: { type: String, required: true, trim: true },
     phone: { type: String, required: true, trim: true },
-
+    location: {
+        type: { type: String, enum: ["Point"], default: "Point" },
+        coordinates: { type: [Number], required: true },
+    },
 
     totalCarpetArea: { type: Number, required: true, min: 0 },
     areaUnit: { type: String, enum: ["ft", "m"], default: "ft" },
@@ -77,4 +80,6 @@ const jobRequestSchema = new Schema<IJobRequest>({
 },
     { timestamps: true }
 );
+jobRequestSchema.index({ location: "2dsphere" });
+
 export const JobRequestModel = mongoose.model<IJobRequest>("JobRequest", jobRequestSchema)

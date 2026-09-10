@@ -13,6 +13,8 @@ import { UserRepository } from "../../repositories/auth/userRepository";
 import { ServiceVersionRepository } from "../../repositories/proposal/ServiceVersionRepository";
 import { CloudinaryService } from "../../services/common/cloudinaryService";
 import { TranscationRepository } from "../../repositories/common/transactionRepository";
+import { FloorPlansService } from "../../services/proposal/floorPlansService";
+import { FloorPlansRepository } from "../../repositories/proposal/floorPlansRepository";
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router()
@@ -21,12 +23,14 @@ const proposalRepo = new ProposalRepository()
 const activeJobRepo = new ActiveJobRepository()
 const jobRepo = new JobRequestRepository()
 const userRepo = new UserRepository()
+const floorPlanRepo = new FloorPlansRepository()
 const imageUploaderService = new CloudinaryService()
 const serviceVersionRepo = new ServiceVersionRepository()
 const transactionRepo = new TranscationRepository()
-const proposalService = new ProposalService(proposalRepo, activeJobRepo, jobRepo, serviceVersionRepo, imageUploaderService)
-const proposalVersionService = new ProposalVersionService(activeJobRepo,transactionRepo, proposalRepo, serviceVersionRepo, imageUploaderService, userRepo)
-const proposalController = new ProposalController(proposalService, proposalVersionService)
+const proposalService = new ProposalService(floorPlanRepo, proposalRepo, activeJobRepo, jobRepo, serviceVersionRepo)
+const proposalVersionService = new ProposalVersionService(activeJobRepo, transactionRepo, proposalRepo, serviceVersionRepo, imageUploaderService, userRepo)
+const floorPlanService = new FloorPlansService(floorPlanRepo, imageUploaderService, proposalRepo)
+const proposalController = new ProposalController(proposalService, proposalVersionService, floorPlanService)
 
 
 router.post("/create", designerAuthentication, proposalController.createProposal)
@@ -35,7 +39,8 @@ router.get("/:id", authenticate, proposalController.getProposal)
 router.get("/prefill/:id", designerAuthentication, proposalController.getProposalTemplate)
 router.patch("/approve-reject", customerAuthentication, proposalController.updateProposalStatus)
 router.post("/upload-result", designerAuthentication, upload.fields([{ name: "serviceResult", maxCount: 20 }]), proposalController.uploadServiceResult)
-router.patch("/upload-floor-plan", designerAuthentication, upload.fields([{ name: "floorPlans", maxCount: 10 }]), proposalController.uploadFloorPlan)
+router.post("/upload-floor-plan", designerAuthentication, upload.fields([{ name: "floorPlans", maxCount: 1 }]), proposalController.uploadFloorPlan)
 router.patch("/approve-reject-version", customerAuthentication, proposalController.approveOrRejectVersion)
+router.patch("/accept-reject-floor-plan", customerAuthentication, proposalController.acceptOrRejectFloorPlan)
 
 export default router

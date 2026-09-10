@@ -8,7 +8,7 @@ interface ImportMetaEnv {
     readonly VITE_CLIENT_ID: string
     readonly VITE_GROQ_API_KEY: string
     readonly VITE_GEMINI_API_KEY: string
-    readonly VITE_POLLINATIONS_API_KEY:string
+    readonly VITE_OPENCAGE_API_KEY: string
 }
 
 interface ImportMeta {

@@ -95,13 +95,28 @@ export interface ProposalAcceptOrRejectDTO {
 }
 
 
-
-
+export interface floorPlanDTO {
+    id: string
+    path: string
+    rejectionReason?: string
+    version: number
+    createdAt: string
+    status: "Approved" | "Rejected" | "Pending"
+}
+export interface AcceptOrRejectFloorPlanDTO {
+    floorPlanId: string,
+    status: "Approved" | "Rejected"
+    rejectionReason?: string
+}
 
 export interface ProposalDetailDTO {
     id: string
     sourceId: string
     clientId: string
+    floorPlans: floorPlanDTO[]
+    floorPlanVersion: number
+    isReviewd: boolean
+    isFloorPlanApproved: boolean
     designerId: string
     disputeCount: number
     sourceName: string
@@ -109,7 +124,6 @@ export interface ProposalDetailDTO {
     unit: "ft" | "m"
     siteVisitingRequired: boolean
     expectedSiteVisitingDate?: string
-    floorPlans?: string[]
     drawingFeePerSqFt: number
     totalDrawingFee: number
     totalExecutionFee: number

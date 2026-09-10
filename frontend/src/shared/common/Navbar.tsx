@@ -33,6 +33,7 @@ export default function Navbar() {
         <div className="font-Dynalight-Regular pl-1 text-md sm:text-lg md:text-2xl">
           <Link to="/">designO</Link>
         </div>
+      
 
         {/* Desktop Nav Links */}
         <div className="hidden sm:flex gap-3 sm:gap-5 font-Jost-Semibold sm:text-sm md:text-base">
