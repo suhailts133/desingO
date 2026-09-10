@@ -8,10 +8,11 @@ export type TransactionType = "Payment" | "Commission" | "Payout" | "Refund";
 
 export interface ITransaction {
     id: string;
+    TransactionId: string;
     amount: number;
     type: TransactionType;
     sourceUserId: mongoose.Types.ObjectId;
-    destinationUserId?: mongoose.Types.ObjectId;
+    destinationUserId: mongoose.Types.ObjectId;
     proposalId?: mongoose.Types.ObjectId;
     disputeId?: mongoose.Types.ObjectId;
     createdAt: Date;

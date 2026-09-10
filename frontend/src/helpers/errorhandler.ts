@@ -1,7 +1,7 @@
 import type { IApiResponse } from "../api/responseType";
 
 type ApiError = {
-    data: IApiResponse<null>;  // ← use IApiResponse directly instead of redefining
+    data: IApiResponse<null>;
     status: number;
 }
 

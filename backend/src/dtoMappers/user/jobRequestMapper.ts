@@ -59,8 +59,9 @@ export class JobRequestMapper {
         })
     }
     static toJobRequestsDTOlist(jobRequests: IJobRequestPopulated[]): JobsCommonResponseDTO[] {
+
         return jobRequests.map(data => ({
-            id: data.id,
+            id: (data.id || data._id?.toString()) as string,
             projectTitle: data.projectTitle,
             propertyType: data.propertyType,
             designStyles: data.designStyles,
@@ -74,13 +75,16 @@ export class JobRequestMapper {
             description: data.description,
             createdAt: data.createdAt.toDateString(),
             timeLine: data.timeline,
-            rooms: data.selectedRooms.length
+            rooms: data.selectedRooms.length,
+            ...(data.distanceInMeters && {distanceInKm:Number((data.distanceInMeters / 1000).toFixed(2))})
+
         }))
     }
 
     static toJobRequestDTO(data: IJobRequestPopulated): JobDetailResponseDTO {
         return {
             id: data.id,
+            jobNumber: data.jobNumber,
             projectTitle: data.projectTitle,
             propertyType: data.propertyType,
             projectType: data.projectType,

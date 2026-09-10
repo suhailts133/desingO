@@ -3,6 +3,8 @@ import { SlidersHorizontal, X } from "lucide-react";
 import { PROPERTY_OPTIONS, STYLE_OPTIONS } from "../../../designer/designs/designData";
 import { TIMELINE_OPTIONS } from "../../../user/jobs/jobData";
 import { SORT_OPTIONS, type OptionType } from "../../baseData";
+import JobLocationFilter from "./JobLocationFilter";
+
 type Props = {
     designStyles: OptionType[] | null;
     propertyTypes: OptionType[] | null;
@@ -12,20 +14,28 @@ type Props = {
     onClear: () => void;
     filtersVisible: boolean;
     setFiltersVisible: (visible: boolean) => void;
+    hasLocation: boolean;
+    radiusValue: OptionType;
+    isLocating: boolean;
+    locationError: string | null;
+    onUseMyLocation: () => void;
+    onRadiusChange: (selected: SingleValue<OptionType>) => void;
 }
 
-export default function JobFilter({ designStyles, propertyTypes, timeLines, sortBy, onFilterChange, onClear, filtersVisible, setFiltersVisible }: Props) {
+export default function JobFilter({
+    designStyles, propertyTypes, timeLines, sortBy, onFilterChange, onClear, filtersVisible, setFiltersVisible,
+    hasLocation, radiusValue, isLocating, locationError, onUseMyLocation, onRadiusChange,
+}: Props) {
 
     const handleMultiSelectChange = (key: "designStyles" | "propertyTypes" | "timeLines", selected: MultiValue<OptionType>) => {
         const labels = selected.map((opt) => opt.label);
-
         onFilterChange(key, labels.length ? labels : null);
     };
     const handleSortChange = (selected: SingleValue<OptionType>) => {
         onFilterChange("sortBy", selected?.value ?? SORT_OPTIONS[0].value);
     };
     return (
-        <div className="bg-white border-b border-gray-100 px-6 py-5">
+        <div className="bg-snow-white border-b border-gray-100 px-6 py-5">
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col gap-1 mb-6">
                     <h1 className="font-semibold text-2xl text-gray-900">Browse Jobs</h1>
@@ -40,6 +50,15 @@ export default function JobFilter({ designStyles, propertyTypes, timeLines, sort
                         <SlidersHorizontal className="w-4 h-4" />
                         Filters
                     </button>
+
+                    <JobLocationFilter
+                        hasLocation={hasLocation}
+                        radiusValue={radiusValue}
+                        isLocating={isLocating}
+                        error={locationError}
+                        onUseMyLocation={onUseMyLocation}
+                        onRadiusChange={onRadiusChange}
+                    />
 
                     <div className={`flex flex-wrap items-center gap-3 ${filtersVisible ? "opacity-100" : "hidden"}`}>
                         <div className="min-w-50">
@@ -69,8 +88,8 @@ export default function JobFilter({ designStyles, propertyTypes, timeLines, sort
                                 isMulti
                                 options={TIMELINE_OPTIONS}
                                 placeholder="Time Line"
-                                isClearable />
-
+                                isClearable
+                            />
                         </div>
                     </div>
 

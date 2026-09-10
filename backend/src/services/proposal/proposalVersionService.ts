@@ -6,10 +6,11 @@ import type { ITransactionRepository } from "../../interfaces/base/ITransaction"
 import type { IActiveJobRepository } from "../../interfaces/customer/ICustomerRepository";
 import type { IProposalRepository, IServiceVersionRepository } from "../../interfaces/proposal/IProposalRepository";
 import type { IProposalVersionService } from "../../interfaces/proposal/IProposalService";
-import { ACTIVE_JOB_STATUS, CLOUDINARY_FOLDER_NAME, TRANSACTION_TYPE, USER_ROLES } from "../../shared/enums/commonEnums";
-import { CONTRACT_STATUS, ServicePaymentStatus, ServiceStatus, VERSION_STATUS } from "../../shared/enums/proposalEnums";
+import { ACTIVE_JOB_STATUS, CLOUDINARY_FOLDER_NAME, TRANSACTION_TYPE, TRANSACTION_UNIQUE_ID, USER_ROLES } from "../../shared/enums/commonEnums";
+import { CONTRACT_STATUS, EscrowStatus, ServicePaymentStatus, ServiceStatus, VERSION_STATUS } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
+import { generateUniqueId } from "../../shared/helpers/extraFunctions";
 import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
@@ -98,9 +99,10 @@ export class ProposalVersionService implements IProposalVersionService {
                 destinationUserId: updatedWalletDesigner.id,
                 amount: designerAmount,
                 type: TRANSACTION_TYPE.PAYOUT,
+                TransactionId: generateUniqueId(TRANSACTION_UNIQUE_ID.PAYOUT),
                 proposalId: proposal.id
             })
-
+            await this._proposalRepo.changeEscrowStatus(version.sourceId.toString(), service.order, EscrowStatus.RELEASED)
             await this._proposalRepo.updateProposal(proposal.id, { currentAmountHeld: 0 })
 
 
@@ -115,6 +117,7 @@ export class ProposalVersionService implements IProposalVersionService {
                 destinationUserId: admin.id,
                 amount: platformFee,
                 type: TRANSACTION_TYPE.COMMISSION,
+                TransactionId: generateUniqueId(TRANSACTION_UNIQUE_ID.COMMISSION),
                 proposalId: proposal.id
             })
 
@@ -137,7 +140,7 @@ export class ProposalVersionService implements IProposalVersionService {
                     throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.CONTRACT_STATUS_FAIL, RESPONSE_CODE.BAD_REQUEST)
                 }
                 const updateActiveJobStatus = await this._activeJobRepo.updateActiveJob(proposal.sourceId.toString(), { status: ACTIVE_JOB_STATUS.COMPLETED })
-                if(updateActiveJobStatus){
+                if (updateActiveJobStatus) {
                     throw new AppError(JOB_MESSAGES.ACTIVE_JOB.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
                 }
             }

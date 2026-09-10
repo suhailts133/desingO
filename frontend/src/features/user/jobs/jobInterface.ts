@@ -85,6 +85,8 @@ export interface INewBuildDetails {
 }
 export type Source_type = "JOB_REQUEST" | "DIRECT_HIRE"
 export interface IJobRequest {
+    latitude: number;
+    longitude: number;
     projectTitle: string;
     description: string;
     projectType: ProjectType;
@@ -250,9 +252,10 @@ export interface JobsQueryParms {
     propertyTypes?: { label: string, value: string }[] | null
     timeLines?: { label: string, value: string }[] | null
     sortBy?: { label: string, value: string } | null
+    lat?: number | null
+    lng?: number | null
+    radiusKm?: string | null
 }
-
-
 
 
 
@@ -276,6 +279,7 @@ export interface JobsResponseDTO {
 export type JobsCommonResponseDTO = Omit<JobsResponseDTO, "status"> & {
     name: string,
     createdAt: string
+    distanceInKm?:number
     designStyles: string[]
 }
 

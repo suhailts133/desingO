@@ -12,9 +12,10 @@ type Props = {
     onClose: () => void;
     onConfirm: (data: FloorPlans) => void;
     isLoading: boolean;
+    title: "upload" | "update"
 };
 
-export default function UploadFloorPlan({ isOpen, onClose, onConfirm, isLoading }: Props) {
+export default function UploadFloorPlan({ title, isOpen, onClose, onConfirm, isLoading }: Props) {
 
     const { handleSubmit, control, formState: { errors } } = useForm<FloorPlans>({
         resolver: joiResolver(floorPlanValidation),
@@ -43,7 +44,7 @@ export default function UploadFloorPlan({ isOpen, onClose, onConfirm, isLoading 
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
             <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 animate-in zoom-in duration-200">
                 <h2 className="text-4xl font-semibold text-soft-black mb-6 text-center font-Dynalight-Regular">designO</h2>
-                <p className="text-center text-lg font-Jost-Semibold text-gray-500 mb-6">Upload Floor Plans</p>
+                <p className="text-center text-lg font-Jost-Semibold text-gray-500 mb-6">{title === "upload" ? "Upload" : "Update"} Floor Plans</p>
 
                 <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
                     <div className="space-y-3">
@@ -124,8 +125,8 @@ export default function UploadFloorPlan({ isOpen, onClose, onConfirm, isLoading 
                         <SubmitButton
                             type="submit"
                             isLoading={isLoading}
-                            label="Upload Plans"
-                            loadingLabel="Uploading..."
+                            label={title === "upload" ? "Upload Plans" : "Update plans"}
+                            loadingLabel="Submiting..."
                         />
                         <button
                             type="button"

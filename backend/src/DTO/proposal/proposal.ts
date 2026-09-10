@@ -1,6 +1,6 @@
 import type { IUser } from "../../interfaces/auth/IUser";
 import type { IJobRequest } from "../../interfaces/customer/ICustomer";
-import type { ContractStatus, IProposal, IServiceItem, ProposalPaymentStatus, ProposalServiceStatus, VersionStatus } from "../../interfaces/proposal/IProposal";
+import type { ContractStatus, EscrowStatus, IProposal, IServiceItem, ProposalPaymentStatus, ProposalServiceStatus, VersionStatus } from "../../interfaces/proposal/IProposal";
 
 export interface ServiceItem {
     serviceName: string;
@@ -96,7 +96,14 @@ export interface ProposalInputData {
     siteVisitingRequired: boolean
 }
 
-
+export interface floorPlanDTO {
+    id:string
+    path: string
+    rejectionReason?: string
+    version: number
+    createdAt: string
+    status: "Approved" | "Rejected" | "Pending"
+}
 
 export interface ProposalDetailDTO {
     id: string
@@ -113,13 +120,14 @@ export interface ProposalDetailDTO {
     unit: "ft" | "m"
     siteVisitingRequired: boolean
     expectedSiteVisitingDate?: string
-    floorPlans?: string[]
+    floorPlans: floorPlanDTO[]
     drawingFeePerSqFt: number
     totalDrawingFee: number
     totalExecutionFee: number
     totalContractValue: number
-
-
+    floorPlanVersion: number
+    isReviewd: boolean
+    isFloorPlanApproved: boolean
     contractStatus: ContractStatus
     overallRejectionReason?: string
 
@@ -146,6 +154,7 @@ export interface VersionDTO {
 
 export interface AllVersion {
     versionNumber: number
+    uploadedAt: string
     versionData: VersionDTO
 }
 
@@ -162,6 +171,8 @@ export interface ProposalServiceItemDTO {
     actualDeliveryDate?: string
     paymentStatus: ProposalPaymentStatus
     paidAt?: string
+    escrowStatus?: EscrowStatus
+    amountHeld?: number
 }
 
 

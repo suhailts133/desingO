@@ -1,7 +1,18 @@
 export const PROPOSAL_MESSAGES = {
 
+
+    FLOOR_PLANS: {
+        CANT_UPLOAD: "Floor Plans are already approved.",
+        SUCCESS: "Floor Plans Uploaded Successfully",
+        FAILED: "Floor Plans Upload failed",
+        NOT_FOUND: "Floor Plan not found.",
+        UPDATE_FAIL: "failed to update floorplan status.",
+        ALREDY_CHANGED: (status: string) => `Already Updated the floor Plan Status to ${status}`,
+        UPDATE_SUCCESS: "failed to  update floorplan status.",
+    },
+
     DISPUTE: {
-        ALREADY_RESOLVED_OR_AWATING_CONFIRMATION:"This dispute is already solved or awaiting confrimation",
+        ALREADY_RESOLVED_OR_AWATING_CONFIRMATION: "This dispute is already solved or awaiting confrimation",
         ONGOING: "A Dispute is already on going please wait till it get resolved.",
         SUCCESS: "Successfully reported the issue.",
         NOT_FOUND: "Dispute not found.",
@@ -16,6 +27,8 @@ export const PROPOSAL_MESSAGES = {
         REFEUND_EXCEEDS: "Refend amount exceed the aloted payout.",
         ZERO: "Refend amount cannot to less then zero",
         ID_REQUIRED: "Dispute Id required",
+        INVALID_REFUND_AMOUNT: "Refund amount exceeds the amount held in escrow",
+        PAYMENT_ALREADY_SETTLED: "Payment for this dispute has already been settled",
     },
 
     VERSION: {
@@ -37,6 +50,7 @@ export const PROPOSAL_MESSAGES = {
     PROPOSAL: {
         FLOOR_PLAN_REQUIRED: "Floor plan  is required.",
         FLOOR_PLAN_UPLOADED: "Floor plan uploaded.",
+        SITE_VIST_NEEDED: "Site visit measurement is required for this job request.",
         SITE_VIST_NOT_NEEDED: "Site vist is not needed floor plan is in the job request.",
         ID_REQUIRED: "proposal Id required",
         CREATION_FAILED: "Proposal creation failed.",
@@ -79,6 +93,7 @@ export const PROPOSAL_MESSAGES = {
         PAYOUT_NOT_FOUND: 'payout amount not found contact support',
         PAYOUT_DESIGNER_FAILED: 'Cannot pay designer contact support',
         PAYOUT_ADMIN_FAILED: 'Cannot pay admin contact support',
+        PAYOUT_CUSTOMER_FAILED: "Failed to process payout to customer",
         STRIPE_META_DATA_NOT_FOUND: "Missing jobId or serviceOrder in payment metadata",
     },
     ESCROW: {

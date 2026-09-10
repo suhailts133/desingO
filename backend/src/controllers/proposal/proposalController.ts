@@ -11,9 +11,11 @@ import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { isObjectId } from "../../shared/helpers/extraFunctions";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 import { proposalApproveOrRejectionValidation } from "../../validators/proposal/proposalAcceptOrRejectValidation";
-import { versionApproveOrRejectValidation } from "../../validators/proposal/versionAcceptOrRejectValidation";
+import { acceptOrRejectFloorPlanValidation, versionApproveOrRejectValidation } from "../../validators/proposal/versionAcceptOrRejectValidation";
 import type { VersionAcceptOrRejectDTO } from "../../DTO/proposal/version";
 import Logger from "../../config/logger";
+import type { IFloorPlanService } from "../../interfaces/proposal/IFloorPlan";
+import type { AcceptOrRejectFloorPlanDTO } from "../../DTO/proposal/floorplans";
 
 
 
@@ -22,7 +24,7 @@ import Logger from "../../config/logger";
  */
 
 export class ProposalController {
-    constructor(private _proposalService: IProposalService, private _proposalVersionService: IProposalVersionService) { }
+    constructor(private _proposalService: IProposalService, private _proposalVersionService: IProposalVersionService, private _floorPlanService: IFloorPlanService) { }
 
 
     /**
@@ -106,9 +108,27 @@ export class ProposalController {
         RespsonseHelper.success(res, result)
     })
 
+
+    /**
+ * to accept or reject floor plan
+ * @route PATCH /proposal/accept-reject-floor-plan
+ * @param req.body {@link AcceptOrRejectFloorPlanDTO}
+ * @throws {AppError} 400 if there is any issue with the req.body
+
+*/
+    acceptOrRejectFloorPlan = asyncHandler(async (req: Request, res: Response) => {
+
+        const { error, value } = acceptOrRejectFloorPlanValidation.validate(req.body, { stripUnknown: true })
+        if (error) {
+            throw new AppError(error.details[0]?.message || "Missing fields or Invalid Data", RESPONSE_CODE.BAD_REQUEST)
+        }
+        const validated = value as AcceptOrRejectFloorPlanDTO
+        const result = await this._floorPlanService.acceptOrRejectFloorPlan(validated);
+        RespsonseHelper.success(res, result)
+    })
     /**
  * to upload result for the service
- * @route PATCH /proposal/upload-floor-plan
+ * @route POST /proposal/upload-floor-plan
  * @param req.body.proposalId jobid
  * @param req.files.serviceResult the service upload result
  * @throws {AppError} 400 if there is any issue with the req.body
@@ -128,11 +148,11 @@ export class ProposalController {
             floorPlans: Express.Multer.File[]
         }
 
-        const floorPlanResult: Express.Multer.File[] = files.floorPlans ?? []
-        if (floorPlanResult.length === 0) {
+        if (!files.floorPlans[0]) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.FLOOR_PLAN_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
-        const result = await this._proposalService.uploadFloorPlan(proposalId, floorPlanResult);
+        const floorPlanResult: Express.Multer.File = files.floorPlans[0]
+        const result = await this._floorPlanService.uploadFloorPlan(proposalId, floorPlanResult);
         RespsonseHelper.success(res, result)
     })
 

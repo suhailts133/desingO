@@ -12,15 +12,16 @@ export const API_ROUTES = {
         GOOGLE_LOGIN: "/auth/google",
         REFRESH_TOKEN: "/auth/refresh"
     },
-    RECOMENDATION:{
-        DESIGN:"/recomendation/designs",
-        JOBS:"/recomendation/jobs",
+    RECOMENDATION: {
+        DESIGN: "/recomendation/designs",
+        JOBS: "/recomendation/jobs",
     },
     ADMIN: {
         GET_ALL_USERS: "/admin/users",
         GET_ALL_USER: "/admin/users",
         GET_ALL_DISPUTES: "/admin/disputes",
         GET_ALL_TRANSACTION: "/admin/transaction",
+        TRANSACTION_REPORT: "/admin/transaction/report",
         GET_DISPUTE: "/admin/disputes",
         GIVE_VERDIT: "/admin/disputes/give-verdit",
         TOGGLE_USER_STATUS: '/admin/users/toggle-status',
@@ -89,6 +90,7 @@ export const API_ROUTES = {
     },
     PROPOSAL: {
         UPLOAD_FLOOR_PLAN: "/proposal/upload-floor-plan",
+        ACCEPT_REJECT_FLOOR_PALN: "/proposal/accept-reject-floor-plan",
         CREATE: "/proposal/create",
         UPDATE: "/proposal/update",
         MY_PROPOSAL: "/proposal",

@@ -25,6 +25,9 @@ export default function VersionCard({ version, isOpen, onToggle }: VersionCardPr
                     <span className="text-xs font-Jost-Semibold text-soft-black">
                         Version {version.versionNumber}
                     </span>
+                    <span className="text-xs font-Jost-Semibold text-soft-black">
+                        UploadedAt {version.uploadedAt}
+                    </span>
                     <span className={`text-xxs font-medium px-2 py-0.5 rounded-full border ${versionStatusStyle[version.versionData.status]}`}>
                         {version.versionData.status}
                     </span>

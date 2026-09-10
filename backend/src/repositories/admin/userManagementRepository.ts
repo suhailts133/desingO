@@ -1,6 +1,6 @@
 import type {   Pagination, UserFilterDTO } from "../../DTO/admin/adminDTO";
 import type { IUserManagementRepository } from "../../interfaces/admin/IUserManagementRepository";
-import type { IUser } from "../../interfaces/auth/IUser";
+import type { IUser, UserRole } from "../../interfaces/auth/IUser";
 import { UserModel } from "../../models/user/userModel";
 import { USER_ROLES } from "../../shared/enums/commonEnums";
 import { toCleanRegExp } from "../../shared/helpers/extraFunctions";
@@ -42,7 +42,7 @@ export class UserManagementRepository extends BaseRepository<IUser> implements I
                 query.is_blocked = filter.is_blocked === "true"
             }
             if (filter.role) {
-                query.role = filter.role;
+                query.role = filter.role as UserRole;
             }
 
             if(filter.sortByName === "BY_NAME"){

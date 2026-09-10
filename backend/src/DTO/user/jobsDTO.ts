@@ -1,7 +1,7 @@
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload"
-import type { IHouseholdProfile, IJobRequest, INewBuildDetails, IRenovationDetails, Source_type } from "../../interfaces/customer/ICustomer"
+import type { ICreateJobRequest, IHouseholdProfile, IJobRequest, IJobRequestPopulated, INewBuildDetails, IRenovationDetails, Source_type } from "../../interfaces/customer/ICustomer"
 
-export type JobStatus = "Pending" | "Closed" | "Ongoing" | "Rejected" |"Accepted"
+export type JobStatus = "Pending" | "Closed" | "Ongoing" | "Rejected" | "Accepted"
 
 export interface JobsResponseDTO {
     id: string
@@ -21,6 +21,8 @@ export interface JobsResponseDTO {
 
 export interface EditJobRequest {
 
+    latitude: number
+    longitude: number
     sourceType: "JOB_REQUEST" | "DIRECT_HIRE";
     designerId?: string;
     designId?: string;
@@ -76,10 +78,11 @@ export type JobsCommonResponseDTO = Omit<JobsResponseDTO, "status"> & {
     name: string,
     createdAt: string
     designStyles: string[]
+    distanceInKm?:number
 }
 
 
-export type JobDetailResponseDTO = Omit<IJobRequest, "designId" | "userId" | "designerId" | "createdAt" | "embedding"> & {
+export type JobDetailResponseDTO = Omit<IJobRequest, "designId" | "userId" | "designerId" | "createdAt" | "embedding" | "location"> & {
     userId: string;
     userName: string;
     designerId?: string;
@@ -96,4 +99,17 @@ export interface JobFilter {
     propertyTypes?: string
     timeLines?: string
     sortBy?: string
+    lat?: number
+    lng?: number
+    radiusKm?: string
 }
+export interface AggregationResultJobRequest {
+    metaData: { total: number }[];
+    data: IJobRequestPopulated[];
+}
+
+export type createJobRepoDTO = ICreateJobRequest & {
+    embedding: number[];
+    jobNumber: string;
+    userId: string
+};

@@ -1,4 +1,4 @@
-import type { EditJobRepoData, EditJobRequest, HireDesignerDTO, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO";
+import type { createJobRepoDTO, EditJobRepoData, EditJobRequest, HireDesignerDTO, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../../interfaces/base/IApiResponse";
 import type { ICreateJobRequest, Source_type } from "../../interfaces/customer/ICustomer";
@@ -65,7 +65,15 @@ export class JobRequestService implements IJobRequestService {
         const floorplans: ImageUploadResult[] = await this._imageUploder.uploadMany(floorPlanImages ?? [], CLOUDINARY_FOLDER_NAME.FLOOR_PLANS)
         const textToEmbedd = `${data.propertyType}  ${data.designStyles.join(" ")} ${getBudgetTier(data.minBudget, data.maxBudget)}`
         const embedding = await generateEmbedding(textToEmbedd) ?? [];
-        const result = await this._jobRequestRepo.createJobRequest(userId, data, embedding, reference, floorplans);
+
+        const repoData: createJobRepoDTO = {
+            ...data,
+            userId,
+            embedding,
+            jobNumber: generateUniqueId(data.designerId ? JOB_REQUEST_UNIQUE_ID.DIRECT_HIRE : JOB_REQUEST_UNIQUE_ID.JOB_REQUEST)
+        }
+
+        const result = await this._jobRequestRepo.createJobRequest(repoData, reference, floorplans);
         if (!result) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.JOB_REQUEST_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
@@ -193,7 +201,7 @@ export class JobRequestService implements IJobRequestService {
     async getAllJobs(JobFilter?: JobFilter): Promise<IApiResponseWithPagination<JobsCommonResponseDTO[]>> {
 
         const result = await this._jobRequestRepo.getAllJobs(JobFilter)
-        const jobsData = JobRequestMapper.toJobRequestsDTOlist(result.data)
+        const jobsData = JobRequestMapper.toJobRequestsDTOlist(result.data)  
         return {
             message: JOB_MESSAGES.JOB_REQUEST.ALL_JOB_REQUEST,
             data: jobsData,

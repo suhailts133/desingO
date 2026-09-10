@@ -95,3 +95,16 @@ export enum RECOMENDATION_DATA_TYPE {
     JOB = "JOB",
     DESIGN = "DESIGN"
 }
+
+export enum JOB_REQUEST_UNIQUE_ID {
+    JOB_REQUEST = "JR",
+    DIRECT_HIRE = "DH"
+}
+
+
+export enum TRANSACTION_UNIQUE_ID {
+    PAYMENT = 'PAY',
+    COMMISSION = 'COM',
+    PAYOUT = 'POU',
+    REFUND = 'REF'
+}

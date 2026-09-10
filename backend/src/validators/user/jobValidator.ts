@@ -471,8 +471,31 @@ export const jobRequestValidation: Joi.ObjectSchema<ICreateJobRequest> = Joi.obj
                 "Description must not exceed 1000 characters",
             "any.required":
                 "Description is required",
-        })
-});
+        }),
+
+    latitude: Joi.number()
+        .min(-90)
+        .max(90)
+        .required()
+        .messages({
+            "number.base": "Latitude must be a valid number",
+            "number.min": "Latitude must be between -90 and 90",
+            "number.max": "Latitude must be between -90 and 90",
+            "any.required": "Location is required",
+        }),
+
+    longitude: Joi.number()
+        .min(-180)
+        .max(180)
+        .required()
+        .messages({
+            "number.base": "Longitude must be a valid number",
+            "number.min": "Longitude must be between -180 and 180",
+            "number.max": "Longitude must be between -180 and 180",
+            "any.required": "Location is required",
+        }),
+
+}).options({ convert: true });
 
 const imageUploadResultValidation = Joi.object({
     path: Joi.string().required(),
@@ -482,6 +505,28 @@ const imageUploadResultValidation = Joi.object({
 
 
 export const EditjobRequestValidation: Joi.ObjectSchema<EditJobRequest> = Joi.object<EditJobRequest>({
+
+    latitude: Joi.number()
+        .min(-90)
+        .max(90)
+        .required()
+        .messages({
+            "number.base": "Latitude must be a valid number",
+            "number.min": "Latitude must be between -90 and 90",
+            "number.max": "Latitude must be between -90 and 90",
+            "any.required": "Location is required",
+        }),
+
+    longitude: Joi.number()
+        .min(-180)
+        .max(180)
+        .required()
+        .messages({
+            "number.base": "Longitude must be a valid number",
+            "number.min": "Longitude must be between -180 and 180",
+            "number.max": "Longitude must be between -180 and 180",
+            "any.required": "Location is required",
+        }),
 
     projectTitle: Joi.string()
         .trim()
@@ -607,7 +652,7 @@ export const EditjobRequestValidation: Joi.ObjectSchema<EditJobRequest> = Joi.ob
             "any.required": "Preferred materials are required",
         }),
 
-   
+
     oldReferences: Joi.array()
         .items(imageUploadResultValidation)
         .optional()

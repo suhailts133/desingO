@@ -14,7 +14,8 @@ export const createJobFormData = (data: IJobRequest): FormData => {
     formData.append("projectTitle", data.projectTitle);
     formData.append("propertyType", data.propertyType?.label || (data.propertyType as unknown as string));
     formData.append("description", data.description || "");
-
+    formData.append("latitude", String(data.latitude));
+    formData.append("longitude", String(data.longitude));
 
     if (data.projectType === "Renovation" && data.renovationDetails) {
         formData.append("renovationDetails[level]", data.renovationDetails.level);

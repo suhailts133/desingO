@@ -1,6 +1,6 @@
 import mongoose, { type QueryFilter, type UpdateQuery } from "mongoose";
 import type { CreateProposalRepoDataDTO, GetProposalDTO, IProposalSourcePopulated, ProposalStatusFilter, ProposalStatusUpdateRepoDTO } from "../../DTO/proposal/proposal";
-import type { ContractStatus, IEscrow, IProposal, PaymentUpdateStatus, ProposalServiceStatus } from "../../interfaces/proposal/IProposal";
+import type { ContractStatus, EscrowStatus, IEscrow, IProposal, PaymentUpdateStatus, ProposalServiceStatus } from "../../interfaces/proposal/IProposal";
 import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
 import { ProposalModel } from "../../models/proposal/proposalModal";
 import { BaseRepository } from "../baseRepository";
@@ -12,6 +12,7 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
     constructor() {
         super(ProposalModel)
     }
+
 
     async getProposalsByUserId(userId: string, role: "Designer" | "Customer"): Promise<IProposalSourcePopulated[]> {
         const objectId = new mongoose.Types.ObjectId(userId);
@@ -48,15 +49,24 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
             remainingPlatformFee: data.remainingPlatformFee
         })
     }
+    async openFirstServiceAndMarkOngoing(sourceId: string): Promise<IProposal | null> {
+        return await this.updateOne(
+            { sourceId, "services.order": FIRST_SERVICE_ORDER_NUMBER },
+            {
+                $set: {
+                    "services.$.status": ServiceStatus.OPEN,
+                    contractStatus: CONTRACT_STATUS.ONGOING,
+                },
+            }
+        );
+    }
+
 
     async acceptOrRejectProposal(sourceId: string, contractStatus: ContractStatus, shouldUpdateService: boolean, overallRejectionReason?: string): Promise<IProposal | null> {
         const filter: ProposalStatusFilter = { sourceId };
+        const update: ProposalStatusUpdateRepoDTO = { contractStatus };
 
-        const update: ProposalStatusUpdateRepoDTO = {
-            contractStatus,
-        };
-
-        if (contractStatus === CONTRACT_STATUS.ACCEPTED && shouldUpdateService) {
+        if (shouldUpdateService) {
             filter["services.order"] = FIRST_SERVICE_ORDER_NUMBER;
             update["services.$.status"] = ServiceStatus.OPEN;
         }
@@ -65,9 +75,7 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
             update.overallRejectionReason = overallRejectionReason;
         }
 
-        return await this.updateOne(filter, {
-            $set: update,
-        });
+        return await this.updateOne(filter, { $set: update });
     }
 
     async acceptOrRejectServiceResult(sourceId: string, order: number, status: ProposalServiceStatus): Promise<IProposal | null> {
@@ -78,6 +86,16 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
             }
         })
 
+    }
+
+    async changeEscrowStatus(sourceId: string, order: number, escrowStatus: EscrowStatus): Promise<IProposal | null> {
+        const updateDoc: UpdateQuery<IProposal> = {
+            $set: {
+                "services.$.escrow.status": escrowStatus
+            }
+        }
+
+        return await this.updateOne({ sourceId, "services.order": order }, updateDoc)
     }
 
     async updateService(sourceId: string, order: number, status: ProposalServiceStatus, paymentStatus: PaymentUpdateStatus, escrow: Partial<IEscrow>, feeDeduction?: number, currentAmountHeld?: number): Promise<IProposal | null> {
