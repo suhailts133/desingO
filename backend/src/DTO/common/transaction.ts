@@ -17,6 +17,7 @@ export interface TransactionFilter {
   page?: string
 }
 export interface AllTransactionDTO {
+  transactionNumber:string
   id: string;
   amount: number;
   type: TransactionType;

@@ -7,6 +7,7 @@ export class TransactionMapper {
     static toTransactionDTOList(data: TransactionPopulated[]): AllTransactionDTO[] {
         return data.map(d => ({
             id: d.id,
+            transactionNumber:d.TransactionId,
             amount: d.amount,
             sourceName:d.sourceUserId.full_name,
             sourceId:d.sourceUserId.id,
