@@ -98,6 +98,7 @@ export const API_ROUTES = {
         CREATE: "/proposal/create",
         UPDATE: "/proposal/update",
         MY_PROPOSAL: "/proposal",
+        REVIEW: "/proposal/review",
         PREFILL_DATA: "/proposal/prefill",
         APPROVE_REJECT: "/proposal/approve-reject",
         UPLOAD_RESULT: "/proposal/upload-result",

@@ -8,6 +8,14 @@ export type ContractStatus = "Sent" | "Accepted" | "Rejected" | "Ongoing" | "Com
 
 export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Redo" | "Awaiting Confirmation" |"Terminated"
 
+export interface ProposalReviewDTO {
+    comment: string,
+    rating: number
+    createdAt: string,
+}
+
+
+
 export interface IServiceResult {
     serviceResult: {
         file: File[]

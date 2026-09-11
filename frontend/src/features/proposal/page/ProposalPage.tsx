@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom"
 import { loadStripe } from "@stripe/stripe-js"
 import { Elements } from "@stripe/react-stripe-js"
 
-import { useGetProposalQuery } from "../proposalEndpoints"
+import { useGetProposalQuery, useGetProposalReivewQuery } from "../proposalEndpoints"
 
 import { useDecodeAccessToken } from "../../../helpers/decodeAccessToken"
 
@@ -40,6 +40,7 @@ import UploadFloorPlan from "../component/UploadFloorPlan"
 import { useUploadFloorPlan } from "../hooks/useUploadFloorPlan"
 import FloorPlanSection from "../component/FloorPlanSection"
 import { useAcceptOrRejectFloorPlan } from "../hooks/useAcceptOrRejectFloorPlan"
+import ProposalReviewCard from "../component/ProposalReviewCard"
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
 
@@ -59,9 +60,10 @@ export default function ProposalPage() {
 
     const proposal = data?.data
 
+    const { data: reviewData, isLoading: isReviewLoading, error: reviewError } = useGetProposalReivewQuery(sourceId ?? proposal?.sourceId ?? "", { skip: !proposal || !proposal.isReviewd })
     const contractStatus = proposal?.contractStatus
-
     const { data: disputeData, isLoading: isDisputeLoading, error: disputeError } = useGetDisputeQuery(proposal?.id ?? "", { skip: !proposal || contractStatus !== "Disputed" })
+
     const disputedData = disputeData?.data
     const handleResponse = useHandleResponse()
     const { ispaymentDataLoading, clientSecret, paymentIntentError, handlePaymentIntent, reset } = useCreateIntent()
@@ -286,10 +288,10 @@ export default function ProposalPage() {
             </div>
         )
     }
-    if (disputeError) {
+    if (disputeError || reviewError) {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Something went wrong. Please try again.</div>
     }
-    if (isDisputeLoading) {
+    if (isDisputeLoading || isReviewLoading) {
         return <div className="p-10 text-center animate-pulse text-soft-black/40">Loading proposal...</div>
     }
 
@@ -412,7 +414,7 @@ export default function ProposalPage() {
             />
 
             {
-                contractStatus === "Completed" && role === "Customer" && (
+                (contractStatus === "Completed" || contractStatus === "Terminated") && role === "Customer" && !proposal.isReviewd && (
                     <div>
                         <button onClick={() => setReview({ sourceId: proposal.sourceId })} className="soft-black-button">
                             Write Your Review
@@ -420,6 +422,11 @@ export default function ProposalPage() {
                     </div>
                 )
             }
+
+            {proposal.isReviewd && reviewData?.data && (
+                <ProposalReviewCard review={reviewData.data} />
+            )}
+
 
 
 

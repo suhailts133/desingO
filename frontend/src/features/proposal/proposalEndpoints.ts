@@ -1,10 +1,16 @@
 import { API_ROUTES } from "../../api/apiRoutes";
 import { baseApi } from "../../api/baseApi";
 import type { IApiResponse } from "../../api/responseType";
-import type { AcceptOrRejectFloorPlanDTO, CreateProposalDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData, ProposalInputDataPayload, UpdateProposalDTO, VersionAcceptOrRejectDTO } from "./proposalInterface";
+import type { AcceptOrRejectFloorPlanDTO, CreateProposalDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData, ProposalInputDataPayload, ProposalReviewDTO, UpdateProposalDTO, VersionAcceptOrRejectDTO } from "./proposalInterface";
 
 export const proposalApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
+        getProposalReivew: builder.query<IApiResponse<ProposalReviewDTO>, string>({
+            query: (jobId) => ({
+                url: `${API_ROUTES.PROPOSAL.REVIEW}/${jobId}`,
+                method: "GET"
+            }),
+        }),
         getProposal: builder.query<IApiResponse<ProposalDetailDTO>, string>({
             query: (jobId) => ({
                 url: `${API_ROUTES.PROPOSAL.MY_PROPOSAL}/${jobId}`,
@@ -91,5 +97,6 @@ export const {
     useApproveOrRejectVersionResultMutation,
     useUpdateProposalMutation,
     useUploadFloorPlanMutation,
-    useAcceptOrRejectFloorPlanMutation
+    useAcceptOrRejectFloorPlanMutation,
+    useGetProposalReivewQuery
 } = proposalApi
