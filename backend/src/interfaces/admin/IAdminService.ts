@@ -5,7 +5,7 @@ import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiRespo
 
 export interface IAdminUserManagementService {
     getAllUsers(filter?: UserFilterDTO): Promise<IApiResponseWithPagination<AdminUsersResponseDTO[]>>
-    getAUser(id: string, role: UserRole): Promise<IApiResponse<AdminUserDetailDTO>>
+    getAUser(id: string): Promise<IApiResponse<AdminUserDetailDTO>>
     toggleUser(id: string, is_blocked: boolean): Promise<IApiResponse<AdminUserToggleStatusDTO>>
 }
 

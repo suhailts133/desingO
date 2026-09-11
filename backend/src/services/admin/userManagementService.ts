@@ -9,7 +9,6 @@ import { UserMapper } from "../../dtoMappers/user/userMapper";
 import type { UserRole } from "../../interfaces/auth/IUser";
 import type { IReviewRepository } from "../../interfaces/proposal/IProposalRepository";
 import type { IActiveJobRepository } from "../../interfaces/customer/ICustomerRepository";
-import { USER_TYPE } from "../../shared/enums/proposalEnums";
 import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
 import type { IReview } from "../../interfaces/proposal/IProposal";
 import { USER_ROLES } from "../../shared/enums/commonEnums";
@@ -46,7 +45,8 @@ export class AdminUserManagementService implements IAdminUserManagementService {
      * @returns Response payload containing mapped user details.
      * @throws {AppError} 404 - If no user is found with the given ID.
      */
-    async getAUser(id: string, role: UserRole): Promise<IApiResponse<AdminUserDetailDTO>> {
+    async getAUser(id: string): Promise<IApiResponse<AdminUserDetailDTO>> {
+
         const user = await this._userManagement.getUser(id);
         if (!user) {
             throw new AppError(ADMIN_MESSAGES.USER_MANAGEMENT.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
@@ -56,10 +56,10 @@ export class AdminUserManagementService implements IAdminUserManagementService {
         let review: IReview[] = [];
         let designCount = 0;
 
-        if (role === USER_ROLES.CUSTOMER) {
+        if (user.role === USER_ROLES.CUSTOMER) {
             activeJobCount = await this._activeJobRepo.countCustomerActiveJobs(id);
         }
-        else if (role === USER_ROLES.DESIGNER) {
+        else if (user.role === USER_ROLES.DESIGNER) {
             [activeJobCount, review, designCount] = await Promise.all([
                 this._activeJobRepo.countDesignerActiveJobs(id),
                 this._reviewRepo.getAllReviews(id),
@@ -68,7 +68,7 @@ export class AdminUserManagementService implements IAdminUserManagementService {
         }
 
         const userData = UserMapper.toAdminUserDTO(user, activeJobCount, designCount, review);
-
+        console.log(userData)
         return { message: ADMIN_MESSAGES.USER_MANAGEMENT.GET_ONE_SUCCESS, data: userData };
     }
 
