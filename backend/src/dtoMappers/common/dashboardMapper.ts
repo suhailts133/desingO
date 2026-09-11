@@ -8,7 +8,7 @@ import type { IActiveJob } from "../../interfaces/customer/ICustomer";
 import type { IDesignerPopulated } from "../../interfaces/designer/IDesigner";
 import type { IDispute } from "../../interfaces/proposal/IDispute";
 import type { IReview } from "../../interfaces/proposal/IProposal";
-import { ACTIVE_JOB_PROPOSAL_STATUS, ACTIVE_JOB_STATUS } from "../../shared/enums/commonEnums";
+import { ACTIVE_JOB_STATUS } from "../../shared/enums/commonEnums";
 import { CONTRACT_STATUS, DISPUTE_STATUS, ServiceStatus } from "../../shared/enums/proposalEnums";
 
 export class DashboardMapper {
@@ -105,7 +105,7 @@ export class DashboardMapper {
         const activJobCount = activeJobs.filter(aj => aj.status === ACTIVE_JOB_STATUS.ACTIVE).length
 
 
-        const pendingProposals: PendingProposalDTOs[] = activeJobs.filter(aj => aj.proposalStatus !== ACTIVE_JOB_PROPOSAL_STATUS.CREATED)
+        const pendingProposals: PendingProposalDTOs[] = activeJobs
             .map(aj => ({
                 sourceId: aj.sourceId.toString(),
                 sourceType: aj.sourceType,
@@ -115,7 +115,7 @@ export class DashboardMapper {
             }));
 
 
-        const ongoingDisputes: OngoingDisputeDTOs[] = disputes.filter(d => d.status !== DISPUTE_STATUS.RESOLVED)
+        const ongoingDisputes: OngoingDisputeDTOs[] = disputes.filter(d => d.status !== DISPUTE_STATUS.RESOLVED && d.status !== DISPUTE_STATUS.TERMINATED)
             .map(d => ({
                 proposalId: d.proposalId.id,
                 sourceId: d.proposalId.sourceId.toString(),
@@ -126,18 +126,20 @@ export class DashboardMapper {
                 status: d.status,
             }));
 
-        const ongoingProposals: OngoingProposalDTOs[] = proposals.flatMap(p => p.services.filter(s => s.status !== ServiceStatus.COMPLETED && s.status !== ServiceStatus.LOCKED)
-            .map(s => ({
-                proposalId: p.id,
-                activeJobId: p.activeJobId.toString(),
-                jobId: p.sourceId.id,
-                sourceType: p.sourceId.sourceType,
-                jobName: p.sourceName,
-                serviceName: s.serviceName,
-                status: s.status,
-                paymentStatus: s.paymentStatus,
-            }))
-        );
+        const ongoingProposals: OngoingProposalDTOs[] = proposals
+            .filter(p => p.contractStatus !== CONTRACT_STATUS.TERMINATED)
+            .flatMap(p => p.services.filter(s => s.status !== ServiceStatus.COMPLETED && s.status !== ServiceStatus.LOCKED)
+                .map(s => ({
+                    proposalId: p.id,
+                    activeJobId: p.activeJobId.toString(),
+                    jobId: p.sourceId.id,
+                    sourceType: p.sourceId.sourceType,
+                    jobName: p.sourceName,
+                    serviceName: s.serviceName,
+                    status: s.status,
+                    paymentStatus: s.paymentStatus,
+                }))
+            );
 
         return {
             userId: user.id,
