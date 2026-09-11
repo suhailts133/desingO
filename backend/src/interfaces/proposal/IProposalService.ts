@@ -11,6 +11,7 @@ export interface IProposalService {
     approveOrRejectProposal(data: ProposalAcceptOrRejectDTO): Promise<IApiResponse<"Accepted" | "Rejected">>
 }
 export interface IReviewService {
+    getMyTopReviews(designerId: string): Promise<IApiResponse<ReviewListDTO[]>>
     createReview(userId: string, data: ReviewPayload): Promise<IApiResponse<ReviewResponseDTO>>
     getMyReviews(designerId: string, page?: string): Promise<IApiResponseWithPagination<ReviewListDTO[]>>
 }

@@ -39,7 +39,7 @@ export class ReviewController {
         const validated = value as ReviewPayload
         Logger.info(`${JSON.stringify(validated)}`)
         const result = await this._reviewService.createReview(userid, validated)
-         Logger.info(`${JSON.stringify(result)}`)
+        Logger.info(`${JSON.stringify(result)}`)
         RespsonseHelper.success(res, result)
     })
 
@@ -61,6 +61,24 @@ export class ReviewController {
         }
         const result = await this._reviewService.getMyReviews(designerId, page)
         RespsonseHelper.successWithPagination(res, result)
+
+    })
+    /**
+     * to get top 10 rated review of a designer
+     * @route GET /Dashboard/top-reviews
+     * @param req.params.id  designerId
+     * @throws {AppError} 401 if there is any issue with designerId
+     */
+    getTopReviews = asyncHandler(async (req: Request, res: Response) => {
+        const designerId = req.user?.userId;
+        if (!designerId) {
+            throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED);
+        }
+        if (!isObjectId(designerId)) {
+            throw new AppError(DESIGNER_MESSAGES.DESIGNER.ID_REQUIRED, RESPONSE_CODE.UNAUTHORIZED)
+        }
+        const result = await this._reviewService.getMyTopReviews(designerId)
+        RespsonseHelper.success(res, result)
 
     })
 }

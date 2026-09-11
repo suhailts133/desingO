@@ -17,6 +17,7 @@ import { TranscationRepository } from "../../repositories/common/transactionRepo
 import adminAuthentication from "../../middlewares/adminAuth";
 import authenticate from "../../middlewares/auth";
 import { transactionController } from "../admin/transactionRoutes";
+import { reviewController } from "../proposal/reviewRoutes";
 
 const router = Router()
 
@@ -40,4 +41,5 @@ router.get("/designer", designerAuthentication, dashboardController.getDesignerD
 router.get("/customer", customerAuthentication, dashboardController.getCustomerDashboard)
 router.get("/admin", adminAuthentication, dashboardController.getAdminDashboard)
 router.get("/recent-transaction", authenticate, transactionController.getMyTransaction)
+router.get("/top-reviews", designerAuthentication, reviewController.getTopReviews)
 export default router

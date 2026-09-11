@@ -18,7 +18,7 @@ export class TransactionController {
 
     /**
      * to get recent transaction 
-     * @route GET /transaction/
+     * @route GET /dashboard/recent-transaction
      * @throws {AppError} 401 if there is any issue with the userId
      */
     getMyTransaction = asyncHandler(async (req: Request, res: Response) => {

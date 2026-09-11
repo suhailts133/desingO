@@ -81,6 +81,7 @@ export const PROPOSAL_MESSAGES = {
         ALREADY_REVIEWD: "You have already added a review for this job.",
         ERROR: "Review posting failed.",
         FETCH_ALL: "Fetch all review success.",
+        TOP_REVIEWS: "Fetch top rated Reviews",
         FETCH_FAILED: "Failed to fetch reviews.",
     },
     PAYMENT: {

@@ -5,7 +5,7 @@ import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
 import type { IProposalRepository, IReviewRepository } from "../../interfaces/proposal/IProposalRepository";
 import type { IReviewService } from "../../interfaces/proposal/IProposalService";
-// import { CONTRACT_STATUS } from "../../shared/enums/proposalEnums
+import { CONTRACT_STATUS } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
@@ -16,16 +16,15 @@ export class ReviewService implements IReviewService {
     }
 
     async createReview(userId: string, data: ReviewPayload): Promise<IApiResponse<ReviewResponseDTO>> {
-        Logger.info("hit service")
         const checkJobStatus = await this._proposalRepo.getProposal(data.sourceId)
         if (!checkJobStatus) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
-        // if (checkJobStatus.contractStatus !== CONTRACT_STATUS.COMPLETED && checkJobStatus.contractStatus !== CONTRACT_STATUS.DISPUTED) {
-        //     throw new AppError(PROPOSAL_MESSAGES.REVIEW.NOT_ELIGIBLE, RESPONSE_CODE.FORBIDDEN)
-        // }
+        if (checkJobStatus.contractStatus !== CONTRACT_STATUS.COMPLETED && checkJobStatus.contractStatus !== CONTRACT_STATUS.TERMINATED) {
+            throw new AppError(PROPOSAL_MESSAGES.REVIEW.NOT_ELIGIBLE, RESPONSE_CODE.FORBIDDEN)
+        }
         const alreadyReviewed = await this._reviewRepo.alreadyExsits(data.sourceId, userId)
-        if(alreadyReviewed){
+        if (alreadyReviewed) {
             throw new AppError(PROPOSAL_MESSAGES.REVIEW.ALREADY_REVIEWD, RESPONSE_CODE.CONFILT)
         }
         const user = await this._userRepo.findUserById(userId)
@@ -42,8 +41,6 @@ export class ReviewService implements IReviewService {
             userName: user.full_name,
             ...(profileImage && { profileImage })
         })
-
-        Logger.info("Review created")
         if (!result) {
             throw new AppError(PROPOSAL_MESSAGES.REVIEW.ERROR, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
@@ -63,5 +60,11 @@ export class ReviewService implements IReviewService {
         return { message: PROPOSAL_MESSAGES.REVIEW.FETCH_ALL, data: reviewData, total: pagination.total, totalPages: pagination.totalPages }
     }
 
+
+    async getMyTopReviews(designerId: string): Promise<IApiResponse<ReviewListDTO[]>> {
+        const reviews = await this._reviewRepo.getMyTopReviews(designerId);
+        const reviewData = ReviewMapper.toReviewDTOList(reviews)
+        return { message: PROPOSAL_MESSAGES.REVIEW.TOP_REVIEWS, data: reviewData }
+    }
 
 }
