@@ -49,8 +49,8 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
         return res
     }
 
-    async createJobRequest(userId: string, data: ICreateJobRequest, embedding: number[], referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<IJobRequest> {
-        const { designId, designerId, ...restOfData } = data;
+    async createJobRequest(data: createJobRepoDTO, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<IJobRequest> {
+        const { designId, designerId, latitude, longitude, ...restOfData } = data;
         return await this.create({
             ...restOfData,
             location: {
@@ -59,7 +59,7 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
             },
             referenceImages: referenceImages ?? [],
             floorPlans: floorplans ?? [],
-            userId: new mongoose.Types.ObjectId(userId),
+            userId: new mongoose.Types.ObjectId(data.userId),
             ...(designerId && { designerId: new mongoose.Types.ObjectId(designerId) }),
             ...(designId && { designId: new mongoose.Types.ObjectId(designId) })
         })

@@ -8,7 +8,7 @@ import type { IJobApplicationService } from "../../interfaces/designer/IDesigner
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { JobApplicationMapper } from "../../dtoMappers/designer/JobApplicationMapper";
 import { JOB_APPLICATION_STATUS, SOURCE_TYPE } from "../../shared/enums/commonEnums";
-import type { CreateNotificationDTO, NotificationResponseDTO } from "../../DTO/socket/notificationDTO";
+import type { CreateNotificationDTO } from "../../DTO/socket/notificationDTO";
 import { SOCKET_MESSAGES } from "../../shared/messages/socketMessage";
 import { NOTIFICATION_TYPES } from "../../shared/enums/notificationEnum";
 import type { INotificationService } from "../../interfaces/socket/ISocketService";

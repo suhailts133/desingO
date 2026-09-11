@@ -6,7 +6,7 @@ import type { IActiveJobRepository, IJobRepository } from "../../interfaces/cust
 import type { IJobRequestService } from "../../interfaces/customer/ICustomerService";
 import { AppError } from "../../shared/errors/appError";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload";
-import { CLOUDINARY_FOLDER_NAME, JOB_REQUEST_STATUS, JOB_SOURCE_TYPE, RECOMENDATION_DATA_TYPE, RECOMENDATION_TYPE, SOURCE_TYPE } from "../../shared/enums/commonEnums";
+import { CLOUDINARY_FOLDER_NAME, JOB_REQUEST_STATUS, JOB_REQUEST_UNIQUE_ID, JOB_SOURCE_TYPE, RECOMENDATION_DATA_TYPE, RECOMENDATION_TYPE, SOURCE_TYPE } from "../../shared/enums/commonEnums";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { JobRequestMapper } from "../../dtoMappers/user/jobRequestMapper";
 import type { AcceptOrRejectHireDesignerDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
@@ -18,6 +18,7 @@ import type { CreateNotificationDTO } from "../../DTO/socket/notificationDTO";
 import type { INotificationService } from "../../interfaces/socket/ISocketService";
 import { SOCKET_MESSAGES } from "../../shared/messages/socketMessage";
 import { NOTIFICATION_TYPES } from "../../shared/enums/notificationEnum";
+import { generateUniqueId } from "../../shared/helpers/extraFunctions";
 
 export class JobRequestService implements IJobRequestService {
     constructor(private _notificationService: INotificationService, private _designerInteractionRepo: IDesignerInteractionRepository, private _jobRequestRepo: IJobRepository, private _imageUploder: IImageUploaderService, private _activeJobRepo: IActiveJobRepository) { }
