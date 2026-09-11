@@ -13,6 +13,7 @@ export interface IDispute {
     serviceOrder: number;
     reason: string;
     type: string;
+    canTerminate:boolean
     evidence: ImageUploadResult[];
     status: DisputeStatus;
     resolution?: string;
@@ -26,6 +27,7 @@ export interface IDispute {
 
 
 export interface IDisputeRepository {
+    getDisputesRequiringAdminAction(): Promise<IDispute[]>
     updateDisputeIfStatus(id: string, expectedStatus: DisputeStatus, updates: Partial<IDispute>): Promise<IDispute | null>;
     createDispute(data: DisputeRepoDTO): Promise<IDispute>
     updateDispute(id: string, data: Partial<DisputeUpdateDTO>): Promise<IDispute | null>

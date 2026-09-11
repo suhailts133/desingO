@@ -23,9 +23,10 @@ export interface ITransactionRepository {
     createTransaction(data: TransactionRepoDTO): Promise<ITransaction>
     getAllTransaction(filter?: TransactionFilter): Promise<{ data: TransactionPopulated[]; pagination: Pagination; }>
     getTransactionReport(filters: ReportFilters): Promise<AggregatedBucketRaw[]>
+    getCommisionTransactions(): Promise<ITransaction[]>
 }
 
 export interface ITransactionService {
     getAllTransaction(filter?: TransactionFilter): Promise<IApiResponseWithPagination<AllTransactionDTO[]>>
-    generateReport(filters:ReportFilters):Promise<IApiResponse<ReportResponseDto>>
+    generateReport(filters: ReportFilters): Promise<IApiResponse<ReportResponseDto>>
 }

@@ -1,5 +1,3 @@
-import type { Tone } from "../../../shared/table/StatusBadge";
-import type { ColumnDef } from "../../../shared/table/TableHeader";
 import type { DisputeStatus } from "../../proposal/proposalInterface";
 
 export interface DisputeAdminFilters {
@@ -20,6 +18,7 @@ export interface AllDisputeAdminDTO {
 
 export interface DisputeSolutionDTO {
     resolution: string;
+    canTerminate:boolean
     resolutionType: string;
     refundAmount: number
     disputeId: string;
@@ -29,30 +28,6 @@ export interface DisputeSolutionResponseDTO extends DisputeSolutionDTO {
     status: DisputeStatus
 
 }
-
-
-
-
-export const disputeStatusTone: Record<DisputeStatus, Tone> = {
-    Open: "warning",
-    "Under Review": "info",
-    Resolved: "success",
-    Redo: "error",
-    "Awaiting Confirmation": "warning",
-};
-
-
-
-
-export const disputeColumns: ColumnDef<AllDisputeAdminDTO>[] = [
-    { key: "type", label: "Type", className:"font-Jost-Semibold text-soft-black text-sm"},
-    { key: "reason", label: "Reason" },
-    { key: "raisedBy", label: "Raised By" },
-    { key: "status", label: "Status" },
-    { key: "createdAt", label: "Raised On" },
-    { key: "view" as keyof AllDisputeAdminDTO & string, label: "View" },
-];
-
 
 
 
@@ -72,6 +47,7 @@ export interface DisputeDetailAdminDTO {
     designerName: string
     customerId: string
     designerId: string
+    canTerminate:boolean
     customerImage?: string
     designerImage?: string
     currentService: currentDisputedService

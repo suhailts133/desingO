@@ -12,7 +12,7 @@ export interface IRoomMeasurement {
 }
 
 export type ProjectType = "Renovation" | "New_Build";
-export type JobStatus = "Pending" | "Ongoing" | "Closed" | "Rejected" | "Accepted"
+export type JobStatus = "Pending" | "Ongoing" | "Closed" | "Rejected" | "Accepted" | "Terminated"
 export type AreaUnit = "ft" | "m"
 export type RenovationLevel = "DECOR_ONLY" | "ROOMS_UPGRADE" | "COMPLETE_MAKEOVER";
 export type VastuPreference = "STRICT" | "BASIC" | "NOT_REQUIRED";
@@ -161,7 +161,7 @@ export interface IActiveJob {
     sourceType: 'jobRequest' | 'direct_hire'
     sourceId: mongoose.Types.ObjectId
     sourceName: string
-    status: 'Active' | 'Completed' | 'Cancelled'
+    status: 'Active' | 'Completed' | 'Cancelled' | "Terminated"
     proposalStatus: "NOT_CREATED" | "CREATED" | "REJECTED"
     startedAt: Date
     completedAt?: Date

@@ -15,6 +15,16 @@ export class ActiveJobRepository extends BaseRepository<IActiveJob> implements I
         super(ActiveJobModel)
     }
 
+    async countAllActiveJob(): Promise<number> {
+        return await this._model.countDocuments({ status: ACTIVE_JOB_STATUS.ACTIVE })
+    }
+
+
+
+    async countDesignerActiveJobs(designerId: string): Promise<number> {
+        return this._model.countDocuments({ designerId, status: ACTIVE_JOB_STATUS.ACTIVE });
+    }
+
     async countCustomerActiveJobs(userId: string): Promise<number> {
         return this._model.countDocuments({ userId, status: ACTIVE_JOB_STATUS.ACTIVE });
     }

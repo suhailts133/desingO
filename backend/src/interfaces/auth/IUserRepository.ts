@@ -9,5 +9,6 @@ export interface IUserRepository {
     updateUser(id: string, filters: Partial<IUser>): Promise<IUser | null>
     findUserById(id: string): Promise<IUser | null>
     incrementWallet(id: string, amount: number): Promise<IUser | null>;
+    countActiveUsers(): Promise<number>
 
 }

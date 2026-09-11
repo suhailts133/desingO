@@ -1,4 +1,4 @@
-import type { AdminUsersResponseDTO, AdminUserToggleStatusDTO, UserFilterDTO } from "../../DTO/admin/adminDTO";
+import type { AdminUserDetailDTO, AdminUsersResponseDTO, AdminUserToggleStatusDTO, UserFilterDTO } from "../../DTO/admin/adminDTO";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
 import type { IAdminUserManagementService } from "../../interfaces/admin/IAdminService";
@@ -6,6 +6,11 @@ import type { IUserManagementRepository } from "../../interfaces/admin/IUserMana
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
 import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
 import { UserMapper } from "../../dtoMappers/user/userMapper";
+import type { IReviewRepository } from "../../interfaces/proposal/IProposalRepository";
+import type { IActiveJobRepository } from "../../interfaces/customer/ICustomerRepository";
+import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
+import type { IReview } from "../../interfaces/proposal/IProposal";
+import { USER_ROLES } from "../../shared/enums/commonEnums";
 
 
 
@@ -16,7 +21,7 @@ import { UserMapper } from "../../dtoMappers/user/userMapper";
  * details, and update user access states (e.g., block/unblock).
  */
 export class AdminUserManagementService implements IAdminUserManagementService {
-    constructor(private _userManagement: IUserManagementRepository) { }
+    constructor(private _userManagement: IUserManagementRepository, private _reviewRepo: IReviewRepository, private _activeJobRepo: IActiveJobRepository, private _designRepo: IDesignRepository) { }
 
 
     /**
@@ -39,15 +44,32 @@ export class AdminUserManagementService implements IAdminUserManagementService {
      * @returns Response payload containing mapped user details.
      * @throws {AppError} 404 - If no user is found with the given ID.
      */
-    async getAUser(id: string): Promise<IApiResponse<AdminUsersResponseDTO>> {
-        const result = await this._userManagement.getUser(id);
-        if (!result) {
-            throw new AppError(ADMIN_MESSAGES.USER_MANAGEMENT.GET_ONE_SUCCESS, RESPONSE_CODE.NOT_FOUND)
-        }
-        const userData = UserMapper.toAdminUserDTO(result)
-        return { message: ADMIN_MESSAGES.USER_MANAGEMENT.GET_ONE_SUCCESS, data: userData }
-    }
+    async getAUser(id: string): Promise<IApiResponse<AdminUserDetailDTO>> {
 
+        const user = await this._userManagement.getUser(id);
+        if (!user) {
+            throw new AppError(ADMIN_MESSAGES.USER_MANAGEMENT.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+        }
+
+        let activeJobCount = 0;
+        let review: IReview[] = [];
+        let designCount = 0;
+
+        if (user.role === USER_ROLES.CUSTOMER) {
+            activeJobCount = await this._activeJobRepo.countCustomerActiveJobs(id);
+        }
+        else if (user.role === USER_ROLES.DESIGNER) {
+            [activeJobCount, review, designCount] = await Promise.all([
+                this._activeJobRepo.countDesignerActiveJobs(id),
+                this._reviewRepo.getAllReviews(id),
+                this._designRepo.countMyDesigns(id)
+            ]);
+        }
+
+        const userData = UserMapper.toAdminUserDTO(user, activeJobCount, designCount, review);
+        console.log(userData)
+        return { message: ADMIN_MESSAGES.USER_MANAGEMENT.GET_ONE_SUCCESS, data: userData };
+    }
 
     /**
      * Toggles a user's account status (e.g., blocking or unblocking access).

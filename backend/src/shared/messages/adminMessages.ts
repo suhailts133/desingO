@@ -9,7 +9,10 @@ export const ADMIN_MESSAGES = {
         USER_NOT_FOUND: "User not found.",
         TOGGLE_SUCCESS: "User status updated successfully.",
         TOGGLE_ERROR: "Failed to update user status. Please try again or contact support.",
-        ID_NOT_PROVIDED: "user ID is required. "
+        ID_NOT_PROVIDED: "user ID is required. ",
+        ROLE_REQUIRED: "role is required.",
+        NOT_FOUND: "User not found."
+
     },
 
     DESIGNER_VERFICATION: {
@@ -24,11 +27,11 @@ export const ADMIN_MESSAGES = {
         ID_NOT_PROVIDED: "application ID is required. "
     },
 
-    TRANSACTION:{
-        FETCH_ALL:"fetched all transactions",
-        REPORT:"fetched transaction report",
-        DATE_NOT_FOUND:"from and to is required for custom range",
-        DATE_MISMATCH:"'from' date cannot be after 'to' date",
+    TRANSACTION: {
+        FETCH_ALL: "fetched all transactions",
+        REPORT: "fetched transaction report",
+        DATE_NOT_FOUND: "from and to is required for custom range",
+        DATE_MISMATCH: "'from' date cannot be after 'to' date",
     }
 
 

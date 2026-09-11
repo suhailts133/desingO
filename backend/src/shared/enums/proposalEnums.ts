@@ -35,7 +35,8 @@ export enum CONTRACT_STATUS {
     ONGOING = "Ongoing",
     COMPLETED = "Completed",
     DISPUTED = "Disputed",
-    EXPIRED = "Expired"
+    EXPIRED = "Expired",
+    TERMINATED = "Terminated"
 }
 
 export enum DISPUTE_STATUS {
@@ -43,6 +44,7 @@ export enum DISPUTE_STATUS {
     UNDER_REVIEW = "Under Review",
     RESOLVED = "Resolved",
     REDO = "Redo",
+    TERMINATED = "Terminated",
     AWAITING_CONFIRMATION = "Awaiting Confirmation"
 }
 

@@ -17,7 +17,7 @@ const activeJobSchema = new Schema<IActiveJob>(
         sourceName: { type: String, required: true },
         status: {
             type: String,
-            enum: ["Active", "Completed", "Cancelled"],
+            enum: ["Active", "Completed", "Cancelled", "Terminated"],
             required: true,
             default: "Active"
         },

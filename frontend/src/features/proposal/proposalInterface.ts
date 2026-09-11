@@ -4,9 +4,9 @@ export type PaymentStatus = "Pending" | "Paid" | "Refunded"
 
 export type EscrowStatus = "Held" | "Released" | "Refunded" | "Disputed"
 
-export type ContractStatus = "Sent" | "Accepted" | "Rejected" | "Ongoing" | "Completed" | "Disputed" | "Expired"
+export type ContractStatus = "Sent" | "Accepted" | "Rejected" | "Ongoing" | "Completed" | "Disputed" | "Expired" | "Terminated"
 
-export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Redo" | "Awaiting Confirmation"
+export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Redo" | "Awaiting Confirmation" |"Terminated"
 
 export interface IServiceResult {
     serviceResult: {
@@ -33,7 +33,7 @@ export interface FloorPlans {
     }[];
 }
 export interface AcceptOrRejectDisputeDTO {
-    status: "Resolved" | "Redo",
+    status: "Resolved" | "Redo" | "Terminated",
     disputeId: string
 }
 
@@ -43,6 +43,7 @@ export interface DisputeResponseDTO {
     raisedBy: "Customer" | "Designer";
     serviceOrder: number;
     reason: string;
+    canTerminate:boolean
     contractStatus?: string,
     evidence: string[];
     status: DisputeStatus;

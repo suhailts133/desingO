@@ -109,6 +109,7 @@ export class DisputeManagementService implements IAdminDisputeService {
         const updatedDispute = await this._disputeRepo.updateDispute(data.disputeId, {
             resolution: data.resolution,
             refundAmount: finalRefundAmount,
+            canTerminate: data.canTerminate,
             resolutionType: data.resolutionType,
             status: DISPUTE_STATUS.AWAITING_CONFIRMATION
         });
@@ -119,6 +120,7 @@ export class DisputeManagementService implements IAdminDisputeService {
 
         const responseData: DisputeSolutionResponseDTO = {
             refundAmount: finalRefundAmount,
+            canTerminate: updatedDispute.canTerminate,
             resolution: data.resolution,
             resolutionType: data.resolutionType,
             disputeId: updatedDispute.id,

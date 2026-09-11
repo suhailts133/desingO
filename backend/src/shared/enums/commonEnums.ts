@@ -4,6 +4,11 @@ export enum USER_ROLES {
     ADMIN = "Admin"
 }
 
+export enum AUTH_PROVIDER_TYPES {
+    GOOGLE= "Google",
+    LOCAL= "Local"
+}
+
 
 export enum DESIGNER_STATUS {
     APPROVED = "Approved",
@@ -36,6 +41,7 @@ export enum JOB_REQUEST_STATUS {
     ONGOING = "Ongoing",
     CLOSED = "Closed",
     REJECTED = "Rejected",
+    TERMINATED = "Terminated",
     ACCEPTED = "Accepted",
 }
 export enum JOB_APPLICATION_STATUS {
@@ -53,6 +59,7 @@ export enum ACTIVE_JOB_STATUS {
     ACTIVE = "Active",
     CANCELLED = "Cancelled",
     COMPLETED = "Completed",
+    TERMINATED = "Terminated"
 }
 
 

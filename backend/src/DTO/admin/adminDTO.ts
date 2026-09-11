@@ -4,7 +4,22 @@ export interface AdminUsersResponseDTO {
     email: string;
     role: string;
     is_blocked: boolean;
-    wallet: number;
+    profileImage?: string;
+    joinedAt: string;
+}
+
+export type IAuthProvider = "Google" | "Local"
+export interface AdminUserDetailDTO {
+    id: string;
+    full_name: string;
+    email: string;
+    authProvider: IAuthProvider
+    wallet: number,
+    activeJobCount: number,
+    designCount?: number
+    rating?: number,
+    role: string;
+    is_blocked: boolean;
     profileImage?: string;
     joinedAt: string;
 }

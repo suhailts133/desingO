@@ -14,7 +14,7 @@ export interface DisputeRaiseDTO {
 export type DisputeRaiseBody = Omit<DisputeRaiseDTO, "evidence">
 
 export interface AcceptOrRejectDisputeDTO {
-    status: "Resolved" | "Redo",
+    status: "Resolved" | "Redo" | "Terminated",
     disputeId: string
 }
 
@@ -23,6 +23,7 @@ export interface DisputeResponseDTO {
     raisedBy: "Customer" | "Designer";
     serviceOrder: number;
     reason: string;
+    canTerminate: boolean
     contractStatus?: string,
     evidence: string[];
     status: DisputeStatus;
@@ -44,6 +45,7 @@ export interface DisputeRepoDTO {
 
 export interface DisputeUpdateDTO {
     status: DisputeStatus;
+    canTerminate: boolean
     resolution: string;
     refundAmount: number
     resolutionType: string;
@@ -101,6 +103,7 @@ export interface DisputeDetailAdminDTO {
     designerName: string
     customerId: string
     designerId: string
+    canTerminate: boolean
     customerImage?: string
     designerImage?: string
     currentService: currentDisputedService
@@ -130,6 +133,7 @@ export interface DisputeSolutionDTO {
     resolution: string;
     resolutionType: string;
     refundAmount: number
+    canTerminate: boolean
     disputeId: string;
 }
 
