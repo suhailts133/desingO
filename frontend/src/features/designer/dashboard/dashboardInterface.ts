@@ -1,4 +1,5 @@
 import type { ProposalServiceStatus } from "../../admin/disputes/adminDisputeInterface"
+import type { TransactionType } from "../../admin/transaction/transactionInterface"
 import type { DisputeStatus } from "../../proposal/proposalInterface"
 import type { Source_type } from "../../user/jobs/jobInterface"
 
@@ -47,4 +48,15 @@ export interface OngoingProposalDTOs {
     serviceName: string
     status: ProposalServiceStatus
     paymentStatus: ProposalPaymentStatus
+}
+
+
+
+export interface DashboardTransactionHistory {
+  id: string,
+  transactionId: string,
+  amount: number,
+  from: string,
+  type: TransactionType
+  createdAt: string
 }

@@ -87,7 +87,9 @@ export const API_ROUTES = {
     DASHBOARD: {
         DESIGNER: "/dashboard/designer",
         CUSTOMER: "/dashboard/customer",
-        ADMIN: "/dashboard/admin"
+        ADMIN: "/dashboard/admin",
+        RECENT_TRANSACTION: "/dashboard/recent-transaction"
+
     },
     PROPOSAL: {
         UPLOAD_FLOOR_PLAN: "/proposal/upload-floor-plan",
