@@ -1,5 +1,3 @@
-import type { Tone } from "../../../shared/table/StatusBadge";
-import type { ColumnDef } from "../../../shared/table/TableHeader";
 
 export interface AdminUserFilter {
   debouncedName?: string;
@@ -48,18 +46,3 @@ export interface AdminUserToggleStatusResposne {
 export type Role = "Admin" | "Designer" | "Customer";
 
 
-export const userColumns: ColumnDef<AdminUsersResponseDTO>[] = [
-  { key: "full_name", label: "Name" },
-  { key: "email", label: "Email" },
-  { key: "joinedAt", label: "Joined" },
-  { key: "role", label: "Role" },
-  { key: "status" as keyof AdminUsersResponseDTO & string, label: "Status" }, 
-  { key: "view" as keyof AdminUsersResponseDTO & string, label: "View" },
-];
-
-
-export const roleTone: Record<Role, Tone> = {
-    Admin: "success",
-    Designer: "warning",
-    Customer: "info",
-};
