@@ -15,6 +15,7 @@ import { CloudinaryService } from "../../services/common/cloudinaryService";
 import { TranscationRepository } from "../../repositories/common/transactionRepository";
 import { FloorPlansService } from "../../services/proposal/floorPlansService";
 import { FloorPlansRepository } from "../../repositories/proposal/floorPlansRepository";
+import { reviewController } from "./reviewRoutes";
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router()
@@ -35,12 +36,12 @@ const proposalController = new ProposalController(proposalService, proposalVersi
 
 router.post("/create", designerAuthentication, proposalController.createProposal)
 router.patch("/update", designerAuthentication, proposalController.updateProposal)
-router.get("/:id", authenticate, proposalController.getProposal)
-router.get("/prefill/:id", designerAuthentication, proposalController.getProposalTemplate)
 router.patch("/approve-reject", customerAuthentication, proposalController.updateProposalStatus)
 router.post("/upload-result", designerAuthentication, upload.fields([{ name: "serviceResult", maxCount: 20 }]), proposalController.uploadServiceResult)
 router.post("/upload-floor-plan", designerAuthentication, upload.fields([{ name: "floorPlans", maxCount: 1 }]), proposalController.uploadFloorPlan)
 router.patch("/approve-reject-version", customerAuthentication, proposalController.approveOrRejectVersion)
 router.patch("/accept-reject-floor-plan", customerAuthentication, proposalController.acceptOrRejectFloorPlan)
-
+router.get("/prefill/:id", designerAuthentication, proposalController.getProposalTemplate)
+router.get("/:id", authenticate, proposalController.getProposal)
+router.get("/review/:id", authenticate, reviewController.getReviewPerJob)
 export default router

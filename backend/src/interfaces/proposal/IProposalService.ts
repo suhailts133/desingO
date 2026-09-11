@@ -1,5 +1,5 @@
 import type { CreateProposalDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData, UpdateProposalDTO } from "../../DTO/proposal/proposal";
-import type { ReviewListDTO, ReviewPayload, ReviewResponseDTO } from "../../DTO/proposal/review";
+import type { ProposalReviewDTO, ReviewListDTO, ReviewPayload, ReviewResponseDTO } from "../../DTO/proposal/review";
 import type { VersionAcceptOrRejectDTO } from "../../DTO/proposal/version";
 import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse";
 
@@ -11,6 +11,7 @@ export interface IProposalService {
     approveOrRejectProposal(data: ProposalAcceptOrRejectDTO): Promise<IApiResponse<"Accepted" | "Rejected">>
 }
 export interface IReviewService {
+    getReviewPerJob(jobId: string): Promise<IApiResponse<ProposalReviewDTO>>
     getMyTopReviews(designerId: string): Promise<IApiResponse<ReviewListDTO[]>>
     createReview(userId: string, data: ReviewPayload): Promise<IApiResponse<ReviewResponseDTO>>
     getMyReviews(designerId: string, page?: string): Promise<IApiResponseWithPagination<ReviewListDTO[]>>

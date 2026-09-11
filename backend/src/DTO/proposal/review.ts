@@ -16,6 +16,13 @@ export interface ReviewListDTO extends ReviewResponseDTO {
 
 }
 
+export interface ProposalReviewDTO {
+    comment: string,
+    rating: number
+    createdAt: string,
+}
+
+
 export interface ReviewRepoDTO {
     jobId: string
     userId: string

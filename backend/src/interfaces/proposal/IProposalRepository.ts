@@ -21,6 +21,7 @@ export interface IProposalRepository {
 }
 
 export interface IReviewRepository {
+    getReviewPerJob(jobId: string): Promise<IReview | null>
     getMyTopReviews(designerId: string): Promise<IReview[]>
     createReview(data: ReviewRepoDTO): Promise<IReview>
     alreadyExsits(jobId: string, userId: string): Promise<IReview | null>
