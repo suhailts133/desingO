@@ -1,3 +1,4 @@
+import type { AdminDashboardDTO } from "../../DTO/admin/adminDashboard";
 import type {  AdminDesignerApprovalRequestDTO, AdminDesignerRequestResponseDTO, AdminDesignersResponseDTO, AdminDesignerStatusDTO, AdminUsersResponseDTO, AdminUserToggleStatusDTO, DesignerFilterDTO, UserFilterDTO } from "../../DTO/admin/adminDTO";
 import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse";
 
@@ -14,4 +15,10 @@ export interface IAdminDesignerVerificatoinServices {
     getallDesignerRequests(filter?: DesignerFilterDTO): Promise<IApiResponseWithPagination<AdminDesignersResponseDTO[]>>
     getDesignerRequest(id:string):Promise<IApiResponse<AdminDesignerRequestResponseDTO>>
     ApproveOrRejectDesignerRequest(id:string, data:AdminDesignerApprovalRequestDTO):Promise<IApiResponse<AdminDesignerStatusDTO>>
+}
+
+
+
+export interface IAdminDashboardService{
+    getAdminDashBoard():Promise<IApiResponse<AdminDashboardDTO>>
 }

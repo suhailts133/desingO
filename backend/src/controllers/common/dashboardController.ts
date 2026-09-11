@@ -7,14 +7,25 @@ import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
 import { isObjectId } from "../../shared/helpers/extraFunctions";
 import { RespsonseHelper } from "../../shared/helpers/responseHelper";
 import type { ICustomerDashboardService } from "../../interfaces/customer/ICustomerService";
+import type { IAdminDashboardService } from "../../interfaces/admin/IAdminService";
 
 /**
  * this class handle dasboard for all user types
  */
 export class DashboardController {
-    constructor(private _designerDashboardService: IDesignerDashboardService, private _cutomerDashboardService:ICustomerDashboardService) { }
+    constructor(private _designerDashboardService: IDesignerDashboardService, private _cutomerDashboardService: ICustomerDashboardService, private _adminDashboardService: IAdminDashboardService) { }
 
 
+    /**
+     * this controller handle admin dashboard
+     * 
+     * @route GET /dashboard/admin
+ 
+     */
+    getAdminDashboard = asyncHandler(async (req: Request, res: Response) => {
+        const result = await this._adminDashboardService.getAdminDashBoard();
+        RespsonseHelper.success(res, result)
+    })
     /**
      * this controller handle designer designer dashboard
      * 

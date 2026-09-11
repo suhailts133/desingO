@@ -9,12 +9,18 @@ import type { Pagination } from "../../DTO/admin/adminDTO";
 import type { DesignerFilter } from "../../DTO/designer/designerDTO";
 import { UserModel } from "../../models/user/userModel";
 import type { IUser } from "../../interfaces/auth/IUser";
+import { DESIGNER_STATUS } from "../../shared/enums/commonEnums";
 
 export class DesignerRepository extends BaseRepository<IDesigner> implements IDesignerRepository {
     constructor() {
         super(DesignerModel)
     }
 
+    async getRequestRequiringAdminAction(): Promise<IDesignerPopulated[]> {
+        return await this._model.find({ status: DESIGNER_STATUS.PENDING })
+            .populate<{ userId: IUser }>("userId")
+
+    }
     async createDesignerRequest(data: DesignerVerificationDTO): Promise<boolean> {
         const result = await this.create({
             ...data,
@@ -29,12 +35,12 @@ export class DesignerRepository extends BaseRepository<IDesigner> implements IDe
         if (!result) {
             return null
         }
-       
+
         return result
     }
 
     async updateDesigner(designerId: string, data: DesignerUpdateRequestDTO): Promise<IDesigner | null> {
-      
+
         const result = await this.updateOne({ userId: designerId }, data);
 
         return result ?? null
@@ -68,6 +74,6 @@ export class DesignerRepository extends BaseRepository<IDesigner> implements IDe
             totalPages: Math.ceil(total / limit)
         }
 
-        return { data:designers, pagination }
+        return { data: designers, pagination }
     }
 }

@@ -5,11 +5,16 @@ import { TransactionModel } from "../../models/common/transactionModel";
 import { BaseRepository } from "../baseRepository";
 import type { Pagination } from "../../DTO/admin/adminDTO";
 import type { IUser } from "../../interfaces/auth/IUser";
+import { TRANSACTION_TYPE } from "../../shared/enums/commonEnums";
 
 
 export class TranscationRepository extends BaseRepository<ITransaction> implements ITransactionRepository {
     constructor() {
         super(TransactionModel)
+    }
+
+    async getCommisionTransactions(): Promise<ITransaction[]> {
+        return await this.find({ type: TRANSACTION_TYPE.COMMISSION })
     }
 
     async getTransactionReport(filters: ReportFilters): Promise<AggregatedBucketRaw[]> {

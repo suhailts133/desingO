@@ -13,7 +13,9 @@ export class UserRepository extends BaseRepository<IUser> implements IUserReposi
         super(UserModel)
     }
 
-
+    async countActiveUsers(): Promise<number> {
+        return this._model.countDocuments({ is_blocked: false })
+    }
     async findByRole(role: UserRole): Promise<IUser | null> {
         return await this.findOne({ role })
     }
@@ -42,7 +44,7 @@ export class UserRepository extends BaseRepository<IUser> implements IUserReposi
         }
         return result
     }
-    
+
     async incrementWallet(id: string, amount: number): Promise<IUser | null> {
         return await this.update(id, { $inc: { wallet: amount } });
     }

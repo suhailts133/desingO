@@ -11,6 +11,7 @@ import type { IDesign, IDesigner, IDesignerInteraction, IDesignerPopulated, IDes
 
 
 export interface IDesignerRepository {
+    getRequestRequiringAdminAction(): Promise<IDesignerPopulated[]>
     createDesignerRequest(data: DesignerVerificationDTO): Promise<boolean>;
     getDesigner(userId: string): Promise<IDesigner | null>;
     updateDesigner(designerId: string, data: DesignerUpdateRequestDTO): Promise<IDesigner | null>

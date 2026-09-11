@@ -4,13 +4,17 @@ import type { IUser } from "../../interfaces/auth/IUser";
 import type { IDispute, IDisputeRepository } from "../../interfaces/proposal/IDispute";
 import type { DisputeStatus, IProposal } from "../../interfaces/proposal/IProposal";
 import { DisputeModel } from "../../models/proposal/disputeModal";
-import { USER_TYPE } from "../../shared/enums/proposalEnums";
+import { DISPUTE_STATUS, USER_TYPE } from "../../shared/enums/proposalEnums";
 import { BaseRepository } from "../baseRepository";
 import mongoose from "mongoose";
 import type { QueryFilter, SortOrder } from "mongoose";
 export class DisputeRepository extends BaseRepository<IDispute> implements IDisputeRepository {
     constructor() {
         super(DisputeModel)
+    }
+
+    async getDisputesRequiringAdminAction(): Promise<IDispute[]> {
+        return await this.find({ status: { $in: [DISPUTE_STATUS.OPEN, DISPUTE_STATUS.REDO] } });
     }
 
 
