@@ -1,3 +1,4 @@
+import type { IDesignerPreference } from "../../interfaces/auth/IUser";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
 
 export interface UserProfileResponseDTO extends UserProfileDTO {
@@ -15,6 +16,7 @@ export type UserProfileUpdateDTO = Omit<UserProfileDTO, "isGoogle">
 export interface DesignerProfileResponseDTO extends DesignerProfileDTO {
     profileImage?: string
     profile_image_url?: string;
+    prefernces?:IDesignerPreference
 }
 
 export interface DesignerProfileDTO {

@@ -13,19 +13,27 @@ export interface IUser {
   on_investigation: boolean;
   is_verified: boolean;
   createdAt: Date;
-  wallet:number
+  wallet: number
   google_profile_id?: string;
   profile_image_url?: string;
   location?: string;
   phone?: string;
-  profileImage?:ImageUploadResult
+  profileImage?: ImageUploadResult
   landmark?: string;
-  savedDesigns:mongoose.Types.ObjectId[]
+  savedDesigns: mongoose.Types.ObjectId[]
+  designerPreference?:IDesignerPreference
+  embedding?:string
+}
+
+
+export interface IDesignerPreference {
+  designStyle?: string[]
+  propertyType?: string[]
 }
 
 export interface IUserTemp {
   full_name: string;
   email: string;
   password: string;
-  otp:string
+  otp: string
 }

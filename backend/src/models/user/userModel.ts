@@ -1,6 +1,7 @@
 import mongoose, { Schema, } from "mongoose";
 import type { IUser } from "../../interfaces/auth/IUser";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
+import { designerPreference } from "./schema/designerPreference";
 
 
 const imageFormatSchema = new Schema<ImageUploadResult>({
@@ -24,7 +25,7 @@ const UserSchema = new Schema<IUser>(
       default: "Customer"
     },
     profile_image_url: { type: String },
-    wallet: { type: Number, default:0 },
+    wallet: { type: Number, default: 0 },
     location: { type: String },
     phone: { type: String },
     landmark: { type: String },
@@ -32,12 +33,11 @@ const UserSchema = new Schema<IUser>(
     on_investigation: { type: Boolean, default: false },
     is_verified: { type: Boolean, default: false },
     profileImage: { type: imageFormatSchema },
-    savedDesigns: { type: [mongoose.Schema.Types.ObjectId], ref: "Design", default: [] }
+    savedDesigns: { type: [mongoose.Schema.Types.ObjectId], ref: "Design", default: [] },
+    designerPreference: { type: designerPreference },
+    embedding: { type: String }
   },
   { timestamps: true }
 );
 
-export const UserModel = mongoose.model<IUser>(
-  "User",
-  UserSchema
-);
+export const UserModel = mongoose.model<IUser>("User", UserSchema);
