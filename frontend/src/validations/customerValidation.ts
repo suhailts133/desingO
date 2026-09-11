@@ -97,13 +97,15 @@ export const directHireValidation = roomMeasurementValidation.fork(
 
 })
 
-const selectOptionSchema = Joi.object({
+export const selectOptionSchema = Joi.object({
   value: Joi.string().required(),
   label: Joi.string().required(),
 }).messages({
   "object.base": "Selection is required",
   "any.required": "Selection is required",
 });
+
+
 
 const objectIdRegex = /^[a-fA-F0-9]{24}$/;
 

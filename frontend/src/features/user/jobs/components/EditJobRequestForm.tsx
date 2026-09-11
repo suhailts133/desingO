@@ -10,7 +10,6 @@ import { useGetAJobRequestDetailQuery } from "../jobEndpoints";
 import { useEditJobRequest } from "../hooks/useEditJobRequest";
 import { editJobRequestValidation } from "../../../../validations/customerValidation";
 import type { IJobRequest } from "../jobInterface";
-import type { SelectOption } from "../../../designer/designs/designInterface";
 
 import SubmitButton from "../../../../shared/common/SubmitButton";
 import { useHandleResponse } from "../../../../helpers/useHandleResponse";
@@ -23,9 +22,8 @@ import AestheticsAndItemsSection from "../components/AestheticsAndItemsSection";
 import HouseholdProfileSection from "../components/HouseholdProfileSection";
 import LocationBudgetSection from "../components/LocationBudgetSection";
 import type { ImageUploadResult } from "../../../designer/profile/designerProfileInterface";
+import { toOption, toOptions } from "../../../../helpers/optionHelper";
 
-const toOption = (label: string): SelectOption => ({ value: label, label });
-const toOptions = (labels: string[] = []): SelectOption[] => labels.map(toOption);
 
 type ExistingFileItem = { type: "existing"; path: string; filename: string };
 type NewFileItem = { type: "new"; file: File; preview: string };

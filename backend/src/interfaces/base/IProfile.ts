@@ -1,4 +1,5 @@
-import type {  DesignerProfileResponseDTO, DesignerUpdateResponseDTO, UserProfileDTO, UserProfileResponseDTO, UserProfileUpdateDTO } from "../../DTO/profile/profileDTO"
+import type { DesignerProfileResponseDTO, DesignerUpdateResponseDTO, UserProfileDTO, UserProfileResponseDTO, UserProfileUpdateDTO } from "../../DTO/profile/profileDTO"
+import type { IDesignerPreference } from "../auth/IUser"
 import type { IApiResponse } from "./IApiResponse"
 
 export interface IProfileImage {
@@ -17,6 +18,7 @@ export interface IProfileImageService {
 
 
 export interface IProfileService {
+    updateDesignerPreference(designerId:string,data: IDesignerPreference): Promise<IApiResponse<IDesignerPreference>>
     getDesignerProfile(designerId: string): Promise<IApiResponse<DesignerProfileResponseDTO>>
     updateDesignerProfile(designerId: string, data: DesignerUpdateResponseDTO): Promise<IApiResponse<DesignerUpdateResponseDTO>>
     getUserProfile(userId: string): Promise<IApiResponse<UserProfileResponseDTO>>;

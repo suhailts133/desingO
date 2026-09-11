@@ -21,8 +21,8 @@ export interface IUser {
   profileImage?: ImageUploadResult
   landmark?: string;
   savedDesigns: mongoose.Types.ObjectId[]
-  designerPreference?:IDesignerPreference
-  embedding?:string
+  designerPreference?: IDesignerPreference
+  embedding?: number[]
 }
 
 

@@ -1,6 +1,8 @@
+import type { SelectOption } from "../designs/designInterface";
+
 export interface ImageUploadResult {
-    filename:string,
-    path:string,
+    filename: string,
+    path: string,
 }
 
 export interface DesignerProfileDTO {
@@ -11,13 +13,24 @@ export interface DesignerProfileDTO {
     state: string
     city: string;
     district: string;
-    portfolioUrl:string
+    portfolioUrl: string
 }
 
 
 export interface DesignerProfileResponseDTO extends DesignerProfileDTO {
     profileImage?: string
     profile_image_url?: string;
+    prefernces?: IDesignerPreference
+}
+
+export interface IDesignerPreference {
+    designStyle?: string[]
+    propertyType?: string[]
+}
+
+export interface IDesignerPreferencePayload {
+    designStyle: SelectOption[]
+    propertyType: SelectOption[]
 }
 
 
@@ -27,7 +40,7 @@ export type DesignerUpdateResponseDTO = Omit<DesignerProfileDTO, "isGoogle">;
 
 
 export interface IProfileImage {
-  profileImage: FileList;
+    profileImage: FileList;
 }
 
 

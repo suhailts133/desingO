@@ -62,6 +62,7 @@ export const API_ROUTES = {
     },
     PROIFILE: {
         GET_DESIGNER_PROFILE: "/profile/designer",
+        DESIGNER_PREFERENCE: "/profile/edit-designer-preference",
         UPDATE_DESIGNER_DATA: "/profile/designer",
         GET_CUSTOMER_PROFILE: "/profile/user",
         UPDATE_CUSTOMER_DATA: "/profile/user",

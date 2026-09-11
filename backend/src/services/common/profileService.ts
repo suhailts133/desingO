@@ -7,10 +7,31 @@ import type { IProfileService } from "../../interfaces/base/IProfile";
 import type { IDesignerRepository } from "../../interfaces/designer/IDesignerRepository";
 import { PROFILE_MESSAGES } from "../../shared/messages/profileMessages";
 import { UserMapper } from "../../dtoMappers/user/userMapper";
+import type { IDesignerPreference } from "../../interfaces/auth/IUser";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
+import { generateEmbedding } from "../../shared/helpers/embedding";
 
 export class ProfileService implements IProfileService {
     constructor(private _DesignerRepo: IDesignerRepository, private _userRepo: IUserRepository) { };
 
+    async updateDesignerPreference(designerId: string, data: IDesignerPreference): Promise<IApiResponse<IDesignerPreference>> {
+        const designer = await this._userRepo.findUserById(designerId)
+        if (!designer) {
+            throw new AppError(AUTH_MESSAGES.USER.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+        }
+        const textToEmbedd = `${data.propertyType?.join(" ")}  ${data.designStyle?.join(" ")}`
+        const embedding = await generateEmbedding(textToEmbedd) ?? [];
+
+        const result = await this._userRepo.updateUser(designerId, { embedding, designerPreference: data })
+        if (!result) {
+            throw new AppError(PROFILE_MESSAGES.PROFILE.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
+        if (!result.designerPreference) {
+            throw new AppError(PROFILE_MESSAGES.PROFILE.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
+        return { message: PROFILE_MESSAGES.PROFILE.UPDATE_SUCCESS, data: result.designerPreference }
+
+    }
 
     async getUserProfile(userId: string): Promise<IApiResponse<UserProfileResponseDTO>> {
         const result = await this._userRepo.findUserById(userId);
@@ -45,7 +66,7 @@ export class ProfileService implements IProfileService {
         }
         const designerData = UserMapper.toDesignerProfileDTO(userData, designer)
 
-        return { statuscode: RESPONSE_CODE.OK, message: PROFILE_MESSAGES.PROFILE.USER_FOUND, data:designerData, success: true }
+        return { statuscode: RESPONSE_CODE.OK, message: PROFILE_MESSAGES.PROFILE.USER_FOUND, data: designerData, success: true }
     }
 
     async updateDesignerProfile(designerId: string, data: DesignerUpdateResponseDTO): Promise<IApiResponse<DesignerUpdateResponseDTO>> {

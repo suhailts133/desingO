@@ -35,7 +35,7 @@ const UserSchema = new Schema<IUser>(
     profileImage: { type: imageFormatSchema },
     savedDesigns: { type: [mongoose.Schema.Types.ObjectId], ref: "Design", default: [] },
     designerPreference: { type: designerPreference },
-    embedding: { type: String }
+    embedding: { type: [Number] }
   },
   { timestamps: true }
 );
