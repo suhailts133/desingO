@@ -15,6 +15,13 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
         super(DesignModel)
     }
 
+    async adjustActiveJobCount(id: string, delta: 1 | -1): Promise<IDesign | null> {
+        return await this._model.findByIdAndUpdate(
+            id,
+            { $inc: { activeJobCount: delta } },
+            { new: true }
+        );
+    }
 
     async findCandidatesExcluding(excludedIds: string[]): Promise<IDesignPopulated[]> {
         return await this._model.find({ _id: { $nin: excludedIds }, embedding: { $exists: true, $not: { $size: 0 } } })

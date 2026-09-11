@@ -70,6 +70,7 @@ export interface IDesign {
   designStyles: string[]
   embedding: number[],
   description: string
+  activeJobCount:number
   coverImage: ImageUploadResult;
   gallery: ImageUploadResult[];
   createdAt: Date;

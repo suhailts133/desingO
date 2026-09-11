@@ -5,8 +5,8 @@ export enum USER_ROLES {
 }
 
 export enum AUTH_PROVIDER_TYPES {
-    GOOGLE= "Google",
-    LOCAL= "Local"
+    GOOGLE = "Google",
+    LOCAL = "Local"
 }
 
 
@@ -114,4 +114,9 @@ export enum TRANSACTION_UNIQUE_ID {
     COMMISSION = 'COM',
     PAYOUT = 'POU',
     REFUND = 'REF'
+}
+
+export enum DESIGN_JOB_COUNT {
+    INC = 1,
+    DEC = -1
 }

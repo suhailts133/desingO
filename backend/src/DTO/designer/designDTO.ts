@@ -47,7 +47,7 @@ export interface createDesignDTO extends AddDesignRequestDTO {
     userId: string;
     coverImage: ImageUploadResult;
     gallery: ImageUploadResult[]
-    embedding:number[]
+    embedding: number[]
 }
 
 
@@ -55,6 +55,7 @@ export interface createDesignDTO extends AddDesignRequestDTO {
 export interface getAllDesignsResponseDTO {
     name: string
     coverImage: string,
+    activeJobCount: number,
     minPrice: string,
     maxPrice: string,
     description: string

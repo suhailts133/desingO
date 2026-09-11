@@ -6,6 +6,7 @@ export class DesignMapper {
         return designs.map(data => ({
             id: data.id,
             name: data.name,
+            activeJobCount: data.activeJobCount,
             coverImage: data.coverImage.path,
             description: data.description,
             minPrice: data.minPrice.toString(),
