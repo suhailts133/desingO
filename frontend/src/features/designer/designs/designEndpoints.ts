@@ -45,7 +45,7 @@ export const designApi = baseApi.injectEndpoints({
                 method: "PATCH",
                 body
             }),
-            invalidatesTags: ["hireRequest"]
+            invalidatesTags: ["hireRequest", "designs"]
         }),
 
         hireRequest: builder.query<IApiResponseWithPagination<HireDesignerDTO[]>, HireDesignerFilter>({

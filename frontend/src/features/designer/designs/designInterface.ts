@@ -32,6 +32,7 @@ export interface DesignResponseDTO {
   name: string
   coverImage: string,
   minPrice: string,
+  activeJobCount: number,
   maxPrice: string,
   description: string,
   id: string
