@@ -36,6 +36,7 @@ export interface IHireDesignerRepository {
 
 export interface IActiveJobRepository {
     countCustomerActiveJobs(userId: string): Promise<number>
+    countDesignerActiveJobs(designerId: string): Promise<number>
     countAllActiveJob(): Promise<number>
     getActiveJob(id: string): Promise<IActiveJob | null>
     updateActiveJob(jobId: string, data: Partial<IActiveJob>): Promise<IActiveJob | null>

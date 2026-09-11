@@ -47,7 +47,7 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
 
     async checkUserJobApplication(userId: string, jobId: string): Promise<boolean> {
         const result = await this.findOne({ designerId: userId, jobId: jobId })
-       
+
         return !!result
     }
 

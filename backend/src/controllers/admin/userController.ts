@@ -34,13 +34,17 @@ export class UserController {
         */
     getUser = asyncHandler(async (req: Request, res: Response) => {
         const userId = req.params.id as string;
+        const role = req.user?.role
+        if (!role) {
+            throw new AppError(ADMIN_MESSAGES.USER_MANAGEMENT.ROLE_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+        }
         if (!userId) {
             throw new AppError(ADMIN_MESSAGES.USER_MANAGEMENT.ID_NOT_PROVIDED, RESPONSE_CODE.BAD_REQUEST)
         }
         if (!isObjectId(userId)) {
             throw new AppError(ADMIN_MESSAGES.USER_MANAGEMENT.ID_NOT_PROVIDED, RESPONSE_CODE.BAD_REQUEST)
         }
-        const result = await this._adminuserManagementServices.getAUser(userId);
+        const result = await this._adminuserManagementServices.getAUser(userId, role);
         RespsonseHelper.success(res, result)
     })
 
@@ -53,12 +57,14 @@ export class UserController {
     */
     toggleUser = asyncHandler(async (req: Request, res: Response) => {
         const userId = req.params.id as string;
+
         if (!userId) {
             throw new AppError(ADMIN_MESSAGES.USER_MANAGEMENT.ID_NOT_PROVIDED, RESPONSE_CODE.BAD_REQUEST)
         }
         if (!isObjectId(userId)) {
             throw new AppError(ADMIN_MESSAGES.USER_MANAGEMENT.ID_NOT_PROVIDED, RESPONSE_CODE.BAD_REQUEST)
         }
+
         const { is_blocked } = req.body
         const result = await this._adminuserManagementServices.toggleUser(userId, is_blocked)
         RespsonseHelper.success(res, result)

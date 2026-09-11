@@ -4,6 +4,11 @@ export enum USER_ROLES {
     ADMIN = "Admin"
 }
 
+export enum AUTH_PROVIDER_TYPES {
+    GOOGLE= "Google",
+    LOCAL= "Local"
+}
+
 
 export enum DESIGNER_STATUS {
     APPROVED = "Approved",
