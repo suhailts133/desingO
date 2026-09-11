@@ -1,25 +1,40 @@
 import { useCallback, useState } from "react";
+import { Users, Briefcase, Percent } from "lucide-react";
 import { useTransactionReportQuery } from "../../transaction/transactionEndpoint";
 import type { ReportQueryParams } from "../adminDashboardInterface";
 import TransactionReportChart from "../components/TransactionReportChart";
 import TransactionReportFilter from "../components/TransactionReportFilter";
 import { exportTransactionReportToExcel } from "../../../../helpers/exportTransactionReport";
+import { useGetAdminDashboardQuery } from "../adminDashboardEndpoint";
+import StatCard from "../../../../shared/dashboard/StatCard";
+import AdminOngoingDisputesSection from "../components/AdminOngoingDisputesSection";
+import PendingVerificationRequestsSection from "../components/PendingVerificationRequestsSection ";
 
 export default function Dashboard() {
     const [queryParams, setQueryParams] = useState<ReportQueryParams>({
         groupBy: "week",
     });
 
-    const { data, isLoading, error } = useTransactionReportQuery(queryParams);
-    const transactionReport = data?.data;
+    const { data: dashboardData, isLoading: isDashboardLoading, error: dashboardError } = useGetAdminDashboardQuery();
+    const { data: reportData, isLoading: isReportLoading, error: reportError } = useTransactionReportQuery(queryParams);
+
+    const dashboard = dashboardData?.data;
+    const transactionReport = reportData?.data;
+
     const handleDownload = useCallback(async () => {
         if (!transactionReport) return;
         await exportTransactionReportToExcel(transactionReport.data, transactionReport.groupBy);
     }, [transactionReport]);
 
     return (
-        <div>
-            <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <StatCard icon={Users} label="Active users" value={dashboard?.activeUsersCount ?? "—"} />
+                <StatCard icon={Briefcase} label="Active jobs" value={dashboard?.activeJobCount ?? "—"} />
+                <StatCard icon={Percent} label="Total commission" value={`₹${dashboard?.totalCommision.toLocaleString("en-IN")}`} />
+            </div>
+
+            <div className="flex items-center justify-between">
                 <TransactionReportFilter value={queryParams} onChange={setQueryParams} />
                 <button
                     type="button"
@@ -31,10 +46,18 @@ export default function Dashboard() {
                 </button>
             </div>
 
-            {isLoading && <p>Loading report...</p>}
-            {error && <p>Failed to load report</p>}
-
+            {isReportLoading && <p>Loading report...</p>}
+            {reportError && <p>Failed to load report</p>}
             {transactionReport && <TransactionReportChart data={transactionReport.data} />}
+
+            {isDashboardLoading && <p>Loading dashboard...</p>}
+            {dashboardError && <p>Failed to load dashboard</p>}
+            {dashboard && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <AdminOngoingDisputesSection disputes={dashboard.disputes} />
+                    <PendingVerificationRequestsSection requests={dashboard.designerVerificationRequests} />
+                </div>
+            )}
         </div>
     );
 }
