@@ -2,7 +2,7 @@
 import { API_ROUTES } from "../../../api/apiRoutes";
 import { baseApi } from "../../../api/baseApi";
 import type { IApiResponse, IApiResponseWithPagination } from "../../../api/responseType";
-import type { AdminUserQueryParams, AdminUsersResponseDTO, AdminUserToggleStatusResposne, ToggleStatusPayload } from "./adminUserInterface";
+import type { AdminUserDetailDTO, AdminUserQueryParams, AdminUsersResponseDTO, AdminUserToggleStatusResposne, ToggleStatusPayload } from "./adminUserInterface";
 
 
 export const adminUsersApi = baseApi.injectEndpoints({
@@ -20,8 +20,8 @@ export const adminUsersApi = baseApi.injectEndpoints({
             }),
             providesTags: ["users"]
         }),
-
-        getUser: builder.query<IApiResponse<AdminUsersResponseDTO>, string>({
+        
+        getUser: builder.query<IApiResponse<AdminUserDetailDTO>, string>({
             query: (id) => ({
                 url: `${API_ROUTES.ADMIN.GET_ALL_USER}/${id}`,
                 method: "GET",
