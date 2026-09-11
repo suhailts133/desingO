@@ -18,8 +18,7 @@ type Props = {
 
 export default function ProfileImageUploadForm({ onClose, isOpen, updateImage, errorMessage, successMessage, isLoading }: Props) {
 
-    const [croppedAreaPixels, setCroppedAreaPixels] =
-        useState<CroppedAreaPixels | null>(null);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState<CroppedAreaPixels | null>(null);
 
     const { register, handleSubmit, control, formState: { errors }, } = useForm<IProfileImage>({
         resolver: joiResolver(profileImageValidation),
@@ -27,10 +26,7 @@ export default function ProfileImageUploadForm({ onClose, isOpen, updateImage, e
     });
 
     const watchedProfileImage = useWatch({ control, name: "profileImage" });
-    const previewSrc =
-        watchedProfileImage?.[0]
-            ? URL.createObjectURL(watchedProfileImage[0])
-            : null;
+    const previewSrc = watchedProfileImage?.[0] ? URL.createObjectURL(watchedProfileImage[0]) : null;
 
     const handleCropComplete = useCallback((pixels: CroppedAreaPixels) => {
         setCroppedAreaPixels(pixels);
