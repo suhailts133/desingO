@@ -6,9 +6,9 @@ export type ProposalPaymentStatus = "Pending" | "Paid" | "Refunded"
 
 export type EscrowStatus = "Held" | "Released" | "Refunded" | "Disputed"
 
-export type ContractStatus = "Sent" | "Accepted" | "Rejected" | "Ongoing" | "Completed" | "Disputed" | "Expired"
+export type ContractStatus = "Sent" | "Accepted" | "Rejected" | "Ongoing" | "Completed" | "Disputed" | "Expired" | "Terminated"
 
-export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Redo" | "Awaiting Confirmation"
+export type DisputeStatus = "Open" | "Under Review" | "Resolved" | "Redo" | "Awaiting Confirmation" |"Terminated"
 
 export type PaymentUpdateStatus = "Paid" | "Pending"
 

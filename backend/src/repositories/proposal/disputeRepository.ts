@@ -28,7 +28,7 @@ export class DisputeRepository extends BaseRepository<IDispute> implements IDisp
     }
 
     async updateDisputeIfStatus(id: string, expectedStatus: DisputeStatus, updates: Partial<IDispute>): Promise<IDispute | null> {
-        return await this.updateOne({ id, status: expectedStatus }, updates)
+        return await this.updateOne({ _id:id, status: expectedStatus }, updates)
     }
 
     async getAllDisputePerUserId(userId: string, role: "Designer" | "Customer"): Promise<DisputePopulateProposal[]> {

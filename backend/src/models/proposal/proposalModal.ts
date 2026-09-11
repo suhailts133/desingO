@@ -24,7 +24,7 @@ const proposalSchema = new Schema<IProposal>({
     totalExecutionFee: { type: Number, required: true },
     contractStatus: {
         type: String,
-        enum: ["Sent", "Accepted", "Rejected", "Ongoing", "Completed", "Disputed", "Expired"],
+        enum: ["Sent", "Accepted", "Rejected", "Ongoing", "Completed", "Disputed", "Expired", "Terminated"],
         default: "Sent",
         required: true
     },

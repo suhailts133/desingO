@@ -76,7 +76,7 @@ const jobRequestSchema = new Schema<IJobRequest>({
     description: { type: String, required: true },
     referenceImages: { type: [imageFormatSchema], default: [] },
 
-    status: { type: String, enum: ["Pending", "Accepted", "Ongoing", "Closed", "Rejected"], default: "Pending" },
+    status: { type: String, enum: ["Pending", "Accepted", "Ongoing", "Closed", "Rejected", "Terminated"], default: "Pending" },
 },
     { timestamps: true }
 );

@@ -13,6 +13,7 @@ export interface IDispute {
     serviceOrder: number;
     reason: string;
     type: string;
+    canTerminate:boolean
     evidence: ImageUploadResult[];
     status: DisputeStatus;
     resolution?: string;

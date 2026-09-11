@@ -6,7 +6,6 @@ import type { IUserManagementRepository } from "../../interfaces/admin/IUserMana
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
 import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
 import { UserMapper } from "../../dtoMappers/user/userMapper";
-import type { UserRole } from "../../interfaces/auth/IUser";
 import type { IReviewRepository } from "../../interfaces/proposal/IProposalRepository";
 import type { IActiveJobRepository } from "../../interfaces/customer/ICustomerRepository";
 import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository";

@@ -1,6 +1,5 @@
 import type { AdminDashboardDTO } from "../../DTO/admin/adminDashboard";
 import type { AdminDesignerApprovalRequestDTO, AdminDesignerRequestResponseDTO, AdminDesignersResponseDTO, AdminDesignerStatusDTO, AdminUserDetailDTO, AdminUsersResponseDTO, AdminUserToggleStatusDTO, DesignerFilterDTO, UserFilterDTO } from "../../DTO/admin/adminDTO";
-import type { UserRole } from "../auth/IUser";
 import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse";
 
 export interface IAdminUserManagementService {

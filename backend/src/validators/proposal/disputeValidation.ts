@@ -48,7 +48,7 @@ export const disputeRaiseBodyValidation: Joi.ObjectSchema<DisputeRaiseBody> = Jo
 
 export const acceptOrRejectDisputeValidation: Joi.ObjectSchema<AcceptOrRejectDisputeDTO> = Joi.object<AcceptOrRejectDisputeDTO>({
     status: Joi.string()
-        .valid("Resolved", "Redo")
+        .valid("Resolved", "Redo" ,"Terminated")
         .required()
         .messages({
             "any.only": 'Status must be either "Resolved" or "Redo"',
@@ -73,6 +73,7 @@ export const disputeSolutionValidation: Joi.ObjectSchema<DisputeSolutionDTO> = J
     disputeId: Joi.string()
         .required(),
 
+
     resolutionType: Joi.string()
         .valid("Refund", "Redo", "Warning", "Dismissed", "Full_Refund")
         .required()
@@ -80,6 +81,12 @@ export const disputeSolutionValidation: Joi.ObjectSchema<DisputeSolutionDTO> = J
             "any.only": "Select a valid resolution type",
             "string.empty": "Resolution type is required",
             "any.required": "Resolution type is required",
+        }),
+
+    canTerminate: Joi.boolean()
+        .required()
+        .messages({
+            "any.required": "Termination status is required",
         }),
 
     resolution: Joi.string()

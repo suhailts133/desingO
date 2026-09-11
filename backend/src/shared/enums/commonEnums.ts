@@ -41,6 +41,7 @@ export enum JOB_REQUEST_STATUS {
     ONGOING = "Ongoing",
     CLOSED = "Closed",
     REJECTED = "Rejected",
+    TERMINATED = "Terminated",
     ACCEPTED = "Accepted",
 }
 export enum JOB_APPLICATION_STATUS {
@@ -58,6 +59,7 @@ export enum ACTIVE_JOB_STATUS {
     ACTIVE = "Active",
     CANCELLED = "Cancelled",
     COMPLETED = "Completed",
+    TERMINATED = "Terminated"
 }
 
 

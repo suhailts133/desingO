@@ -1,5 +1,5 @@
 import mongoose, { type PipelineStage, type QueryFilter, type SortOrder } from "mongoose";
-import type { IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, Source_type } from "../../interfaces/customer/ICustomer";
+import type { IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, JobStatus, Source_type } from "../../interfaces/customer/ICustomer";
 import type { IJobRepository } from "../../interfaces/customer/ICustomerRepository";
 import { JobRequestModel } from "../../models/user/jobModel";
 import { BaseRepository } from "../baseRepository";
@@ -42,7 +42,7 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
         return await this.update(id, data)
     }
 
-    async changeStatus(id: string, status: string): Promise<IJobRequest | null> {
+    async changeStatus(id: string, status: JobStatus): Promise<IJobRequest | null> {
 
         const res = await this._model.findByIdAndUpdate(id, { $set: { status } }, { returnDocument: "after" }).exec()
         console.log(res)
