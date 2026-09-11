@@ -88,7 +88,8 @@ export const API_ROUTES = {
         DESIGNER: "/dashboard/designer",
         CUSTOMER: "/dashboard/customer",
         ADMIN: "/dashboard/admin",
-        RECENT_TRANSACTION: "/dashboard/recent-transaction"
+        RECENT_TRANSACTION: "/dashboard/recent-transaction",
+        TOP_REIVEWS: "/dashboard/top-reviews",
 
     },
     PROPOSAL: {
