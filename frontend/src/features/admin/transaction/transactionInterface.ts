@@ -1,5 +1,3 @@
-import type { Tone } from "../../../shared/table/StatusBadge";
-import type { ColumnDef } from "../../../shared/table/TableHeader";
 
 export interface TransactionFilter {
     type?: TransactionType;
@@ -11,6 +9,7 @@ export interface AllTransactionDTO {
     type: TransactionType;
     sourceName: string
     sourceRole: string
+    transactionNumber:string
     sourceId: string
     designationName: string
     destinationRole: string
