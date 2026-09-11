@@ -9,7 +9,7 @@ export interface TransactionRepoDTO {
   proposalId?: string;
   disputeId?: string;
   paymentReference?: string;
-  TransactionId:string
+  TransactionId: string
 }
 
 export interface TransactionFilter {
@@ -17,7 +17,7 @@ export interface TransactionFilter {
   page?: string
 }
 export interface AllTransactionDTO {
-  transactionNumber:string
+  transactionNumber: string
   id: string;
   amount: number;
   type: TransactionType;
@@ -99,3 +99,13 @@ export const DEFAULT_RANGE_DAYS: Record<Exclude<ReportGroupBy, "custom">, number
 export const VALID_GROUP_BY: ReportGroupBy[] = ["day", "week", "month", "year", "custom"];
 export const VALID_TYPES: TransactionType[] = ["Payment", "Commission", "Payout", "Refund"];
 
+
+
+export interface DashboardTransactionHistory {
+  id: string,
+  transactionId: string,
+  amount: number,
+  from: string,
+  type: TransactionType
+  createdAt: string
+}

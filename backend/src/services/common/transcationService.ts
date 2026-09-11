@@ -1,8 +1,9 @@
-import type { TransactionFilter, AllTransactionDTO, ReportFilters, ReportResponseDto } from "../../DTO/common/transaction";
+import type { TransactionFilter, AllTransactionDTO, ReportFilters, ReportResponseDto, DashboardTransactionHistory } from "../../DTO/common/transaction";
 import { TransactionMapper } from "../../dtoMappers/common/TransactionMapper";
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
 import type { ITransactionRepository, ITransactionService } from "../../interfaces/base/ITransaction";
 import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
+import { DASHBOARD_MESSAGES } from "../../shared/messages/dashobardMessages";
 
 export class TransactionService implements ITransactionService {
     constructor(private _transactionRepo: ITransactionRepository) { }
@@ -18,5 +19,11 @@ export class TransactionService implements ITransactionService {
         const report = await this._transactionRepo.getTransactionReport(filters)
         const reportData = TransactionMapper.toAggregationReport(report, filters)
         return { message: ADMIN_MESSAGES.TRANSACTION.REPORT, data: reportData }
+    }
+
+    async getMyTransaction(userId: string): Promise<IApiResponse<DashboardTransactionHistory[]>> {
+        const transactions = await this._transactionRepo.getIncomingTransactions(userId)
+        const transactionData = TransactionMapper.toMyTransactionDTOList(transactions)
+        return { data: transactionData, message: DASHBOARD_MESSAGES.TRANSACTION.SUCCESS }
     }
 }

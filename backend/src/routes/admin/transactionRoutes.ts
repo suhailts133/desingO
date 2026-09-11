@@ -8,7 +8,7 @@ import { TranscationRepository } from "../../repositories/common/transactionRepo
 const router = Router()
 const transactionRepo = new TranscationRepository()
 const transactionService = new TransactionService(transactionRepo)
-const transactionController = new TransactionController(transactionService)
+export const transactionController = new TransactionController(transactionService)
 
 
 router.get("/", adminAuthentication, transactionController.getAllTransaction)

@@ -8,11 +8,32 @@ import { AppError } from "../../shared/errors/appError";
 import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { TRANSACTION_REPORT_GROUP_TYPE } from "../../shared/enums/filterEnums";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
+import { isObjectId } from "../../shared/helpers/extraFunctions";
 /**
  * this controller handle all transaction related stuff in the admin side
  */
 export class TransactionController {
     constructor(private _transactionService: ITransactionService) { }
+
+    /**
+     * to get recent transaction 
+     * @route GET /transaction/
+     * @throws {AppError} 401 if there is any issue with the userId
+     */
+    getMyTransaction = asyncHandler(async (req: Request, res: Response) => {
+        const userId = req.user?.userId
+
+        if (!userId) {
+            throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED);
+        }
+        if (!isObjectId(userId)) {
+            throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED);
+        }
+
+        const result = await this._transactionService.getMyTransaction(userId)
+        RespsonseHelper.success(res, result)
+    })
 
     /**
      * to get all transactions

@@ -1,20 +1,33 @@
-import type { AggregatedBucketRaw, AllTransactionDTO, ReportBucketDto, ReportFilters, ReportResponseDto, TransactionPopulated } from "../../DTO/common/transaction";
+import type { AggregatedBucketRaw, AllTransactionDTO, DashboardTransactionHistory, ReportBucketDto, ReportFilters, ReportResponseDto, TransactionPopulated } from "../../DTO/common/transaction";
 import type { TransactionType } from "../../interfaces/base/ITransaction";
 
 
 export class TransactionMapper {
 
+
+
+    static toMyTransactionDTOList(data: TransactionPopulated[]): DashboardTransactionHistory[] {
+        return data.map(d => ({
+            id: d.id,
+            transactionId: d.TransactionId,
+            amount: d.amount,
+            from: d.sourceUserId.full_name,
+            type: d.type,
+            createdAt: d.createdAt.toLocaleDateString()
+        }));
+    }
+
     static toTransactionDTOList(data: TransactionPopulated[]): AllTransactionDTO[] {
         return data.map(d => ({
             id: d.id,
-            transactionNumber:d.TransactionId,
+            transactionNumber: d.TransactionId,
             amount: d.amount,
-            sourceName:d.sourceUserId.full_name,
-            sourceId:d.sourceUserId.id,
-            sourceRole:d.sourceUserId.role,
-            designationName:d.destinationUserId.full_name,
-            destinationId:d.destinationUserId.id,
-            destinationRole:d.destinationUserId.role,
+            sourceName: d.sourceUserId.full_name,
+            sourceId: d.sourceUserId.id,
+            sourceRole: d.sourceUserId.role,
+            designationName: d.destinationUserId.full_name,
+            destinationId: d.destinationUserId.id,
+            destinationRole: d.destinationUserId.role,
             type: d.type
         }));
     }
@@ -39,7 +52,7 @@ export class TransactionMapper {
             const { period, type } = row._id;
             let bucket = bucketsByPeriod.get(period);
 
-        
+
             if (!bucket) {
                 bucket = {
                     period,

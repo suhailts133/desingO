@@ -27,4 +27,5 @@ router.get("/designs", optionalAuth, recomendationController.recomendDesigns)
 router.get("/jobs", optionalAuth, recomendationController.recomendJobs)
 
 
+
 export default router
