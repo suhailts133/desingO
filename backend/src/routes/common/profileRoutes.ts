@@ -8,6 +8,7 @@ import { ProfileImageController } from "../../controllers/common/profileImageCon
 import { ProfileImageService } from "../../services/common/profileImageService";
 import { CloudinaryService } from "../../services/common/cloudinaryService";
 import multer from "multer";
+import designerAuthentication from "../../middlewares/designerAuth";
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router()
@@ -26,6 +27,7 @@ const profileImageController = new ProfileImageController(profileImageService)
 
 
 router.get("/designer", authenticate, profileController.getDesignerProfile)
+router.patch("/edit-designer-preference", designerAuthentication, profileController.updateDesigenrPreference)
 router.get("/user", authenticate, profileController.getUserProfile)
 router.patch("/designer", authenticate, profileController.updateDesignerProfle)
 router.patch("/user", authenticate, profileController.updateUserProfile)

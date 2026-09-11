@@ -1,5 +1,6 @@
 import Joi from "joi";
 import type { DesignerUpdateResponseDTO, UserProfileUpdateDTO } from "../../DTO/profile/profileDTO";
+import type { IDesignerPreference } from "../../interfaces/auth/IUser";
 
 export const designerProfileUpdateValidation: Joi.ObjectSchema<DesignerUpdateResponseDTO> = Joi.object<DesignerUpdateResponseDTO>({
     full_name: Joi.string()
@@ -85,4 +86,26 @@ export const userProfileUpdateValidation: Joi.ObjectSchema<UserProfileUpdateDTO>
             "string.min": "Full name must be at least 2 characters",
             "string.max": "Full name must be at most 50 characters"
         })
+});
+
+
+
+export const designerPreferenceValidation = Joi.object<IDesignerPreference>({
+    designStyle: Joi.array()
+        .items(Joi.string())
+        .min(1)
+        .required()
+        .messages({
+            "array.min": "Select at least one design style",
+            "any.required": "Design style is required",
+        }),
+
+    propertyType: Joi.array()
+        .items(Joi.string())
+        .min(1)
+        .required()
+        .messages({
+            "array.min": "Select at least one property type",
+            "any.required": "Property type is required",
+        }),
 });

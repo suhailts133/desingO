@@ -4,9 +4,10 @@ import type { Request, Response } from 'express'
 import { AppError } from "../../shared/errors/appError";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { RespsonseHelper } from "../../shared/helpers/responseHelper";
-import { designerProfileUpdateValidation, userProfileUpdateValidation } from "../../validators/profile/profileValidation";
+import { designerPreferenceValidation, designerProfileUpdateValidation, userProfileUpdateValidation } from "../../validators/profile/profileValidation";
 import type { DesignerUpdateResponseDTO, UserProfileUpdateDTO } from "../../DTO/profile/profileDTO";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
+import type { IDesignerPreference } from "../../interfaces/auth/IUser";
 
 /**
  * handle all profile realted stuff for both designer and customer execpt for profile image since its in its on controller
@@ -28,6 +29,28 @@ export class ProfileController {
         RespsonseHelper.success(res, result);
     })
 
+    /**
+     *  to update designer profile
+     * @route PATCH /profile/edit-designer-preference
+     * @param req.body {@link IDesignerPreference} update details
+     * @throws {AppError} 401 if there is any issue with designerId 
+     * @throws {AppError} 400 if there is any issue with req.body
+     */
+    updateDesigenrPreference = asyncHandler(async (req: Request, res: Response) => {
+
+        const { error, value } = designerPreferenceValidation.validate(req.body, { stripUnknown: true })
+        if (error) {
+
+            throw new AppError(error.details[0]?.message || "Invalid query parameters", RESPONSE_CODE.BAD_REQUEST)
+        }
+        const designerId = req.user?.userId
+        if (!designerId) {
+            throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
+        }
+
+        const result = await this._profileServices.updateDesignerPreference(designerId, value as IDesignerPreference);
+        RespsonseHelper.success(res, result);
+    })
     /**
      *  to update designer profile
      * @route PATCH /profile/designer

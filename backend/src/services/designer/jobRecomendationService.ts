@@ -1,5 +1,6 @@
 import type { JobsCommonResponseDTO } from "../../DTO/user/jobsDTO";
 import { JobRequestMapper } from "../../dtoMappers/user/jobRequestMapper";
+import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
 import type { IApiResponseWithRecomendation } from "../../interfaces/base/IApiResponse";
 import type { IJobRepository } from "../../interfaces/customer/ICustomerRepository";
 import type { IDesignerInteractionRepository } from "../../interfaces/designer/IDesignerRepository";
@@ -9,7 +10,7 @@ import { cosineSimilarity } from "../../shared/helpers/cosineSimilarity";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 
 export class JobRecomendationService implements IDesignerInteractionService {
-    constructor(private _interactionRepo: IDesignerInteractionRepository, private _jobRepo: IJobRepository) { }
+    constructor(private _interactionRepo: IDesignerInteractionRepository, private _jobRepo: IJobRepository, private _userRepo: IUserRepository) { }
 
     async _getDesignerTasteVector(designerId: string): Promise<number[] | null> {
         const interactions = await this._interactionRepo.getRecentInteractios(designerId)
@@ -31,8 +32,24 @@ export class JobRecomendationService implements IDesignerInteractionService {
         return taste.map(v => v / totalWeight)
     }
 
-    async getRecomendedJobs(desigenrId: string): Promise<IApiResponseWithRecomendation<JobsCommonResponseDTO[]>> {
-        const taste = await this._getDesignerTasteVector(desigenrId);
+    async getRecomendedJobs(designerId: string): Promise<IApiResponseWithRecomendation<JobsCommonResponseDTO[]>> {
+        const [interactionTaste, designer] = await Promise.all([
+            this._getDesignerTasteVector(designerId),
+            this._userRepo.findUserById(designerId)
+        ]);
+
+        const preferenceEmbedding = designer?.embedding?.length ? designer.embedding : null;
+
+        let taste: number[] | null = null;
+        if (interactionTaste && preferenceEmbedding) {
+            taste = this._combineVectors(interactionTaste, preferenceEmbedding, 0.7, 0.3);
+        } else if (interactionTaste) {
+            taste = interactionTaste;
+        } else if (preferenceEmbedding) {
+            taste = preferenceEmbedding;
+        }
+
+
 
         if (!taste) {
             const jobs = await this._jobRepo.findMostRecent();
@@ -46,9 +63,19 @@ export class JobRecomendationService implements IDesignerInteractionService {
             .sort((a, b) => b.score - a.score)
             .slice(0, 10)
             .map(s => s.design);
-
+    
         const recomendedJobs = JobRequestMapper.toJobRequestsDTOlist(scored);
         return { message: JOB_MESSAGES.JOB_REQUEST.RECOMENDED, data: recomendedJobs, type: RECOMENDATION_TYPE.RECOMMENDED, DataType: RECOMENDATION_DATA_TYPE.JOB };
+    }
+
+
+    private _combineVectors(a: number[], b: number[], weightA: number, weightB: number): number[] {
+        const dims = Math.max(a.length, b.length);
+        const combined = new Array(dims).fill(0);
+        for (let d = 0; d < dims; d++) {
+            combined[d] = (a[d] ?? 0) * weightA + (b[d] ?? 0) * weightB;
+        }
+        return combined;
     }
 }
 

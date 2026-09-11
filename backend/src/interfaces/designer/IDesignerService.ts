@@ -43,6 +43,6 @@ export interface IDesignerDashboardService {
 
 
 export interface IDesignerInteractionService {
-    _getDesignerTasteVector(designerId: string): Promise<number[] | null>
+
     getRecomendedJobs(designerId: string): Promise<IApiResponseWithRecomendation<JobsCommonResponseDTO[]>>
 }

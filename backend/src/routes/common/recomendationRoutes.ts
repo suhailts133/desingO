@@ -19,7 +19,7 @@ const designerInteractionRepo = new DesignerInteractionRepository()
 const designRepo = new DesignRepository()
 const jobRepo = new JobRequestRepository()
 const designRecomendationService = new DesignRecomendationService(userRepo, interactiionRepo, designRepo)
-const JobsRecomendationService = new JobRecomendationService(designerInteractionRepo, jobRepo)
+const JobsRecomendationService = new JobRecomendationService(designerInteractionRepo, jobRepo, userRepo)
 
 const recomendationController = new RecomendationController(jobrequestService, JobsRecomendationService, designRecomendationService, designService)
 
