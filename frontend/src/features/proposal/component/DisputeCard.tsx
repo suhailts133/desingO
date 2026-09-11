@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { AlertCircle, User, Hash, Check, X } from "lucide-react"
+import { AlertCircle, User, Hash, Check, X, AlertTriangle } from "lucide-react"
 import Zoom from "react-medium-image-zoom"
 import "react-medium-image-zoom/dist/styles.css"
 import type { AcceptOrRejectDisputeDTO, DisputeResponseDTO } from "../proposalInterface"
@@ -11,8 +11,8 @@ const disputeStatusStyle: Record<DisputeResponseDTO["status"], string> = {
     "Resolved": "bg-green-50 text-green-700 border-green-200",
     "Redo": "bg-amber-50 text-amber-700 border-amber-200",
     "Awaiting Confirmation": "bg-purple-50 text-purple-700 border-purple-200",
-}
-
+    "Terminated": "bg-gray-50 text-gray-700 border-gray-200", 
+};
 const raisedByStyle: Record<DisputeResponseDTO["raisedBy"], string> = {
     "Customer": "bg-blush-pale text-blush-deep border-blush-light/50",
     "Designer": "bg-gray-50 text-gray-700 border-gray-200",
@@ -25,11 +25,17 @@ interface DisputeCardProps {
     role: "Customer" | "Designer" | "Admin" | null
 }
 
-export default function DisputeCard({ dispute, onConfirm, isResponding ,role}: DisputeCardProps) {
+export default function DisputeCard({ dispute, onConfirm, isResponding, role }: DisputeCardProps) {
     const [expanded, setExpanded] = useState(false)
     const [approveDispute, setApproveDispute] = useState<string | null>(null)
     const [rejectDispute, setRejectDispute] = useState<string | null>(null)
+    const [terminateDispue, setTerminateDispute] = useState<string | null>(null)
 
+    const handleDisputeTermination = () => {
+        if (!terminateDispue) return
+        onConfirm({ status: "Terminated", disputeId: dispute.id })
+        setTerminateDispute(null)
+    }
     const handleDisputeApproval = () => {
         if (!approveDispute) return
         onConfirm({ status: "Resolved", disputeId: dispute.id })
@@ -47,6 +53,16 @@ export default function DisputeCard({ dispute, onConfirm, isResponding ,role}: D
 
 
             <ConfirmModal
+                isOpen={!!terminateDispue}
+                onConfirm={handleDisputeTermination}
+                onClose={() => setTerminateDispute(null)}
+                isLoading={isResponding}
+                heading="Accept and Terminate?"
+                text="his action is final. Accepting will permanently terminate the contract and release any authorized refunds. This cannot be undone."
+                buttonText="Confirm & Terminate"
+                buttonLoadingText="Terminate…"
+            />
+            <ConfirmModal
                 isOpen={!!approveDispute}
                 onConfirm={handleDisputeApproval}
                 onClose={() => setApproveDispute(null)}
@@ -62,7 +78,7 @@ export default function DisputeCard({ dispute, onConfirm, isResponding ,role}: D
                 onClose={() => setRejectDispute(null)}
                 isLoading={isResponding}
                 heading="Accept this proposal?"
-                text="Once Reject,  This action cannot be undone."
+                text="Once Reject, This action cannot be undone."
                 buttonText="Confirm & Reject"
                 buttonLoadingText="Rejecting…"
             />
@@ -148,6 +164,17 @@ export default function DisputeCard({ dispute, onConfirm, isResponding ,role}: D
                     >
                         <X className="w-3.5 h-3.5" />
                         Contest Resolution
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => setTerminateDispute(dispute.id)}
+                        disabled={isResponding}
+                        className="inline-flex items-center gap-2 text-xs font-Jost-Semibold px-4 py-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition-all disabled:opacity-50"
+                    >
+                      
+                        <AlertTriangle className="w-3.5 h-3.5" />
+                        Accept & Terminate
                     </button>
                 </div>
             )}

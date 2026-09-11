@@ -1,5 +1,3 @@
-import type { Tone } from "../../../shared/table/StatusBadge";
-import type { ColumnDef } from "../../../shared/table/TableHeader";
 import type { DisputeStatus } from "../../proposal/proposalInterface";
 
 export interface DisputeAdminFilters {
@@ -20,6 +18,7 @@ export interface AllDisputeAdminDTO {
 
 export interface DisputeSolutionDTO {
     resolution: string;
+    canTerminate:boolean
     resolutionType: string;
     refundAmount: number
     disputeId: string;
@@ -48,6 +47,7 @@ export interface DisputeDetailAdminDTO {
     designerName: string
     customerId: string
     designerId: string
+    canTerminate:boolean
     customerImage?: string
     designerImage?: string
     currentService: currentDisputedService

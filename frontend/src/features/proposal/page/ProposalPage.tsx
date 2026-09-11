@@ -95,12 +95,29 @@ export default function ProposalPage() {
     const activeDispute = disputedData
 
     const handleVerdit = async (data: AcceptOrRejectDisputeDTO) => {
-        await handleVerditSubmit(data)
+        const result = await handleVerditSubmit(data)
+        let successMessage = "";
+
+        switch (data.status) {
+            case "Resolved":
+                successMessage = "You have successfully accepted the resolution.";
+                break;
+            case "Redo":
+                successMessage = "You have requested a redo for this project.";
+                break;
+            case "Terminated":
+                successMessage = "You have accepted the verdict and terminated the contract.";
+                break;
+            default:
+                successMessage = "Your response has been submitted.";
+        }
+        handleResponse(result.success, successMessage, result.message);
     }
 
     const handleApprovalProposal = async () => {
         if (!approveProposal) return
         const result = await handleUpdateStatus({ sourceId: approveProposal.sourceId, contractStatus: "Accepted" })
+
         handleResponse(result.success, "You have accepted the contract", result.message)
         setApproveProposal(null)
     }

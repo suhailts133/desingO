@@ -5,7 +5,7 @@ export interface ActiveJobResponseDTO {
     sourceId: string,
     userName: string,
     profileImage?: string,
-    status: 'Active' | 'Completed' | 'Cancelled',
+    status: 'Active' | 'Completed' | 'Cancelled' | "Terminated"
     proposalStatus:"NOT_CREATED"|"CREATED"|"REJECTED"
     startedAt: string
 }

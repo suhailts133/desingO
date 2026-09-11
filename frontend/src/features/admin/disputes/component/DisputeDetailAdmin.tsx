@@ -40,6 +40,7 @@ export default function DisputeDetailAdmin() {
   if (error || !dispute) return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Dispute not found.</div>;
 
   const status = verdictResult?.status ?? dispute.status;
+  const canTerminate = verdictResult?.canTerminate ?? dispute.canTerminate;
   const refundAmount = verdictResult?.refundAmount ?? undefined;
   const resolution = verdictResult?.resolution ?? dispute.resolution;
   const resolutionType = verdictResult?.resolutionType ?? dispute.resolutionType;
@@ -63,7 +64,7 @@ export default function DisputeDetailAdmin() {
       </button>
 
       <div className="max-w-7xl mx-auto space-y-8 pb-10">
-
+        <p>{canTerminate ? "Reporter Can Terminate this contract" : "Reporter Cant Terminate this contract"}</p>
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-4">
             <h1 className="text-2xl font-Jost-Semibold text-gray-900">{dispute.type}</h1>
@@ -80,6 +81,7 @@ export default function DisputeDetailAdmin() {
               Give Verdict
             </button>
           )}
+
         </div>
 
         <div className="grid grid-cols-1 gap-8">

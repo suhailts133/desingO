@@ -45,6 +45,11 @@ export const disputeSolutionValidation: Joi.ObjectSchema<DisputeSolutionDTO> = J
             "string.empty": "Resolution type is required",
             "any.required": "Resolution type is required",
         }),
+    canTerminate: Joi.boolean()
+        .required()
+        .messages({
+            "any.required": "Termination status is required",
+        }),
 
     resolution: Joi.string()
         .trim()

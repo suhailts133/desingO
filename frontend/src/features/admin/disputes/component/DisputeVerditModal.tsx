@@ -11,7 +11,6 @@ type Props = {
     onClose: () => void;
     onConfirm: (data: DisputeSolutionDTO) => void;
     isLoading: boolean
-
 };
 
 const RESOLUTION_TYPE_OPTIONS = [
@@ -20,7 +19,6 @@ const RESOLUTION_TYPE_OPTIONS = [
     { value: "Warning", label: "Issue Warning" },
     { value: "Dismissed", label: "Dismiss Dispute" },
     { value: "Full_Refund", label: "Full Refund" },
-
 ];
 
 export default function DisputeVerdictModal({ disputeId, isOpen, onClose, onConfirm, isLoading }: Props) {
@@ -28,12 +26,13 @@ export default function DisputeVerdictModal({ disputeId, isOpen, onClose, onConf
     const { register, handleSubmit, control, formState: { errors } } = useForm<DisputeSolutionDTO>({
         resolver: joiResolver(disputeSolutionValidation),
         mode: "onBlur",
-        defaultValues: { disputeId, resolutionType: "", resolution: "", refundAmount: 0 }
+        defaultValues: { disputeId, resolutionType: "", resolution: "", refundAmount: 0, canTerminate: false }
     });
 
     const resolutionType = useWatch({ control, name: "resolutionType" })
 
     if (!isOpen) return null;
+
     const onVerdictSubmit = async (data: DisputeSolutionDTO) => {
         onConfirm({ ...data, disputeId });
     };
@@ -74,16 +73,31 @@ export default function DisputeVerdictModal({ disputeId, isOpen, onClose, onConf
                         <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Explain the resolution</label>
                         <textarea
                             {...register("resolution")}
-                            className="auth-input min-h-30 pt-3"
+                            className="auth-input min-h-30 pt-3 w-full"
                             placeholder="Describe the verdict and reasoning for both parties..."
                         />
                         {errors.resolution && <p className="text-sm text-red-500 mt-1">{errors.resolution.message}</p>}
                     </div>
 
+                    {/* Terminate Checkbox Added Here */}
+                    <div className="flex items-center gap-2 mt-2">
+                        <input
+                            type="checkbox"
+                            id="canTerminate"
+                            {...register("canTerminate")}
+                            className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black cursor-pointer"
+                        />
+                        <label htmlFor="canTerminate" className="text-sm font-Jost-Semibold text-gray-700 cursor-pointer select-none">
+                            Terminate Contract
+                        </label>
+                    </div>
+                    {errors.canTerminate && <p className="text-sm text-red-500 mt-1">{errors.canTerminate.message}</p>}
+
                     <div className="flex flex-col gap-3 pt-4">
                         <SubmitButton type='submit' isLoading={isLoading} label='Confirm Verdict' loadingLabel='Submitting' />
-
-                        <button type="button" onClick={onClose} className="text-gray-500 hover:text-gray-800 text-sm font-medium">Cancel</button>
+                        <button type="button" onClick={onClose} className="text-gray-500 hover:text-gray-800 text-sm font-medium transition-colors">
+                            Cancel
+                        </button>
                     </div>
                 </form>
             </div>

@@ -7,6 +7,7 @@ const statusStyles: Record<ActiveJobResponseDTO["status"], string> = {
     Active: "bg-green-50 text-green-800 border border-green-200",
     Completed: "bg-blush-pale text-blush-deep border border-blush-light/60",
     Cancelled: "bg-red-50 text-red-700 border border-red-200",
+    Terminated: "bg-gray-50 text-gray-700 border-gray-200",
 }
 
 const sourceStyles: Record<ActiveJobResponseDTO["sourceType"], string> = {
@@ -44,7 +45,7 @@ export default function ActiveJobCard({ data }: Props) {
 
         navigate(`${basePath}/${id}`, {
             state: {
-                activeJobId:data.id,
+                activeJobId: data.id,
                 sourceType: data.sourceType,
                 sourceId: data.sourceId,
             },
