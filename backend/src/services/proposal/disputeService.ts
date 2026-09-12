@@ -5,20 +5,23 @@ import type { IApiResponse } from "../../interfaces/base/IApiResponse";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload";
 import type { ITransactionRepository } from "../../interfaces/base/ITransaction";
 import type { IActiveJobRepository, IJobRepository } from "../../interfaces/customer/ICustomerRepository";
+import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
 import type { IDisputeRepository, IDisputeService } from "../../interfaces/proposal/IDispute";
 import type { DisputeStatus } from "../../interfaces/proposal/IProposal";
 import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
-import { ACTIVE_JOB_STATUS, CLOUDINARY_FOLDER_NAME, JOB_REQUEST_STATUS, TRANSACTION_TYPE, TRANSACTION_UNIQUE_ID, USER_ROLES } from "../../shared/enums/commonEnums";
+import { ACTIVE_JOB_STATUS, CLOUDINARY_FOLDER_NAME, DESIGN_JOB_COUNT, JOB_REQUEST_STATUS, TRANSACTION_TYPE, TRANSACTION_UNIQUE_ID, USER_ROLES } from "../../shared/enums/commonEnums";
 import { CONTRACT_STATUS, DISPUTE_SOLUTION, DISPUTE_STATUS, EscrowStatus, USER_TYPE } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
 import { generateUniqueId } from "../../shared/helpers/extraFunctions";
 import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
+import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages";
+import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 
 export class DisputeService implements IDisputeService {
-    constructor(private _jobRepo: IJobRepository, private _activeJobRepo: IActiveJobRepository, private _transactionRepo: ITransactionRepository, private _userRepo: IUserRepository, private _propsalRepo: IProposalRepository, private _imageUploder: IImageUploaderService, private _disputeRepo: IDisputeRepository) { }
+    constructor(private _designRepo: IDesignRepository, private _jobRepo: IJobRepository, private _activeJobRepo: IActiveJobRepository, private _transactionRepo: ITransactionRepository, private _userRepo: IUserRepository, private _propsalRepo: IProposalRepository, private _imageUploder: IImageUploaderService, private _disputeRepo: IDisputeRepository) { }
 
     async getAllDisputePerProposal(proposalId: string): Promise<IApiResponse<DisputeResponseDTO[]>> {
         const proposal = await this._propsalRepo.getProposalbyId(proposalId)
@@ -102,11 +105,11 @@ export class DisputeService implements IDisputeService {
         if (!dispute) {
             throw new AppError(PROPOSAL_MESSAGES.DISPUTE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
         }
-        
+
         if (dispute.status !== DISPUTE_STATUS.AWAITING_CONFIRMATION) {
             throw new AppError(PROPOSAL_MESSAGES.DISPUTE.DECISION_PENDING, RESPONSE_CODE.BAD_REQUEST);
         }
-        
+
         const claimed = await this._disputeRepo.updateDisputeIfStatus(
             data.disputeId,
             DISPUTE_STATUS.AWAITING_CONFIRMATION,
@@ -219,16 +222,26 @@ export class DisputeService implements IDisputeService {
             }
         }
         if (data.status === DISPUTE_STATUS.TERMINATED) {
-     
+
             const [proposalUpdated, activeJobUpdated, jobUpdated] = await Promise.all([
                 this._propsalRepo.updateProposal(dispute.proposalId.id, { contractStatus: CONTRACT_STATUS.TERMINATED }),
                 this._activeJobRepo.updateActiveJob(dispute.proposalId.sourceId.toString(), { status: ACTIVE_JOB_STATUS.TERMINATED }),
                 this._jobRepo.changeStatus(dispute.proposalId.sourceId.toString(), JOB_REQUEST_STATUS.TERMINATED)
             ]);
 
-         
+
             if (!proposalUpdated || !activeJobUpdated || !jobUpdated) {
                 throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.UPDATE_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+            }
+            const job = await this._jobRepo.getJobRequest(dispute.proposalId.sourceId.toString())
+            if (!job) {
+                throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+            }
+            if (job.designId) {
+                const designCountDec = await this._designRepo.adjustActiveJobCount(job.designId.toString(), DESIGN_JOB_COUNT.DEC)
+                if (!designCountDec) {
+                    throw new AppError(DESIGNER_MESSAGES.DESIGNS.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+                }
             }
         }
         return { message: PROPOSAL_MESSAGES.DISPUTE.UPDATION_SUCCESS, data: data.status };
