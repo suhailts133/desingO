@@ -10,9 +10,8 @@ const typeStyles: Record<TransactionType, string> = {
     All: "bg-gray-100 text-gray-700 border border-gray-200",
 }
 
-const formatAmount = (amount: number, type: TransactionType) => {
-    const sign = type === "Payout" || type === "Refund" ? "-" : "+"
-    return `${sign}₹${amount.toLocaleString("en-IN")}`
+const formatAmount = (amount: number) => {
+    return `₹${amount.toLocaleString("en-IN")}`
 }
 
 const formatDate = (dateStr: string) =>
@@ -51,11 +50,8 @@ export default function TransactionHistorySection({ transactions }: Props) {
                                 <span className={`text-xs font-semibold px-3 py-1.5 rounded-full ${typeStyles[tx.type]}`}>
                                     {tx.type}
                                 </span>
-                                <span
-                                    className={`text-sm font-semibold ${tx.type === "Payout" || tx.type === "Refund" ? "text-red-600" : "text-green-700"
-                                        }`}
-                                >
-                                    {formatAmount(tx.amount, tx.type)}
+                                <span className="text-sm font-semibold text-green-700">
+                                    {formatAmount(tx.amount)}
                                 </span>
                             </div>
                         </li>

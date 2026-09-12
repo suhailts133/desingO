@@ -11,19 +11,23 @@ export const designerDashboardApi = baseApi.injectEndpoints({
             query: () => ({
                 url: API_ROUTES.DASHBOARD.DESIGNER,
                 method: "GET"
-            })
+            }),
+            providesTags: ["designerDashboard"]
+
         }),
         getMyRecentTransaction: builder.query<IApiResponse<DashboardTransactionHistory[]>, void>({
             query: () => ({
                 url: API_ROUTES.DASHBOARD.RECENT_TRANSACTION,
                 method: "GET"
-            })
+            }),
+            providesTags: ["recentTransaction"]
         }),
         getTopReviews: builder.query<IApiResponse<ReviewsLIST[]>, void>({
             query: () => ({
                 url: API_ROUTES.DASHBOARD.TOP_REIVEWS,
                 method: "GET"
-            })
+            }),
+            providesTags: ["topReview"]
         }),
     })
 })

@@ -25,7 +25,7 @@ export const proposalApi = baseApi.injectEndpoints({
                 method: "PATCH",
                 body
             }),
-            invalidatesTags: ["proposal"]
+            invalidatesTags: ["proposal", "customerDashboard", "designerDashboard"]
         }),
 
         uploadFloorPlan: builder.mutation<IApiResponse, FormData>({
@@ -34,7 +34,7 @@ export const proposalApi = baseApi.injectEndpoints({
                 method: "POST",
                 body: formData
             }),
-            invalidatesTags: ["proposal"]
+            invalidatesTags: ["proposal", "customerDashboard", "designerDashboard"]
         }),
 
         uploadResult: builder.mutation<IApiResponse, FormData>({
@@ -43,7 +43,7 @@ export const proposalApi = baseApi.injectEndpoints({
                 method: "POST",
                 body: formData
             }),
-            invalidatesTags: ["proposal"]
+            invalidatesTags: ["proposal", "customerDashboard", "designerDashboard"]
         }),
         approveOrRejectVersionResult: builder.mutation<IApiResponse, VersionAcceptOrRejectDTO>({
             query: (body: VersionAcceptOrRejectDTO) => ({
@@ -51,7 +51,7 @@ export const proposalApi = baseApi.injectEndpoints({
                 method: "PATCH",
                 body
             }),
-            invalidatesTags: ["proposal"]
+            invalidatesTags: ["proposal", "customerDashboard", "designerDashboard", "recentTransaction"]
         }),
 
         getProposalPrefillData: builder.query<IApiResponse<ProposalInputData>, ProposalInputDataPayload>({

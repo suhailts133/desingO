@@ -11,7 +11,7 @@ export const wishlistApi = baseApi.injectEndpoints({
                 method: "POST",
                 body
             }),
-            invalidatesTags: ["proposal"]
+            invalidatesTags: ["proposal" ,"topReview"]
         }),
         getMyReivews: builder.query<IApiResponseWithPagination<ReviewsLIST[]>, ReviewFilters>({
             query: ({ designerId, page }) => ({
