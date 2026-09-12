@@ -151,6 +151,11 @@ export default function ProposalPage() {
         setApproveVersion(null)
     }
 
+    const ACTIVE_STATUSES = ["Open", "In Progress", "Uploaded", "Redo"];
+
+    const hasActiveService = (proposal?.services ?? []).some((e) =>
+        ACTIVE_STATUSES.includes(e.status)
+    );
     const handleRejectVersion = async (data: RejectionPayload) => {
         if (!rejectVersion) return
         const result = await handleVersionApprovalOrRejection({ versionId: rejectVersion, status: "Rejected", rejectionReason: data.rejectionReason })
@@ -430,12 +435,16 @@ export default function ProposalPage() {
 
 
 
-            <div>
-                <button onClick={() => setDispute({ sourceId: proposal.sourceId })} className="soft-black-button">
-                    Raise a Issue
-                </button>
-            </div>
-
+            {hasActiveService && (
+                <div>
+                    <button
+                        onClick={() => setDispute({ sourceId: proposal.sourceId })}
+                        className="soft-black-button"
+                    >
+                        Raise a Issue
+                    </button>
+                </div>
+            )}
             {showProposalActions && (
                 <CustomerActionPanel
                     onAccept={() => setApproveProposal({ sourceId: proposal.sourceId })}
