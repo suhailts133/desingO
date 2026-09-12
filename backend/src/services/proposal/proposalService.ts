@@ -1,4 +1,5 @@
 import type { CreateProposalDTO, CreateProposalRepoDataDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData, UpdateProposalDTO, UpdateProposalRepoDataDTO } from "../../DTO/proposal/proposal";
+import type { CreateNotificationDTO } from "../../DTO/socket/notificationDTO";
 import { ProposalMapper } from "../../dtoMappers/proposal/proposalMapper";
 import { HireDesignerMapper } from "../../dtoMappers/user/hireDesignerMapper";
 import type { IApiResponse } from "../../interfaces/base/IApiResponse";
@@ -7,6 +8,8 @@ import type { IFloorPlanRepository } from "../../interfaces/proposal/IFloorPlan"
 import type { IServiceItem } from "../../interfaces/proposal/IProposal";
 import type { IProposalRepository, IServiceVersionRepository } from "../../interfaces/proposal/IProposalRepository";
 import type { IProposalService } from "../../interfaces/proposal/IProposalService";
+import type { INotificationService } from "../../interfaces/socket/ISocketService";
+import { NOTIFICATION_TYPES } from "../../shared/enums/notificationEnum";
 import { CONTRACT_STATUS } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
@@ -14,9 +17,10 @@ import { calculatePlatformFee } from "../../shared/helpers/platformfeeCalculator
 import { validateServiceOrders } from "../../shared/helpers/proposalOrderCheck";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
+import { SOCKET_MESSAGES } from "../../shared/messages/socketMessage";
 
 export class ProposalService implements IProposalService {
-    constructor(private _floorPlanRepo: IFloorPlanRepository, private _proposalRepo: IProposalRepository, private _activeRepo: IActiveJobRepository, private _jobRepo: IJobRepository, private _serviceVersionRepo: IServiceVersionRepository) { }
+    constructor(private _notificationService: INotificationService, private _floorPlanRepo: IFloorPlanRepository, private _proposalRepo: IProposalRepository, private _activeRepo: IActiveJobRepository, private _jobRepo: IJobRepository, private _serviceVersionRepo: IServiceVersionRepository) { }
 
 
 
@@ -94,7 +98,7 @@ export class ProposalService implements IProposalService {
         if (!jobRequest.requiresSiteVisitMeasurement && data.siteVisitingNeeded) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.SITE_VIST_NOT_NEEDED, RESPONSE_CODE.BAD_REQUEST)
         }
-        
+
         const proposal = await this._proposalRepo.getProposalbyId(proposalId)
         if (!proposal) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
@@ -184,6 +188,17 @@ export class ProposalService implements IProposalService {
         if (!updated) {
             throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.STATUS_UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
         }
+
+        const title = data.contractStatus === CONTRACT_STATUS.ACCEPTED ? SOCKET_MESSAGES.NOTIFICATION_TITLES.PROPOSAL_ACCEPTED : SOCKET_MESSAGES.NOTIFICATION_TITLES.PROPOSAL_REJECTED
+
+        const notification: CreateNotificationDTO = {
+            recipientId: proposal.designerId.id,
+            senderId: proposal.clientId.id,
+            title,
+            type: NOTIFICATION_TYPES.PROPOSAL,
+            message: SOCKET_MESSAGES.NOTIFICATION_MESSAGES.PROPOSAL(proposal.sourceName, data.contractStatus).slice(0, 80),
+        }
+        await this._notificationService.notify(notification);
 
         return { message: PROPOSAL_MESSAGES.PROPOSAL.STATUS_CHANGED, data: data.contractStatus };
     }
