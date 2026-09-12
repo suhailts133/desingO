@@ -1,8 +1,9 @@
 import { API_ROUTES } from "../../../api/apiRoutes";
 import { baseApi } from "../../../api/baseApi";
 import type { IApiResponse, IApiResponseWithPagination } from "../../../api/responseType";
-import type {  HireDesignerFields, HireDesignerFilter } from "../../user/jobs/jobInterface";
-import type { AcceptOrRejectHireDesigner, DesignDetailResponseDTO, DesignResponseDTO, DesignsQueryParms, GetAllDesignCommonResponseDTO, HireDesignerDTO } from "./designInterface";
+import type { DesignGallaryDTO } from "../../common/commonInterface";
+import type { HireDesignerFields, HireDesignerFilter } from "../../user/jobs/jobInterface";
+import type { AcceptOrRejectHireDesigner, DesignAiImageFilter, DesignDetailResponseDTO, DesignResponseDTO, DesignsQueryParms, GetAllDesignCommonResponseDTO, HireDesignerDTO } from "./designInterface";
 
 export const designApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -99,12 +100,28 @@ export const designApi = baseApi.injectEndpoints({
                     },
                 }
             }
-        })
+        }),
+
+        getSuggestedDesigns: builder.query<IApiResponse<DesignGallaryDTO[]>, DesignAiImageFilter>({
+            query: (args) => {
+                const designStyles = args.matchedDesignStyles?.join(",") || "";
+                const spaceTypes = args.matchedSpaceTypes?.join(",") || "";
+                return {
+                    url: API_ROUTES.DESIGNS.SUGGESTION,
+                    method: "GET",
+                    params: {
+                        ...(designStyles && { designStyles }),
+                        ...(spaceTypes && { spaceTypes }),
+                    }
+                }
+            }
+        }),
     })
 })
 
 
 export const {
+    useGetSuggestedDesignsQuery,
     useGetMyDesignsQuery,
     useAddDesignMutation,
     useGetDesignDetailQuery,

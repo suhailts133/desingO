@@ -1,5 +1,5 @@
 import mongoose, { type SortOrder } from "mongoose";
-import type { createDesignDTO, DesignFilter, EditDesignRepoData } from "../../DTO/designer/designDTO";
+import type { createDesignDTO, DesignAiImageFilter, DesignFilter, EditDesignRepoData } from "../../DTO/designer/designDTO";
 import type { IDesign, IDesignPopulated } from "../../interfaces/designer/IDesigner";
 import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
 import { DesignModel } from "../../models/designer/designModel";
@@ -13,6 +13,20 @@ import type { SpaceTypeAvg } from "../../interfaces/benchmark/IBenchMark";
 export class DesignRepository extends BaseRepository<IDesign> implements IDesignRepository {
     constructor() {
         super(DesignModel)
+    }
+
+    async getDesignForAiImageGeneration(filter?: DesignAiImageFilter): Promise<IDesign[]> {
+        const query: QueryFilter<IDesign> = {}
+        if (filter) {
+            if (filter.designStyles) {
+                query.designStyles = { $in: filter.designStyles.split(",") }
+            }
+
+            if (filter.spaceTypes) {
+                query.spaceType = { $in: filter.spaceTypes.split(",") }
+            }
+        }
+        return await this.find(query)
     }
 
     async adjustActiveJobCount(id: string, delta: 1 | -1): Promise<IDesign | null> {

@@ -37,6 +37,7 @@ export const API_ROUTES = {
     },
     DESIGNS: {
         ADD_DESIGN: "/design/add-design",
+        SUGGESTION: "/design/suggestion",
         EDIT_DESIGN: "/design/edit-design",
         MY_DESIGNS: "/design/my",
         DESIGN_DETAIL: "/design",

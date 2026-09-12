@@ -92,6 +92,12 @@ export interface DesignGallaryDTO {
 
 
 
+export interface DesignAiImageFilter {
+    spaceTypes?: string
+    designStyles?: string
+}
+
+
 export interface DesignFilter {
     page?: string,
     designStyles?: string

@@ -27,7 +27,7 @@ router.post("/add-design", designerAuthentication, upload.fields([
 ]), designController.addDesign)
 
 router.get("/my", designerAuthentication, designController.getMyDesigns)
-
+router.get("/suggestion", designController.getDesignForAiImageGeneration)
 router.get("/all-designs", optionalAuth, designController.getAllDesigns)
 
 router.patch("/edit-design/:id", designerAuthentication, upload.fields([

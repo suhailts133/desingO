@@ -1,4 +1,3 @@
-// src/api/aiDesignApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { GenerateDesignResult } from "../features/aiDesign/aiDesignInterface";
 import { structurePromptWithGroq } from "../features/aiDesign/services/groqService";
@@ -17,8 +16,8 @@ export const aiDesignApi = createApi({
           return {
             data: {
               structuredPrompt: structured.structuredPrompt,
-              matchedSpaceType: structured.matchedSpaceType,
-              matchedDesignStyle: structured.matchedDesignStyle,
+              matchedSpaceTypes: structured.matchedSpaceTypes,
+              matchedDesignStyles: structured.matchedDesignStyles,
               generatedImage,
             },
           };

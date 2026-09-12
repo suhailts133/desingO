@@ -2,41 +2,48 @@ import { useState } from "react";
 import { X, Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { closeAIDesignPanel } from "../store/aiDesignSlice";
-import { useGenerateDesignMutation } from "../../../api/aiDesignApi"; 
-import type { RootState } from "../../../app/store"; 
+import { useGenerateDesignMutation } from "../../../api/aiDesignApi";
+import type { RootState } from "../../../app/store";
 import AIPromptInput from "./AIPromptInput";
 import AIGeneratedImageResult from "./AIGeneratedImageResult";
+import { useGetSuggestedDesignsQuery } from "../../designer/designs/designEndpoints";
+import AISuggestedDesigns from "./AISuggestedDesign";
 
 export default function AIDesignChatPanel() {
   const [prompt, setPrompt] = useState("");
   const dispatch = useDispatch();
-  
-  
+
+
   const isPanelOpen = useSelector((state: RootState) => state.aiDesignUI.isPanelOpen);
 
-  
-  const [generateDesign, { data, isLoading, error }] = useGenerateDesignMutation();
 
+  const [generateDesign, { data, isLoading, error }] = useGenerateDesignMutation();
+  const { data: suggestions, isFetching: isSuggestionsLoading } = useGetSuggestedDesignsQuery(
+    {
+      matchedSpaceTypes: data?.matchedSpaceTypes,
+      matchedDesignStyles: data?.matchedDesignStyles,
+    },
+    { skip: !data?.generatedImage }
+  );
   const handleClose = () => {
     dispatch(closeAIDesignPanel());
   };
 
   const handleGenerate = async () => {
     if (!prompt.trim() || isLoading) return;
-    
-   
+
+
     await generateDesign(prompt.trim());
   };
 
   return (
     <>
-    
+
       {isPanelOpen && <div className="fixed inset-0 z-50 bg-black/30" onClick={handleClose} />}
 
       <aside
-        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300 ${
-          isPanelOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300 ${isPanelOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         <div className="flex items-center justify-between border-b border-gray-100 p-4">
           <h2 className="text-base font-semibold">AI Design Generator</h2>
@@ -58,19 +65,24 @@ export default function AIDesignChatPanel() {
             {isLoading ? "Generating..." : "Generate Design"}
           </button>
 
-   
+
           {error && (
             <p className="mt-3 text-sm text-red-600">
               {typeof error === "string" ? error : "Failed to generate design."}
             </p>
           )}
 
-     
+
           {data?.generatedImage && (
             <AIGeneratedImageResult
               image={data.generatedImage}
-              matchedSpaceType={data.matchedSpaceType}
-              matchedDesignStyle={data.matchedDesignStyle}
+        
+            />
+          )}
+          {data?.generatedImage && (
+            <AISuggestedDesigns
+              designs={suggestions?.data ?? []}
+              isLoading={isSuggestionsLoading}
             />
           )}
         </div>

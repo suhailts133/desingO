@@ -96,6 +96,13 @@ export interface DesignsQueryParms {
 }
 
 
+
+export interface DesignAiImageFilter {
+  matchedSpaceTypes?: string[]
+  matchedDesignStyles?: string[]
+}
+
+
 export interface GetAllDesignCommonResponseDTO {
   id: string
   name: string,

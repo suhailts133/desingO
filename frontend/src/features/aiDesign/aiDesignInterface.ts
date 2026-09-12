@@ -10,8 +10,8 @@ export interface AIDesignStyleOption {
 
 export interface StructuredDesignPrompt {
   structuredPrompt: string;
-  matchedSpaceType: string;
-  matchedDesignStyle: string;
+  matchedSpaceTypes: string[];
+  matchedDesignStyles: string[];
 }
 
 export interface GeneratedDesignImage {
@@ -37,7 +37,7 @@ export interface GenerateDesignThunkArg {
 
 export interface GenerateDesignResult {
   structuredPrompt: string;
-  matchedSpaceType: string;
-  matchedDesignStyle: string;
+  matchedSpaceTypes: string[];
+  matchedDesignStyles: string[];
   generatedImage: GeneratedDesignImage;
 }
