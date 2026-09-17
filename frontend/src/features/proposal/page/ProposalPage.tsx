@@ -151,11 +151,6 @@ export default function ProposalPage() {
         setApproveVersion(null)
     }
 
-    const ACTIVE_STATUSES = ["Open", "In Progress", "Uploaded", "Redo"];
-
-    const hasActiveService = (proposal?.services ?? []).some((e) =>
-        ACTIVE_STATUSES.includes(e.status)
-    );
     const handleRejectVersion = async (data: RejectionPayload) => {
         if (!rejectVersion) return
         const result = await handleVersionApprovalOrRejection({ versionId: rejectVersion, status: "Rejected", rejectionReason: data.rejectionReason })
@@ -299,7 +294,13 @@ export default function ProposalPage() {
     if (isDisputeLoading || isReviewLoading) {
         return <div className="p-10 text-center animate-pulse text-soft-black/40">Loading proposal...</div>
     }
+    const ACTIVE_STATUSES = ["Open", "In Progress", "Uploaded", "Redo"];
 
+    const hasActiveService = (proposal?.services ?? []).some((e) =>
+        ACTIVE_STATUSES.includes(e.status)
+    );
+
+    const showRaiseIssue = contractStatus === "Ongoing";
     const showProposalActions = role === "Customer" && contractStatus === "Sent"
     const showUpdateProposal = role === "Designer" && contractStatus === "Rejected"
 
@@ -435,7 +436,7 @@ export default function ProposalPage() {
 
 
 
-            {hasActiveService && (
+            {showRaiseIssue && hasActiveService && (
                 <div>
                     <button
                         onClick={() => setDispute({ sourceId: proposal.sourceId })}
