@@ -1,4 +1,3 @@
-// src/features/aiDesign/store/aiDesignSlice.ts
 import { createSlice } from "@reduxjs/toolkit";
 
 interface AIDesignUIState {

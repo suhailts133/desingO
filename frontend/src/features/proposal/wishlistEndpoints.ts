@@ -10,7 +10,8 @@ export const wishlistApi = baseApi.injectEndpoints({
                 url: API_ROUTES.REVIEW.CREATE,
                 method: "POST",
                 body
-            })
+            }),
+            invalidatesTags: ["proposal" ,"topReview"]
         }),
         getMyReivews: builder.query<IApiResponseWithPagination<ReviewsLIST[]>, ReviewFilters>({
             query: ({ designerId, page }) => ({
@@ -18,8 +19,10 @@ export const wishlistApi = baseApi.injectEndpoints({
                 method: "GET",
                 params: {
                     page
-                }
-            })
+                },
+
+            }),
+
         })
     }),
 })

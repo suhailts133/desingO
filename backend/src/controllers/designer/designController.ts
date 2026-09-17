@@ -3,7 +3,7 @@ import { RespsonseHelper } from "../../shared/helpers/responseHelper"
 import { RESPONSE_CODE } from "../../shared/enums/statusCode"
 import type { IDesignService } from "../../interfaces/designer/IDesignerService"
 import { designValidation, editDesignValidation } from "../../validators/designers/designValidation"
-import type { AddDesignRequestDTO, DesignFiles, EditDesign, EditDesignFiles } from "../../DTO/designer/designDTO"
+import type { AddDesignRequestDTO, DesignAiImageFilter, DesignFiles, EditDesign, EditDesignFiles } from "../../DTO/designer/designDTO"
 import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError"
 
@@ -138,7 +138,7 @@ export class DesignController {
         if (!isObjectId(designId)) {
             throw new AppError(DESIGNER_MESSAGES.DESIGNS.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
-        const result = await this._designService.getDesignDetail(designId,userId)
+        const result = await this._designService.getDesignDetail(designId, userId)
         RespsonseHelper.success(res, result)
     })
 
@@ -152,6 +152,16 @@ export class DesignController {
         const userId = req.user?.userId;
         const result = await this._designService.getAllDesigns(userId, req.query)
         RespsonseHelper.successWithPagination(res, result)
+    })
+
+    /**
+     * to get all designs
+     * @route GET design/all-designs
+     * @param req.query {@link DesignFilter}
+    */
+    getDesignForAiImageGeneration = asyncHandler(async (req: Request, res: Response) => {
+        const result = await this._designService.getDesignForAiImageGeneration(req.query as DesignAiImageFilter)
+        RespsonseHelper.success(res, result)
     })
 
 

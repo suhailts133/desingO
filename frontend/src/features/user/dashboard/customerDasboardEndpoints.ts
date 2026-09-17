@@ -10,7 +10,8 @@ export const customerDashboardApi = baseApi.injectEndpoints({
             query: () => ({
                 url: API_ROUTES.DASHBOARD.CUSTOMER,
                 method: "GET"
-            })
+            }),
+            providesTags: ["customerDashboard"]
         })
     })
 })

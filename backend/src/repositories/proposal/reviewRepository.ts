@@ -12,6 +12,21 @@ export class ReviewRepository extends BaseRepository<IReview> implements IReview
         super(ReviewModel)
     }
 
+    async getReviewPerJob(jobId: string): Promise<IReview | null> {
+        return await this.findOne({ jobId })
+    }
+
+
+    async getMyTopReviews(designerId: string): Promise<IReview[]> {
+        return await this.find(
+            { designerId },
+            {
+                sort: { rating: -1, createdAt: -1 },
+                limit: 10
+            }
+        );
+    }
+
     async getAllReviews(designerId: string): Promise<IReview[]> {
         return await this.find({ designerId })
     }

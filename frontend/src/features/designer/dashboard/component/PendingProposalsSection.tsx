@@ -51,7 +51,7 @@ export default function PendingProposalsSection({ proposals }: Props) {
         <div className="bg-off-white rounded-2xl border border-blush-light/40 shadow-lg px-6 py-6 flex flex-col gap-4">
             <div className="flex items-center gap-2.5">
                 <Clock size={20} className="text-blush-deep" />
-                <p className="text-base font-semibold text-soft-black">Pending proposals</p>
+                <p className="text-base font-semibold text-soft-black">Active Jobs</p>
             </div>
 
             {proposals.length === 0 ? (

@@ -14,7 +14,8 @@ export const SOCKET_MESSAGES = {
         NOT_FOUND: 'Notification not found'
     },
     NOTIFICATION_MESSAGES: {
-        JOB_APPLICATION:(jobName:string) =>`Got new job application request for ${jobName}`,
-        HIRE_DESIGER:(jobName:string) =>`Got new hire request request  ${jobName}`
+        JOB_APPLICATION: (jobName: string) => `Got new job application request for ${jobName}`,
+        HIRE_DESIGER: (jobName: string) => `Got new hire request request  ${jobName}`,
+        PROPOSAL: (jobName: string, status: "Accepted" | "Rejected") => `Proposal for ${jobName} was ${status}`
     }
 } as const;

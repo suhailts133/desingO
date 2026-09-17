@@ -1,4 +1,4 @@
-import { Eye, Trash, Pencil, ScrollText } from "lucide-react"
+import { Eye, Trash, Pencil, ScrollText, Briefcase } from "lucide-react"
 import type { DesignResponseDTO } from "../designInterface"
 import { useNavigate } from "react-router-dom"
 
@@ -9,13 +9,15 @@ type props = {
 
 export default function DesignerDesignCard({ design, onDeleteClick }: props) {
     const navigate = useNavigate();
+
+
     const getDesignDetail = (id: string) => {
         navigate(`/designs/${id}`)
     }
     const updateDesignPage = (id: string) => {
         navigate(`/designer/designs/edit/${id}`)
     }
-      const hireRequests = (id: string) => {
+    const hireRequests = (id: string) => {
         navigate(`/designer/hire-requests/${id}`)
     }
     return (
@@ -31,10 +33,15 @@ export default function DesignerDesignCard({ design, onDeleteClick }: props) {
                     />
                 </a>
                 <div className="absolute inset-0 bg-blush/0 group-hover:bg-blush/10 transition-colors duration-300 pointer-events-none" />
+
+                {/* Active job count badge */}
+                <div className="absolute top-2.5 right-2.5 flex items-center gap-1 bg-soft-black/80 text-off-white px-2.5 py-1 rounded-full text-xxs font-semibold tracking-wide backdrop-blur-sm">
+                    <Briefcase className="w-3 h-3" />
+                    <span>{design.activeJobCount} active</span>
+                </div>
             </div>
 
             <div className="px-5 pt-4 pb-5">
-
 
                 {/* Title */}
                 <a href="#">
@@ -56,7 +63,7 @@ export default function DesignerDesignCard({ design, onDeleteClick }: props) {
 
                 {/* Actions */}
                 <div className="flex items-center gap-2">
-                     <button
+                    <button
                         onClick={() => hireRequests(design.id)}
                         title="Hire Requests"
                         className="shrink-0 inline-flex items-center gap-1.5 bg-soft-black text-off-white hover:bg-blush-deep px-3.5 py-1.5 rounded-full text-[11px] font-semibold tracking-wide transition-all duration-200 shadow-sm hover:shadow-md"
@@ -64,7 +71,7 @@ export default function DesignerDesignCard({ design, onDeleteClick }: props) {
                         <ScrollText className="w-3.5 h-3.5" />
                         <span>Requests</span>
                     </button>
-                    
+
                     <button
                         onClick={() => getDesignDetail(design.id)}
                         title="View"
@@ -81,7 +88,7 @@ export default function DesignerDesignCard({ design, onDeleteClick }: props) {
                         <Pencil className="w-3.5 h-3.5" />
                         <span>Edit</span>
                     </button>
-   
+
                     <button
                         onClick={onDeleteClick}
                         title="Delete"
@@ -94,10 +101,5 @@ export default function DesignerDesignCard({ design, onDeleteClick }: props) {
             </div>
 
         </div>
-
-
-
-
     )
 }
-

@@ -1,11 +1,21 @@
-import type { DesignDetailResponseDTO, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO";
+import type { DesignDetailResponseDTO, DesignGallaryDTO, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO";
 import type { IDesign, IDesignPopulated } from "../../interfaces/designer/IDesigner";
 
 export class DesignMapper {
+
+
+    static toDesignGallaeryDTOList(design: IDesign[]): DesignGallaryDTO[] {
+        return design.map(e => ({
+            designId: e.id,
+            coverImage: e.coverImage.path
+        }))
+    }
+
     static toMyDesignsDTOlist(designs: IDesign[]): getAllDesignsResponseDTO[] {
         return designs.map(data => ({
             id: data.id,
             name: data.name,
+            activeJobCount: data.activeJobCount,
             coverImage: data.coverImage.path,
             description: data.description,
             minPrice: data.minPrice.toString(),

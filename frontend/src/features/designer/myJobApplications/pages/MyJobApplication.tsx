@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-// import JobApplicationCard from "../../jobApplications/components/JobApplicationCard";
 import { useGetMyJobApplicationsQuery } from "../myJobApplicationEndpoints";
 import type { JobApplicationStatus } from "../myJobApplicationInterFace";
 import MyJobApplicationCard from "../components/MyJobApplicationCard";

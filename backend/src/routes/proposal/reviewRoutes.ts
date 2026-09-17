@@ -14,9 +14,9 @@ const reviewRepo = new ReviewRepository()
 const proposalRepo = new ProposalRepository()
 const userRepo = new UserRepository()
 const reviewService = new ReviewService(reviewRepo, proposalRepo, userRepo)
-const reviewController = new ReviewController(reviewService)
+export const reviewController = new ReviewController(reviewService)
 
-router.post("/create",  customerAuthentication, reviewController.createReview)
+router.post("/create", customerAuthentication, reviewController.createReview)
 router.get("/my/:id", authenticate, reviewController.getMyReviews)
 
 

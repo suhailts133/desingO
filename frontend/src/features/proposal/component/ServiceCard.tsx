@@ -73,7 +73,7 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
                     <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full border ${statusStyle[service.status]}`}>
                         {service.status}
                     </span>
-                    {role === "Designer" && service.escrowStatus && (
+                    {  service.escrowStatus && (
                         <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full border ${escrowStatusStyle[service.escrowStatus]}`}>
                             {service.escrowStatus}
                         </span>
@@ -96,7 +96,7 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
                     ₹{service.price.toLocaleString("en-IN")} service &nbsp;+&nbsp; ₹{service.executionPrice.toLocaleString("en-IN")} execution
                 </div>
 
-                {role === "Designer" && service.escrowStatus && service.amountHeld && (
+                {service.escrowStatus && service.amountHeld && (
                     <EscrowStatusBadge amount={service.amountHeld} status={service.escrowStatus} />
                 )}
             </div>

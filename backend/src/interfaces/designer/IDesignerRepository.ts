@@ -1,6 +1,6 @@
 import type { Pagination } from "../../DTO/admin/adminDTO";
 import type { DesignerInteraction, DesignerInteractionPopulated } from "../../DTO/common/interaction";
-import type { createDesignDTO, DesignFilter, EditDesignRepoData } from "../../DTO/designer/designDTO";
+import type { createDesignDTO, DesignAiImageFilter, DesignFilter, EditDesignRepoData } from "../../DTO/designer/designDTO";
 import type { DesignerFilter } from "../../DTO/designer/designerDTO";
 import type { DesignerVerificationDTO } from "../../DTO/designer/designerVerificationDTOs";
 import type { IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO } from "../../DTO/designer/jobsDTO";
@@ -20,6 +20,8 @@ export interface IDesignerRepository {
 
 
 export interface IDesignRepository {
+    getDesignForAiImageGeneration(filter?: DesignAiImageFilter): Promise<IDesign[]>
+    adjustActiveJobCount(id: string, delta: 1 | -1): Promise<IDesign | null>
     createDesign(data: createDesignDTO): Promise<boolean>;
     getMyDesigns(userId: string, page?: string): Promise<{ data: IDesign[], pagination: Pagination }>
     getDesign(designId: string): Promise<IDesignPopulated | null>,

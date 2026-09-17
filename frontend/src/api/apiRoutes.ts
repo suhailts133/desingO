@@ -37,6 +37,7 @@ export const API_ROUTES = {
     },
     DESIGNS: {
         ADD_DESIGN: "/design/add-design",
+        SUGGESTION: "/design/suggestion",
         EDIT_DESIGN: "/design/edit-design",
         MY_DESIGNS: "/design/my",
         DESIGN_DETAIL: "/design",
@@ -87,7 +88,10 @@ export const API_ROUTES = {
     DASHBOARD: {
         DESIGNER: "/dashboard/designer",
         CUSTOMER: "/dashboard/customer",
-        ADMIN: "/dashboard/admin"
+        ADMIN: "/dashboard/admin",
+        RECENT_TRANSACTION: "/dashboard/recent-transaction",
+        TOP_REIVEWS: "/dashboard/top-reviews",
+
     },
     PROPOSAL: {
         UPLOAD_FLOOR_PLAN: "/proposal/upload-floor-plan",
@@ -95,6 +99,7 @@ export const API_ROUTES = {
         CREATE: "/proposal/create",
         UPDATE: "/proposal/update",
         MY_PROPOSAL: "/proposal",
+        REVIEW: "/proposal/review",
         PREFILL_DATA: "/proposal/prefill",
         APPROVE_REJECT: "/proposal/approve-reject",
         UPLOAD_RESULT: "/proposal/upload-result",

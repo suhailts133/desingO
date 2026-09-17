@@ -10,6 +10,7 @@ import { UserRepository } from "../../repositories/auth/userRepository";
 import { TranscationRepository } from "../../repositories/common/transactionRepository";
 import { ActiveJobRepository } from "../../repositories/common/activeJobRepository";
 import { JobRequestRepository } from "../../repositories/customer/jobRequestRepository";
+import { DesignRepository } from "../../repositories/designer/designRepository";
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router()
@@ -21,7 +22,8 @@ const activeJobRepo = new ActiveJobRepository()
 const transactionRepo = new TranscationRepository()
 const cloudinaryService = new CloudinaryService()
 const jobRepo = new JobRequestRepository()
-const disputeService = new DisputeService(jobRepo, activeJobRepo, transactionRepo, userRepo, proposalRepo, cloudinaryService, disputeRepo)
+const designRepo = new DesignRepository()
+const disputeService = new DisputeService(designRepo, jobRepo, activeJobRepo, transactionRepo, userRepo, proposalRepo, cloudinaryService, disputeRepo)
 const disputeController = new DisputeController(disputeService)
 
 router.get("/", authenticate, disputeController.getAllDispute)

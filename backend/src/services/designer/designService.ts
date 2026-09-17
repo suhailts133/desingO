@@ -2,7 +2,7 @@ import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../../interfaces/base/IApiResponse";
 import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
 import type { IDesignService } from "../../interfaces/designer/IDesignerService";
-import type { AddDesignRequestDTO, createDesignDTO, DesignDetailResponseDTO, DesignFiles, DesignFilter, DesignGallaryDTO, EditDesign, EditDesignFiles, EditDesignRepoData, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO";
+import type { AddDesignRequestDTO, createDesignDTO, DesignAiImageFilter, DesignDetailResponseDTO, DesignFiles, DesignFilter, DesignGallaryDTO, EditDesign, EditDesignFiles, EditDesignRepoData, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload";
 import { AVG_PRICE, CLOUDINARY_FOLDER_NAME, RECOMENDATION_DATA_TYPE, RECOMENDATION_TYPE } from "../../shared/enums/commonEnums";
 import { AppError } from "../../shared/errors/appError";
@@ -20,6 +20,15 @@ import { USER_TYPE } from "../../shared/enums/proposalEnums";
 export class DesignService implements IDesignService {
 
     constructor(private _interactionRepo: ICustomerInteractionRepository, private _designRepository: IDesignRepository, private _imageUploder: IImageUploaderService, private _userRepo: IUserRepository, private _designBenchMarkRepo: IDesignBenchMarkRepository) { }
+
+
+
+    async getDesignForAiImageGeneration(designFilter?: DesignAiImageFilter): Promise<IApiResponse<DesignGallaryDTO[]>> {
+        const design = await this._designRepository.getDesignForAiImageGeneration(designFilter)
+        const designData = DesignMapper.toDesignGallaeryDTOList(design)
+        return {data:designData, message:DESIGNER_MESSAGES.DESIGNS.GET_ALL_DESIGNS}
+   
+    }
 
     async getRecentDesigns(): Promise<IApiResponseWithRecomendation<GetAllDesignCommonResponseDTO[]>> {
         const designs = await this._designRepository.findMostRecent(10)

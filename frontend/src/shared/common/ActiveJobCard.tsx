@@ -1,4 +1,4 @@
-import { User, FileText, Hash, Calendar } from "lucide-react"
+import { User, FileText, Calendar } from "lucide-react"
 import type { ActiveJobResponseDTO } from "../../features/designer/activeJobs/designerActiveJobsInterface"
 import { useNavigate } from "react-router-dom"
 import { useDecodeAccessToken } from "../../helpers/decodeAccessToken"
@@ -89,11 +89,7 @@ export default function ActiveJobCard({ data }: Props) {
                 </span>
             </div>
 
-            {/* Source ID */}
-            <div className="flex items-center gap-2 text-xs text-soft-black/50 mt-2">
-                <Hash size={13} className="shrink-0 text-soft-black/30" />
-                <span className="font-mono text-[11px] text-soft-black/40 truncate">{data.sourceId}</span>
-            </div>
+      
 
             {/* Divider */}
             <div className="h-px bg-blush-light/40 my-3" />

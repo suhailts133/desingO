@@ -15,6 +15,7 @@ const statusColors: Record<DisputeStatus, string> = {
   "Redo": "bg-amber-100 text-amber-700 border-amber-300",
   "Awaiting Confirmation": "bg-purple-100 text-purple-700 border-purple-300",
   "Resolved": "bg-green-100 text-green-700 border-green-300",
+  "Terminated": "bg-gray-50 text-gray-700 border-gray-200",
 };
 
 const escrowStatusColors: Record<string, string> = {
@@ -64,13 +65,29 @@ export default function DisputeDetailAdmin() {
       </button>
 
       <div className="max-w-7xl mx-auto space-y-8 pb-10">
-        <p>{canTerminate ? "Reporter Can Terminate this contract" : "Reporter Cant Terminate this contract"}</p>
+
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-Jost-Semibold text-gray-900">{dispute.type}</h1>
-            <span className={`px-4 py-1 rounded-full text-sm font-medium border ${statusColors[status]}`}>
-              {status}
-            </span>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-4">
+              <h1 className="text-2xl font-Jost-Semibold text-gray-900">{dispute.type}</h1>
+              <span className={`px-4 py-1 rounded-full text-sm font-medium border ${statusColors[status]}`}>
+                {status}
+              </span>
+            </div>
+
+            {status !== "Open" && (
+              <div
+                className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg w-fit border ${canTerminate
+                    ? "bg-green-50 text-green-700 border-green-200"
+                    : "bg-gray-50 text-gray-500 border-gray-200"
+                  }`}
+              >
+                <span className={`w-2 h-2 rounded-full ${canTerminate ? "bg-green-500" : "bg-gray-400"}`} />
+                {canTerminate
+                  ? "The reporter is eligible to terminate this contract."
+                  : "The reporter is not eligible to terminate this contract."}
+              </div>
+            )}
           </div>
 
           {status !== "Resolved" && (
@@ -81,7 +98,6 @@ export default function DisputeDetailAdmin() {
               Give Verdict
             </button>
           )}
-
         </div>
 
         <div className="grid grid-cols-1 gap-8">

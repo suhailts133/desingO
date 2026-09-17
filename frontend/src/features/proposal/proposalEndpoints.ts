@@ -1,10 +1,16 @@
 import { API_ROUTES } from "../../api/apiRoutes";
 import { baseApi } from "../../api/baseApi";
 import type { IApiResponse } from "../../api/responseType";
-import type { AcceptOrRejectFloorPlanDTO, CreateProposalDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData, ProposalInputDataPayload, UpdateProposalDTO, VersionAcceptOrRejectDTO } from "./proposalInterface";
+import type { AcceptOrRejectFloorPlanDTO, CreateProposalDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData, ProposalInputDataPayload, ProposalReviewDTO, UpdateProposalDTO, VersionAcceptOrRejectDTO } from "./proposalInterface";
 
 export const proposalApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
+        getProposalReivew: builder.query<IApiResponse<ProposalReviewDTO>, string>({
+            query: (jobId) => ({
+                url: `${API_ROUTES.PROPOSAL.REVIEW}/${jobId}`,
+                method: "GET"
+            }),
+        }),
         getProposal: builder.query<IApiResponse<ProposalDetailDTO>, string>({
             query: (jobId) => ({
                 url: `${API_ROUTES.PROPOSAL.MY_PROPOSAL}/${jobId}`,
@@ -19,7 +25,7 @@ export const proposalApi = baseApi.injectEndpoints({
                 method: "PATCH",
                 body
             }),
-            invalidatesTags: ["proposal"]
+            invalidatesTags: ["proposal", "customerDashboard", "designerDashboard"]
         }),
 
         uploadFloorPlan: builder.mutation<IApiResponse, FormData>({
@@ -28,7 +34,7 @@ export const proposalApi = baseApi.injectEndpoints({
                 method: "POST",
                 body: formData
             }),
-            invalidatesTags: ["proposal"]
+            invalidatesTags: ["proposal", "customerDashboard", "designerDashboard"]
         }),
 
         uploadResult: builder.mutation<IApiResponse, FormData>({
@@ -37,7 +43,7 @@ export const proposalApi = baseApi.injectEndpoints({
                 method: "POST",
                 body: formData
             }),
-            invalidatesTags: ["proposal"]
+            invalidatesTags: ["proposal", "customerDashboard", "designerDashboard"]
         }),
         approveOrRejectVersionResult: builder.mutation<IApiResponse, VersionAcceptOrRejectDTO>({
             query: (body: VersionAcceptOrRejectDTO) => ({
@@ -45,7 +51,7 @@ export const proposalApi = baseApi.injectEndpoints({
                 method: "PATCH",
                 body
             }),
-            invalidatesTags: ["proposal"]
+            invalidatesTags: ["proposal", "customerDashboard", "designerDashboard", "recentTransaction"]
         }),
 
         getProposalPrefillData: builder.query<IApiResponse<ProposalInputData>, ProposalInputDataPayload>({
@@ -91,5 +97,6 @@ export const {
     useApproveOrRejectVersionResultMutation,
     useUpdateProposalMutation,
     useUploadFloorPlanMutation,
-    useAcceptOrRejectFloorPlanMutation
+    useAcceptOrRejectFloorPlanMutation,
+    useGetProposalReivewQuery
 } = proposalApi

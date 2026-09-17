@@ -3,20 +3,22 @@ import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
 import type { IApiResponse } from "../../interfaces/base/IApiResponse";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload";
 import type { ITransactionRepository } from "../../interfaces/base/ITransaction";
-import type { IActiveJobRepository } from "../../interfaces/customer/ICustomerRepository";
+import type { IActiveJobRepository, IJobRepository } from "../../interfaces/customer/ICustomerRepository";
+import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
 import type { IProposalRepository, IServiceVersionRepository } from "../../interfaces/proposal/IProposalRepository";
 import type { IProposalVersionService } from "../../interfaces/proposal/IProposalService";
-import { ACTIVE_JOB_STATUS, CLOUDINARY_FOLDER_NAME, TRANSACTION_TYPE, TRANSACTION_UNIQUE_ID, USER_ROLES } from "../../shared/enums/commonEnums";
+import { ACTIVE_JOB_STATUS, CLOUDINARY_FOLDER_NAME, DESIGN_JOB_COUNT, SOURCE_TYPE, TRANSACTION_TYPE, TRANSACTION_UNIQUE_ID, USER_ROLES } from "../../shared/enums/commonEnums";
 import { CONTRACT_STATUS, EscrowStatus, ServicePaymentStatus, ServiceStatus, VERSION_STATUS } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
 import { generateUniqueId } from "../../shared/helpers/extraFunctions";
 import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
+import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 
 export class ProposalVersionService implements IProposalVersionService {
-    constructor(private _activeJobRepo: IActiveJobRepository, private _transactionRepo: ITransactionRepository, private _proposalRepo: IProposalRepository, private _serviceVersionRepo: IServiceVersionRepository, private _imageUploder: IImageUploaderService, private _userRepo: IUserRepository) { }
+    constructor(private _jobRepo: IJobRepository, private _designRepo: IDesignRepository, private _activeJobRepo: IActiveJobRepository, private _transactionRepo: ITransactionRepository, private _proposalRepo: IProposalRepository, private _serviceVersionRepo: IServiceVersionRepository, private _imageUploder: IImageUploaderService, private _userRepo: IUserRepository) { }
 
     async uploadProposalImage(sourceId: string, ServiceNumber: number, serviceImages: Express.Multer.File[]): Promise<IApiResponse> {
         const proposal = await this._proposalRepo.getProposal(sourceId)
@@ -140,8 +142,20 @@ export class ProposalVersionService implements IProposalVersionService {
                     throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.CONTRACT_STATUS_FAIL, RESPONSE_CODE.BAD_REQUEST)
                 }
                 const updateActiveJobStatus = await this._activeJobRepo.updateActiveJob(proposal.sourceId.toString(), { status: ACTIVE_JOB_STATUS.COMPLETED })
-                if (updateActiveJobStatus) {
+                if (!updateActiveJobStatus) {
                     throw new AppError(JOB_MESSAGES.ACTIVE_JOB.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+                }
+                if (updateContractStatus.sourceType === SOURCE_TYPE.DIRECT_HIRE) {
+                    const job = await this._jobRepo.getJobRequest(proposal.sourceId.toString())
+                    if (!job) {
+                        throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+                    }
+                    if (job.designId) {
+                        const designCountDec = await this._designRepo.adjustActiveJobCount(job.designId.toString(), DESIGN_JOB_COUNT.DEC)
+                        if (!designCountDec) {
+                            throw new AppError(DESIGNER_MESSAGES.DESIGNS.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+                        }
+                    }
                 }
             }
             return { message: PROPOSAL_MESSAGES.VERSION.UPDATE_SUCCESS }

@@ -69,7 +69,7 @@ export const PROPOSAL_MESSAGES = {
         SERVICE_ORDER_MUST_START_FROM_ONE: "Service orders must start from 1",
         SERVICE_ORDER_NOT_CONTINUOUS: "Service orders must be continuous (1, 2, 3...)",
         SERVICES_REQUIRED: "Service is required",
-        NOT_ONGOING: "This proposal is not Active."
+        NOT_ONGOING: "This proposal is not Active.",
     },
     PROPOSAL_INPUT: {
         TEMPLATE_FETCH_SUCCESS: "Proposal template fetched success.",
@@ -81,7 +81,10 @@ export const PROPOSAL_MESSAGES = {
         ALREADY_REVIEWD: "You have already added a review for this job.",
         ERROR: "Review posting failed.",
         FETCH_ALL: "Fetch all review success.",
+        TOP_REVIEWS: "Fetch top rated Reviews",
         FETCH_FAILED: "Failed to fetch reviews.",
+        NOT_FOUND: "Review not found",
+        FOUND: "Review found"
     },
     PAYMENT: {
         NO_OPEN_SERVICE: "there are no open service with pending payment.",

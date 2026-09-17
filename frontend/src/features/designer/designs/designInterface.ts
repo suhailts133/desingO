@@ -32,6 +32,7 @@ export interface DesignResponseDTO {
   name: string
   coverImage: string,
   minPrice: string,
+  activeJobCount: number,
   maxPrice: string,
   description: string,
   id: string
@@ -92,6 +93,13 @@ export interface DesignsQueryParms {
   propertyTypes?: { label: string, value: string }[] | null
   spaceTypes?: { label: string, value: string }[] | null
   sortBy?: { label: string, value: string } | null
+}
+
+
+
+export interface DesignAiImageFilter {
+  matchedSpaceTypes?: string[]
+  matchedDesignStyles?: string[]
 }
 
 

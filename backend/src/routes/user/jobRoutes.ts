@@ -10,6 +10,7 @@ import designerAuthentication from "../../middlewares/designerAuth";
 import { DesignerInteractionRepository } from "../../repositories/designer/designerInteractionRepository";
 import optionalAuth from "../../middlewares/optionalAuth";
 import { notificationService } from "../designer/jobApplicationRoutes";
+import { DesignRepository } from "../../repositories/designer/designRepository";
 const upload = multer({ storage: multer.memoryStorage() });
 
 
@@ -20,7 +21,8 @@ const jobRequestRepo = new JobRequestRepository()
 const activeJobrepo = new ActiveJobRepository()
 const imageUpload = new CloudinaryService()
 const designerInteractionRepo = new DesignerInteractionRepository()
-export const jobrequestService = new JobRequestService(notificationService, designerInteractionRepo, jobRequestRepo, imageUpload, activeJobrepo)
+const designRepo = new DesignRepository()
+export const jobrequestService = new JobRequestService(designRepo, notificationService, designerInteractionRepo, jobRequestRepo, imageUpload, activeJobrepo)
 const jobController = new JobController(jobrequestService)
 
 router.get("/", jobController.getAllJobs)

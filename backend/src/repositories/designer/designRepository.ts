@@ -1,5 +1,5 @@
 import mongoose, { type SortOrder } from "mongoose";
-import type { createDesignDTO, DesignFilter, EditDesignRepoData } from "../../DTO/designer/designDTO";
+import type { createDesignDTO, DesignAiImageFilter, DesignFilter, EditDesignRepoData } from "../../DTO/designer/designDTO";
 import type { IDesign, IDesignPopulated } from "../../interfaces/designer/IDesigner";
 import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
 import { DesignModel } from "../../models/designer/designModel";
@@ -15,6 +15,27 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
         super(DesignModel)
     }
 
+    async getDesignForAiImageGeneration(filter?: DesignAiImageFilter): Promise<IDesign[]> {
+        const query: QueryFilter<IDesign> = {}
+        if (filter) {
+            if (filter.designStyles) {
+                query.designStyles = { $in: filter.designStyles.split(",") }
+            }
+
+            if (filter.spaceTypes) {
+                query.spaceType = { $in: filter.spaceTypes.split(",") }
+            }
+        }
+        return await this.find(query)
+    }
+
+    async adjustActiveJobCount(id: string, delta: 1 | -1): Promise<IDesign | null> {
+        return await this._model.findByIdAndUpdate(
+            id,
+            { $inc: { activeJobCount: delta } },
+            { new: true }
+        );
+    }
 
     async findCandidatesExcluding(excludedIds: string[]): Promise<IDesignPopulated[]> {
         return await this._model.find({ _id: { $nin: excludedIds }, embedding: { $exists: true, $not: { $size: 0 } } })

@@ -3,15 +3,10 @@ import type { GeneratedDesignImage } from "../aiDesignInterface";
 
 interface AIGeneratedImageResultProps {
   image: GeneratedDesignImage;
-  matchedSpaceType: string | null;
-  matchedDesignStyle: string | null;
+
 }
 
-export default function AIGeneratedImageResult({
-  image,
-  matchedSpaceType,
-  matchedDesignStyle,
-}: AIGeneratedImageResultProps) {
+export default function AIGeneratedImageResult({ image, }: AIGeneratedImageResultProps) {
   const handleDownload = () => {
     const link = document.createElement("a");
     link.href = image.dataUrl;
@@ -26,11 +21,7 @@ export default function AIGeneratedImageResult({
         alt="AI generated interior design"
         className="w-full rounded-lg border border-gray-200"
       />
-      {(matchedSpaceType || matchedDesignStyle) && (
-        <p className="text-xs text-gray-500">
-          {matchedSpaceType} &middot; {matchedDesignStyle}
-        </p>
-      )}
+
       <button
         type="button"
         onClick={handleDownload}

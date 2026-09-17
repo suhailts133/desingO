@@ -15,6 +15,9 @@ import { AdminDashboardService } from "../../services/admin/adminDashboardServic
 import { DesignerRepository } from "../../repositories/designer/designerRepository";
 import { TranscationRepository } from "../../repositories/common/transactionRepository";
 import adminAuthentication from "../../middlewares/adminAuth";
+import authenticate from "../../middlewares/auth";
+import { transactionController } from "../admin/transactionRoutes";
+import { reviewController } from "../proposal/reviewRoutes";
 
 const router = Router()
 
@@ -31,11 +34,12 @@ const designerRepo = new DesignerRepository()
 
 const designerDashboardService = new DesignerDashboardService(designRepo, disputeRepo, userRepo, proposalRepo, reviewRepo, activeJobRepo)
 const customerDashboardService = new CustomerDashboardService(jobRepo, disputeRepo, userRepo, proposalRepo, activeJobRepo)
-const adminDashboardService = new AdminDashboardService(disputeRepo, userRepo,designerRepo,transactionRepo,activeJobRepo)
-const dashboardController = new DashboardController(designerDashboardService, customerDashboardService,adminDashboardService)
+const adminDashboardService = new AdminDashboardService(disputeRepo, userRepo, designerRepo, transactionRepo, activeJobRepo)
+const dashboardController = new DashboardController(designerDashboardService, customerDashboardService, adminDashboardService)
 
 router.get("/designer", designerAuthentication, dashboardController.getDesignerDashboard)
 router.get("/customer", customerAuthentication, dashboardController.getCustomerDashboard)
 router.get("/admin", adminAuthentication, dashboardController.getAdminDashboard)
-
+router.get("/recent-transaction", authenticate, transactionController.getMyTransaction)
+router.get("/top-reviews", designerAuthentication, reviewController.getTopReviews)
 export default router

@@ -13,6 +13,14 @@ export class TranscationRepository extends BaseRepository<ITransaction> implemen
         super(TransactionModel)
     }
 
+    async getIncomingTransactions(userId: string): Promise<TransactionPopulated[]> {
+        return this._model.find({ destinationUserId: userId })
+            .sort({ createdAt: -1 })
+            .limit(15)
+            .populate<{ destinationUserId: IUser }>("destinationUserId")
+            .populate<{ sourceUserId: IUser }>("sourceUserId")
+    }
+
     async getCommisionTransactions(): Promise<ITransaction[]> {
         return await this.find({ type: TRANSACTION_TYPE.COMMISSION })
     }

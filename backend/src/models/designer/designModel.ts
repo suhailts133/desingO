@@ -22,6 +22,7 @@ const designSchema = new Schema<IDesign>({
     propertyType: { type: String, required: true },
     minPrice: { type: Number, required: true },
     maxPrice: { type: Number, required: true },
+    activeJobCount: { type: Number, default: 0 },
     description: { type: String, required: true },
 
     coverImage: { type: imageFormatSchema, required: true },

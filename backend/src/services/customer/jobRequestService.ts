@@ -6,22 +6,23 @@ import type { IActiveJobRepository, IJobRepository } from "../../interfaces/cust
 import type { IJobRequestService } from "../../interfaces/customer/ICustomerService";
 import { AppError } from "../../shared/errors/appError";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload";
-import { CLOUDINARY_FOLDER_NAME, JOB_REQUEST_STATUS, JOB_REQUEST_UNIQUE_ID, JOB_SOURCE_TYPE, RECOMENDATION_DATA_TYPE, RECOMENDATION_TYPE, SOURCE_TYPE } from "../../shared/enums/commonEnums";
+import { CLOUDINARY_FOLDER_NAME, DESIGN_JOB_COUNT, JOB_REQUEST_STATUS, JOB_REQUEST_UNIQUE_ID, JOB_SOURCE_TYPE, RECOMENDATION_DATA_TYPE, RECOMENDATION_TYPE, SOURCE_TYPE } from "../../shared/enums/commonEnums";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { JobRequestMapper } from "../../dtoMappers/user/jobRequestMapper";
 import type { AcceptOrRejectHireDesignerDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
 import { getBudgetTier } from "../../shared/helpers/budgetTier";
 import { generateEmbedding } from "../../shared/helpers/embedding";
-import type { IDesignerInteractionRepository } from "../../interfaces/designer/IDesignerRepository";
+import type { IDesignerInteractionRepository, IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
 import { JOB_INTERACTION, JOB_INTERACTION_TYPE } from "../../shared/enums/interactionEnum";
 import type { CreateNotificationDTO } from "../../DTO/socket/notificationDTO";
 import type { INotificationService } from "../../interfaces/socket/ISocketService";
 import { SOCKET_MESSAGES } from "../../shared/messages/socketMessage";
 import { NOTIFICATION_TYPES } from "../../shared/enums/notificationEnum";
 import { generateUniqueId } from "../../shared/helpers/extraFunctions";
+import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages";
 
 export class JobRequestService implements IJobRequestService {
-    constructor(private _notificationService: INotificationService, private _designerInteractionRepo: IDesignerInteractionRepository, private _jobRequestRepo: IJobRepository, private _imageUploder: IImageUploaderService, private _activeJobRepo: IActiveJobRepository) { }
+    constructor(private _designRepo: IDesignRepository, private _notificationService: INotificationService, private _designerInteractionRepo: IDesignerInteractionRepository, private _jobRequestRepo: IJobRepository, private _imageUploder: IImageUploaderService, private _activeJobRepo: IActiveJobRepository) { }
 
 
 
@@ -45,17 +46,26 @@ export class JobRequestService implements IJobRequestService {
         if (!updatedHireRequst || !updatedHireRequst.designerId) {
             throw new AppError(JOB_MESSAGES.HIRE_DESIGNER.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
-        const isActive = await this._activeJobRepo.createActiveJOb({
-            userId: updatedHireRequst.userId.toString(),
-            designerId: updatedHireRequst.designerId.toString(),
-            sourceId: updatedHireRequst.id,
-            sourceType: SOURCE_TYPE.DIRECT_HIRE,
-            sourceName: updatedHireRequst.projectTitle
-        })
-        if (!isActive) {
-            throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        if (updatedHireRequst.status === JOB_REQUEST_STATUS.ACCEPTED) {
+            const isActive = await this._activeJobRepo.createActiveJOb({
+                userId: updatedHireRequst.userId.toString(),
+                designerId: updatedHireRequst.designerId.toString(),
+                sourceId: updatedHireRequst.id,
+                sourceType: SOURCE_TYPE.DIRECT_HIRE,
+                sourceName: updatedHireRequst.projectTitle
+            })
+            if (!isActive) {
+                throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+            }
+            if (updatedHireRequst.designId) {
+                const updateDesignCount = await this._designRepo.adjustActiveJobCount(updatedHireRequst.designId.toString(), DESIGN_JOB_COUNT.INC)
+                if (!updateDesignCount) {
+                    throw new AppError(DESIGNER_MESSAGES.DESIGNS.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+                }
 
+            }
         }
+
         return { message: JOB_MESSAGES.HIRE_DESIGNER.UPDATE_SUCCESS }
     }
 
@@ -202,7 +212,7 @@ export class JobRequestService implements IJobRequestService {
     async getAllJobs(JobFilter?: JobFilter): Promise<IApiResponseWithPagination<JobsCommonResponseDTO[]>> {
 
         const result = await this._jobRequestRepo.getAllJobs(JobFilter)
-        const jobsData = JobRequestMapper.toJobRequestsDTOlist(result.data)  
+        const jobsData = JobRequestMapper.toJobRequestsDTOlist(result.data)
         return {
             message: JOB_MESSAGES.JOB_REQUEST.ALL_JOB_REQUEST,
             data: jobsData,

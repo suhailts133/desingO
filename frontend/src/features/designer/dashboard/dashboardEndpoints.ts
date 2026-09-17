@@ -1,7 +1,8 @@
 import { API_ROUTES } from "../../../api/apiRoutes";
 import { baseApi } from "../../../api/baseApi";
 import type { IApiResponse } from "../../../api/responseType";
-import type { DesignerDashboardDTO } from "./dashboardInterface";
+import type { ReviewsLIST } from "../../proposal/proposalInterface";
+import type { DashboardTransactionHistory, DesignerDashboardDTO } from "./dashboardInterface";
 
 export const designerDashboardApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -10,10 +11,26 @@ export const designerDashboardApi = baseApi.injectEndpoints({
             query: () => ({
                 url: API_ROUTES.DASHBOARD.DESIGNER,
                 method: "GET"
-            })
-        })
+            }),
+            providesTags: ["designerDashboard"]
+
+        }),
+        getMyRecentTransaction: builder.query<IApiResponse<DashboardTransactionHistory[]>, void>({
+            query: () => ({
+                url: API_ROUTES.DASHBOARD.RECENT_TRANSACTION,
+                method: "GET"
+            }),
+            providesTags: ["recentTransaction"]
+        }),
+        getTopReviews: builder.query<IApiResponse<ReviewsLIST[]>, void>({
+            query: () => ({
+                url: API_ROUTES.DASHBOARD.TOP_REIVEWS,
+                method: "GET"
+            }),
+            providesTags: ["topReview"]
+        }),
     })
 })
 
 
-export const { useGetDesignerDashboardQuery } = designerDashboardApi
+export const { useGetDesignerDashboardQuery, useGetMyRecentTransactionQuery, useGetTopReviewsQuery } = designerDashboardApi

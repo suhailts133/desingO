@@ -11,7 +11,7 @@ export const disputeEndpoints = baseApi.injectEndpoints({
                 method: "POST",
                 body: formData
             }),
-            invalidatesTags: ["proposal"]
+            invalidatesTags: ["proposal", "designerDashboard" , "customerDashboard"] 
         }),
 
         getDispute: builder.query<IApiResponse<DisputeResponseDTO>, string>({
@@ -30,7 +30,7 @@ export const disputeEndpoints = baseApi.injectEndpoints({
             }),
             invalidatesTags: (_result, _error, arg) => {
                 if (arg.status === "Redo") {
-                    return ["proposal", "disputeNormal"]
+                    return ["proposal", "disputeNormal" , "designerDashboard", "customerDashboard"]
                 }
                 return ["proposal"]
             }
@@ -41,8 +41,9 @@ export const disputeEndpoints = baseApi.injectEndpoints({
                 url: API_ROUTES.DISPUTE.GET_ALL_DISPUTE,
                 method: "GET",
                 body: { proposalId }
-            })
-        }),
+            }),
+
+         }),
 
 
 
