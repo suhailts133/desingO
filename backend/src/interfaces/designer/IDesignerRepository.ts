@@ -1,3 +1,4 @@
+import type { ClientSession } from "mongoose";
 import type { Pagination } from "../../DTO/admin/adminDTO";
 import type { DesignerInteraction, DesignerInteractionPopulated } from "../../DTO/common/interaction";
 import type { createDesignDTO, DesignAiImageFilter, DesignFilter, EditDesignRepoData } from "../../DTO/designer/designDTO";
@@ -39,8 +40,8 @@ export interface IJobApplicationRepository {
     applyForJob(customerId: string, data: IJobApplicationRequestDTO): Promise<IJobApplication>
     checkUserJobApplication(userId: string, jobId: string): Promise<boolean>
     deleteJobApplication(id: string): Promise<boolean>
-    changeStatusForPendingUser(id: string, jobId: string): Promise<void>
-    approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRejectionRequestDTO): Promise<IJobApplication | null>
+    changeStatusForPendingUser(id: string, jobId: string, session?:ClientSession): Promise<void>
+    approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRejectionRequestDTO, session?:ClientSession): Promise<IJobApplication | null>
     getMyJobApplications(jobId: string, filters?: JobApplicationFilter): Promise<{ data: IJobApplicationPopulated[], pagination: Pagination }>
     getJobApplications(userId: string, filters?: JobApplicationFilter): Promise<{ data: IJobApplicationPopulatedWithJobAndUser[], pagination: Pagination }>
 }

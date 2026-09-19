@@ -8,6 +8,7 @@ import authenticate from "../../middlewares/auth";
 import { ActiveJobRepository } from "../../repositories/common/activeJobRepository";
 import { NotificationService } from "../../services/common/notificationService";
 import { NotificationRepository } from "../../repositories/socket/notificationRepository";
+import { MongooseTransactionManager } from "../../shared/helpers/MongooseTransactionManager";
 const router = Router()
 
 const jobApplicationRepo = new JobApplicationRepository()
@@ -15,7 +16,9 @@ const jobRequestRepo = new JobRequestRepository()
 const activeJobRepo = new ActiveJobRepository()
 const notificationRepo = new NotificationRepository()
 export const notificationService = new NotificationService(notificationRepo)
-const jobApplicationservice = new JobApplicationService(jobApplicationRepo, jobRequestRepo, activeJobRepo,notificationService)
+
+const transactionManager = new MongooseTransactionManager()
+const jobApplicationservice = new JobApplicationService(jobApplicationRepo, jobRequestRepo, activeJobRepo,notificationService,transactionManager)
 const jobApplicationController = new JobApplicationController(jobApplicationservice);
 
 

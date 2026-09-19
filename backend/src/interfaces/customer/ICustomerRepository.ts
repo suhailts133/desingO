@@ -1,3 +1,4 @@
+import type { ClientSession } from "mongoose";
 import type { Pagination } from "../../DTO/admin/adminDTO";
 import type { CustomerInteraction, CustomerInteractionPopulated } from "../../DTO/common/interaction";
 import type { ActiveJobFilter, ActiveJobPopulateAll, ActiveJobPopulated, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO";
@@ -15,7 +16,7 @@ export interface IJobRepository {
     deleteAJob(id: string): Promise<boolean>;
     getJobRequest(id: string): Promise<IJobRequestPopulated | null>
     editJobRequest(id: string, data: EditJobRepoData, referenceImages?: ImageUploadResult[], finalFloorPlans?: ImageUploadResult[]): Promise<boolean>
-    changeStatus(id: string, status: JobStatus): Promise<IJobRequest | null>
+    changeStatus(id: string, status: JobStatus,session?:ClientSession): Promise<IJobRequest | null>
     updateHireRequest(id: string, data: Partial<IJobRequest>): Promise<IJobRequest | null>
     countJobs(userId: string): Promise<number>
     findMostRecent(): Promise<IJobRequestPopulated[]>;
@@ -43,7 +44,7 @@ export interface IActiveJobRepository {
     getActiveJobBySource(id: string): Promise<IActiveJob | null>
     getActiveJobPopulated(id: string): Promise<ActiveJobPopulateAll | null>
     getAllActiveJobPerDesigner(designerId: string): Promise<IActiveJob[]>
-    createActiveJOb(data: CreateActiveJobDTO): Promise<IActiveJob>
+    createActiveJOb(data: CreateActiveJobDTO,session?:ClientSession): Promise<IActiveJob>
     getCustomerActiveJobs(customerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulated[], pagination: Pagination }>
     getDesignerActiveJobs(designerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulated[], pagination: Pagination }>
 }

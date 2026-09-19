@@ -12,10 +12,11 @@ import type { CreateNotificationDTO } from "../../DTO/socket/notificationDTO";
 import { SOCKET_MESSAGES } from "../../shared/messages/socketMessage";
 import { NOTIFICATION_TYPES } from "../../shared/enums/notificationEnum";
 import type { INotificationService } from "../../interfaces/socket/ISocketService";
+import type { ITransactionManager } from "../../interfaces/base/ITransactionManager";
 
 
 export class JobApplicationService implements IJobApplicationService {
-    constructor(private _jobApplicationRepo: IJobApplicationRepository, private _jobRequestRepo: IJobRepository, private _activeJobRepo: IActiveJobRepository, private _notificationService: INotificationService) { }
+    constructor(private _jobApplicationRepo: IJobApplicationRepository, private _jobRequestRepo: IJobRepository, private _activeJobRepo: IActiveJobRepository, private _notificationService: INotificationService, private _transactionManager:ITransactionManager) { }
 
     async applyForJob(data: IJobApplicationRequestDTO): Promise<IApiResponse> {
 
@@ -51,43 +52,48 @@ export class JobApplicationService implements IJobApplicationService {
             statuscode: RESPONSE_CODE.OK
         }
     }
+async approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRejectionRequestDTO): Promise<IApiResponse<JobApplicationApprovalOrRejectionResponseDTO>> {
 
-    async approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRejectionRequestDTO): Promise<IApiResponse<JobApplicationApprovalOrRejectionResponseDTO>> {
-
+    const result = await this._transactionManager.runInTransaction(async (session) => {
         if (data.status === JOB_APPLICATION_STATUS.ONGOING) {
-            await this._jobApplicationRepo.changeStatusForPendingUser(id, data.jobId)
+            await this._jobApplicationRepo.changeStatusForPendingUser(id, data.jobId, session)
         }
-        const result = await this._jobApplicationRepo.approveOrRejectJobApplication(id, data);
+        const result = await this._jobApplicationRepo.approveOrRejectJobApplication(id, data, session);
         if (!result) {
             throw new AppError(JOB_MESSAGES.JOB_APPLICATION.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
+
         if (result.status === JOB_APPLICATION_STATUS.ONGOING) {
-            const jobStatusUpdated = await this._jobRequestRepo.changeStatus(result.jobId.toString(), result.status);
+            const jobStatusUpdated = await this._jobRequestRepo.changeStatus(result.jobId.toString(), result.status, session);
             if (!jobStatusUpdated) {
                 throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
             }
+
             const activeJob = await this._activeJobRepo.createActiveJOb({
                 userId: jobStatusUpdated.userId.toString(),
                 designerId: result.designerId.toString(),
                 sourceId: jobStatusUpdated.id,
                 sourceType: SOURCE_TYPE.JOB_REQUEST,
                 sourceName: jobStatusUpdated.projectTitle
-            })
+            }, session)
 
             if (!activeJob) {
                 throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
             }
         }
 
-        const jobApplicationData = JobApplicationMapper.toJobApplicationApprovalOrRejectionDTO(result)
+        return result;
+    });
 
-        return {
-            success: true,
-            message: JOB_MESSAGES.JOB_APPLICATION.STATUS_UPDATED_SUCCESS,
-            statuscode: RESPONSE_CODE.OK,
-            data: jobApplicationData
-        }
+    const jobApplicationData = JobApplicationMapper.toJobApplicationApprovalOrRejectionDTO(result)
+
+    return {
+        success: true,
+        message: JOB_MESSAGES.JOB_APPLICATION.STATUS_UPDATED_SUCCESS,
+        statuscode: RESPONSE_CODE.OK,
+        data: jobApplicationData
     }
+}
 
 
     async getJobApplications(jobId: string, filters?: JobApplicationFilter): Promise<IApiResponseWithPagination<AllJobApplicationsDTO[]>> {
