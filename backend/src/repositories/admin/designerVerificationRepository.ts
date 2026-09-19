@@ -5,7 +5,7 @@ import type { IDesigner, IDesignerPopulated } from "../../interfaces/designer/ID
 import { DesignerModel } from "../../models/designer/designerModel";
 import { toCleanRegExp } from "../../shared/helpers/extraFunctions";
 import { BaseRepository } from "../baseRepository";
-import type { PipelineStage } from "mongoose";
+import type { ClientSession, PipelineStage } from "mongoose";
 
 export class DesignerVerificationManagementRepository extends BaseRepository<IDesigner> implements IDesignerVerificationRepository {
     constructor() {
@@ -81,11 +81,9 @@ export class DesignerVerificationManagementRepository extends BaseRepository<IDe
         return result
     }
 
-    async ApproveOrReject(id: string, data: AdminDesignerApprovalRequestDTO): Promise<IDesignerPopulated | null> {
-        const result = await this._model.findByIdAndUpdate(id, data, { returnDocument: "after" }).populate<{ userId: IUser }>("userId").exec();
-        if (!result) {
-            return null
-        }
-        return result
+    async ApproveOrReject(id: string, data: AdminDesignerApprovalRequestDTO, session?: ClientSession): Promise<IDesignerPopulated | null> {
+        return await this._model.findByIdAndUpdate(id, data, { returnDocument: "after" })
+            .session(session ?? null)
+            .populate<{ userId: IUser }>("userId").exec();
     }
 }

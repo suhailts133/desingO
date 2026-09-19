@@ -1,3 +1,4 @@
+import type { ClientSession } from "mongoose";
 import type { CreateUserDTO } from "../../DTO/auth/authDTO";
 import type { IUser, UserRole } from "../../interfaces/auth/IUser";
 import type { IUserRepository } from "../../interfaces/auth/IUserRepository";
@@ -37,12 +38,8 @@ export class UserRepository extends BaseRepository<IUser> implements IUserReposi
     }
 
 
-    async updateUser(id: string, filters: Partial<IUser>): Promise<IUser | null> {
-        const result = await this.update(id, filters);
-        if (!result) {
-            return null
-        }
-        return result
+    async updateUser(id: string, filters: Partial<IUser>, session?: ClientSession): Promise<IUser | null> {
+        return await this.update(id, filters,session);
     }
 
     async incrementWallet(id: string, amount: number): Promise<IUser | null> {
