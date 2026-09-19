@@ -15,7 +15,7 @@ export interface IDesignerRepository {
     getRequestRequiringAdminAction(): Promise<IDesignerPopulated[]>
     createDesignerRequest(data: DesignerVerificationDTO): Promise<boolean>;
     getDesigner(userId: string): Promise<IDesigner | null>;
-    updateDesigner(designerId: string, data: DesignerUpdateRequestDTO): Promise<IDesigner | null>
+    updateDesigner(designerId: string, data: DesignerUpdateRequestDTO,session?:ClientSession): Promise<IDesigner | null>
     getAllDesigners(designFilter?: DesignerFilter): Promise<{ data: IDesignerPopulated[], pagination: Pagination }>
 }
 

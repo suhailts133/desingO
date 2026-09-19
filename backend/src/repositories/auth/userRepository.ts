@@ -39,6 +39,7 @@ export class UserRepository extends BaseRepository<IUser> implements IUserReposi
 
 
     async updateUser(id: string, filters: Partial<IUser>, session?: ClientSession): Promise<IUser | null> {
+
         return await this.update(id, filters,session);
     }
 
