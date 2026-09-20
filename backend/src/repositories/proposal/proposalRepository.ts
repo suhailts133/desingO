@@ -25,29 +25,32 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
     return await this._model.find(query).populate<{ sourceId: IJobRequest }>("sourceId").exec();
   }
 
-  async createProposal(data: CreateProposalRepoDataDTO, session?:ClientSession): Promise<IProposal> {
-    console.log(session?.id, "from create propsal")
-    return await this.create({
-      sourceId: new mongoose.Types.ObjectId(data.sourceId),
-      activeJobId: new mongoose.Types.ObjectId(data.activeJobId),
-      clientId: new mongoose.Types.ObjectId(data.clientId),
-      designerId: new mongoose.Types.ObjectId(data.designerId),
-      drawingFeePerSqFt: data.drawingFeePerSqFt,
-      sourceType: data.sourceType,
-      totalDrawingFee: data.totalDrawingFee,
-      totalExecutionFee: data.totalExecutionFee,
-      totalContractValue: data.totalContractValue,
-      totalArea: data.totalArea,
-      unit: data.unit,
-      currentAmountHeld: data.currentAmountHeld,
-      sourceName: data.sourceName,
-      expectedCompletionDate: data.expectedCompletionDate,
-      services: data.services,
-      siteVisitingNeeded: data.siteVisitingNeeded,
-      ...(data.expectedSiteVisitingDate && { expectedSiteVisitingDate: data.expectedSiteVisitingDate }),
-      platformFee: data.platformFee,
-      remainingPlatformFee: data.remainingPlatformFee,
-    },session);
+  async createProposal(data: CreateProposalRepoDataDTO, session?: ClientSession): Promise<IProposal> {
+    console.log(session?.id, "from create propsal");
+    return await this.create(
+      {
+        sourceId: new mongoose.Types.ObjectId(data.sourceId),
+        activeJobId: new mongoose.Types.ObjectId(data.activeJobId),
+        clientId: new mongoose.Types.ObjectId(data.clientId),
+        designerId: new mongoose.Types.ObjectId(data.designerId),
+        drawingFeePerSqFt: data.drawingFeePerSqFt,
+        sourceType: data.sourceType,
+        totalDrawingFee: data.totalDrawingFee,
+        totalExecutionFee: data.totalExecutionFee,
+        totalContractValue: data.totalContractValue,
+        totalArea: data.totalArea,
+        unit: data.unit,
+        currentAmountHeld: data.currentAmountHeld,
+        sourceName: data.sourceName,
+        expectedCompletionDate: data.expectedCompletionDate,
+        services: data.services,
+        siteVisitingNeeded: data.siteVisitingNeeded,
+        ...(data.expectedSiteVisitingDate && { expectedSiteVisitingDate: data.expectedSiteVisitingDate }),
+        platformFee: data.platformFee,
+        remainingPlatformFee: data.remainingPlatformFee,
+      },
+      session,
+    );
   }
   async openFirstServiceAndMarkOngoing(sourceId: string, session?: ClientSession): Promise<IProposal | null> {
     return await this.updateOne(
@@ -78,7 +81,8 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
     return await this.updateOne(filter, { $set: update });
   }
 
-  async acceptOrRejectServiceResult(sourceId: string, order: number, status: ProposalServiceStatus): Promise<IProposal | null> {
+  async acceptOrRejectServiceResult(sourceId: string, order: number, status: ProposalServiceStatus, session?: ClientSession): Promise<IProposal | null> {
+    console.log(session?.id, "accept or reject service result")
     return await this.updateOne(
       { sourceId, "services.order": order },
       {
@@ -86,6 +90,7 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
           "services.$.status": status,
         },
       },
+      session,
     );
   }
 

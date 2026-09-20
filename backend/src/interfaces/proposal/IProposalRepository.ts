@@ -39,7 +39,7 @@ export interface IPaymentRepository {
 
 
 export interface IServiceVersionRepository {
-    acceptOrRejectVersion(data: VersionAcceptOrRejectDTO): Promise<IServiceVersion | null>
+    acceptOrRejectVersion(data: VersionAcceptOrRejectDTO, session?:ClientSession): Promise<IServiceVersion | null>
     createVersion(data: CreateServiceVersionRepoDTO): Promise<IServiceVersion>
     findVersion(versionId: string): Promise<IServiceVersion | null>
     findAllVersions(sourceId: string): Promise<IServiceVersion[]>

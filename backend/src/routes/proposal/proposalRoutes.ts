@@ -36,7 +36,7 @@ const designRepo = new DesignRepository();
 const transactionManager = new MongooseTransactionManager();
 
 const proposalService = new ProposalService(notificationService, floorPlanRepo, proposalRepo, activeJobRepo, jobRepo, serviceVersionRepo, transactionManager);
-const proposalVersionService = new ProposalVersionService(jobRepo, designRepo, activeJobRepo, transactionRepo, proposalRepo, serviceVersionRepo, imageUploaderService, userRepo);
+const proposalVersionService = new ProposalVersionService(jobRepo, designRepo, activeJobRepo, transactionRepo, proposalRepo, serviceVersionRepo, imageUploaderService, userRepo, transactionManager);
 const floorPlanService = new FloorPlansService(floorPlanRepo, imageUploaderService, proposalRepo, transactionManager);
 const proposalController = new ProposalController(proposalService, proposalVersionService, floorPlanService);
 

@@ -100,5 +100,6 @@ export const PROPOSAL_MESSAGES = {
   },
   ESCROW: {
     NOT_FOUND: "Payment details not found",
+    ESCROW_STATUS_CHANGED:"Escrow status changed"
   },
 } as const;
