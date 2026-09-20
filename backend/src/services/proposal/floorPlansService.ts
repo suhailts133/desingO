@@ -29,10 +29,14 @@ export class FloorPlansService implements IFloorPlanService {
 
     await this._transactionManager.runInTransaction(async (session) => {
       console.log(session.id, "accept or reject floorplan");
-      const updatedFloorPlan = await this._floorPlanRepo.updateFloorPlan(floorPlan.id, {
-        status: data.status,
-        ...(data.rejectionReason && { rejectionReason: data.rejectionReason }),
-      },session);
+      const updatedFloorPlan = await this._floorPlanRepo.updateFloorPlan(
+        floorPlan.id,
+        {
+          status: data.status,
+          ...(data.rejectionReason && { rejectionReason: data.rejectionReason }),
+        },
+        session,
+      );
 
       if (!updatedFloorPlan) {
         throw new AppError(PROPOSAL_MESSAGES.FLOOR_PLANS.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
@@ -45,8 +49,8 @@ export class FloorPlansService implements IFloorPlanService {
         }
 
         const firstService = await this._proposalRepo.openFirstServiceAndMarkOngoing(updatedProposal.sourceId.toString(), session);
-        if(!firstService){
-            throw new AppError(PROPOSAL_MESSAGES.SERVICE.CANNOT_OPEN_FIRST, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        if (!firstService) {
+          throw new AppError(PROPOSAL_MESSAGES.SERVICE.CANNOT_OPEN_FIRST, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
         }
       }
     });
@@ -74,14 +78,18 @@ export class FloorPlansService implements IFloorPlanService {
       version: proposal.floorPlanVersion + 1,
       proposalId,
     };
-    const floorPlan = await this._floorPlanRepo.createFloorPlan(repoData);
-    if (!floorPlan) {
-      throw new AppError(PROPOSAL_MESSAGES.FLOOR_PLANS.FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
-    }
-    const updateProposal = await this._proposalRepo.updateProposal(proposalId, { floorPlanVersion: floorPlan.version });
-    if (!updateProposal) {
-      throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.UPDATE_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
-    }
+    await this._transactionManager.runInTransaction(async (session) => {
+        console.log(session.id, "from create floorplan service")
+      const floorPlan = await this._floorPlanRepo.createFloorPlan(repoData,session);
+      if (!floorPlan) {
+        throw new AppError(PROPOSAL_MESSAGES.FLOOR_PLANS.FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+      }
+      const updateProposal = await this._proposalRepo.updateProposal(proposalId, { floorPlanVersion: floorPlan.version },session);
+      if (!updateProposal) {
+        throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.UPDATE_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+      }
+    });
+
     return { message: PROPOSAL_MESSAGES.FLOOR_PLANS.SUCCESS, statuscode: RESPONSE_CODE.CREATED };
   }
 }

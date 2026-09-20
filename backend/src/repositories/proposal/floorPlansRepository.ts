@@ -9,12 +9,16 @@ export class FloorPlansRepository extends BaseRepository<IFloorPlan> implements 
     super(FloorPlanModel);
   }
 
-  async createFloorPlan(data: floorPlanRepoDTO): Promise<IFloorPlan> {
+  async createFloorPlan(data: floorPlanRepoDTO, session?: ClientSession): Promise<IFloorPlan> {
+    console.log(session?.id, "create floor plan repo");
     const { proposalId, ...rest } = data;
-    return await this.create({
-      ...rest,
-      proposalId: new mongoose.Types.ObjectId(proposalId),
-    });
+    return await this.create(
+      {
+        ...rest,
+        proposalId: new mongoose.Types.ObjectId(proposalId),
+      },
+      session,
+    );
   }
 
   async getFloorPlan(id: string): Promise<IFloorPlan | null> {
