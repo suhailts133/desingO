@@ -1,5 +1,5 @@
 import { Router } from "express";
-import express from "express"
+import express from "express";
 import Stripe from "stripe";
 import { StripePaymentGateway } from "../../services/stripe/StripePaymentGateway";
 import { ProposalRepository } from "../../repositories/proposal/proposalRepository";
@@ -10,24 +10,24 @@ import { PaymentController } from "../../controllers/proposal/paymentController"
 import authenticate from "../../middlewares/auth";
 import { TranscationRepository } from "../../repositories/common/transactionRepository";
 import { UserRepository } from "../../repositories/auth/userRepository";
+import { MongooseTransactionManager } from "../../shared/helpers/MongooseTransactionManager";
 
-const router = Router()
+const router = Router();
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+const gateway = new StripePaymentGateway(stripe);
+const proposalRepo = new ProposalRepository();
+const paymentRepo = new PaymentRepository();
+const transactionRepo = new TranscationRepository();
+const userRepo = new UserRepository();
+const transactionManager = new MongooseTransactionManager();
+const paymentService = new PaymentService(userRepo, transactionRepo, gateway, proposalRepo, paymentRepo, transactionManager);
+const webhookService = new PaymentWebhookService(stripe, paymentService);
+const controller = new PaymentController(paymentService, webhookService);
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
-const gateway = new StripePaymentGateway(stripe)
-const proposalRepo = new ProposalRepository()
-const paymentRepo = new PaymentRepository()
-const transactionRepo = new TranscationRepository()
-const userRepo = new UserRepository()
-const paymentService = new PaymentService(userRepo, transactionRepo, gateway, proposalRepo, paymentRepo)
-const webhookService = new PaymentWebhookService(stripe, paymentService)
-const controller = new PaymentController(paymentService, webhookService)
+router.post("/webhook", express.raw({ type: "application/json" }), controller.handleWebhook);
+router.use(express.json());
+router.post("/intent", authenticate, controller.createPaymentIntent);
+router.post("/verify", authenticate, controller.getpaymentIntent);
 
-router.post('/webhook', express.raw({ type: 'application/json' }), controller.handleWebhook)
-router.use(express.json())
-router.post("/intent", authenticate, controller.createPaymentIntent)
-router.post("/verify", authenticate, controller.getpaymentIntent)
-
-
-export default router
+export default router;

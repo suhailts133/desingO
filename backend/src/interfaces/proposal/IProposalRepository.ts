@@ -15,7 +15,7 @@ export interface IProposalRepository {
     changeEscrowStatus(sourceId: string, order: number, escrowStatus: EscrowStatus,session?:ClientSession): Promise<IProposal | null>
     updateProposal(proposalId: string, data: Partial<IProposal>,session?:ClientSession): Promise<IProposal | null>
     acceptOrRejectProposal(sourceId: string, contractStatus: ContractStatus, shouldUpdateService: boolean, overallRejectionReason?: string): Promise<IProposal | null>;
-    updateService(sourceId: string, order: number, status: ProposalServiceStatus, paymentStatus: PaymentUpdateStatus, escrow: Partial<IEscrow>, feeDeduction?: number, currentAmountHeld?: number): Promise<IProposal | null>
+    updateService(sourceId: string, order: number, status: ProposalServiceStatus, paymentStatus: PaymentUpdateStatus, escrow: Partial<IEscrow>, feeDeduction?: number, currentAmountHeld?: number, session?:ClientSession): Promise<IProposal | null>
     updateServiceVersion(sourceId: string, order: number, status: ProposalServiceStatus, newVersion: number): Promise<IProposal | null>
     acceptOrRejectServiceResult(sourceId: string, order: number, status: ProposalServiceStatus): Promise<IProposal | null>
     getProposalsByUserId(userId: string, role: "Designer" | "Customer"): Promise<IProposalSourcePopulated[]>
@@ -34,7 +34,7 @@ export interface IPaymentRepository {
     createPayment(data: paymentRepoDTO): Promise<IPayment>
     findByIntentId(stripePaymentIntentId: string): Promise<IPayment | null>
     findByJobId(jobId: string): Promise<IPayment[]>
-    updateStatus(stripePaymentIntentId: string, status: PaymentStatus): Promise<IPayment | null>
+    updateStatus(stripePaymentIntentId: string, status: PaymentStatus, session?:ClientSession): Promise<IPayment | null>
 }
 
 
