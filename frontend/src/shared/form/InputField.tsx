@@ -31,7 +31,7 @@ export function InputField({
     return (
         <div>
             <div className="flex items-center justify-between mb-1">
-                <label className="text-sm font-Jost-Semibold text-gray-700">
+                <label className="text-sm font-Jost-Semibold text-text-primary">
                     {label}
                 </label>
                 {labelAction}
@@ -48,7 +48,7 @@ export function InputField({
                 {showPasswordToggle && (
                     <button
                         type="button"
-                        className="absolute right-3 inset-y-0 flex items-center text-gray-500 hover:text-gray-700"
+                        className="absolute right-3 inset-y-0 flex items-center text-accent hover:text-accent-hover"
                         onClick={() => setIsPasswordVisible((prev) => !prev)}
                         aria-label={isPasswordVisible ? "Hide password" : "Show password"}
                     >
@@ -61,7 +61,7 @@ export function InputField({
                 )}
             </div>
 
-            {error && <p className="text-sm text-error mt-1">{error}</p>}
+            {error && <p className="text-sm text-error-text mt-1">{error}</p>}
         </div>
     );
 }

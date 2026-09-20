@@ -107,7 +107,7 @@
 }
 
 .auth-input {
-    @apply w-full text-soft-black px-4 py-2 border border-gray-300 rounded-lg shadow-md bg-transparent focus:outline-none focus:border-blush-deep focus:ring focus:ring-blush-deep hover:border-blush hover:ring hover:ring-blush transition-all duration-300;
+    @apply w-full text-text-primary px-4 py-2 border border-surface-border-strong rounded-lg shadow-md bg-transparent focus:outline-none focus:border-accent-active focus:ring focus:ring-surface-border-strong hover:border-accent-hover hover:ring hover:ring-accent-hover transition-all duration-300;
 }
 
 
