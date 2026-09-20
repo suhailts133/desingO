@@ -25,7 +25,7 @@ export default function DesignCard({ design }: Props) {
     }
     console.log(savedError)
     return (
-        <div className="group bg-off-white w-full rounded-xl border border-blush-light/40 overflow-hidden shadow-lg  hover:shadow-2xl transition-shadow duration-300 ">
+        <div className="group bg-surface w-full rounded-xl overflow-hidden border border-surface-border hover:border-accent transition-colors duration-300">
 
             <div className="relative overflow-hidden h-52">
                 <button
@@ -41,7 +41,7 @@ export default function DesignCard({ design }: Props) {
                 </button>
 
 
-                <span className="absolute bottom-3 left-3 text-xxs font-semibold tracking-widest uppercase bg-snow-white text-blush-deep px-2.5 py-1 rounded-full border border-blush-light/40">
+                <span className="absolute bottom-3 left-3 text-xxs font-semibold tracking-widest uppercase bg-accent-tint text-accent-tint-text px-2.5 py-1 rounded-full border border-surface-border">
                     {design.spaceType}
                 </span>
 
@@ -49,15 +49,15 @@ export default function DesignCard({ design }: Props) {
                     onClick={toggleSave}
                     disabled={isToggling}
                     aria-label={isSaved ? "Unsave design" : "Save design"}
-                    className={`absolute top-3 right-3 w-8 h-8 rounded-full bg-snow-white border border-blush-light/40 
-               flex items-center justify-center transition-opacity duration-200 hover:bg-blush-pale
+                    className={`absolute top-3 right-3 w-8 h-8 rounded-full bg-surface border border-surface-border 
+               flex items-center justify-center transition-opacity duration-200 hover:bg-surface-hover
                ${isSaved ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
                 >
                     <Heart
                         size={14}
                         className={`transition-colors duration-200 ${isSaved
-                            ? "fill-blush-deep text-blush-deep"
-                            : "text-blush-deep"
+                            ? "fill-accent text-accent"
+                            : "text-accent"
                             }`}
                     />
                 </button>
@@ -69,19 +69,19 @@ export default function DesignCard({ design }: Props) {
 
                 <div className="flex flex-wrap gap-1.5">
                     {design.designStyles.map(s => (
-                        <span className="text-xxs font-semibold tracking-wide uppercase px-2.5 py-0.75 rounded-full bg-blush-pale text-blush-deep border border-blush-light/70">{s}</span>
+                        <span className="text-xxs font-semibold tracking-wide uppercase px-2.5 py-0.75 rounded-full bg-accent-tint text-accent-tint-text border border-surface-border">{s}</span>
                     ))}
-                    {/* <span className="text-xxs font-semibold tracking-wide uppercase px-2.5 py-0.75 rounded-full bg-blush-pale text-blush-deep border border-blush-light/70">Zen</span> */}
-                    {/* <span className="text-xxs font-semibold tracking-wide uppercase px-2.5 py-0.75 rounded-full bg-blush-pale text-blush-deep border border-blush-light/70">Minimal</span> */}
+                    {/* <span className="text-xxs font-semibold tracking-wide uppercase px-2.5 py-0.75 rounded-full bg-accent-tint text-accent-tint-text border border-surface-border">Zen</span> */}
+                    {/* <span className="text-xxs font-semibold tracking-wide uppercase px-2.5 py-0.75 rounded-full bg-accent-tint text-accent-tint-text border border-surface-border">Minimal</span> */}
                 </div>
 
                 <a href="#">
-                    <h3 className="text-md font-semibold leading-snug text-soft-black hover:text-blush-deep transition-colors duration-200 truncate">
+                    <h3 className="text-md font-semibold leading-snug text-text-primary hover:text-accent-hover transition-colors duration-200 truncate">
                         {design.name}
                     </h3>
                 </a>
 
-                <div className="flex items-center gap-1 text-blush-deep/75">
+                <div className="flex items-center gap-1 text-accent">
                     <IndianRupee size={11} strokeWidth={2.5} />
                     <span className="text-xs font-semibold tracking-widest uppercase">
                         budget {Number(design.minPrice).toLocaleString("eg-IN")} - {Number(design.maxPrice).toLocaleString("eg-IN")} 
@@ -89,25 +89,25 @@ export default function DesignCard({ design }: Props) {
                 </div>
 
                 {/* Divider */}
-                <div className="h-px bg-blush-light/40" />
+                <div className="h-px bg-surface-border" />
 
                 {/* Designer */}
                 <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-full bg-gray-100 border-2 border-gray-200 flex items-center justify-center">
-                        <User className="w-7 h-7 text-gray-400" />
+                    <div className="w-7 h-7 rounded-full bg-surface-hover border-2 border-surface-border flex items-center justify-center">
+                        <User className="w-7 h-7 text-text-faint" />
                     </div>
                     <div>
-                        <p className="text-[12px] font-semibold text-soft-black leading-tight">{design.designerName}</p>
+                        <p className="text-[12px] font-semibold text-text-primary leading-tight">{design.designerName}</p>
                         <div className="flex items-center gap-0.5 mt-0.5">
                             {[1, 2, 3, 4].map(i => (
-                                <svg key={i} viewBox="0 0 10 10" className="w-2.5 h-2.5" fill="#DDB070" stroke="#DDB070" strokeWidth="1">
+                                <svg key={i} viewBox="0 0 10 10" className="w-2.5 h-2.5" fill="var(--color-accent)" stroke="var(--color-accent)" strokeWidth="1">
                                     <polygon points="5,1 6.18,3.41 9,3.76 7,5.73 7.45,8.5 5,7.22 2.55,8.5 3,5.73 1,3.76 3.82,3.41" />
                                 </svg>
                             ))}
-                            <svg viewBox="0 0 10 10" className="w-2.5 h-2.5" fill="none" stroke="#C8BFB8" strokeWidth="1">
+                            <svg viewBox="0 0 10 10" className="w-2.5 h-2.5" fill="none" stroke="var(--color-text-faint)" strokeWidth="1">
                                 <polygon points="5,1 6.18,3.41 9,3.76 7,5.73 7.45,8.5 5,7.22 2.55,8.5 3,5.73 1,3.76 3.82,3.41" />
                             </svg>
-                            <span className="text-xxs text-soft-black/40 ml-0.5">(4.0)</span>
+                            <span className="text-xxs text-text-faint ml-0.5">(4.0)</span>
                         </div>
                     </div>
                 </div>
