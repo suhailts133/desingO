@@ -70,7 +70,7 @@ export default function BrowseJobs() {
                 next.set("page", "1");
                 return next;
             });
-        } catch (error){
+        } catch (error) {
             console.error("Failed to fetch location:", error);
         }
     };
@@ -96,7 +96,7 @@ export default function BrowseJobs() {
     const totalPages = data.totalPages ?? 1
 
     return (
-        <div className="min-h-screen bg-gray-50/60 font-Jost">
+        <div className="min-h-screen font-Jost">
 
             <JobFilter
                 designStyles={designStyles}
@@ -124,14 +124,18 @@ export default function BrowseJobs() {
                 </div>
             </div>
 
-            <Pagination
-                page={page}
-                totalItem={totalJobs}
-                whichItem="jobs"
-                totalPages={totalPages}
-                onDecrease={() => handlePageChange(Math.max(1, page - 1))}
-                onIncrease={() => handlePageChange(Math.min(totalPages, page + 1))}
-            />
+
+            <div className="fixed bottom-0 left-0 right-0 z-40">
+                <Pagination
+                    page={page}
+                    totalItem={totalJobs}
+                    whichItem="jobs"
+                    totalPages={totalPages}
+                    onDecrease={() => handlePageChange(Math.max(1, page - 1))}
+                    onIncrease={() => handlePageChange(Math.min(totalPages, page + 1))}
+                />
+            </div>
+
         </div>
     );
 }

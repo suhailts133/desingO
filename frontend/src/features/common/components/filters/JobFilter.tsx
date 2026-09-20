@@ -1,9 +1,10 @@
-import Select, { type MultiValue, type SingleValue } from "react-select";
+import Select, { type MultiValue, type SingleValue, type StylesConfig } from "react-select";
 import { SlidersHorizontal, X } from "lucide-react";
 import { PROPERTY_OPTIONS, STYLE_OPTIONS } from "../../../designer/designs/designData";
 import { TIMELINE_OPTIONS } from "../../../user/jobs/jobData";
 import { SORT_OPTIONS, type OptionType } from "../../baseData";
 import JobLocationFilter from "./JobLocationFilter";
+import { selectStyles } from "../../../../shared/filter/selectStyle";
 
 type Props = {
     designStyles: OptionType[] | null;
@@ -35,17 +36,17 @@ export default function JobFilter({
         onFilterChange("sortBy", selected?.value ?? SORT_OPTIONS[0].value);
     };
     return (
-        <div className="bg-snow-white border-b border-gray-100 px-6 py-5">
+        <div className="bg-surface border-b border-surface-border px-6 py-5">
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col gap-1 mb-6">
-                    <h1 className="font-semibold text-2xl text-gray-900">Browse Jobs</h1>
+                    <h1 className="font-semibold text-2xl text-text-primary">Browse Jobs</h1>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-4">
                     <button
                         onClick={() => setFiltersVisible(!filtersVisible)}
                         className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all
-                            ${filtersVisible ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"}`}
+                            ${filtersVisible ? "bg-accent text-text-on-accent border-accent" : "bg-surface text-text-muted border-surface-border hover:border-surface-border-strong"}`}
                     >
                         <SlidersHorizontal className="w-4 h-4" />
                         Filters
@@ -69,6 +70,7 @@ export default function JobFilter({
                                 options={STYLE_OPTIONS}
                                 placeholder="Design Style"
                                 isClearable
+                                styles={selectStyles as StylesConfig<OptionType, true>}
                             />
                         </div>
                         <div className="min-w-50">
@@ -79,6 +81,7 @@ export default function JobFilter({
                                 options={PROPERTY_OPTIONS}
                                 placeholder="Property Type"
                                 isClearable
+                                styles={selectStyles as StylesConfig<OptionType, true>}
                             />
                         </div>
                         <div className="min-w-50">
@@ -89,12 +92,13 @@ export default function JobFilter({
                                 options={TIMELINE_OPTIONS}
                                 placeholder="Time Line"
                                 isClearable
+                                styles={selectStyles as StylesConfig<OptionType, true>}
                             />
                         </div>
                     </div>
 
                     <div className="ml-auto flex items-center gap-4">
-                        <button onClick={onClear} className="text-sm text-gray-400 hover:text-red-500 flex items-center gap-1">
+                        <button onClick={onClear} className="text-sm text-text-faint hover:text-error flex items-center gap-1">
                             <X className="w-4 h-4" /> Clear
                         </button>
 
@@ -104,6 +108,7 @@ export default function JobFilter({
                                 onChange={handleSortChange}
                                 options={SORT_OPTIONS}
                                 isSearchable={false}
+                                styles={selectStyles as StylesConfig<OptionType, false>}
                             />
                         </div>
                     </div>
