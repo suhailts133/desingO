@@ -1,4 +1,4 @@
-import mongoose, { type QueryFilter, type UpdateQuery } from "mongoose";
+import mongoose, { type ClientSession, type QueryFilter, type UpdateQuery } from "mongoose";
 import type { CreateProposalRepoDataDTO, GetProposalDTO, IProposalSourcePopulated, ProposalStatusFilter, ProposalStatusUpdateRepoDTO } from "../../DTO/proposal/proposal";
 import type { ContractStatus, EscrowStatus, IEscrow, IProposal, PaymentUpdateStatus, ProposalServiceStatus } from "../../interfaces/proposal/IProposal";
 import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
@@ -139,7 +139,8 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
 
 
 
-    async updateProposal(id: string, filters: Partial<IProposal>): Promise<IProposal | null> {
+    async updateProposal(id: string, filters: Partial<IProposal>, session?:ClientSession): Promise<IProposal | null> {
+        console.log(session?.id, "update proposal")
         return await this.update(id, filters);
     }
 

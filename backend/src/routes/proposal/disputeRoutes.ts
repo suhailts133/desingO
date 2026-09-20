@@ -11,6 +11,7 @@ import { TranscationRepository } from "../../repositories/common/transactionRepo
 import { ActiveJobRepository } from "../../repositories/common/activeJobRepository";
 import { JobRequestRepository } from "../../repositories/customer/jobRequestRepository";
 import { DesignRepository } from "../../repositories/designer/designRepository";
+import { MongooseTransactionManager } from "../../shared/helpers/MongooseTransactionManager";
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router()
@@ -23,7 +24,9 @@ const transactionRepo = new TranscationRepository()
 const cloudinaryService = new CloudinaryService()
 const jobRepo = new JobRequestRepository()
 const designRepo = new DesignRepository()
-const disputeService = new DisputeService(designRepo, jobRepo, activeJobRepo, transactionRepo, userRepo, proposalRepo, cloudinaryService, disputeRepo)
+
+const transactionManager = new MongooseTransactionManager()
+const disputeService = new DisputeService(designRepo, jobRepo, activeJobRepo, transactionRepo, userRepo, proposalRepo, cloudinaryService, disputeRepo,transactionManager)
 const disputeController = new DisputeController(disputeService)
 
 router.get("/", authenticate, disputeController.getAllDispute)

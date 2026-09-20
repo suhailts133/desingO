@@ -1,3 +1,4 @@
+import type { ClientSession } from "mongoose";
 import type { Pagination } from "../../DTO/admin/adminDTO";
 import type { paymentRepoDTO } from "../../DTO/proposal/payment";
 import type { CreateProposalRepoDataDTO, GetProposalDTO, IProposalSourcePopulated } from "../../DTO/proposal/proposal";
@@ -12,7 +13,7 @@ export interface IProposalRepository {
     getProposal(sourceId: string): Promise<GetProposalDTO | null>
     getProposalbyId(id: string): Promise<IProposal | null>
     changeEscrowStatus(sourceId: string, order: number, escrowStatus: EscrowStatus): Promise<IProposal | null>
-    updateProposal(proposalId: string, data: Partial<IProposal>): Promise<IProposal | null>
+    updateProposal(proposalId: string, data: Partial<IProposal>,session?:ClientSession): Promise<IProposal | null>
     acceptOrRejectProposal(sourceId: string, contractStatus: ContractStatus, shouldUpdateService: boolean, overallRejectionReason?: string): Promise<IProposal | null>;
     updateService(sourceId: string, order: number, status: ProposalServiceStatus, paymentStatus: PaymentUpdateStatus, escrow: Partial<IEscrow>, feeDeduction?: number, currentAmountHeld?: number): Promise<IProposal | null>
     updateServiceVersion(sourceId: string, order: number, status: ProposalServiceStatus, newVersion: number): Promise<IProposal | null>
