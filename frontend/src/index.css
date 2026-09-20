@@ -50,7 +50,45 @@
         /* warm snow */
 }
 
+@theme {
+  /* ---- 60% — dominant background ---- */
+  --color-bg: #1E1E1E;             /* page background */
+  --color-bg-raised: #242729;      /* navbar / footer, one step above page bg */
 
+  /* ---- 30% — surfaces (cards, panels) ---- */
+  --color-surface: #26292D;
+  --color-surface-hover: #2F3438;
+  --color-surface-border: #383F44;
+  --color-surface-border-strong: #454E54;
+
+  /* ---- 10% — accent (steel blue) ---- */
+  --color-accent: #7B9EB3;
+  --color-accent-hover: #93B0C2;
+  --color-accent-active: #A8C0CE;
+  --color-accent-tint: #2E3D45;        /* dark tinted bg for badges */
+  --color-accent-tint-text: #A9C6D6;   /* text/icons on accent-tint */
+
+  /* ---- Text ---- */
+  --color-text-primary: #F0F1F2;   /* headings, titles, main copy */
+  --color-text-muted: #A8ADB2;     /* descriptions, secondary info */
+  --color-text-faint: #7C8388;     /* labels, meta icons, placeholders */
+  --color-text-on-accent: #12242C; /* text/icons sitting on solid accent */
+
+  /* ---- Semantic: success ---- */
+  --color-success: #5FA679;        /* muted sage green */
+  --color-success-tint: #223128;   /* dark tinted bg for success badges/toasts */
+  --color-success-text: #9FD6B2;   /* text on success-tint */
+
+  /* ---- Semantic: error ---- */
+  --color-error: #C1645A;          /* muted terracotta red */
+  --color-error-tint: #3A2523;     /* dark tinted bg for error badges/toasts */
+  --color-error-text: #E3A79E;     /* text on error-tint */
+
+  /* ---- Semantic: warning ---- */
+  --color-warning: #D9A855;        /* muted amber */
+  --color-warning-tint: #3A2E1A;   /* dark tinted bg for warning badges/toasts */
+  --color-warning-text: #EFC98A;   /* text on warning-tint */
+}
 
 @theme {
     --font-Dynalight-Regular: "Dynalight";

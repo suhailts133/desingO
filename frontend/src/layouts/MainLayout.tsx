@@ -5,7 +5,7 @@ import AIDesignChatPanel from "../features/aiDesign/components/AIDesignChatPanel
 
 export default function MainLayout() {
     return (
-        <div className="min-h-screen flex flex-col  bg-snow-white">
+        <div className="min-h-screen flex flex-col  bg-bg">
             <div className="relative z-50">
                 <Navbar />
             </div>
