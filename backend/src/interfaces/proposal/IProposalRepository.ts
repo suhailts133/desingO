@@ -9,7 +9,7 @@ import type { ContractStatus, EscrowStatus, IEscrow, IProposal, IReview, IServic
 
 export interface IProposalRepository {
     openFirstServiceAndMarkOngoing(sourceId: string, session?:ClientSession): Promise<IProposal | null>
-    createProposal(data: CreateProposalRepoDataDTO): Promise<IProposal>
+    createProposal(data: CreateProposalRepoDataDTO, session?:ClientSession): Promise<IProposal>
     getProposal(sourceId: string): Promise<GetProposalDTO | null>
     getProposalbyId(id: string): Promise<IProposal | null>
     changeEscrowStatus(sourceId: string, order: number, escrowStatus: EscrowStatus,session?:ClientSession): Promise<IProposal | null>

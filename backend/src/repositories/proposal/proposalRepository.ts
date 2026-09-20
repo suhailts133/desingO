@@ -25,7 +25,8 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
     return await this._model.find(query).populate<{ sourceId: IJobRequest }>("sourceId").exec();
   }
 
-  async createProposal(data: CreateProposalRepoDataDTO): Promise<IProposal> {
+  async createProposal(data: CreateProposalRepoDataDTO, session?:ClientSession): Promise<IProposal> {
+    console.log(session?.id, "from create propsal")
     return await this.create({
       sourceId: new mongoose.Types.ObjectId(data.sourceId),
       activeJobId: new mongoose.Types.ObjectId(data.activeJobId),
@@ -46,7 +47,7 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
       ...(data.expectedSiteVisitingDate && { expectedSiteVisitingDate: data.expectedSiteVisitingDate }),
       platformFee: data.platformFee,
       remainingPlatformFee: data.remainingPlatformFee,
-    });
+    },session);
   }
   async openFirstServiceAndMarkOngoing(sourceId: string, session?: ClientSession): Promise<IProposal | null> {
     return await this.updateOne(

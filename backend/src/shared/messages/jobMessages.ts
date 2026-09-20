@@ -50,7 +50,8 @@ export const JOB_MESSAGES = {
     ACTIVE_JOB: {
         NOT_FOUND: "Active job not found.",
         UPDATION_FAILED: "failed to update active job.",
-        FETCH_ALL: "Fetched all active jobs."
+        FETCH_ALL: "Fetched all active jobs.",
+        PROPOSAL_STATUS_FAILED: "failed to update proposal status.",
     }
 
 } as const
