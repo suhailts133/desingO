@@ -1,4 +1,4 @@
-import mongoose, { type QueryFilter } from "mongoose";
+import mongoose, { type ClientSession, type QueryFilter } from "mongoose";
 import { DATE_FORMAT_BY_GROUP, type AggregatedBucketRaw, type ReportFilters, type TransactionFilter, type TransactionPopulated, type TransactionRepoDTO } from "../../DTO/common/transaction";
 import type { ITransaction, ITransactionRepository } from "../../interfaces/base/ITransaction";
 import { TransactionModel } from "../../models/common/transactionModel";
@@ -50,14 +50,15 @@ export class TranscationRepository extends BaseRepository<ITransaction> implemen
 
     }
 
-    async createTransaction(data: TransactionRepoDTO): Promise<ITransaction> {
+    async createTransaction(data: TransactionRepoDTO,session?:ClientSession): Promise<ITransaction> {
+        console.log(session?.id, "create transaction")
         return this.create({
             ...data,
             proposalId: new mongoose.Types.ObjectId(data.proposalId),
             sourceUserId: new mongoose.Types.ObjectId(data.sourceUserId),
             destinationUserId: new mongoose.Types.ObjectId(data.destinationUserId),
             disputeId: new mongoose.Types.ObjectId(data.disputeId),
-        })
+        },session)
     }
 
     async getAllTransaction(filter?: TransactionFilter): Promise<{ data: TransactionPopulated[]; pagination: Pagination; }> {

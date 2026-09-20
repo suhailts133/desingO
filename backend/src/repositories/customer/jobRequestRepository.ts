@@ -33,14 +33,13 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
   }
 
   async updateHireRequest(id: string, data: Partial<IJobRequest>, session?: ClientSession): Promise<IJobRequest | null> {
-    console.log(session?.id, "update hire request")
+    console.log(session?.id, "update hire request");
     return await this.update(id, data, session);
   }
 
   async changeStatus(id: string, status: JobStatus, session?: ClientSession): Promise<IJobRequest | null> {
-    const res = await this._model.findByIdAndUpdate(id, { $set: { status } }, { returnDocument: "after", session: session ?? null }).exec();
-
-    return res;
+    console.log(session?.id, "Change status")
+    return await this._model.findByIdAndUpdate(id, { $set: { status } }, { returnDocument: "after" }).session(session ?? null);
   }
 
   async createJobRequest(data: createJobRepoDTO, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<IJobRequest> {

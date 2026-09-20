@@ -125,127 +125,138 @@ export class DisputeService implements IDisputeService {
       throw new AppError(PROPOSAL_MESSAGES.DISPUTE.DECISION_PENDING, RESPONSE_CODE.BAD_REQUEST);
     }
 
-    const claimed = await this._disputeRepo.updateDisputeIfStatus(data.disputeId, DISPUTE_STATUS.AWAITING_CONFIRMATION, { status: data.status });
+    await this._transactionManager.runInTransaction(async (session) => {
+        console.log(session.id, "From accept or reject disputd")
+      const claimed = await this._disputeRepo.updateDisputeIfStatus(data.disputeId, DISPUTE_STATUS.AWAITING_CONFIRMATION, { status: data.status }, session);
 
-    if (!claimed) {
-      throw new AppError(PROPOSAL_MESSAGES.DISPUTE.DECISION_PENDING, RESPONSE_CODE.BAD_REQUEST);
-    }
+      if (!claimed) {
+        throw new AppError(PROPOSAL_MESSAGES.DISPUTE.DECISION_PENDING, RESPONSE_CODE.BAD_REQUEST);
+      }
 
-    if (data.status === DISPUTE_STATUS.RESOLVED || data.status === DISPUTE_STATUS.TERMINATED) {
-      const isMonetary = dispute.resolutionType === DISPUTE_SOLUTION.REFUND || dispute.resolutionType === DISPUTE_SOLUTION.FULL_REFUND;
+      if (data.status === DISPUTE_STATUS.RESOLVED || data.status === DISPUTE_STATUS.TERMINATED) {
+        const isMonetary = dispute.resolutionType === DISPUTE_SOLUTION.REFUND || dispute.resolutionType === DISPUTE_SOLUTION.FULL_REFUND;
 
-      if (isMonetary) {
-        const proposal = dispute.proposalId;
-        if (!proposal || !proposal.services) {
-          throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
-        }
-
-        const service = proposal.services.find((e) => e.order === dispute.serviceOrder);
-        if (!service) {
-          throw new AppError(PROPOSAL_MESSAGES.SERVICE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
-        }
-
-        const serviceEscrow = service.escrow;
-        if (!serviceEscrow) {
-          throw new AppError(PROPOSAL_MESSAGES.DISPUTE.PAYMENT_NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
-        }
-        if (serviceEscrow.status === EscrowStatus.RELEASED) {
-          throw new AppError(PROPOSAL_MESSAGES.DISPUTE.PAYMENT_ALREADY_SETTLED, RESPONSE_CODE.BAD_REQUEST);
-        }
-
-        const isCustomerRaised = dispute.raisedBy === USER_TYPE.CUSTOMER;
-        const reporterId = isCustomerRaised ? dispute.customerId.id : dispute.designerId.id;
-        const reporterLabel = isCustomerRaised ? USER_ROLES.CUSTOMER : USER_ROLES.DESIGNER;
-
-        const reporter = await this._userRepo.findUserById(reporterId);
-        if (!reporter) {
-          throw new AppError(AUTH_MESSAGES.USER.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
-        }
-
-        const admin = await this._userRepo.findByRole(USER_ROLES.ADMIN);
-        if (!admin) {
-          throw new AppError(ADMIN_MESSAGES.ADMIN.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
-        }
-
-        if (!isCustomerRaised) {
-          const updatedAdminWallet = await this._userRepo.incrementWallet(admin.id, serviceEscrow.platformCommission);
-          if (!updatedAdminWallet) {
-            throw new AppError(PROPOSAL_MESSAGES.PAYMENT.PAYOUT_ADMIN_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+        if (isMonetary) {
+          const proposal = dispute.proposalId;
+          if (!proposal || !proposal.services) {
+            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
           }
 
-          await this._transactionRepo.createTransaction({
-            sourceUserId: proposal.clientId.toString() ?? admin.id,
-            destinationUserId: admin.id,
-            amount: serviceEscrow.platformCommission,
-            TransactionId: generateUniqueId(TRANSACTION_UNIQUE_ID.COMMISSION),
-            type: TRANSACTION_TYPE.COMMISSION,
-            proposalId: proposal.id,
-          });
-        }
-
-        let payoutAmount: number;
-        if (isCustomerRaised) {
-          payoutAmount = dispute.refundAmount === undefined || dispute.refundAmount === null ? serviceEscrow.amountHeld : dispute.refundAmount;
-        } else {
-          if (dispute.refundAmount === undefined || dispute.refundAmount === null) {
-            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.PAYMENT_NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+          const service = proposal.services.find((e) => e.order === dispute.serviceOrder);
+          if (!service) {
+            throw new AppError(PROPOSAL_MESSAGES.SERVICE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
           }
-          payoutAmount = dispute.refundAmount;
-        }
 
-        if (payoutAmount > serviceEscrow.amountHeld) {
-          throw new AppError(PROPOSAL_MESSAGES.DISPUTE.INVALID_REFUND_AMOUNT, RESPONSE_CODE.BAD_REQUEST);
-        }
+          const serviceEscrow = service.escrow;
+          if (!serviceEscrow) {
+            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.PAYMENT_NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+          }
+          if (serviceEscrow.status === EscrowStatus.RELEASED) {
+            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.PAYMENT_ALREADY_SETTLED, RESPONSE_CODE.BAD_REQUEST);
+          }
 
-        const updatedReporter = await this._userRepo.incrementWallet(reporterId, payoutAmount);
-        if (!updatedReporter) {
-          const errorMessage = reporterLabel === USER_ROLES.CUSTOMER ? PROPOSAL_MESSAGES.PAYMENT.PAYOUT_CUSTOMER_FAILED : PROPOSAL_MESSAGES.PAYMENT.PAYOUT_DESIGNER_FAILED;
-          throw new AppError(errorMessage, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
-        }
+          const isCustomerRaised = dispute.raisedBy === USER_TYPE.CUSTOMER;
+          const reporterId = isCustomerRaised ? dispute.customerId.id : dispute.designerId.id;
+          const reporterLabel = isCustomerRaised ? USER_ROLES.CUSTOMER : USER_ROLES.DESIGNER;
 
-        await this._transactionRepo.createTransaction({
-          sourceUserId: proposal.clientId.toString() ?? admin.id,
-          destinationUserId: reporterId,
-          amount: payoutAmount,
-          type: isCustomerRaised ? TRANSACTION_TYPE.REFUND : TRANSACTION_TYPE.PAYOUT,
-          TransactionId: generateUniqueId(isCustomerRaised ? TRANSACTION_UNIQUE_ID.REFUND : TRANSACTION_UNIQUE_ID.PAYOUT),
-          proposalId: proposal.id,
-        });
+          const reporter = await this._userRepo.findUserById(reporterId);
+          if (!reporter) {
+            throw new AppError(AUTH_MESSAGES.USER.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+          }
 
-        const escrowUpdated = await this._propsalRepo.changeEscrowStatus(proposal.sourceId.toString(), dispute.serviceOrder, EscrowStatus.RELEASED);
-        if (!escrowUpdated) {
-          throw new AppError(PROPOSAL_MESSAGES.DISPUTE.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+          const admin = await this._userRepo.findByRole(USER_ROLES.ADMIN);
+          if (!admin) {
+            throw new AppError(ADMIN_MESSAGES.ADMIN.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+          }
+
+          if (!isCustomerRaised) {
+            const updatedAdminWallet = await this._userRepo.incrementWallet(admin.id, serviceEscrow.platformCommission, session);
+            if (!updatedAdminWallet) {
+              throw new AppError(PROPOSAL_MESSAGES.PAYMENT.PAYOUT_ADMIN_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+            }
+
+            await this._transactionRepo.createTransaction(
+              {
+                sourceUserId: proposal.clientId.toString() ?? admin.id,
+                destinationUserId: admin.id,
+                amount: serviceEscrow.platformCommission,
+                TransactionId: generateUniqueId(TRANSACTION_UNIQUE_ID.COMMISSION),
+                type: TRANSACTION_TYPE.COMMISSION,
+                proposalId: proposal.id,
+              },
+              session,
+            );
+          }
+
+          let payoutAmount: number;
+          if (isCustomerRaised) {
+            payoutAmount = dispute.refundAmount === undefined || dispute.refundAmount === null ? serviceEscrow.amountHeld : dispute.refundAmount;
+          } else {
+            if (dispute.refundAmount === undefined || dispute.refundAmount === null) {
+              throw new AppError(PROPOSAL_MESSAGES.DISPUTE.PAYMENT_NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+            }
+            payoutAmount = dispute.refundAmount;
+          }
+
+          if (payoutAmount > serviceEscrow.amountHeld) {
+            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.INVALID_REFUND_AMOUNT, RESPONSE_CODE.BAD_REQUEST);
+          }
+
+          const updatedReporter = await this._userRepo.incrementWallet(reporterId, payoutAmount, session);
+          if (!updatedReporter) {
+            const errorMessage = reporterLabel === USER_ROLES.CUSTOMER ? PROPOSAL_MESSAGES.PAYMENT.PAYOUT_CUSTOMER_FAILED : PROPOSAL_MESSAGES.PAYMENT.PAYOUT_DESIGNER_FAILED;
+            throw new AppError(errorMessage, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+          }
+
+          await this._transactionRepo.createTransaction(
+            {
+              sourceUserId: proposal.clientId.toString() ?? admin.id,
+              destinationUserId: reporterId,
+              amount: payoutAmount,
+              type: isCustomerRaised ? TRANSACTION_TYPE.REFUND : TRANSACTION_TYPE.PAYOUT,
+              TransactionId: generateUniqueId(isCustomerRaised ? TRANSACTION_UNIQUE_ID.REFUND : TRANSACTION_UNIQUE_ID.PAYOUT),
+              proposalId: proposal.id,
+            },
+            session,
+          );
+
+          const escrowUpdated = await this._propsalRepo.changeEscrowStatus(proposal.sourceId.toString(), dispute.serviceOrder, EscrowStatus.RELEASED, session);
+          if (!escrowUpdated) {
+            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+          }
         }
       }
-    }
 
-    if (data.status === DISPUTE_STATUS.RESOLVED) {
-      const proposalStatusUpdated = await this._propsalRepo.updateProposal(dispute.proposalId.id, { contractStatus: CONTRACT_STATUS.ONGOING });
-      if (!proposalStatusUpdated) {
-        throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.UPDATE_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
-      }
-    }
-    if (data.status === DISPUTE_STATUS.TERMINATED) {
-      const [proposalUpdated, activeJobUpdated, jobUpdated] = await Promise.all([
-        this._propsalRepo.updateProposal(dispute.proposalId.id, { contractStatus: CONTRACT_STATUS.TERMINATED }),
-        this._activeJobRepo.updateActiveJob(dispute.proposalId.sourceId.toString(), { status: ACTIVE_JOB_STATUS.TERMINATED }),
-        this._jobRepo.changeStatus(dispute.proposalId.sourceId.toString(), JOB_REQUEST_STATUS.TERMINATED),
-      ]);
-
-      if (!proposalUpdated || !activeJobUpdated || !jobUpdated) {
-        throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.UPDATE_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
-      }
-      const job = await this._jobRepo.getJobRequest(dispute.proposalId.sourceId.toString());
-      if (!job) {
-        throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
-      }
-      if (job.designId) {
-        const designCountDec = await this._designRepo.adjustActiveJobCount(job.designId.toString(), DESIGN_JOB_COUNT.DEC);
-        if (!designCountDec) {
-          throw new AppError(DESIGNER_MESSAGES.DESIGNS.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+      if (data.status === DISPUTE_STATUS.RESOLVED) {
+        const proposalStatusUpdated = await this._propsalRepo.updateProposal(dispute.proposalId.id, { contractStatus: CONTRACT_STATUS.ONGOING }, session);
+        if (!proposalStatusUpdated) {
+          throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.UPDATE_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
         }
       }
-    }
+
+      if (data.status === DISPUTE_STATUS.TERMINATED) {
+        const proposalUpdated = await this._propsalRepo.updateProposal(dispute.proposalId.id, { contractStatus: CONTRACT_STATUS.TERMINATED }, session);
+        const activeJobUpdated = await this._activeJobRepo.updateActiveJob(dispute.proposalId.sourceId.toString(), { status: ACTIVE_JOB_STATUS.TERMINATED }, session);
+        const jobUpdated = await this._jobRepo.changeStatus(dispute.proposalId.sourceId.toString(), JOB_REQUEST_STATUS.TERMINATED, session);
+
+        if (!proposalUpdated || !activeJobUpdated || !jobUpdated) {
+          throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.UPDATE_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+        }
+
+        const job = await this._jobRepo.getJobRequest(dispute.proposalId.sourceId.toString());
+        if (!job) {
+          throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+        }
+
+        if (job.designId) {
+          const designCountDec = await this._designRepo.adjustActiveJobCount(job.designId.toString(), DESIGN_JOB_COUNT.DEC, session);
+          if (!designCountDec) {
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+          }
+        }
+      }
+    });
+
     return { message: PROPOSAL_MESSAGES.DISPUTE.UPDATION_SUCCESS, data: data.status };
   }
 }

@@ -29,13 +29,13 @@ export class ActiveJobRepository extends BaseRepository<IActiveJob> implements I
     return this.findOne({ sourceId: id });
   }
 
-  async updateActiveJob(jobId: string, data: Partial<IActiveJob>): Promise<IActiveJob | null> {
-    const result = await this.updateOne({ sourceId: jobId }, data);
-    return result;
+  async updateActiveJob(jobId: string, data: Partial<IActiveJob>, session?: ClientSession): Promise<IActiveJob | null> {
+    console.log(session?.id, "from update active job");
+    return await this.updateOne({ sourceId: jobId }, data, session);
   }
 
   async createActiveJOb(data: CreateActiveJobDTO, session?: ClientSession): Promise<IActiveJob> {
-    console.log(session?.id, "create acctve job")
+    console.log(session?.id, "create acctve job");
     return await this.create(
       {
         designerId: new mongoose.Types.ObjectId(data.designerId),
@@ -55,8 +55,6 @@ export class ActiveJobRepository extends BaseRepository<IActiveJob> implements I
   async getActiveJob(id: string): Promise<IActiveJob | null> {
     return await this.findById(id);
   }
-
-  
 
   async getCustomerActiveJobs(customerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulated[]; pagination: Pagination }> {
     const query: QueryFilter<IActiveJob> = { sourceType: filter?.sourceType ?? "jobRequest", userId: customerId };

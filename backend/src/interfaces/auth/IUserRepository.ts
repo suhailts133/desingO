@@ -8,7 +8,7 @@ export interface IUserRepository {
     findUser(email: string): Promise<IUser | null>;
     updateUser(id: string, filters: Partial<IUser>,session?:ClientSession): Promise<IUser | null>
     findUserById(id: string): Promise<IUser | null>
-    incrementWallet(id: string, amount: number): Promise<IUser | null>;
+    incrementWallet(id: string, amount: number,session?:ClientSession): Promise<IUser | null>;
     countActiveUsers(): Promise<number>
 
 }

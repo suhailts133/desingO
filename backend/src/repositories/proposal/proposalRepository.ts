@@ -88,14 +88,15 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
 
     }
 
-    async changeEscrowStatus(sourceId: string, order: number, escrowStatus: EscrowStatus): Promise<IProposal | null> {
+    async changeEscrowStatus(sourceId: string, order: number, escrowStatus: EscrowStatus,session?:ClientSession): Promise<IProposal | null> {
+        console.log(session?.id, "change escrow status")
         const updateDoc: UpdateQuery<IProposal> = {
             $set: {
                 "services.$.escrow.status": escrowStatus
             }
         }
 
-        return await this.updateOne({ sourceId, "services.order": order }, updateDoc)
+        return await this.updateOne({ sourceId, "services.order": order }, updateDoc,session)
     }
 
     async updateService(sourceId: string, order: number, status: ProposalServiceStatus, paymentStatus: PaymentUpdateStatus, escrow: Partial<IEscrow>, feeDeduction?: number, currentAmountHeld?: number): Promise<IProposal | null> {
@@ -141,7 +142,7 @@ export class ProposalRepository extends BaseRepository<IProposal> implements IPr
 
     async updateProposal(id: string, filters: Partial<IProposal>, session?:ClientSession): Promise<IProposal | null> {
         console.log(session?.id, "update proposal")
-        return await this.update(id, filters);
+        return await this.update(id, filters,session);
     }
 
 }

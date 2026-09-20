@@ -30,8 +30,9 @@ export class DisputeRepository extends BaseRepository<IDispute> implements IDisp
     );
   }
 
-  async updateDisputeIfStatus(id: string, expectedStatus: DisputeStatus, updates: Partial<IDispute>): Promise<IDispute | null> {
-    return await this.updateOne({ _id: id, status: expectedStatus }, updates);
+  async updateDisputeIfStatus(id: string, expectedStatus: DisputeStatus, updates: Partial<IDispute>,session?:ClientSession): Promise<IDispute | null> {
+    console.log(session?.id, "from update dispute if status")
+    return await this.updateOne({ _id: id, status: expectedStatus }, updates,session);
   }
 
   async getAllDisputePerUserId(userId: string, role: "Designer" | "Customer"): Promise<DisputePopulateProposal[]> {

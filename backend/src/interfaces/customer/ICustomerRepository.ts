@@ -30,7 +30,7 @@ export interface IActiveJobRepository {
     countDesignerActiveJobs(designerId: string): Promise<number>
     countAllActiveJob(): Promise<number>
     getActiveJob(id: string): Promise<IActiveJob | null>
-    updateActiveJob(jobId: string, data: Partial<IActiveJob>): Promise<IActiveJob | null>
+    updateActiveJob(jobId: string, data: Partial<IActiveJob>,session?:ClientSession): Promise<IActiveJob | null>
     getActiveJobBySource(id: string): Promise<IActiveJob | null>
     getAllActiveJobPerDesigner(designerId: string): Promise<IActiveJob[]>
     createActiveJOb(data: CreateActiveJobDTO,session?:ClientSession): Promise<IActiveJob>
