@@ -17,14 +17,14 @@ export interface IProposalRepository {
     acceptOrRejectProposal(sourceId: string, contractStatus: ContractStatus, shouldUpdateService: boolean, overallRejectionReason?: string): Promise<IProposal | null>;
     updateService(sourceId: string, order: number, status: ProposalServiceStatus, paymentStatus: PaymentUpdateStatus, escrow: Partial<IEscrow>, feeDeduction?: number, currentAmountHeld?: number, session?:ClientSession): Promise<IProposal | null>
     updateServiceVersion(sourceId: string, order: number, status: ProposalServiceStatus, newVersion: number): Promise<IProposal | null>
-    acceptOrRejectServiceResult(sourceId: string, order: number, status: ProposalServiceStatus): Promise<IProposal | null>
+    acceptOrRejectServiceResult(sourceId: string, order: number, status: ProposalServiceStatus, session?:ClientSession): Promise<IProposal | null>
     getProposalsByUserId(userId: string, role: "Designer" | "Customer"): Promise<IProposalSourcePopulated[]>
 }
 
 export interface IReviewRepository {
     getReviewPerJob(jobId: string): Promise<IReview | null>
     getMyTopReviews(designerId: string): Promise<IReview[]>
-    createReview(data: ReviewRepoDTO): Promise<IReview>
+    createReview(data: ReviewRepoDTO,session?:ClientSession): Promise<IReview>
     alreadyExsits(jobId: string, userId: string): Promise<IReview | null>
     getMyReviews(designerId: string, page?: string): Promise<{ data: IReview[], pagination: Pagination }>
     getAllReviews(designerId: string): Promise<IReview[]>
