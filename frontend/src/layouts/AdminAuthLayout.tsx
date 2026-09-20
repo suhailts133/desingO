@@ -15,7 +15,7 @@ export default function AdminAuthLayout() {
     return <Navigate to="/admin/dashboard" />
   } else {
     return (
-      <div className="min-h-screen bg-linear-to-br from-blush-pale/80 via-blush-light/80 to-peach/80 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-bg flex items-center justify-center p-4">
         <Outlet />
       </div>
     )
