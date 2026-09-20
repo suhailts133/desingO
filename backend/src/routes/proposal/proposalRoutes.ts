@@ -18,6 +18,7 @@ import { FloorPlansRepository } from "../../repositories/proposal/floorPlansRepo
 import { reviewController } from "./reviewRoutes";
 import { notificationService } from "../designer/jobApplicationRoutes";
 import { DesignRepository } from "../../repositories/designer/designRepository";
+import { MongooseTransactionManager } from "../../shared/helpers/MongooseTransactionManager";
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router()
@@ -31,9 +32,12 @@ const imageUploaderService = new CloudinaryService()
 const serviceVersionRepo = new ServiceVersionRepository()
 const transactionRepo = new TranscationRepository()
 const designRepo = new DesignRepository()
+
+const transactionManager = new MongooseTransactionManager()
+
 const proposalService = new ProposalService(notificationService, floorPlanRepo, proposalRepo, activeJobRepo, jobRepo, serviceVersionRepo)
 const proposalVersionService = new ProposalVersionService(jobRepo, designRepo, activeJobRepo, transactionRepo, proposalRepo, serviceVersionRepo, imageUploaderService, userRepo)
-const floorPlanService = new FloorPlansService(floorPlanRepo, imageUploaderService, proposalRepo)
+const floorPlanService = new FloorPlansService(floorPlanRepo, imageUploaderService, proposalRepo,transactionManager)
 const proposalController = new ProposalController(proposalService, proposalVersionService, floorPlanService)
 
 

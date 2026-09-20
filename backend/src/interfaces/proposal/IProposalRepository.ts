@@ -8,7 +8,7 @@ import type { IPayment, PaymentStatus } from "./IPayment";
 import type { ContractStatus, EscrowStatus, IEscrow, IProposal, IReview, IServiceVersion, PaymentUpdateStatus, ProposalServiceStatus } from "./IProposal";
 
 export interface IProposalRepository {
-    openFirstServiceAndMarkOngoing(sourceId: string): Promise<IProposal | null>
+    openFirstServiceAndMarkOngoing(sourceId: string, session?:ClientSession): Promise<IProposal | null>
     createProposal(data: CreateProposalRepoDataDTO): Promise<IProposal>
     getProposal(sourceId: string): Promise<GetProposalDTO | null>
     getProposalbyId(id: string): Promise<IProposal | null>

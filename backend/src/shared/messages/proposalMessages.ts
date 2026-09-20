@@ -44,10 +44,13 @@ export const PROPOSAL_MESSAGES = {
         NOT_PAID: "Customer has not paid for this service",
         UPDATE_FAIL: "Failed to update the service.",
         CANNOT_OPEN: "Failed to Open the next service.",
+        CANNOT_OPEN_FIRST: "Failed to Open the first service.",
         CANNOT_COMPLETE: "Failed to set the current service as complete."
+
 
     },
     PROPOSAL: {
+
         FLOOR_PLAN_REQUIRED: "Floor plan  is required.",
         FLOOR_PLAN_UPLOADED: "Floor plan uploaded.",
         SITE_VIST_NEEDED: "Site visit measurement is required for this job request.",
