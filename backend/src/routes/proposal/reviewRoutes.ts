@@ -6,18 +6,18 @@ import { ProposalRepository } from "../../repositories/proposal/proposalReposito
 import { ReviewController } from "../../controllers/proposal/reviewController";
 import customerAuthentication from "../../middlewares/customerAuth";
 import authenticate from "../../middlewares/auth";
+import { MongooseTransactionManager } from "../../shared/helpers/MongooseTransactionManager";
 
-const router = Router()
+const router = Router();
 
+const reviewRepo = new ReviewRepository();
+const proposalRepo = new ProposalRepository();
+const userRepo = new UserRepository();
+const transactionManager = new MongooseTransactionManager();
+const reviewService = new ReviewService(reviewRepo, proposalRepo, userRepo, transactionManager);
+export const reviewController = new ReviewController(reviewService);
 
-const reviewRepo = new ReviewRepository()
-const proposalRepo = new ProposalRepository()
-const userRepo = new UserRepository()
-const reviewService = new ReviewService(reviewRepo, proposalRepo, userRepo)
-export const reviewController = new ReviewController(reviewService)
+router.post("/create", customerAuthentication, reviewController.createReview);
+router.get("/my/:id", authenticate, reviewController.getMyReviews);
 
-router.post("/create", customerAuthentication, reviewController.createReview)
-router.get("/my/:id", authenticate, reviewController.getMyReviews)
-
-
-export default router
+export default router;

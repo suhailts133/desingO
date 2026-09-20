@@ -9,125 +9,122 @@ import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
 import { PROPOSAL_MESSAGES } from "../../shared/messages/proposalMessages";
 
-
-
 /**
  * Service handling admin-level dispute resolution workflows.
- * 
+ *
  * Manages fetching dispute logs, retrieving full context for individual disputes,
  */
 export class DisputeManagementService implements IAdminDisputeService {
-    constructor(private _disputeRepo: IDisputeRepository, private _proposalRepo: IProposalRepository) { }
+  constructor(
+    private _disputeRepo: IDisputeRepository,
+    private _proposalRepo: IProposalRepository,
+  ) {}
 
+  /**
+   * Fetches a paginated list of all disputes for admin management.
+   *
+   * @param filter - Optional filter parameters (e.g., status, page, sort).
+   * @returns Paginated list of dispute summary DTOs.
+   */
+  async getAllDispute(filter?: DisputeAdminFilters): Promise<IApiResponseWithPagination<AllDisputeAdminDTO[]>> {
+    const { data, pagination } = await this._disputeRepo.getAllDisputeForAdmin(filter);
+    const disputeData = DisputeMapper.toAdminDisputeDTOList(data);
+    return { message: PROPOSAL_MESSAGES.DISPUTE.FETCH_ALL, total: pagination.total, totalPages: pagination.totalPages, data: disputeData };
+  }
 
-    /**
-  * Fetches a paginated list of all disputes for admin management.
-  * 
-  * @param filter - Optional filter parameters (e.g., status, page, sort).
-  * @returns Paginated list of dispute summary DTOs.
-  */
-    async getAllDispute(filter?: DisputeAdminFilters): Promise<IApiResponseWithPagination<AllDisputeAdminDTO[]>> {
-        const { data, pagination } = await this._disputeRepo.getAllDisputeForAdmin(filter)
-        const disputeData = DisputeMapper.toAdminDisputeDTOList(data)
-        return { message: PROPOSAL_MESSAGES.DISPUTE.FETCH_ALL, total: pagination.total, totalPages: pagination.totalPages, data: disputeData }
+  /**
+   *  Fetches full details for a specific dispute.
+   * @param id  - Unique identifier of the dispute
+   * @returns Detailed dispute data
+   * @throws {AppError} 404 - If the dispute, asssosiated proposal or the service not found
+   */
+  async getDisputeDetail(id: string): Promise<IApiResponse<DisputeDetailAdminDTO>> {
+    const dispute = await this._disputeRepo.findDispute(id);
+    if (!dispute) {
+      throw new AppError(PROPOSAL_MESSAGES.DISPUTE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+    }
+    const proposal = await this._proposalRepo.getProposalbyId(dispute.proposalId.id);
+    if (!proposal) {
+      throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+    }
+    const service = proposal.services.find((e) => e.order === dispute.serviceOrder);
+    if (!service) {
+      throw new AppError(PROPOSAL_MESSAGES.SERVICE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+    }
+    const disputeData = DisputeMapper.toAdminDisputeDTO(dispute, service);
+    return { message: PROPOSAL_MESSAGES.DISPUTE.FETCH_ONE, data: disputeData };
+  }
+
+  /**
+   * Processes and applies a resolution for an open dispute.
+   *
+   * - Validates the refund amounts against escrow metrics (`designerPayout`).
+   * - Updates the dispute status to `AWAITING_CONFIRMATION`.
+   *
+   * @param data - Resolution payload containing solution type, refund amount, and notes.
+   * @returns Resolution summary status.
+   * @throws {AppError} 409 - If refund amount is negative or exceeds available escrow.
+   * @throws {AppError} 404 - If dispute, associated escrow, admin user, or reporter is not found.
+   * @throws {AppError} 500 - If updating wallets or dispute state fails.
+   */
+  async disputeSolution(data: DisputeSolutionDTO): Promise<IApiResponse<DisputeSolutionResponseDTO>> {
+    if (data.refundAmount < 0) {
+      throw new AppError(PROPOSAL_MESSAGES.DISPUTE.ZERO, RESPONSE_CODE.BAD_REQUEST);
     }
 
-    /**
-     *  Fetches full details for a specific dispute.
-     * @param id  - Unique identifier of the dispute
-     * @returns Detailed dispute data
-     * @throws {AppError} 404 - If the dispute, asssosiated proposal or the service not found
-     */
-    async getDisputeDetail(id: string): Promise<IApiResponse<DisputeDetailAdminDTO>> {
-        const dispute = await this._disputeRepo.findDispute(id)
-        if (!dispute) {
-            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
-        }
-        const proposal = await this._proposalRepo.getProposalbyId(dispute.proposalId.id)
-        if (!proposal) {
-            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
-        }
-        const service = proposal.services.find(e => e.order === dispute.serviceOrder)
-        if (!service) {
-            throw new AppError(PROPOSAL_MESSAGES.SERVICE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
-        }
-        const disputeData = DisputeMapper.toAdminDisputeDTO(dispute, service)
-        return { message: PROPOSAL_MESSAGES.DISPUTE.FETCH_ONE, data: disputeData }
+    const dispute = await this._disputeRepo.findDispute(data.disputeId);
+    if (!dispute) {
+      throw new AppError(PROPOSAL_MESSAGES.DISPUTE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
     }
 
-
-    /**
-  * Processes and applies a resolution for an open dispute.
-  * 
-  * - Validates the refund amounts against escrow metrics (`designerPayout`).
-  * - Updates the dispute status to `AWAITING_CONFIRMATION`.
-  * 
-  * @param data - Resolution payload containing solution type, refund amount, and notes.
-  * @returns Resolution summary status.
-  * @throws {AppError} 409 - If refund amount is negative or exceeds available escrow.
-  * @throws {AppError} 404 - If dispute, associated escrow, admin user, or reporter is not found.
-  * @throws {AppError} 500 - If updating wallets or dispute state fails.
-  */
-    async disputeSolution(data: DisputeSolutionDTO): Promise<IApiResponse<DisputeSolutionResponseDTO>> {
-        console.log(data.resolutionType, "lol")
-        if (data.refundAmount < 0) {
-            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.ZERO, RESPONSE_CODE.BAD_REQUEST);
-        }
-
-        const dispute = await this._disputeRepo.findDispute(data.disputeId);
-        if (!dispute) {
-            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
-        }
-
-        if (dispute.status !== DISPUTE_STATUS.OPEN && dispute.status !== DISPUTE_STATUS.REDO) {
-            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.ALREADY_RESOLVED_OR_AWATING_CONFIRMATION, RESPONSE_CODE.CONFILT);
-        }
-
-        const proposal = dispute.proposalId;
-        if (!proposal || !proposal.services) {
-            throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
-        }
-
-        const service = proposal.services.find((e) => e.order === dispute.serviceOrder);
-        if (!service) {
-            throw new AppError(PROPOSAL_MESSAGES.SERVICE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
-        }
-
-        let finalRefundAmount = 0;
-        if (data.resolutionType === DISPUTE_SOLUTION.REFUND || data.resolutionType === DISPUTE_SOLUTION.FULL_REFUND) {
-            const serviceEscrow = service.escrow;
-            if (!serviceEscrow) {
-                throw new AppError(PROPOSAL_MESSAGES.DISPUTE.PAYMENT_NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
-            }
-            finalRefundAmount = data.resolutionType === DISPUTE_SOLUTION.FULL_REFUND ? serviceEscrow.designerPayout : data.refundAmount;
-
-            if (data.resolutionType === DISPUTE_SOLUTION.REFUND && finalRefundAmount >= serviceEscrow.designerPayout) {
-                throw new AppError(PROPOSAL_MESSAGES.DISPUTE.REFEUND_EXCEEDS, RESPONSE_CODE.CONFILT);
-            }
-        }
-
-        const updatedDispute = await this._disputeRepo.updateDispute(data.disputeId, {
-            resolution: data.resolution,
-            refundAmount: finalRefundAmount,
-            canTerminate: data.canTerminate,
-            resolutionType: data.resolutionType,
-            status: DISPUTE_STATUS.AWAITING_CONFIRMATION
-        });
-
-        if (!updatedDispute) {
-            throw new AppError(PROPOSAL_MESSAGES.DISPUTE.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
-        }
-
-        const responseData: DisputeSolutionResponseDTO = {
-            refundAmount: finalRefundAmount,
-            canTerminate: updatedDispute.canTerminate,
-            resolution: data.resolution,
-            resolutionType: data.resolutionType,
-            disputeId: updatedDispute.id,
-            status: updatedDispute.status
-        };
-
-        return { message: PROPOSAL_MESSAGES.DISPUTE.UPDATION_SUCCESS, data: responseData };
+    if (dispute.status !== DISPUTE_STATUS.OPEN && dispute.status !== DISPUTE_STATUS.REDO) {
+      throw new AppError(PROPOSAL_MESSAGES.DISPUTE.ALREADY_RESOLVED_OR_AWATING_CONFIRMATION, RESPONSE_CODE.CONFILT);
     }
 
+    const proposal = dispute.proposalId;
+    if (!proposal || !proposal.services) {
+      throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+    }
+
+    const service = proposal.services.find((e) => e.order === dispute.serviceOrder);
+    if (!service) {
+      throw new AppError(PROPOSAL_MESSAGES.SERVICE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+    }
+
+    let finalRefundAmount = 0;
+    if (data.resolutionType === DISPUTE_SOLUTION.REFUND || data.resolutionType === DISPUTE_SOLUTION.FULL_REFUND) {
+      const serviceEscrow = service.escrow;
+      if (!serviceEscrow) {
+        throw new AppError(PROPOSAL_MESSAGES.DISPUTE.PAYMENT_NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+      }
+      finalRefundAmount = data.resolutionType === DISPUTE_SOLUTION.FULL_REFUND ? serviceEscrow.designerPayout : data.refundAmount;
+
+      if (data.resolutionType === DISPUTE_SOLUTION.REFUND && finalRefundAmount >= serviceEscrow.designerPayout) {
+        throw new AppError(PROPOSAL_MESSAGES.DISPUTE.REFEUND_EXCEEDS, RESPONSE_CODE.CONFILT);
+      }
+    }
+
+    const updatedDispute = await this._disputeRepo.updateDispute(data.disputeId, {
+      resolution: data.resolution,
+      refundAmount: finalRefundAmount,
+      canTerminate: data.canTerminate,
+      resolutionType: data.resolutionType,
+      status: DISPUTE_STATUS.AWAITING_CONFIRMATION,
+    });
+
+    if (!updatedDispute) {
+      throw new AppError(PROPOSAL_MESSAGES.DISPUTE.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+    }
+
+    const responseData: DisputeSolutionResponseDTO = {
+      refundAmount: finalRefundAmount,
+      canTerminate: updatedDispute.canTerminate,
+      resolution: data.resolution,
+      resolutionType: data.resolutionType,
+      disputeId: updatedDispute.id,
+      status: updatedDispute.status,
+    };
+
+    return { message: PROPOSAL_MESSAGES.DISPUTE.UPDATION_SUCCESS, data: responseData };
+  }
 }

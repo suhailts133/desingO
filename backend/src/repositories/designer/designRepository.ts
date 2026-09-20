@@ -6,180 +6,167 @@ import { DesignModel } from "../../models/designer/designModel";
 import { BaseRepository } from "../baseRepository";
 import type { Pagination } from "../../DTO/admin/adminDTO";
 import type { IUser } from "../../interfaces/auth/IUser";
-import type { QueryFilter } from "mongoose"
+import type { ClientSession, QueryFilter } from "mongoose";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
 import type { SpaceTypeAvg } from "../../interfaces/benchmark/IBenchMark";
 
 export class DesignRepository extends BaseRepository<IDesign> implements IDesignRepository {
-    constructor() {
-        super(DesignModel)
+  constructor() {
+    super(DesignModel);
+  }
+
+  async getDesignForAiImageGeneration(filter?: DesignAiImageFilter): Promise<IDesign[]> {
+    const query: QueryFilter<IDesign> = {};
+    if (filter) {
+      if (filter.designStyles) {
+        query.designStyles = { $in: filter.designStyles.split(",") };
+      }
+
+      if (filter.spaceTypes) {
+        query.spaceType = { $in: filter.spaceTypes.split(",") };
+      }
+    }
+    return await this.find(query);
+  }
+
+  async adjustActiveJobCount(id: string, delta: 1 | -1, session?: ClientSession): Promise<IDesign | null> {
+    console.log(session?.id, "adjust active job count")
+    return await this._model.findByIdAndUpdate(id, { $inc: { activeJobCount: delta } }, { new: true }).session(session ?? null);
+  }
+
+  async findCandidatesExcluding(excludedIds: string[]): Promise<IDesignPopulated[]> {
+    return await this._model
+      .find({ _id: { $nin: excludedIds }, embedding: { $exists: true, $not: { $size: 0 } } })
+      .populate<{ userId: IUser }>("userId")
+      .exec();
+  }
+
+  async findMostRecent(limit: number): Promise<IDesignPopulated[]> {
+    return await this._model.find().sort({ createdAt: -1 }).limit(limit).populate<{ userId: IUser }>("userId").exec();
+  }
+
+  async createDesign(data: createDesignDTO): Promise<boolean> {
+    const result = await this.create({
+      ...data,
+      userId: new mongoose.Types.ObjectId(data.userId),
+    });
+    return !!result;
+  }
+  async countMyDesigns(userId: string): Promise<number> {
+    return this._model.countDocuments({ userId });
+  }
+
+  async editDesign(id: string, data: EditDesignRepoData, coverImage?: ImageUploadResult, gallery?: ImageUploadResult[]): Promise<boolean> {
+    const updateData = {
+      ...data,
+      ...(coverImage && { coverImage }),
+      ...(gallery && { gallery }),
+    };
+    const result = await this.update(id, { $set: updateData });
+    return !!result;
+  }
+
+  async getMyDesigns(userId: string, page?: string): Promise<{ data: IDesign[]; pagination: Pagination }> {
+    const pageNO = page ? Number(page) : 1;
+    const limit = 6;
+
+    const result = await this._model
+      .find({ userId })
+      .skip((pageNO - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .exec();
+    const total = await this._model.countDocuments({ userId });
+    const pagination: Pagination = {
+      total,
+      totalPages: Math.ceil(total / limit),
+    };
+    return {
+      data: result,
+      pagination,
+    };
+  }
+
+  async getDesign(designId: string): Promise<IDesignPopulated | null> {
+    const result = await this._model.findById(designId).populate<{ userId: IUser }>("userId").exec();
+    if (!result) {
+      return null;
+    }
+    return result;
+  }
+
+  async getAllDesigns(designFilter?: DesignFilter): Promise<{ data: IDesignPopulated[]; pagination: Pagination }> {
+    const page = designFilter?.page ? Number(designFilter?.page) : 1;
+    const limit = 9;
+    const query: QueryFilter<IDesign> = {};
+    if (designFilter) {
+      if (designFilter.designStyles) {
+        query.designStyles = { $in: designFilter.designStyles.split(",") };
+      }
+      if (designFilter.propertyTypes) {
+        query.propertyType = { $in: designFilter.propertyTypes.split(",") };
+      }
+      if (designFilter.spaceTypes) {
+        query.spaceType = { $in: designFilter.spaceTypes.split(",") };
+      }
     }
 
-    async getDesignForAiImageGeneration(filter?: DesignAiImageFilter): Promise<IDesign[]> {
-        const query: QueryFilter<IDesign> = {}
-        if (filter) {
-            if (filter.designStyles) {
-                query.designStyles = { $in: filter.designStyles.split(",") }
-            }
-
-            if (filter.spaceTypes) {
-                query.spaceType = { $in: filter.spaceTypes.split(",") }
-            }
-        }
-        return await this.find(query)
+    let sortOrder: { [key: string]: SortOrder } = { createdAt: 1 };
+    if (designFilter?.sortBy) {
+      if (designFilter.sortBy === "price_asc") {
+        sortOrder = { startingPrice: 1 };
+      }
+      if (designFilter.sortBy === "price_desc") {
+        sortOrder = { startingPrice: -1 };
+      }
+      if (designFilter.sortBy === "az") {
+        sortOrder = { name: 1 };
+      }
+      if (designFilter.sortBy === "za") {
+        sortOrder = { name: -1 };
+      }
     }
+    const result = await this._model
+      .find(query)
+      .populate<{ userId: IUser }>("userId")
+      .sort(sortOrder)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .exec();
 
-    async adjustActiveJobCount(id: string, delta: 1 | -1): Promise<IDesign | null> {
-        return await this._model.findByIdAndUpdate(
-            id,
-            { $inc: { activeJobCount: delta } },
-            { new: true }
-        );
-    }
+    const total = await this._model.countDocuments(query);
+    const pagination: Pagination = {
+      total,
+      totalPages: Math.ceil(total / limit),
+    };
+    return { data: result, pagination };
+  }
 
-    async findCandidatesExcluding(excludedIds: string[]): Promise<IDesignPopulated[]> {
-        return await this._model.find({ _id: { $nin: excludedIds }, embedding: { $exists: true, $not: { $size: 0 } } })
-            .populate<{ userId: IUser }>("userId")
-            .exec()
-    }
+  async deleteADesign(id: string): Promise<boolean> {
+    return await this.delete(id);
+  }
 
-    async findMostRecent(limit: number): Promise<IDesignPopulated[]> {
-        return await this._model.find()
-            .sort({ createdAt: -1 })
-            .limit(limit)
-            .populate<{ userId: IUser }>("userId")
-            .exec()
-    }
+  async computeAvgPriceBySpaceType(): Promise<SpaceTypeAvg[]> {
+    const result = await this._model.aggregate([
+      {
+        $group: {
+          _id: "$spaceType",
+          averageMinPrice: { $avg: "$minPrice" },
+          averageMaxPrice: { $avg: "$maxPrice" },
+          noOfDesigns: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          spaceType: "$_id",
+          averageMinPrice: 1,
+          averageMaxPrice: 1,
+          noOfDesigns: 1,
+        },
+      },
+    ]);
 
-    async createDesign(data: createDesignDTO): Promise<boolean> {
-        const result = await this.create({
-            ...data,
-            userId: new mongoose.Types.ObjectId(data.userId)
-        });
-        return !!result
-    }
-    async countMyDesigns(userId: string): Promise<number> {
-        return this._model.countDocuments({ userId });
-    }
-
-
-    async editDesign(id: string, data: EditDesignRepoData, coverImage?: ImageUploadResult, gallery?: ImageUploadResult[]): Promise<boolean> {
-        const updateData = {
-            ...data,
-            ...(coverImage && { coverImage }),
-            ...(gallery && { gallery }),
-        }
-        const result = await this.update(id, { $set: updateData })
-        return !!result
-    }
-
-    async getMyDesigns(userId: string, page?: string): Promise<{ data: IDesign[], pagination: Pagination }> {
-        const pageNO = page ? Number(page) : 1;
-        const limit = 6
-
-        const result = await this._model.find({ userId })
-            .skip((pageNO - 1) * limit)
-            .limit(limit)
-            .sort({ createdAt: -1 })
-            .exec()
-        const total = await this._model.countDocuments({ userId })
-        const pagination: Pagination = {
-            total,
-            totalPages: Math.ceil(total / limit)
-        }
-        return {
-            data: result,
-            pagination
-        }
-    }
-
-    async getDesign(designId: string): Promise<IDesignPopulated | null> {
-        const result = await this._model.findById(designId)
-            .populate<{ userId: IUser }>("userId")
-            .exec()
-        if (!result) {
-            return null
-        }
-        return result
-
-
-    }
-
-    async getAllDesigns(designFilter?: DesignFilter): Promise<{ data: IDesignPopulated[]; pagination: Pagination; }> {
-        const page = designFilter?.page ? Number(designFilter?.page) : 1;
-        const limit = 9;
-        const query: QueryFilter<IDesign> = {}
-        if (designFilter) {
-            if (designFilter.designStyles) {
-                query.designStyles = { $in: designFilter.designStyles.split(",") }
-            }
-            if (designFilter.propertyTypes) {
-                query.propertyType = { $in: designFilter.propertyTypes.split(",") }
-            }
-            if (designFilter.spaceTypes) {
-                query.spaceType = { $in: designFilter.spaceTypes.split(",") }
-            }
-        }
-
-        let sortOrder: { [key: string]: SortOrder } = { createdAt: 1 };
-        if (designFilter?.sortBy) {
-            if (designFilter.sortBy === "price_asc") {
-                sortOrder = { startingPrice: 1 }
-            }
-            if (designFilter.sortBy === "price_desc") {
-                sortOrder = { startingPrice: -1 }
-            }
-            if (designFilter.sortBy === "az") {
-                sortOrder = { name: 1 }
-            }
-            if (designFilter.sortBy === "za") {
-                sortOrder = { name: -1 }
-            }
-
-        }
-        const result = await this._model.find(query)
-            .populate<{ userId: IUser }>("userId")
-            .sort(sortOrder)
-            .skip((page - 1) * limit)
-            .limit(limit)
-            .exec()
-
-        const total = await this._model.countDocuments(query)
-        const pagination: Pagination = {
-            total,
-            totalPages: Math.ceil(total / limit)
-        }
-        return { data: result, pagination }
-    }
-
-    async deleteADesign(id: string): Promise<boolean> {
-        return await this.delete(id);
-    }
-
-    async computeAvgPriceBySpaceType(): Promise<SpaceTypeAvg[]> {
-        const result = await this._model.aggregate([
-            {
-                $group: {
-                    _id: "$spaceType",
-                    averageMinPrice: { $avg: "$minPrice" },
-                    averageMaxPrice: { $avg: "$maxPrice" },
-                    noOfDesigns: { $sum: 1 },
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    spaceType: "$_id",
-                    averageMinPrice: 1,
-                    averageMaxPrice: 1,
-                    noOfDesigns: 1,
-                }
-            }
-        ]);
-
-        return result;
-    }
-
-
-
+    return result;
+  }
 }

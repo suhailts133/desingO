@@ -1,32 +1,35 @@
-import mongoose from "mongoose";
+import mongoose, { type ClientSession } from "mongoose";
 import type { floorPlanRepoDTO } from "../../DTO/proposal/floorplans";
 import type { IFloorPlan, IFloorPlanRepository } from "../../interfaces/proposal/IFloorPlan";
 import { FloorPlanModel } from "../../models/proposal/floorPlansModel";
 import { BaseRepository } from "../baseRepository";
 
 export class FloorPlansRepository extends BaseRepository<IFloorPlan> implements IFloorPlanRepository {
-    constructor() {
-        super(FloorPlanModel)
-    }
+  constructor() {
+    super(FloorPlanModel);
+  }
 
-    async createFloorPlan(data: floorPlanRepoDTO): Promise<IFloorPlan> {
-        const { proposalId, ...rest } = data
-        return await this.create({
-            ...rest,
-            proposalId: new mongoose.Types.ObjectId(proposalId)
-        })
-    }
+  async createFloorPlan(data: floorPlanRepoDTO, session?: ClientSession): Promise<IFloorPlan> {
+    console.log(session?.id, "create floor plan repo");
+    const { proposalId, ...rest } = data;
+    return await this.create(
+      {
+        ...rest,
+        proposalId: new mongoose.Types.ObjectId(proposalId),
+      },
+      session,
+    );
+  }
 
-    async getFloorPlan(id: string): Promise<IFloorPlan | null> {
-        return await this.findById(id)
-    }
+  async getFloorPlan(id: string): Promise<IFloorPlan | null> {
+    return await this.findById(id);
+  }
 
-    async updateFloorPlan(id: string, data: Partial<IFloorPlan>): Promise<IFloorPlan | null> {
-        return await this.update(id, data)
-    }
+  async updateFloorPlan(id: string, data: Partial<IFloorPlan>, session?: ClientSession): Promise<IFloorPlan | null> {
+    return await this.update(id, data, session);
+  }
 
-
-    async getAllFloorPlan(proposalId: string): Promise<IFloorPlan[]> {
-        return await this.find({ proposalId })
-    }
+  async getAllFloorPlan(proposalId: string): Promise<IFloorPlan[]> {
+    return await this.find({ proposalId });
+  }
 }

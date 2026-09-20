@@ -1,6 +1,5 @@
 import mongoose, { type ClientSession } from "mongoose";
 import type { ITransactionManager } from "../../interfaces/base/ITransactionManager";
-import { AppError } from "../errors/appError";
 
 export class MongooseTransactionManager implements ITransactionManager {
   async runInTransaction<T>(dbOp: (session: ClientSession) => Promise<T>): Promise<T> {

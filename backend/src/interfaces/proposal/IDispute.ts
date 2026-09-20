@@ -3,7 +3,7 @@ import type { AcceptOrRejectDisputeDTO, DisputeAdminFilters, DisputePopulated, D
 import type { IApiResponse } from "../base/IApiResponse";
 import type { ImageUploadResult } from "../base/IImageUpload";
 import type { DisputeStatus } from "./IProposal";
-import mongoose from "mongoose";
+import mongoose, { type ClientSession } from "mongoose";
 
 
 export interface IDispute {
@@ -28,8 +28,8 @@ export interface IDispute {
 
 export interface IDisputeRepository {
     getDisputesRequiringAdminAction(): Promise<IDispute[]>
-    updateDisputeIfStatus(id: string, expectedStatus: DisputeStatus, updates: Partial<IDispute>): Promise<IDispute | null>;
-    createDispute(data: DisputeRepoDTO): Promise<IDispute>
+    updateDisputeIfStatus(id: string, expectedStatus: DisputeStatus, updates: Partial<IDispute>, session?:ClientSession): Promise<IDispute | null>;
+    createDispute(data: DisputeRepoDTO,session?:ClientSession): Promise<IDispute>
     updateDispute(id: string, data: Partial<DisputeUpdateDTO>): Promise<IDispute | null>
     getAllDisputeForAdmin(filters?: DisputeAdminFilters): Promise<{ data: DisputePopulated[]; pagination: Pagination; }>
     findDispute(id: string): Promise<DisputePopulatedAll | null>

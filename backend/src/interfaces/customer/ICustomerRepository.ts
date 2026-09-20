@@ -1,11 +1,12 @@
+import type { ClientSession } from "mongoose";
 import type { Pagination } from "../../DTO/admin/adminDTO";
 import type { CustomerInteraction, CustomerInteractionPopulated } from "../../DTO/common/interaction";
-import type { ActiveJobFilter, ActiveJobPopulateAll, ActiveJobPopulated, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO";
-import type { CreateHireDesignerDTO, HireDesignerFilter, HireDesignerPopulatedALL, HireDesignerPopulateUser } from "../../DTO/user/hireDesignerDTO";
+import type { ActiveJobFilter, ActiveJobPopulated, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO";
+import type { HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
 
 import type { createJobRepoDTO, EditJobRepoData, JobFilter } from "../../DTO/user/jobsDTO";
 import type { ImageUploadResult } from "../base/IImageUpload";
-import type { IActiveJob, IHireDesigner, ICustomerInteraction, IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, Source_type, JobStatus } from "./ICustomer";
+import type { IActiveJob, ICustomerInteraction, IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, Source_type, JobStatus } from "./ICustomer";
 
 export interface IJobRepository {
     createJobRequest(data: createJobRepoDTO, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<IJobRequest>;
@@ -15,23 +16,13 @@ export interface IJobRepository {
     deleteAJob(id: string): Promise<boolean>;
     getJobRequest(id: string): Promise<IJobRequestPopulated | null>
     editJobRequest(id: string, data: EditJobRepoData, referenceImages?: ImageUploadResult[], finalFloorPlans?: ImageUploadResult[]): Promise<boolean>
-    changeStatus(id: string, status: JobStatus): Promise<IJobRequest | null>
-    updateHireRequest(id: string, data: Partial<IJobRequest>): Promise<IJobRequest | null>
+    changeStatus(id: string, status: JobStatus,session?:ClientSession): Promise<IJobRequest | null>
+    updateHireRequest(id: string, data: Partial<IJobRequest>, session?:ClientSession): Promise<IJobRequest | null>
     countJobs(userId: string): Promise<number>
     findMostRecent(): Promise<IJobRequestPopulated[]>;
     findCandidatesExcluding(): Promise<IJobRequestPopulated[]>
 }
 
-export interface IHireDesignerRepository {
-    checkIfApplied(userId: string, designId: string): Promise<IHireDesigner | null>
-    getHireDesignerByJobId(jobId: string): Promise<IHireDesigner | null>
-    deleteHireDesigner(id: string): Promise<boolean>
-    updateHireDesigner(id: string, data: Partial<IHireDesigner>): Promise<IHireDesigner | null>
-    getHireDesignerById(id: string): Promise<IHireDesigner | null>
-    createHireDesigner(data: CreateHireDesignerDTO): Promise<IHireDesigner>
-    getMyHireDesignerRequests(userId: string, filters?: HireDesignerFilter): Promise<{ data: HireDesignerPopulatedALL[], pagination: Pagination }>
-    getHireRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<{ data: HireDesignerPopulateUser[], pagination: Pagination }>
-}
 
 
 export interface IActiveJobRepository {
@@ -39,11 +30,10 @@ export interface IActiveJobRepository {
     countDesignerActiveJobs(designerId: string): Promise<number>
     countAllActiveJob(): Promise<number>
     getActiveJob(id: string): Promise<IActiveJob | null>
-    updateActiveJob(jobId: string, data: Partial<IActiveJob>): Promise<IActiveJob | null>
+    updateActiveJob(jobId: string, data: Partial<IActiveJob>,session?:ClientSession): Promise<IActiveJob | null>
     getActiveJobBySource(id: string): Promise<IActiveJob | null>
-    getActiveJobPopulated(id: string): Promise<ActiveJobPopulateAll | null>
     getAllActiveJobPerDesigner(designerId: string): Promise<IActiveJob[]>
-    createActiveJOb(data: CreateActiveJobDTO): Promise<IActiveJob>
+    createActiveJOb(data: CreateActiveJobDTO,session?:ClientSession): Promise<IActiveJob>
     getCustomerActiveJobs(customerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulated[], pagination: Pagination }>
     getDesignerActiveJobs(designerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulated[], pagination: Pagination }>
 }

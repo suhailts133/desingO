@@ -18,7 +18,6 @@ export class DesignerService implements IDesignerService {
     constructor(
         private _userRepository: IUserRepository,
         private _designerRepository: IDesignerRepository,
-
         private _imageUploder: IImageUploaderService,
     ) { }
 

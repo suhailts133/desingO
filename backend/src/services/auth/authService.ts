@@ -15,11 +15,11 @@ import type { CreateUserDTO, RegisterUserDTO, AuthResponseDTO, RefreshTokenDTO }
 import { googleLoginResponse } from "../common/googleAuth";
 import { AppError } from "../../shared/errors/appError";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
-import { USER_ROLES } from "../../shared/enums/commonEnums";
 import { UserMapper } from "../../dtoMappers/user/userMapper";
 
 import { v4 as uuidv4 } from "uuid"
 import type { IBlackListRepository, IRefreshTokenRepository, RefreshTokenPayload } from "../../interfaces/auth/IRefreshToken";
+import { USER_ROLES } from "../../shared/enums/commonEnums";
 
 
 /**

@@ -7,103 +7,86 @@ import { DisputeModel } from "../../models/proposal/disputeModal";
 import { DISPUTE_STATUS, USER_TYPE } from "../../shared/enums/proposalEnums";
 import { BaseRepository } from "../baseRepository";
 import mongoose from "mongoose";
-import type { QueryFilter, SortOrder } from "mongoose";
+import type { ClientSession, QueryFilter, SortOrder } from "mongoose";
 export class DisputeRepository extends BaseRepository<IDispute> implements IDisputeRepository {
-    constructor() {
-        super(DisputeModel)
+  constructor() {
+    super(DisputeModel);
+  }
+
+  async getDisputesRequiringAdminAction(): Promise<IDispute[]> {
+    return await this.find({ status: { $in: [DISPUTE_STATUS.OPEN, DISPUTE_STATUS.REDO] } });
+  }
+
+  async createDispute(data: DisputeRepoDTO, session?: ClientSession): Promise<IDispute> {
+    console.log(session?.id, "createdispute ");
+    return this.create(
+      {
+        ...data,
+        proposalId: new mongoose.Types.ObjectId(data.proposalId),
+        designerId: new mongoose.Types.ObjectId(data.designerId),
+        customerId: new mongoose.Types.ObjectId(data.customerId),
+      },
+      session,
+    );
+  }
+
+  async updateDisputeIfStatus(id: string, expectedStatus: DisputeStatus, updates: Partial<IDispute>,session?:ClientSession): Promise<IDispute | null> {
+    console.log(session?.id, "from update dispute if status")
+    return await this.updateOne({ _id: id, status: expectedStatus }, updates,session);
+  }
+
+  async getAllDisputePerUserId(userId: string, role: "Designer" | "Customer"): Promise<DisputePopulateProposal[]> {
+    const objectId = new mongoose.Types.ObjectId(userId);
+    const query: QueryFilter<IDispute> = {};
+
+    if (role === USER_TYPE.CUSTOMER) {
+      query.customerId = objectId;
+    } else {
+      query.designerId = objectId;
+    }
+    return await this._model.find(query).populate<{ proposalId: IProposal }>("proposalId").exec();
+  }
+
+  async updateDispute(id: string, data: Partial<DisputeUpdateDTO>): Promise<IDispute | null> {
+    return this.update(id, data);
+  }
+
+  async getAllDisputeForAdmin(filters: DisputeAdminFilters): Promise<{ data: DisputePopulated[]; pagination: Pagination }> {
+    const page = filters.page ? Number(filters.page) : 1;
+    const limit = 6;
+    const skip = (page - 1) * limit;
+    const sortOrder: Record<string, SortOrder> = { createdAt: -1 };
+    const query: QueryFilter<IDispute> = {};
+
+    if (filters) {
+      if (filters.status) {
+        query.status = filters.status;
+      }
+      if (filters.sort === "asc") {
+        sortOrder.createdAt = "asc";
+      } else if (filters.sort === "desc") {
+        sortOrder.createdAt = "desc";
+      }
     }
 
-    async getDisputesRequiringAdminAction(): Promise<IDispute[]> {
-        return await this.find({ status: { $in: [DISPUTE_STATUS.OPEN, DISPUTE_STATUS.REDO] } });
-    }
+    const [result, total] = await Promise.all([this._model.find(query).sort(sortOrder).populate<{ customerId: IUser }>("customerId").populate<{ designerId: IUser }>("designerId").skip(skip).limit(limit).exec(), this._model.countDocuments(query)]);
+    const pagination: Pagination = {
+      total,
+      totalPages: Math.ceil(total / limit),
+    };
 
+    return { data: result, pagination };
+  }
 
-    async createDispute(data: DisputeRepoDTO): Promise<IDispute> {
-        return this.create({
-            ...data,
-            proposalId: new mongoose.Types.ObjectId(data.proposalId),
-            designerId: new mongoose.Types.ObjectId(data.designerId),
-            customerId: new mongoose.Types.ObjectId(data.customerId),
-        })
-    }
+  async findDispute(id: string): Promise<DisputePopulatedAll | null> {
+    return await this._model.findById(id).populate<{ customerId: IUser }>("customerId").populate<{ designerId: IUser }>("designerId").populate<{ proposalId: IProposal }>("proposalId");
+  }
 
-    async updateDisputeIfStatus(id: string, expectedStatus: DisputeStatus, updates: Partial<IDispute>): Promise<IDispute | null> {
-        return await this.updateOne({ _id:id, status: expectedStatus }, updates)
-    }
+  async findDisputeByProposalId(id: string): Promise<DisputePopulatedAll | null> {
+    return await this._model.findOne({ proposalId: id }).populate<{ customerId: IUser }>("customerId").populate<{ designerId: IUser }>("designerId").populate<{ proposalId: IProposal }>("proposalId");
+  }
 
-    async getAllDisputePerUserId(userId: string, role: "Designer" | "Customer"): Promise<DisputePopulateProposal[]> {
-        const objectId = new mongoose.Types.ObjectId(userId);
-        const query: QueryFilter<IDispute> = {};
-
-        if (role === USER_TYPE.CUSTOMER) {
-            query.customerId = objectId;
-        } else {
-            query.designerId = objectId;
-        }
-        return await this._model.find(query).populate<{ proposalId: IProposal }>("proposalId").exec()
-    }
-
-
-    async updateDispute(id: string, data: Partial<DisputeUpdateDTO>): Promise<IDispute | null> {
-        return this.update(id, data)
-    }
-
-
-    async getAllDisputeForAdmin(filters: DisputeAdminFilters): Promise<{ data: DisputePopulated[]; pagination: Pagination; }> {
-        const page = filters.page ? Number(filters.page) : 1;
-        const limit = 6
-        const skip = (page - 1) * limit
-        const sortOrder: Record<string, SortOrder> = { createdAt: -1 };
-        const query: QueryFilter<IDispute> = {}
-
-        if (filters) {
-            if (filters.status) {
-                query.status = filters.status;
-            }
-            if (filters.sort === "asc") {
-                sortOrder.createdAt = "asc"
-            } else if (filters.sort === "desc") {
-                sortOrder.createdAt = "desc"
-            }
-        }
-
-        const [result, total] = await Promise.all([
-            this._model.find(query)
-                .sort(sortOrder)
-                .populate<{ customerId: IUser }>("customerId")
-                .populate<{ designerId: IUser }>("designerId")
-                .skip(skip)
-                .limit(limit)
-                .exec(),
-            this._model.countDocuments(query)
-        ])
-        const pagination: Pagination = {
-            total,
-            totalPages: Math.ceil(total / limit)
-        };
-
-        return { data: result, pagination };
-    }
-
-    async findDispute(id: string): Promise<DisputePopulatedAll | null> {
-        return await this._model.findById(id)
-            .populate<{ customerId: IUser }>("customerId")
-            .populate<{ designerId: IUser }>("designerId")
-            .populate<{ proposalId: IProposal }>("proposalId")
-    }
-
-    async findDisputeByProposalId(id: string): Promise<DisputePopulatedAll | null> {
-        return await this._model.findOne({ proposalId: id })
-            .populate<{ customerId: IUser }>("customerId")
-            .populate<{ designerId: IUser }>("designerId")
-            .populate<{ proposalId: IProposal }>("proposalId")
-    }
-
-
-    async getAllDispute(proposalId: string): Promise<DisputePopulatedAll[]> {
-        return await this._model.find({ proposalId })
-            .populate<{ customerId: IUser }>("customerId")
-            .populate<{ designerId: IUser }>("designerId")
-            .populate<{ proposalId: IProposal }>("proposalId")
-    }
+  async getAllDispute(proposalId: string): Promise<DisputePopulatedAll[]> {
+    return await this._model.find({ proposalId }).populate<{ customerId: IUser }>("customerId").populate<{ designerId: IUser }>("designerId").populate<{ proposalId: IProposal }>("proposalId");
+  }
 }

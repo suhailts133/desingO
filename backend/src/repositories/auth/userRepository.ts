@@ -39,11 +39,13 @@ export class UserRepository extends BaseRepository<IUser> implements IUserReposi
 
 
     async updateUser(id: string, filters: Partial<IUser>, session?: ClientSession): Promise<IUser | null> {
+
         return await this.update(id, filters,session);
     }
 
-    async incrementWallet(id: string, amount: number): Promise<IUser | null> {
-        return await this.update(id, { $inc: { wallet: amount } });
+    async incrementWallet(id: string, amount: number,session?:ClientSession): Promise<IUser | null> {
+        console.log(session?.id, "increate wallet")
+        return await this.update(id, { $inc: { wallet: amount } },session);
     }
 
     async createNewUser(data: CreateUserDTO): Promise<IUser> {

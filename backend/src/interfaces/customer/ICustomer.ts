@@ -121,38 +121,7 @@ export interface IBid {
 }
 
 
-export interface IHireDesigner {
-    id: string
-    projectTitle: string;
-    userId: mongoose.Types.ObjectId
-    designerId: mongoose.Types.ObjectId
-    designId: mongoose.Types.ObjectId
-    spaceType: string,
-    length: string;
-    width: string;
-    minBudget: number;
-    maxBudget: number;
-    ceilingHeight: string;
-    unit: "ft" | "m"
-    notes: string;
-    status: "Accepted" | "Rejected" | "Pending",
-    rejectionReason?: string
-    services: string[]
-    timeLine: string,
-    createdAt: Date,
-    expiresAt: Date
-}
 
-export type HireDesignerPayload = {
-    designId: string;
-    length: string;
-    width: string;
-    ceilingHeight: string;
-    unit: "ft" | "m";
-    notes: string;
-    services: string[];
-    timeLine: string;
-};
 
 export interface IActiveJob {
     id: string

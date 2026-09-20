@@ -10,70 +10,57 @@ import type { DesignerFilter } from "../../DTO/designer/designerDTO";
 import { UserModel } from "../../models/user/userModel";
 import type { IUser } from "../../interfaces/auth/IUser";
 import { DESIGNER_STATUS } from "../../shared/enums/commonEnums";
+import type { ClientSession } from "mongoose";
 
 export class DesignerRepository extends BaseRepository<IDesigner> implements IDesignerRepository {
-    constructor() {
-        super(DesignerModel)
+  constructor() {
+    super(DesignerModel);
+  }
+
+  async getRequestRequiringAdminAction(): Promise<IDesignerPopulated[]> {
+    return await this._model.find({ status: DESIGNER_STATUS.PENDING }).populate<{ userId: IUser }>("userId");
+  }
+  async createDesignerRequest(data: DesignerVerificationDTO): Promise<boolean> {
+    const result = await this.create({
+      ...data,
+      userId: new mongoose.Types.ObjectId(data.userId),
+    });
+    return !!result;
+  }
+
+  async getDesigner(userId: string): Promise<IDesigner | null> {
+    const result = await this.findOne({ userId });
+    if (!result) {
+      return null;
     }
 
-    async getRequestRequiringAdminAction(): Promise<IDesignerPopulated[]> {
-        return await this._model.find({ status: DESIGNER_STATUS.PENDING })
-            .populate<{ userId: IUser }>("userId")
+    return result;
+  }
 
+  async updateDesigner(designerId: string, data: DesignerUpdateRequestDTO, session?: ClientSession): Promise<IDesigner | null> {
+    return await this.updateOne({ userId: designerId }, data, session);
+  }
+
+  async getAllDesigners(designerFilter: DesignerFilter): Promise<{ data: IDesignerPopulated[]; pagination: Pagination }> {
+    const PageNo = designerFilter.page ? Number(designerFilter.page) : 1;
+    const limit = 1;
+    const skip = (PageNo - 1) * limit;
+    const query: QueryFilter<IDesigner> = {};
+    if (designerFilter) {
+      if (designerFilter.full_name) {
+        const matchingUsers = await UserModel.find({
+          full_name: { $regex: designerFilter.full_name, $options: "i" },
+        }).select("_id");
+        const userIds = matchingUsers.map((u) => u._id);
+        query.userId = { $in: userIds };
+      }
     }
-    async createDesignerRequest(data: DesignerVerificationDTO): Promise<boolean> {
-        const result = await this.create({
-            ...data,
-            userId: new mongoose.Types.ObjectId(data.userId)
-        });
-        return !!result
-    }
+    const [designers, total] = await Promise.all([this._model.find(query).populate<{ userId: IUser }>("userId").skip(skip).limit(limit).exec(), this._model.countDocuments(query)]);
+    const pagination: Pagination = {
+      total,
+      totalPages: Math.ceil(total / limit),
+    };
 
-
-    async getDesigner(userId: string): Promise<IDesigner | null> {
-        const result = await this.findOne({ userId });
-        if (!result) {
-            return null
-        }
-
-        return result
-    }
-
-    async updateDesigner(designerId: string, data: DesignerUpdateRequestDTO): Promise<IDesigner | null> {
-
-        const result = await this.updateOne({ userId: designerId }, data);
-
-        return result ?? null
-    }
-
-    async getAllDesigners(designerFilter: DesignerFilter): Promise<{ data: IDesignerPopulated[], pagination: Pagination, }> {
-        const PageNo = designerFilter.page ? Number(designerFilter.page) : 1;
-        const limit = 1;
-        const skip = (PageNo - 1) * limit
-        const query: QueryFilter<IDesigner> = {}
-        if (designerFilter) {
-            if (designerFilter.full_name) {
-                const matchingUsers = await UserModel.find({
-                    full_name: { $regex: designerFilter.full_name, $options: "i" }
-                }).select("_id")
-                const userIds = matchingUsers.map(u => u._id)
-                query.userId = { $in: userIds }
-            }
-        }
-        const [designers, total] = await Promise.all([
-            this._model.find(query)
-                .populate<{ userId: IUser }>("userId")
-                .skip(skip)
-                .limit(limit)
-                .exec(),
-
-            this._model.countDocuments(query)
-        ])
-        const pagination: Pagination = {
-            total,
-            totalPages: Math.ceil(total / limit)
-        }
-
-        return { data: designers, pagination }
-    }
+    return { data: designers, pagination };
+  }
 }
