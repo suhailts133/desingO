@@ -19,22 +19,22 @@ export function FileInputField({ label, fileName, placeholder = "Choose an image
             
             <label
                 htmlFor={inputId}
-                className="block text-sm font-Jost-Semibold text-gray-700 mb-1"
+                className="block text-sm font-Jost-Semibold text-text-primary mb-1"
             >
                 {label}
             </label>
 
             <label
                 htmlFor={inputId}
-                className={`flex items-center gap-3 w-full border rounded-lg px-4 py-2 cursor-pointer transition-colors bg-white/50 ${error
+                className={`flex items-center gap-3 w-full border rounded-lg px-4 py-2 cursor-pointer transition-colors bg-surface-hover ${error
                     ? "border-error text-error"
-                    : "border-gray-300 hover:border-blush-deep"
+                    : "border-surface-border hover:border-accent"
                     } ${className}`}
             >
-                <Paperclip className="h-5 w-5 text-gray-400 shrink-0" />
+                <Paperclip className="h-5 w-5 text-text-faint shrink-0" />
 
                 <span
-                    className={`text-sm truncate ${fileName ? "text-soft-black font-medium" : "text-gray-400"
+                    className={`text-sm truncate ${fileName ? "text-text-primary font-medium" : "text-text-faint"
                         }`}
                 >
                     {fileName || placeholder}
@@ -51,7 +51,7 @@ export function FileInputField({ label, fileName, placeholder = "Choose an image
             />
 
         
-            {error && <p className="text-sm text-error mt-1">{error}</p>}
+            {error && <p className="text-sm text-error-text mt-1">{error}</p>}
         </div>
     );
 }

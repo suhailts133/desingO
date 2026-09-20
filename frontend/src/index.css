@@ -107,9 +107,14 @@
 }
 
 .auth-input {
-    @apply w-full text-text-primary px-4 py-2 border border-surface-border-strong rounded-lg shadow-md bg-transparent focus:outline-none focus:border-accent-active focus:ring focus:ring-surface-border-strong hover:border-accent-hover hover:ring hover:ring-accent-hover transition-all duration-300;
+    @apply w-full text-text-primary px-4 py-2 border border-surface-border-strong rounded-lg bg-transparent focus:outline-none focus:border-accent-active focus:ring focus:ring-surface-border-strong hover:border-accent-hover transition-all duration-300;
+    color-scheme: dark;
 }
 
+.auth-input option {
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+}
 
 .navabr-mobile-menu {
     @apply hover:border-b text-center font-Jost-Semibold text-sm px-6 py-2 cursor-pointer hover:scale-105 border-soft-black transition-all duration-200
