@@ -50,7 +50,7 @@ export default function Home() {
 
     
         {title && (
-          <h2 className="text-2xl font-Jost-Semibold mb-6 text-soft-black">
+          <h2 className="text-2xl font-Jost-Semibold mb-6 text-text-primary">
             {title}
           </h2>
         )}

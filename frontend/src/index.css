@@ -50,7 +50,45 @@
         /* warm snow */
 }
 
+@theme {
+  /* ---- 60% — dominant background ---- */
+  --color-bg: #1E1E1E;             /* page background */
+  --color-bg-raised: #242729;      /* navbar / footer, one step above page bg */
 
+  /* ---- 30% — surfaces (cards, panels) ---- */
+  --color-surface: #26292D;
+  --color-surface-hover: #2F3438;
+  --color-surface-border: #383F44;
+  --color-surface-border-strong: #454E54;
+
+  /* ---- 10% — accent (steel blue) ---- */
+  --color-accent: #7B9EB3;
+  --color-accent-hover: #93B0C2;
+  --color-accent-active: #A8C0CE;
+  --color-accent-tint: #2E3D45;        /* dark tinted bg for badges */
+  --color-accent-tint-text: #A9C6D6;   /* text/icons on accent-tint */
+
+  /* ---- Text ---- */
+  --color-text-primary: #F0F1F2;   /* headings, titles, main copy */
+  --color-text-muted: #A8ADB2;     /* descriptions, secondary info */
+  --color-text-faint: #7C8388;     /* labels, meta icons, placeholders */
+  --color-text-on-accent: #12242C; /* text/icons sitting on solid accent */
+
+  /* ---- Semantic: success ---- */
+  --color-success: #5FA679;        /* muted sage green */
+  --color-success-tint: #223128;   /* dark tinted bg for success badges/toasts */
+  --color-success-text: #9FD6B2;   /* text on success-tint */
+
+  /* ---- Semantic: error ---- */
+  --color-error: #C1645A;          /* muted terracotta red */
+  --color-error-tint: #3A2523;     /* dark tinted bg for error badges/toasts */
+  --color-error-text: #E3A79E;     /* text on error-tint */
+
+  /* ---- Semantic: warning ---- */
+  --color-warning: #D9A855;        /* muted amber */
+  --color-warning-tint: #3A2E1A;   /* dark tinted bg for warning badges/toasts */
+  --color-warning-text: #EFC98A;   /* text on warning-tint */
+}
 
 @theme {
     --font-Dynalight-Regular: "Dynalight";
@@ -69,20 +107,27 @@
 }
 
 .auth-input {
-    @apply w-full text-soft-black px-4 py-2 border border-gray-300 rounded-lg shadow-md bg-transparent focus:outline-none focus:border-blush-deep focus:ring focus:ring-blush-deep hover:border-blush hover:ring hover:ring-blush transition-all duration-300;
+    @apply w-full text-text-primary px-4 py-2 border border-surface-border-strong rounded-lg bg-transparent focus:outline-none focus:border-accent-active focus:ring focus:ring-surface-border-strong hover:border-accent-hover transition-all duration-300;
+    color-scheme: dark;
 }
 
+.auth-input option {
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+}
 
 .navabr-mobile-menu {
     @apply hover:border-b text-center font-Jost-Semibold text-sm px-6 py-2 cursor-pointer hover:scale-105 border-soft-black transition-all duration-200
 }
 
-.auth-disabled-button {
-    @apply w-full text-white font-Jost-Semibold py-3 rounded-sm bg-gray-400 tracking-wide cursor-not-allowed opacity-70 flex items-center justify-center gap-2;
-}
 .auth-button {
-    @apply w-full text-white font-Jost-Semibold py-3 rounded-sm bg-soft-black tracking-wide transition-colors duration-200 hover:bg-blush-deep cursor-pointer;
+    @apply w-full text-text-on-accent font-Jost-Semibold py-3 rounded-sm bg-accent tracking-wide transition-colors duration-200 hover:bg-accent-hover cursor-pointer;
 }
+.auth-disabled-button {
+    @apply w-full text-text-faint font-Jost-Semibold py-3 rounded-sm bg-surface-border-strong tracking-wide cursor-not-allowed opacity-70 flex items-center justify-center gap-2;
+}
+ 
+
 .google-button {
     @apply font-Jost-Semibold text-white w-full bg-linear-to-r from-peach via-blush to-blush-deep/85 hover:brightness-110 hover:scale-110 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center mr-2 mb-2 transition-all duration-300
 }
@@ -101,7 +146,7 @@
     input:-webkit-autofill:focus,
     input:-webkit-autofill:active {
         -webkit-background-clip: text;
-        -webkit-text-fill-color: #7A5C54;
+        -webkit-text-fill-color: #F0F1F2;
         transition: background-color 5000s ease-in-out 0s;
         /* box-shadow: inset 0 0 20px 20px #23232329; */
     }

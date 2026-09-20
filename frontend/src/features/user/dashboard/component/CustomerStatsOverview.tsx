@@ -34,21 +34,21 @@ export default function CustomerStatsOverview({ data }: Props) {
         <div className="flex flex-col gap-5">
             <div className="flex items-start justify-between gap-4">
                 <div className="flex flex-col gap-1.5">
-                    <p className="text-xs font-medium text-soft-black/40 uppercase tracking-wide">
+                    <p className="text-xs font-medium text-text-faint uppercase tracking-wide">
                         {getGreeting()}
                     </p>
-                    <h1 className="text-3xl font-semibold text-soft-black leading-tight">
+                    <h1 className="text-3xl font-semibold text-text-primary leading-tight">
                         Ready to create, {data.name.split(" ")[0]}?
                     </h1>
                     <div className="flex items-center gap-1.5 mt-0.5">
-                        <Sparkles size={14} className="text-blush-deep shrink-0" />
-                        <p className="text-sm text-soft-black/60">{focusLine}</p>
+                        <Sparkles size={14} className="text-accent shrink-0" />
+                        <p className="text-sm text-text-muted">{focusLine}</p>
                     </div>
                 </div>
 
                 <button
                     onClick={() => navigate(`/designers/${data.userId}`)}
-                    className="flex items-center gap-1 text-sm font-semibold text-blush-deep hover:underline shrink-0 mt-1"
+                    className="flex items-center gap-1 text-sm font-semibold text-accent hover:text-accent-hover hover:underline shrink-0 mt-1"
                 >
                     View profile <ChevronRight size={16} />
                 </button>

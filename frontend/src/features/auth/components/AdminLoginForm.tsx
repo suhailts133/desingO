@@ -21,11 +21,11 @@ export default function AdminLoginForm() {
     }
 
     return (
-        <div className="max-w-md w-full bg-white/40 backdrop-blur-2xl  shadow-blush/30 rounded-xl shadow-2xl p-8">
-            <h2 className="text-4xl font-semibold text-soft-black mb-2 text-center font-Dynalight-Regular tracking-tight">
+        <div className="max-w-md w-full bg-surface backdrop-blur-2xl border border-surface-border rounded-xl p-8">
+            <h2 className="text-4xl font-semibold text-accent mb-2 text-center font-Dynalight-Regular tracking-tight">
                 designO
             </h2>
-            <p className="text-center text-base font-Jost-Semibold text-gray-500 mb-8 tracking-wide">
+             <p className="text-center text-base font-Jost-Semibold text-text-muted mb-8 tracking-wide">
                 Welcome back
             </p>
 

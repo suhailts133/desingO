@@ -25,7 +25,7 @@ export default function SignupForm() {
     flow: "auth-code",
     onSuccess: async (code) => {
       const result = await handleGoogleLogin(code)
-      handleResponse(result.success, "Please Confirm the OTP",result.message, "/auth/verify-otp")
+      handleResponse(result.success, "Please Confirm the OTP", result.message, "/auth/verify-otp")
 
     }
   })
@@ -36,7 +36,7 @@ export default function SignupForm() {
       email: data.email,
       password: data.password
     })
-    handleResponse(result.success, "Please Verify Your OTP", result.message, "/auth/verify-otp",{ state:{where:"signup", email:data.email}})
+    handleResponse(result.success, "Please Verify Your OTP", result.message, "/auth/verify-otp", { state: { where: "signup", email: data.email } })
   }
 
 
@@ -44,8 +44,8 @@ export default function SignupForm() {
   return (
 
 
-    <div className="max-w-md w-full bg-white/50 backdrop-blur-2xl  shadow-blush/30 rounded-xl shadow-2xl p-8">
-      <h2 className="text-4xl font-semibold text-soft-black mb-2 text-center font-Dynalight-Regular tracking-tight">
+    <div className="max-w-md w-full bg-surface backdrop-blur-2xl border border-surface-border rounded-xl p-8">
+      <h2 className="text-4xl font-semibold text-accent mb-2 text-center font-Dynalight-Regular tracking-tight">
         designO
       </h2>
       <p className="text-center text-base font-Jost-Semibold text-gray-500 mb-8 tracking-wide">
@@ -63,12 +63,11 @@ export default function SignupForm() {
 
       </form>
       {/* divider */}
+
       <div className="flex items-center justify-center md:justify-between mt-5">
-        <div className="block h-px w-4/12 bg-soft-black/50"></div>
-        <p className="mx-2 text-sm font-light text-gray-400">
-          OR
-        </p>
-        <div className="block h-px w-4/12 bg-soft-black/50"></div>
+        <div className="block h-px w-4/12 bg-surface-border"></div>
+        <p className="mx-2 text-sm font-light text-text-muted">OR</p>
+        <div className="block h-px w-4/12 bg-surface-border"></div>
       </div>
 
       <div className="mt-5 sm:px-0 max-w-sm">
@@ -80,12 +79,13 @@ export default function SignupForm() {
         />
       </div>
 
-      <div className="mt-6 text-center text-sm text-gray-600">
+
+
+      <div className="mt-6 text-center text-sm text-text-muted">
         Already have an account?
         <Link
           to="/auth/login"
-          className="text-soft-black font-Jost-Semibold 
-        hover:underline">login</Link>
+          className="text-accent font-Jost-Semibold hover:underline">login</Link>
       </div>
     </div>
   )

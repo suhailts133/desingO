@@ -1,6 +1,7 @@
-import Select, { type SingleValue } from "react-select";
+import Select, { type SingleValue, type StylesConfig } from "react-select";
 import { LocateFixed } from "lucide-react";
 import { RADIUS_OPTIONS, type OptionType } from "../../baseData";
+import { selectStyles } from "../../../../shared/filter/selectStyle";
 
 type Props = {
     hasLocation: boolean;
@@ -26,7 +27,7 @@ export default function JobLocationFilter({
                     onClick={onUseMyLocation}
                     disabled={isLocating}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all
-                        ${hasLocation ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"}
+                        ${hasLocation ? "bg-accent text-text-on-accent border-accent" : "bg-surface text-text-muted border-surface-border hover:border-surface-border-strong"}
                         disabled:opacity-50`}
                 >
                     <LocateFixed className="w-4 h-4" />
@@ -40,12 +41,13 @@ export default function JobLocationFilter({
                             onChange={onRadiusChange}
                             options={RADIUS_OPTIONS}
                             isSearchable={false}
+                            styles={selectStyles as StylesConfig<OptionType, false>}
                         />
                     </div>
                 )}
             </div>
 
-            {error && <p className="text-xs text-red-500">{error}</p>}
+            {error && <p className="text-xs text-error">{error}</p>}
         </span>
     );
 }

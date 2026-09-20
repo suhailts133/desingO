@@ -15,7 +15,7 @@ export function TextAreaField({ label, error, rows = 4, registration, className 
         <div className="w-full">
             <label
                 htmlFor={textareaId}
-                className="block text-sm font-Jost-Semibold text-gray-700 mb-1"
+                className="block text-sm font-Jost-Semibold text-text-primary mb-1"
             >
                 {label}
             </label>
@@ -30,7 +30,7 @@ export function TextAreaField({ label, error, rows = 4, registration, className 
                 />
             </div>
 
-            {error && <p className="text-sm text-error mt-1">{error}</p>}
+            {error && <p className="text-sm text-error-text mt-1">{error}</p>}
         </div>
     );
 }

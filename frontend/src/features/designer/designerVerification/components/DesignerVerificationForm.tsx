@@ -59,11 +59,13 @@ export default function DesignerVerificationForm() {
   }
 
   return (
-    <div className="max-w-2xl w-full bg-white/50 backdrop-blur-2xl shadow-blush/30 rounded-xl shadow-2xl p-8">
-      <h2 className="text-4xl font-semibold text-soft-black mb-6 text-center font-Dynalight-Regular">designO</h2>
-      <p className="text-center text-lg font-Jost-Semibold text-gray-500 mb-6">
-        Create Your Designer Account
-      </p>
+        <div className="max-w-2xl w-full bg-surface backdrop-blur-2xl border border-surface-border rounded-xl p-8">
+            <h2 className="text-4xl font-semibold text-accent mb-2 text-center font-Dynalight-Regular tracking-tight">
+                designO
+            </h2>
+            <p className="text-center text-base font-Jost-Semibold text-text-muted mb-8 tracking-wide">
+                Become a designer
+            </p>
 
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
 
@@ -79,7 +81,7 @@ export default function DesignerVerificationForm() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">GOVT ID Type</label>
+            <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">GOVT ID Type</label>
             <select {...register("governmentIdType")} className="auth-input" defaultValue="">
               <option value="" disabled>Select your GOVT ID type</option>
               <option value="aadhar_card">Aadhar Card</option>
@@ -95,7 +97,7 @@ export default function DesignerVerificationForm() {
 
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <label className="block text-sm font-Jost-Semibold text-gray-700">Education</label>
+            <label className="block text-sm font-Jost-Semibold text-text-primary">Education</label>
             {educationFields.length < 4 && (
               <button
                 type="button"
@@ -105,7 +107,7 @@ export default function DesignerVerificationForm() {
                   completionYear: "" as unknown as number,
                   certificateImage: "" as unknown as FileList
                 })}
-                className="flex items-center gap-1 text-sm text-primary hover:underline"
+                className="flex items-center gap-1 text-sm text-accent hover:text-accent-hover hover:underline"
               >
                 <Plus size={16} /> Add
               </button>
@@ -116,9 +118,9 @@ export default function DesignerVerificationForm() {
             const rawproof = educationValues?.[index]?.certificateImage
             const proofFileName = rawproof?.[0]?.name
             return (
-              <div key={field.id} className="space-y-3 border border-gray-400 rounded-lg p-4">
+              <div key={field.id} className="space-y-3 border border-surface-border rounded-lg p-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-Jost-Semibold text-gray-600">Education {index + 1}</p>
+                  <p className="text-sm font-Jost-Semibold text-text-muted">Education {index + 1}</p>
                   <button type="button" onClick={() => educationRemove(index)} className="text-error hover:opacity-70">
                     <Trash2 size={16} />
                   </button>
@@ -143,8 +145,8 @@ export default function DesignerVerificationForm() {
 
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <label className="block text-sm font-Jost-Semibold text-gray-700">
-              Work Experience <span className="text-gray-400 font-normal">(optional)</span>
+            <label className="block text-sm font-Jost-Semibold text-text-primary">
+              Work Experience <span className="text-text-faint font-normal">(optional)</span>
             </label>
             {workExperienceFields.length < 4 && (
               <button
@@ -155,7 +157,7 @@ export default function DesignerVerificationForm() {
                   yearsOfExperience: "" as unknown as number,
                   proofImage: "" as unknown as FileList
                 })}
-                className="flex items-center gap-1 text-sm text-primary hover:underline"
+                className="flex items-center gap-1 text-sm text-accent hover:text-accent-hover hover:underline"
               >
                 <Plus size={16} /> Add
               </button>
@@ -166,9 +168,9 @@ export default function DesignerVerificationForm() {
             const rawProof = workExperienceValues?.[index]?.proofImage;
             const proofFileName = rawProof?.[0]?.name
             return (
-              <div key={field.id} className="space-y-3 border border-gray-400 rounded-lg p-4">
+              <div key={field.id} className="space-y-3 border border-surface-border rounded-lg p-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-Jost-Semibold text-gray-600">Experience {index + 1}</p>
+                  <p className="text-sm font-Jost-Semibold text-text-muted">Experience {index + 1}</p>
                   <button type="button" onClick={() => workExperienceRemove(index)} className="text-error hover:opacity-70">
                     <Trash2 size={16} />
                   </button>

@@ -52,10 +52,10 @@ export default function BrowseDesigns() {
         setSearchParams({ page: "1" });
     };
 
-    if (error) return <div className="p-10 text-center text-red-500">Error loading designs.</div>;
+    if (error) return <div className="p-10 text-center text-error">Error loading designs.</div>;
 
     return (
-        <div className="min-h-screen bg-gray-50/60 font-Jost">
+        <div className="min-h-screen bg-bg font-Jost">
             <DesignFilter
                 designStyles={designStyles}
                 propertyTypes={propertyTypes}
@@ -67,7 +67,7 @@ export default function BrowseDesigns() {
                 setFiltersVisible={setFiltersVisible}
             />
 
-            <div className="max-w-7xl mx-auto px-6 py-8">
+            <div className="max-w-7xl mx-auto px-6 py-8 pb-24">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {isLoading
                         ? Array.from({ length: 8 }).map((_, i) => (
@@ -80,14 +80,18 @@ export default function BrowseDesigns() {
                 </div>
             </div>
 
-            <Pagination
-                page={page}
-                totalItem={totalDesigns}
-                whichItem="designs"
-                totalPages={totalPages}
-                onDecrease={() => handlePageChange(Math.max(1, page - 1))}
-                onIncrease={() => handlePageChange(Math.min(totalPages, page + 1))}
-            />
+            <div className="fixed bottom-0 left-0 right-0 z-40">
+
+                <Pagination
+                    page={page}
+                    totalItem={totalDesigns}
+                    whichItem="designs"
+                    totalPages={totalPages}
+                    onDecrease={() => handlePageChange(Math.max(1, page - 1))}
+                    onIncrease={() => handlePageChange(Math.min(totalPages, page + 1))}
+                />
+            </div>
+
         </div>
     );
 }

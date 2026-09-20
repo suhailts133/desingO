@@ -32,19 +32,19 @@ export default function ResendOtpSection({ onResend, isLoading }: ResendOtpSecti
     };
 
     return (
-        <div className="mt-5 text-center text-sm text-gray-500">
+        <div className="mt-5 text-center text-sm text-text-muted">
             Didn't receive the code?{" "}
             {canResend ? (
                 <button
                     onClick={handleResendClick}
                     type="button"
                     disabled={isLoading}
-                    className="ml-1 text-soft-black font-Jost-Semibold hover:underline hover:cursor-pointer disabled:opacity-50"
+                    className="ml-1 text-accent font-Jost-Semibold hover:underline hover:cursor-pointer disabled:opacity-50"
                 >
                     {isLoading ? "sending..." : "resend otp"}
                 </button>
             ) : (
-                <span className="ml-1 text-soft-black font-Jost-Semibold tabular-nums">
+                <span className="ml-1 text-accent font-Jost-Semibold tabular-nums">
                     resend in {timer}
                 </span>
             )}

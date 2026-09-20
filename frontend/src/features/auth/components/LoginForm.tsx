@@ -32,11 +32,11 @@ export default function LoginForm() {
     };
 
     return (
-        <div className="max-w-md w-full bg-white/50 backdrop-blur-2xl shadow-blush/30 rounded-xl shadow-2xl p-8">
-            <h2 className="text-4xl font-semibold text-soft-black mb-2 text-center font-Dynalight-Regular tracking-tight">
+        <div className="max-w-md w-full bg-surface backdrop-blur-2xl border border-surface-border rounded-xl p-8">
+            <h2 className="text-4xl font-semibold text-accent mb-2 text-center font-Dynalight-Regular tracking-tight">
                 designO
             </h2>
-            <p className="text-center text-base font-Jost-Semibold text-gray-500 mb-8 tracking-wide">
+            <p className="text-center text-base font-Jost-Semibold text-text-muted mb-8 tracking-wide">
                 Welcome back
             </p>
 
@@ -46,15 +46,15 @@ export default function LoginForm() {
                 <InputField label="Email" type="email" placeholder="you@studio.com" registration={register("email")} error={errors.email?.message} />
                 {/* Password  */}
                 <InputField label="Password" placeholder="********" showPasswordToggle={true} registration={register("password")} error={errors.password?.message}
-                    labelAction={<Link to="/auth/forgetpassword" className="text-sm font-Jost-Regular text-soft-black hover:underline">Forgot Password?</Link>}
+                    labelAction={<Link to="/auth/forgetpassword" className="text-sm font-Jost-Regular text-accent hover:underline">Forgot Password?</Link>}
                 />
                 <SubmitButton isLoading={isLoading} label="Login" loadingLabel="Verifying" type="submit" />
             </form>
 
             <div className="flex items-center justify-center md:justify-between mt-5">
-                <div className="block h-px w-4/12 bg-soft-black/50"></div>
-                <p className="mx-2 text-sm font-light text-gray-500">OR</p>
-                <div className="block h-px w-4/12 bg-soft-black/50"></div>
+                <div className="block h-px w-4/12 bg-surface-border"></div>
+                <p className="mx-2 text-sm font-light text-text-muted">OR</p>
+                <div className="block h-px w-4/12 bg-surface-border"></div>
             </div>
 
             {/* Google Login */}
@@ -68,11 +68,11 @@ export default function LoginForm() {
             </div>
 
 
-            <div className="mt-6 text-center text-sm text-gray-600">
+            <div className="mt-6 text-center text-sm text-text-muted">
                 Don't have an account?{" "}
                 <Link
                     to="/auth/signup"
-                    className="text-soft-black font-Jost-Semibold hover:underline"
+                    className="text-accent font-Jost-Semibold hover:underline"
                 >
                     signup
                 </Link>
