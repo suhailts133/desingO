@@ -3,18 +3,18 @@ import { Briefcase } from "lucide-react"
 import type { OngoingProposalDTOs } from "../../features/designer/dashboard/dashboardInterface"
 
 const statusStyles: Record<OngoingProposalDTOs["status"], string> = {
-    Locked: "bg-gray-100 text-gray-700 border border-gray-200",
-    Open: "bg-blue-50 text-blue-700 border border-blue-200",
-    "In Progress": "bg-amber-50 text-amber-700 border border-amber-200",
-    Uploaded: "bg-purple-50 text-purple-700 border border-purple-200",
-    Redo: "bg-red-50 text-red-700 border border-red-200",
-    Completed: "bg-green-50 text-green-800 border border-green-200",
+    Locked: "bg-surface-hover text-text-faint border border-surface-border",
+    Open: "bg-accent-tint text-accent-tint-text border border-surface-border",
+    "In Progress": "bg-accent-tint text-accent-tint-text border border-surface-border",
+    Uploaded: "bg-success-tint text-success-text border border-surface-border",
+    Redo: "bg-warning-tint text-warning-text border border-surface-border",
+    Completed: "bg-success-tint text-success-text border border-surface-border",
 }
 
 const paymentStyles: Record<OngoingProposalDTOs["paymentStatus"], string> = {
-    Pending: "bg-amber-50 text-amber-700 border border-amber-200",
-    Paid: "bg-green-50 text-green-800 border border-green-200",
-    Refunded: "bg-red-50 text-red-700 border border-red-200",
+    Pending: "bg-warning-tint text-warning-text border border-surface-border",
+    Paid: "bg-success-tint text-success-text border border-surface-border",
+    Refunded: "bg-error-tint text-error-text border border-surface-border",
 }
 
 type Props = {
@@ -38,25 +38,25 @@ export default function OngoingProposalsSection({ proposals, role }: Props) {
     }
 
     return (
-        <div className="bg-off-white rounded-2xl border border-blush-light/40 shadow-lg px-6 py-6 flex flex-col gap-4">
+        <div className="bg-surface rounded-2xl border border-surface-border px-6 py-6 flex flex-col gap-4">
             <div className="flex items-center gap-2.5">
-                <Briefcase size={20} className="text-blush-deep" />
-                <p className="text-base font-semibold text-soft-black">Ongoing proposals</p>
+                <Briefcase size={20} className="text-accent" />
+                <p className="text-base font-semibold text-text-primary">Ongoing proposals</p>
             </div>
 
             {proposals.length === 0 ? (
-                <p className="text-sm text-soft-black/40">No active proposals right now.</p>
+                <p className="text-sm text-text-faint">No active proposals right now.</p>
             ) : (
                 <ul className="flex flex-col gap-3">
                     {proposals.map((proposal) => (
                         <li
                             key={proposal.proposalId}
                             onClick={() => viewProposal(proposal)}
-                            className="flex items-center justify-between gap-3 border-b border-blush-light/30 last:border-b-0 pb-3 last:pb-0 cursor-pointer"
+                            className="flex items-center justify-between gap-3 border-b border-surface-border last:border-b-0 pb-3 last:pb-0 cursor-pointer"
                         >
                             <div className="min-w-0">
-                                <p className="text-sm font-medium text-soft-black truncate">{proposal.jobName}</p>
-                                <p className="text-xs text-soft-black/50 truncate">{proposal.serviceName}</p>
+                                <p className="text-sm font-medium text-text-primary truncate">{proposal.jobName}</p>
+                                <p className="text-xs text-text-faint truncate">{proposal.serviceName}</p>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
                                 <span className={`text-xs font-semibold px-3 py-1.5 rounded-full ${statusStyles[proposal.status]}`}>

@@ -3,11 +3,11 @@ import type { DashboardTransactionHistory } from "../../features/designer/dashbo
 import type { TransactionType } from "../../features/admin/transaction/transactionInterface"
 
 const typeStyles: Record<TransactionType, string> = {
-    Payment: "bg-blue-50 text-blue-700 border border-blue-200",
-    Commission: "bg-purple-50 text-purple-700 border border-purple-200",
-    Payout: "bg-green-50 text-green-800 border border-green-200",
-    Refund: "bg-red-50 text-red-700 border border-red-200",
-    All: "bg-gray-100 text-gray-700 border border-gray-200",
+    Payment: "bg-surface-hover text-text-muted border border-surface-border",
+    Commission: "bg-surface-hover text-text-muted border border-surface-border",
+    Payout: "bg-surface-hover text-text-muted border border-surface-border",
+    Refund: "bg-surface-hover text-text-muted border border-surface-border",
+    All: "bg-surface-hover text-text-muted border border-surface-border",
 }
 
 const formatAmount = (amount: number) => {
@@ -27,30 +27,30 @@ type Props = {
 
 export default function TransactionHistorySection({ transactions }: Props) {
     return (
-        <div className="bg-off-white rounded-2xl border border-blush-light/40 shadow-lg px-6 py-6 flex flex-col gap-4">
+        <div className="bg-surface rounded-2xl border border-surface-border px-6 py-6 flex flex-col gap-4">
             <div className="flex items-center gap-2.5">
-                <History size={20} className="text-blush-deep" />
-                <p className="text-base font-semibold text-soft-black">Recent transactions</p>
+                <History size={20} className="text-accent" />
+                <p className="text-base font-semibold text-text-primary">Recent transactions</p>
             </div>
 
             {transactions.length === 0 ? (
-                <p className="text-sm text-soft-black/40">No recent transactions.</p>
+                <p className="text-sm text-text-faint">No recent transactions.</p>
             ) : (
                 <ul className="flex flex-col gap-3">
                     {transactions.map((tx) => (
                         <li
                             key={tx.id}
-                            className="flex items-center justify-between gap-3 border-b border-blush-light/30 last:border-b-0 pb-3 last:pb-0"
+                            className="flex items-center justify-between gap-3 border-b border-surface-border last:border-b-0 pb-3 last:pb-0"
                         >
                             <div className="min-w-0">
-                                <p className="text-sm font-medium text-soft-black truncate">{tx.from}</p>
-                                <p className="text-xs text-soft-black/50">{formatDate(tx.createdAt)}</p>
+                                <p className="text-sm font-medium text-text-primary truncate">{tx.from}</p>
+                                <p className="text-xs text-text-faint">{formatDate(tx.createdAt)}</p>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
                                 <span className={`text-xs font-semibold px-3 py-1.5 rounded-full ${typeStyles[tx.type]}`}>
                                     {tx.type}
                                 </span>
-                                <span className="text-sm font-semibold text-green-700">
+                                <span className="text-sm font-semibold text-success">
                                     {formatAmount(tx.amount)}
                                 </span>
                             </div>

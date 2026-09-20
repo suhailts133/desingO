@@ -8,12 +8,12 @@ type Props = {
 
 export default function StatCard({ icon: Icon, label, value }: Props) {
     return (
-        <div className="bg-off-white rounded-2xl border border-blush-light/40 shadow-lg hover:shadow-2xl transition-shadow duration-300 px-5 py-5 flex flex-col gap-3">
-            <div className="w-11 h-11 rounded-full bg-blush-pale flex items-center justify-center">
-                <Icon size={20} className="text-blush-deep" />
+        <div className="bg-surface rounded-2xl border border-surface-border hover:border-accent transition-colors duration-300 px-5 py-5 flex flex-col gap-3">
+            <div className="w-11 h-11 rounded-full bg-accent-tint flex items-center justify-center">
+                <Icon size={20} className="text-accent-tint-text" />
             </div>
-            <p className="text-2xl font-semibold text-soft-black leading-tight">{value}</p>
-            <p className="text-xs font-medium text-soft-black/50 uppercase tracking-wide">{label}</p>
+            <p className="text-2xl font-semibold text-text-primary leading-tight">{value}</p>
+            <p className="text-xs font-medium text-text-faint uppercase tracking-wide">{label}</p>
         </div>
     )
 }
