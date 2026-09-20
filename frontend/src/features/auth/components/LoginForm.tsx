@@ -32,7 +32,7 @@ export default function LoginForm() {
     };
 
     return (
-        <div className="max-w-md w-full bg-surface backdrop-blur-2xl  rounded-xl shadow-2xl p-8">
+        <div className="max-w-md w-full bg-surface backdrop-blur-2xl border border-surface-border rounded-xl p-8">
             <h2 className="text-4xl font-semibold text-accent mb-2 text-center font-Dynalight-Regular tracking-tight">
                 designO
             </h2>
@@ -52,9 +52,9 @@ export default function LoginForm() {
             </form>
 
             <div className="flex items-center justify-center md:justify-between mt-5">
-                <div className="block h-px w-4/12 bg-accent"></div>
+                <div className="block h-px w-4/12 bg-surface-border"></div>
                 <p className="mx-2 text-sm font-light text-text-muted">OR</p>
-                <div className="block h-px w-4/12 bg-accent"></div>
+                <div className="block h-px w-4/12 bg-surface-border"></div>
             </div>
 
             {/* Google Login */}
@@ -68,7 +68,7 @@ export default function LoginForm() {
             </div>
 
 
-            <div className="mt-6 text-center text-sm text-gray-600">
+            <div className="mt-6 text-center text-sm text-text-muted">
                 Don't have an account?{" "}
                 <Link
                     to="/auth/signup"
