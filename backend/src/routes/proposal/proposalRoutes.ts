@@ -21,34 +21,33 @@ import { DesignRepository } from "../../repositories/designer/designRepository";
 import { MongooseTransactionManager } from "../../shared/helpers/MongooseTransactionManager";
 const upload = multer({ storage: multer.memoryStorage() });
 
-const router = Router()
+const router = Router();
 
-const proposalRepo = new ProposalRepository()
-const activeJobRepo = new ActiveJobRepository()
-const jobRepo = new JobRequestRepository()
-const userRepo = new UserRepository()
-const floorPlanRepo = new FloorPlansRepository()
-const imageUploaderService = new CloudinaryService()
-const serviceVersionRepo = new ServiceVersionRepository()
-const transactionRepo = new TranscationRepository()
-const designRepo = new DesignRepository()
+const proposalRepo = new ProposalRepository();
+const activeJobRepo = new ActiveJobRepository();
+const jobRepo = new JobRequestRepository();
+const userRepo = new UserRepository();
+const floorPlanRepo = new FloorPlansRepository();
+const imageUploaderService = new CloudinaryService();
+const serviceVersionRepo = new ServiceVersionRepository();
+const transactionRepo = new TranscationRepository();
+const designRepo = new DesignRepository();
 
-const transactionManager = new MongooseTransactionManager()
+const transactionManager = new MongooseTransactionManager();
 
-const proposalService = new ProposalService(notificationService, floorPlanRepo, proposalRepo, activeJobRepo, jobRepo, serviceVersionRepo)
-const proposalVersionService = new ProposalVersionService(jobRepo, designRepo, activeJobRepo, transactionRepo, proposalRepo, serviceVersionRepo, imageUploaderService, userRepo)
-const floorPlanService = new FloorPlansService(floorPlanRepo, imageUploaderService, proposalRepo,transactionManager)
-const proposalController = new ProposalController(proposalService, proposalVersionService, floorPlanService)
+const proposalService = new ProposalService(notificationService, floorPlanRepo, proposalRepo, activeJobRepo, jobRepo, serviceVersionRepo, transactionManager);
+const proposalVersionService = new ProposalVersionService(jobRepo, designRepo, activeJobRepo, transactionRepo, proposalRepo, serviceVersionRepo, imageUploaderService, userRepo);
+const floorPlanService = new FloorPlansService(floorPlanRepo, imageUploaderService, proposalRepo, transactionManager);
+const proposalController = new ProposalController(proposalService, proposalVersionService, floorPlanService);
 
-
-router.post("/create", designerAuthentication, proposalController.createProposal)
-router.patch("/update", designerAuthentication, proposalController.updateProposal)
-router.patch("/approve-reject", customerAuthentication, proposalController.updateProposalStatus)
-router.post("/upload-result", designerAuthentication, upload.fields([{ name: "serviceResult", maxCount: 20 }]), proposalController.uploadServiceResult)
-router.post("/upload-floor-plan", designerAuthentication, upload.fields([{ name: "floorPlans", maxCount: 1 }]), proposalController.uploadFloorPlan)
-router.patch("/approve-reject-version", customerAuthentication, proposalController.approveOrRejectVersion)
-router.patch("/accept-reject-floor-plan", customerAuthentication, proposalController.acceptOrRejectFloorPlan)
-router.get("/prefill/:id", designerAuthentication, proposalController.getProposalTemplate)
-router.get("/:id", authenticate, proposalController.getProposal)
-router.get("/review/:id", authenticate, reviewController.getReviewPerJob)
-export default router
+router.post("/create", designerAuthentication, proposalController.createProposal);
+router.patch("/update", designerAuthentication, proposalController.updateProposal);
+router.patch("/approve-reject", customerAuthentication, proposalController.updateProposalStatus);
+router.post("/upload-result", designerAuthentication, upload.fields([{ name: "serviceResult", maxCount: 20 }]), proposalController.uploadServiceResult);
+router.post("/upload-floor-plan", designerAuthentication, upload.fields([{ name: "floorPlans", maxCount: 1 }]), proposalController.uploadFloorPlan);
+router.patch("/approve-reject-version", customerAuthentication, proposalController.approveOrRejectVersion);
+router.patch("/accept-reject-floor-plan", customerAuthentication, proposalController.acceptOrRejectFloorPlan);
+router.get("/prefill/:id", designerAuthentication, proposalController.getProposalTemplate);
+router.get("/:id", authenticate, proposalController.getProposal);
+router.get("/review/:id", authenticate, reviewController.getReviewPerJob);
+export default router;
