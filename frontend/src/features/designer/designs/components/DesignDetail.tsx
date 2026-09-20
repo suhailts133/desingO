@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, Tag, Wallet, Layers, Wrench, User, ChevronDown, Calendar, Heart } from "lucide-react";
+import { ChevronLeft, Tag, Wallet, Layers, User, Calendar, Heart } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetDesignDetailQuery } from "../designEndpoints";
 import Zoom from "react-medium-image-zoom";
@@ -13,7 +13,6 @@ export default function DesignDetail() {
     const navigate = useNavigate();
     const { data, isLoading, error } = useGetDesignDetailQuery(id!, { skip: !id });
 
-    const [servicesOpen, setServicesOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [savedOverride, setSavedOverride] = useState<boolean | null>(null);
 
