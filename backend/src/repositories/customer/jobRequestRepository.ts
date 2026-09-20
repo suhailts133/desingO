@@ -32,8 +32,9 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
     return await this._model.find({ status: JOB_REQUEST_STATUS.PENDING }).sort({ createdAt: -1 }).populate<{ userId: IUser }>("userId").populate<{ designerId: IUser }>("designerId").exec();
   }
 
-  async updateHireRequest(id: string, data: Partial<IJobRequest>): Promise<IJobRequest | null> {
-    return await this.update(id, data);
+  async updateHireRequest(id: string, data: Partial<IJobRequest>, session?: ClientSession): Promise<IJobRequest | null> {
+    console.log(session?.id, "update hire request")
+    return await this.update(id, data, session);
   }
 
   async changeStatus(id: string, status: JobStatus, session?: ClientSession): Promise<IJobRequest | null> {

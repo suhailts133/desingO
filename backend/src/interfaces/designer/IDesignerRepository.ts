@@ -22,7 +22,7 @@ export interface IDesignerRepository {
 
 export interface IDesignRepository {
     getDesignForAiImageGeneration(filter?: DesignAiImageFilter): Promise<IDesign[]>
-    adjustActiveJobCount(id: string, delta: 1 | -1): Promise<IDesign | null>
+    adjustActiveJobCount(id: string, delta: 1 | -1, session?:ClientSession): Promise<IDesign | null>
     createDesign(data: createDesignDTO): Promise<boolean>;
     getMyDesigns(userId: string, page?: string): Promise<{ data: IDesign[], pagination: Pagination }>
     getDesign(designId: string): Promise<IDesignPopulated | null>,

@@ -1,14 +1,12 @@
 import mongoose, { type ClientSession, type QueryFilter } from "mongoose";
-import type { ActiveJobFilter, ActiveJobPopulateAll, ActiveJobPopulated, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO";
+import type { ActiveJobFilter, ActiveJobPopulated, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO";
 import type { IUser } from "../../interfaces/auth/IUser";
-import type { IActiveJob, IHireDesigner, IJobRequest } from "../../interfaces/customer/ICustomer";
+import type { IActiveJob } from "../../interfaces/customer/ICustomer";
 import type { IActiveJobRepository } from "../../interfaces/customer/ICustomerRepository";
 import { ActiveJobModel } from "../../models/user/ActiveJobModal";
 import { ACTIVE_JOB_STATUS } from "../../shared/enums/commonEnums";
 import { BaseRepository } from "../baseRepository";
 import type { Pagination } from "../../DTO/admin/adminDTO";
-import { HireDesignerModel } from "../../models/user/hireDesignerModel";
-import { JobRequestModel } from "../../models/user/jobModel";
 
 export class ActiveJobRepository extends BaseRepository<IActiveJob> implements IActiveJobRepository {
   constructor() {
@@ -37,6 +35,7 @@ export class ActiveJobRepository extends BaseRepository<IActiveJob> implements I
   }
 
   async createActiveJOb(data: CreateActiveJobDTO, session?: ClientSession): Promise<IActiveJob> {
+    console.log(session?.id, "create acctve job")
     return await this.create(
       {
         designerId: new mongoose.Types.ObjectId(data.designerId),
@@ -57,23 +56,7 @@ export class ActiveJobRepository extends BaseRepository<IActiveJob> implements I
     return await this.findById(id);
   }
 
-  async getActiveJobPopulated(id: string): Promise<ActiveJobPopulateAll | null> {
-    const activeJob = await this.getActiveJob(id);
-    if (!activeJob) return null;
-    const sourceModel = activeJob.sourceType === "jobRequest" ? JobRequestModel : HireDesignerModel;
-
-    const populated = await this._model
-      .findById(id)
-      .populate<{ userId: IUser }>("userId")
-      .populate<{ designerId: IUser }>("designerId")
-      .populate<{ sourceId: IJobRequest | IHireDesigner }>({
-        path: "sourceId",
-        model: sourceModel,
-      })
-      .exec();
-
-    return populated as ActiveJobPopulateAll | null;
-  }
+  
 
   async getCustomerActiveJobs(customerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulated[]; pagination: Pagination }> {
     const query: QueryFilter<IActiveJob> = { sourceType: filter?.sourceType ?? "jobRequest", userId: customerId };
