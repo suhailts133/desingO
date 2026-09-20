@@ -17,7 +17,6 @@ export default function OtpForm() {
     const location = useLocation();
     const email = location.state?.email;
     const where = location.state?.where;
-    console.log(email, where)
 
     
     const { handleVerification, error, isLoading } = useVerifyOtp();
@@ -75,19 +74,15 @@ export default function OtpForm() {
     };
 
 
-    // const formatTime = (seconds: number) => {
-    //     const m = Math.floor(seconds / 60).toString().padStart(2, "0");
-    //     const s = (seconds % 60).toString().padStart(2, "0");
-    //     return `${m}:${s}`;
-    // };
+
 
     return (
-        <div className="w-fit bg-white/50 backdrop-blur-2xl shadow-blush/40 rounded-xl shadow-2xl p-8">
-            <h2 className="text-4xl font-semibold text-soft-black mb-3 text-center font-Dynalight-Regular">
+        <div className="w-fit bg-surface backdrop-blur-2xl border border-surface-border rounded-xl p-8">
+            <h2 className="text-4xl font-semibold text-accent mb-3 text-center font-Dynalight-Regular">
                 designO
             </h2>
 
-            <p className="text-center text-sm text-gray-500 mb-6">
+            <p className="text-center text-sm text-text-muted mb-6">
                 Enter the 6-digit code sent to your email
             </p>
 
@@ -106,11 +101,11 @@ export default function OtpForm() {
                         onChange={(e) => handleChange(index, e.target.value)}
                         onKeyDown={(e) => handleKeyDown(index, e)}
                         className="
-                            w-12 h-14 text-center text-xl font-semibold
-                            border border-gray-400 rounded-lg shadow-md
-                            focus:outline-none focus:border-blush-deep focus:ring focus:ring-blush-deep
-                            hover:border-blush hover:ring hover:ring-blush hover:outline-none
-                            transition-all duration-300 bg-transparent"
+                            w-12 h-14 text-center text-xl font-semibold text-text-primary
+                            border border-surface-border rounded-lg bg-surface-hover
+                            focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent
+                            hover:border-accent-hover
+                            transition-all duration-300"
                     />
                 ))}
             </div>
@@ -140,24 +135,6 @@ export default function OtpForm() {
                 )}
             </div>
 
-
-            {/* <div className="mt-5 text-center text-sm text-gray-500">
-                Didn't receive the code?{" "}
-                {canResend ? (
-                    <button
-                        onClick={handleResend}
-                        type="button"
-                        disabled={isResendLoading}
-                        className="ml-1 text-soft-black font-Jost-Semibold hover:underline hover:cursor-pointer disabled:opacity-50"
-                    >
-                        {isResendLoading ? "sending..." : "resend otp"}
-                    </button>
-                ) : (
-                    <span className="ml-1 text-soft-black font-Jost-Semibold tabular-nums">
-                        resend in {timer}
-                    </span>
-                )}
-            </div> */}
             <ResendOtpSection onResend={handleResend} isLoading={isResendLoading} />
         </div>
     );
