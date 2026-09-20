@@ -2,11 +2,11 @@ import type { ClientSession } from "mongoose";
 import type { Pagination } from "../../DTO/admin/adminDTO";
 import type { CustomerInteraction, CustomerInteractionPopulated } from "../../DTO/common/interaction";
 import type { ActiveJobFilter, ActiveJobPopulateAll, ActiveJobPopulated, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO";
-import type { CreateHireDesignerDTO, HireDesignerFilter, HireDesignerPopulatedALL, HireDesignerPopulateUser } from "../../DTO/user/hireDesignerDTO";
+import type { HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
 
 import type { createJobRepoDTO, EditJobRepoData, JobFilter } from "../../DTO/user/jobsDTO";
 import type { ImageUploadResult } from "../base/IImageUpload";
-import type { IActiveJob, IHireDesigner, ICustomerInteraction, IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, Source_type, JobStatus } from "./ICustomer";
+import type { IActiveJob, ICustomerInteraction, IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, Source_type, JobStatus } from "./ICustomer";
 
 export interface IJobRepository {
     createJobRequest(data: createJobRepoDTO, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<IJobRequest>;
@@ -23,16 +23,6 @@ export interface IJobRepository {
     findCandidatesExcluding(): Promise<IJobRequestPopulated[]>
 }
 
-export interface IHireDesignerRepository {
-    checkIfApplied(userId: string, designId: string): Promise<IHireDesigner | null>
-    getHireDesignerByJobId(jobId: string): Promise<IHireDesigner | null>
-    deleteHireDesigner(id: string): Promise<boolean>
-    updateHireDesigner(id: string, data: Partial<IHireDesigner>): Promise<IHireDesigner | null>
-    getHireDesignerById(id: string): Promise<IHireDesigner | null>
-    createHireDesigner(data: CreateHireDesignerDTO): Promise<IHireDesigner>
-    getMyHireDesignerRequests(userId: string, filters?: HireDesignerFilter): Promise<{ data: HireDesignerPopulatedALL[], pagination: Pagination }>
-    getHireRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<{ data: HireDesignerPopulateUser[], pagination: Pagination }>
-}
 
 
 export interface IActiveJobRepository {

@@ -1,12 +1,11 @@
 import type { CustomerDashboardDTO } from "../../DTO/common/dashboard";
 import type { GetAllDesignCommonResponseDTO } from "../../DTO/designer/designDTO";
 import type { ActiveJobFilter, ActiveJobResponseDTO } from "../../DTO/user/activeJobDTO";
-import type { AcceptOrRejectHireDesignerDTO, getHireDesignerPerDesignResponseDTO, getMyHireDesignerRequestResponseDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
+import type { AcceptOrRejectHireDesignerDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
 import type { EditJobRequest, HireDesignerDTO, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO";
 import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../base/IApiResponse";
-import type { WarningDTO } from "../benchmark/IBenchMark";
 import type { JobChatValidation } from "../socket/ISocket";
-import type { HireDesignerPayload, ICreateJobRequest, Source_type } from "./ICustomer";
+import type {  ICreateJobRequest, Source_type } from "./ICustomer";
 
 export interface IJobRequestService {
     addJobRequest(userId: string, data: ICreateJobRequest, refrenceImages?: Express.Multer.File[], floorPlanImages?: Express.Multer.File[]): Promise<IApiResponse>
@@ -20,14 +19,6 @@ export interface IJobRequestService {
     getRecentJobs(): Promise<IApiResponseWithRecomendation<JobsCommonResponseDTO[]>>
 }
 
-
-export interface IHireDesignerService {
-    acceptOrRejectHireRequest(id: string, data: AcceptOrRejectHireDesignerDTO): Promise<IApiResponse>
-    deleteHireDesigenr(id: string): Promise<IApiResponse>
-    createHireDesigner(userId: string, data: HireDesignerPayload): Promise<IApiResponse<WarningDTO>>
-    getMyHireDesignerRequests(userId: string, filters?: HireDesignerFilter): Promise<IApiResponseWithPagination<getMyHireDesignerRequestResponseDTO[]>>
-    getHireRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<IApiResponseWithPagination<getHireDesignerPerDesignResponseDTO[]>>
-}
 
 
 export interface IActiveJobService {

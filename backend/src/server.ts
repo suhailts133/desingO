@@ -20,7 +20,6 @@ import jobApplicationRoutes from "./routes/designer/jobApplicationRoutes"
 // user routes
 import jobRoutes from "./routes/user/jobRoutes"
 import savedDesignRoutes from "./routes/user/savedDesignRoutes"
-import hireDesignerRoute from "./routes/user/hireDesignerRoutes"
 import activeJobsRoute from "./routes/user/activeJobRoutes"
 // common routes
 import profileRoutes from "./routes/common/profileRoutes"
@@ -66,7 +65,6 @@ app.use("/api/design", designRoutes)
 app.use("/api/job-application", jobApplicationRoutes)
 app.use("/api/profile", profileRoutes)
 app.use("/api/saved-design", savedDesignRoutes)
-app.use("/api/direct-hire", hireDesignerRoute)
 
 app.use("/api/design-bm", designBMRoutes)
 app.use("/api/proposal", proposalRoutes)
