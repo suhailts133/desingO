@@ -51,7 +51,7 @@ export default function BrowseDesigners() {
     const totalPages = data.totalPages ?? 1;
 
     return (
-        <div className="min-h-screen bg-gray-50/60 font-Jost">
+        <div className="min-h-screen font-Jost">
 
             <DesignerFilter
                 register={register}
@@ -66,14 +66,18 @@ export default function BrowseDesigners() {
                 </div>
             </div>
 
-            <Pagination
-                page={page}
-                totalItem={totalDesigners}
-                whichItem="designers"
-                totalPages={totalPages}
-                onDecrease={() => setPage(p => p - 1)}
-                onIncrease={() => setPage(p => p + 1)}
-            />
+
+            <div className="fixed bottom-0 left-0 right-0 z-40">
+                <Pagination
+                    page={page}
+                    totalItem={totalDesigners}
+                    whichItem="designers"
+                    totalPages={totalPages}
+                    onDecrease={() => setPage(p => p - 1)}
+                    onIncrease={() => setPage(p => p + 1)}
+                />
+            </div>
+
         </div>
     );
 }
