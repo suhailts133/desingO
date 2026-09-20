@@ -115,12 +115,14 @@
     @apply hover:border-b text-center font-Jost-Semibold text-sm px-6 py-2 cursor-pointer hover:scale-105 border-soft-black transition-all duration-200
 }
 
-.auth-disabled-button {
-    @apply w-full text-white font-Jost-Semibold py-3 rounded-sm bg-gray-400 tracking-wide cursor-not-allowed opacity-70 flex items-center justify-center gap-2;
-}
 .auth-button {
-    @apply w-full text-white font-Jost-Semibold py-3 rounded-sm bg-soft-black tracking-wide transition-colors duration-200 hover:bg-blush-deep cursor-pointer;
+    @apply w-full text-text-on-accent font-Jost-Semibold py-3 rounded-sm bg-accent tracking-wide transition-colors duration-200 hover:bg-accent-hover cursor-pointer;
 }
+.auth-disabled-button {
+    @apply w-full text-text-faint font-Jost-Semibold py-3 rounded-sm bg-surface-border-strong tracking-wide cursor-not-allowed opacity-70 flex items-center justify-center gap-2;
+}
+ 
+
 .google-button {
     @apply font-Jost-Semibold text-white w-full bg-linear-to-r from-peach via-blush to-blush-deep/85 hover:brightness-110 hover:scale-110 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center mr-2 mb-2 transition-all duration-300
 }
