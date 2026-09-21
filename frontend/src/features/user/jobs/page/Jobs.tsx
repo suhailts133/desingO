@@ -66,14 +66,19 @@ export default function Jobs() {
                 isLoading={isDeleting}
                 text="Are you sure you want to delete this Job Request?"
             />
-            <Pagination
-                page={page}
-                totalItem={totalJobRequest}
-                whichItem="Job Request"
-                totalPages={totalPages}
-                onDecrease={() => setPage(p => p - 1)}
-                onIncrease={() => setPage(p => p + 1)}
-            />
+
+
+            <div className="sticky bottom-0 mt-auto pt-4 bg-bg">
+                <Pagination
+                    page={page}
+                    totalItem={totalJobRequest}
+                    whichItem="Job Request"
+                    totalPages={totalPages}
+                    onDecrease={() => setPage(p => p - 1)}
+                    onIncrease={() => setPage(p => p + 1)}
+                />
+            </div>
+
         </div>
     );
 }
