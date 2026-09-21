@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form"
 import { CustomerprofileUpdationValidations } from "../../../../validations/profileValidation"
 import { useEffect } from "react"
 import type { UserProfileResponseDTO, UserProfileUpdateDTO } from "../customerProfileInterfaces"
+import { InputField } from "../../../../shared/form/InputField"
+import SubmitButton from "../../../../shared/common/SubmitButton"
 
 
 type Props = {
@@ -37,7 +39,7 @@ export default function CustomerUpdationForm({ data, isOpen, onClose, dataError,
 
     const onSubmit = async (data: UserProfileUpdateDTO) => {
         try {
-       
+
             updateProfileData(data)
         } catch (err) {
             console.error("update failed", err);
@@ -46,45 +48,28 @@ export default function CustomerUpdationForm({ data, isOpen, onClose, dataError,
     if (!isOpen) {
         return null
     }
-    return <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-        <div className="relative w-full max-w-xl bg-white rounded-2xl shadow-2xl p-8 animate-in zoom-in duration-200">
-            <h2 className="text-4xl font-semibold text-soft-black mb-6 text-center font-Dynalight-Regular">designO</h2>
-            <p className="text-center text-lg font-Jost-Semibold text-gray-500 mb-6">Profile Update Form</p>
+    return <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-bg/60 backdrop-blur-sm">
+        <div className="relative w-full max-w-xl bg-surface border border-surface-border rounded-2xl p-8 animate-in zoom-in duration-200">
+            <h2 className="text-4xl font-semibold text-accent mb-6 text-center font-Dynalight-Regular">designO</h2>
+            <p className="text-center text-lg font-Jost-Semibold text-text-muted mb-6">Profile Update Form</p>
 
             <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
 
-                    <div>
-                        <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">name</label>
-                        <input
-                            {...register("full_name")}
-                            type="text"
-                            className="auth-input"
-                            placeholder="Enter Your name"
-                        />
-                        <p className="text-sm text-error">{errors.full_name?.message}</p>
-                    </div>
+                <InputField label="Fullname" type="text" placeholder="John doe" registration={register("full_name")} error={errors.full_name?.message} />
 
                 <div className="flex flex-col gap-3 pt-4">
-                    {!isLoading ? (<button
-                        type="submit"
-
-                        className="auth-button">
-                        Confirm & Update
-                    </button>) : (
-                        <button
-                            type="submit"
-                            disabled={isLoading}
-                            className="auth-disabled-button">
-
-                            <svg className="mr-2 size-5 animate-spin" viewBox="0 0 24 24" fill="none">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                            </svg>
-
-                            Updating
-                        </button>
-                    )}
-                    <button type="button" onClick={onClose} className="text-gray-500 hover:text-gray-800 text-sm font-medium">Cancel</button>
+                    <SubmitButton type="submit" label="Confirm & Update" loadingLabel="Updating" isLoading={isLoading} />
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        disabled={isLoading}
+                        className="w-full py-2.5 rounded-lg border border-surface-border bg-surface text-text-muted text-sm font-medium
+                            hover:border-surface-border-strong hover:text-text-primary hover:bg-surface-hover
+                            disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-surface-border disabled:hover:text-text-muted disabled:hover:bg-surface
+                            transition-colors duration-200"
+                    >
+                        Cancel
+                    </button>
                 </div>
                 {dataError && <p className="text-sm text-error text-center">{dataError}</p>}
                 {dataSuccess && <p className="text-sm text-success text-center">{dataSuccess}</p>}
@@ -95,6 +80,3 @@ export default function CustomerUpdationForm({ data, isOpen, onClose, dataError,
 
 
 }
-
-
-
