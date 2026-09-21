@@ -25,7 +25,7 @@ export function ReactSelectField<
     return (
         <div className="w-full">
        
-                <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">
+                <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">
                     {label}
                 </label>
          

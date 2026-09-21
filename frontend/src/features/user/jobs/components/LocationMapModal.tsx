@@ -94,11 +94,11 @@ export default function LocationMapModal({
   };
   return (
     <div className="fixed inset-0 z-2000 bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-snow-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden">
-        <div className="flex items-center justify-between p-4 border-b border-blush-pale">
-          <h4 className="font-Jost-Semibold text-soft-black">Pick Project Location</h4>
-          <button type="button" onClick={onClose} aria-label="Close map">
-            <X className="w-5 h-5 text-soft-black/60" />
+      <div className="bg-surface border border-surface-border rounded-2xl w-full max-w-2xl overflow-hidden">
+        <div className="flex items-center justify-between p-4 border-b border-surface-border">
+          <h4 className="font-Jost-Semibold text-text-primary">Pick Project Location</h4>
+          <button type="button" onClick={onClose} aria-label="Close map" className="text-text-faint hover:text-text-primary">
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -117,14 +117,14 @@ export default function LocationMapModal({
         </div>
 
         <div className="p-4 flex items-center justify-between gap-3">
-          <p className="text-xs text-soft-black/60">
+          <p className="text-xs text-text-muted">
             {isResolving ? "Resolving address..." : resolved?.formatted || "Location selected — fill in address details below"}
           </p>
           <button
             type="button"
             disabled={!resolved || isResolving}
             onClick={() => resolved && onConfirm(resolved)}
-            className="shrink-0 px-4 py-2 bg-blush-deep text-white rounded-lg text-sm font-Jost-Semibold disabled:opacity-40"
+            className="shrink-0 px-4 py-2 bg-accent text-text-on-accent enabled:hover:bg-accent-hover enabled:active:bg-accent-active rounded-lg text-sm font-Jost-Semibold disabled:opacity-40"
           >
             Confirm Location
           </button>

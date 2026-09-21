@@ -9,7 +9,7 @@ type Props = {
     text: string
 }
 
-export default function DeleteConfirmModal({ isOpen, onConfirm, onClose, isLoading, text }: Props) {
+export default function DeleteConfirmModal({ isOpen, onClose, isLoading, text }: Props) {
     if (!isOpen) {
         return null
     }

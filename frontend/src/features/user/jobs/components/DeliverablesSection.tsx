@@ -3,6 +3,9 @@ import { FileText, CheckCircle2 } from "lucide-react";
 import { ReactSelectField } from "../../../../shared/form/ReactSelectField";
 import type { IJobRequest } from "../jobInterface";
 import { SERVICE_PRESETS } from "../jobData";
+import { selectStyles } from "../../../../shared/filter/selectStyle";
+import type { StylesConfig } from "react-select";
+import type { OptionType } from "../../../common/baseData";
 
 
 
@@ -18,47 +21,47 @@ export default function DeliverablesSection() {
 
     return (
         <div className="space-y-4">
-            <h3 className="text-lg font-Jost-Semibold text-soft-black flex items-center gap-2">
-                <FileText className="w-5 h-5 text-blush-deep" /> 4. Drawing Deliverables Needed
+            <h3 className="text-lg font-Jost-Semibold text-text-primary flex items-center gap-2">
+                <FileText className="w-5 h-5 text-text-faint" /> 4. Drawing Deliverables Needed
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <button
                     type="button"
                     onClick={() => handlePackageChange("CONCEPT")}
-                    className={`p-3 rounded-xl border text-left transition-all ${servicePackageType === "CONCEPT"
-                            ? "border-blush-deep bg-blush-pale/50 ring-2 ring-blush-deep"
-                            : "border-gray-200 bg-white"
+                    className={`p-3 rounded-xl border-2 text-left transition-all ${servicePackageType === "CONCEPT"
+                            ? "border-accent bg-accent-tint"
+                            : "border-surface-border bg-surface hover:border-accent"
                         }`}
                 >
-                    <div className="font-semibold text-soft-black text-sm">Visuals & 3D Only</div>
-                    <div className="text-[11px] text-gray-500 mt-1">2D layout + 3D realistic renders for styling.</div>
+                    <div className="font-semibold text-text-primary text-sm">Visuals & 3D Only</div>
+                    <div className="text-[11px] text-text-faint mt-1">2D layout + 3D realistic renders for styling.</div>
                 </button>
 
                 <button
                     type="button"
                     onClick={() => handlePackageChange("CONTRACTOR_READY")}
-                    className={`p-3 rounded-xl border text-left transition-all ${servicePackageType === "CONTRACTOR_READY"
-                            ? "border-blush-deep bg-blush-pale/50 ring-2 ring-blush-deep"
-                            : "border-gray-200 bg-white"
+                    className={`p-3 rounded-xl border-2 text-left transition-all ${servicePackageType === "CONTRACTOR_READY"
+                            ? "border-accent bg-accent-tint"
+                            : "border-surface-border bg-surface hover:border-accent"
                         }`}
                 >
-                    <div className="font-semibold text-soft-black text-sm flex items-center gap-1">
+                    <div className="font-semibold text-text-primary text-sm flex items-center gap-1">
                         Contractor Ready <CheckCircle2 className="w-3.5 h-3.5 text-success" />
                     </div>
-                    <div className="text-[11px] text-gray-500 mt-1">Complete working drawings (MEP, Carpentry, BOQ).</div>
+                    <div className="text-[11px] text-text-faint mt-1">Complete working drawings (MEP, Carpentry, BOQ).</div>
                 </button>
 
                 <button
                     type="button"
                     onClick={() => handlePackageChange("CUSTOM")}
-                    className={`p-3 rounded-xl border text-left transition-all ${servicePackageType === "CUSTOM"
-                            ? "border-blush-deep bg-blush-pale/50 ring-2 ring-blush-deep"
-                            : "border-gray-200 bg-white"
+                    className={`p-3 rounded-xl border-2 text-left transition-all ${servicePackageType === "CUSTOM"
+                            ? "border-accent bg-accent-tint"
+                            : "border-surface-border bg-surface hover:border-accent"
                         }`}
                 >
-                    <div className="font-semibold text-soft-black text-sm">Custom Selection</div>
-                    <div className="text-[11px] text-gray-500 mt-1">Pick specific drawing sheets a la carte.</div>
+                    <div className="font-semibold text-text-primary text-sm">Custom Selection</div>
+                    <div className="text-[11px] text-text-faint mt-1">Pick specific drawing sheets a la carte.</div>
                 </button>
             </div>
 
@@ -70,6 +73,7 @@ export default function DeliverablesSection() {
                     control={control}
                     options={SERVICE_PRESETS.CONTRACTOR_READY}
                     error={errors.services?.message}
+                    styles={selectStyles as StylesConfig<OptionType, true>}
                 />
             )}
         </div>
