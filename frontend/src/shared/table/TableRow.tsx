@@ -9,14 +9,12 @@ interface TableRowProps<T> {
   isEven: boolean;
 }
 
-const DEFAULT_CELL_CLASS = "text-soft-black text-sm";
+const DEFAULT_CELL_CLASS = "text-text-primary text-sm";
 
 export default function TableRow<T>({ row, columns, cellRenderers, isLast, isEven }: TableRowProps<T>) {
   return (
     <tr
-      className={`${isEven ? "bg-white/50" : ""} transition-colors duration-150 hover:bg-white/20 ${
-        isLast ? "" : "border-b border-white/20"
-      }`}
+      className="bg-bg-raised transition-colors duration-150 hover:bg-surface-hover"
     >
       {columns.map((col) => {
         const renderer = cellRenderers[col.key];

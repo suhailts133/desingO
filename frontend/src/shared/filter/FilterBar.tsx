@@ -1,4 +1,3 @@
-
 import { SearchFilter } from "./SearchFilter";
 import { SelectFilter } from "./SelectFilter";
 import type { FilterFieldConfig } from "./types";
@@ -11,7 +10,7 @@ type Props = {
 
 export function FilterBar({ filters, getValue, onFilterChange }: Props) {
   return (
-    <div className="rounded-2xl flex items-center justify-center gap-3 mb-5 bg-white/50 p-5">
+    <div className="rounded-2xl flex items-center justify-center gap-3 mb-5 bg-surface p-5 border border-surface-border-strong">
       {filters.map((f) =>
         f.type === "search" ? (
           <SearchFilter

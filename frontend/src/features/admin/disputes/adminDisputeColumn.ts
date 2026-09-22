@@ -9,6 +9,7 @@ export const disputeStatusTone: Record<DisputeStatus, Tone> = {
     Resolved: "success",
     Redo: "error",
     "Awaiting Confirmation": "warning",
+    Terminated: "archived"
 };
 
 
