@@ -43,12 +43,14 @@ export default function DesignerVerificationTable() {
 
     return (
         <div className="min-h-screen">
-            <h1 className="font-Jost-Semibold text-3xl text-soft-black">Design Verification</h1>
-            <p className="text-soft-black/50 text-sm mt-1">{totalResult} Designer Requests found</p>
+            <div className="mb-6">
+                <h1 className="font-Jost-Semibold text-3xl text-accent">Design Verification</h1>
+                <p className="text-text-primary text-sm mt-1">{totalResult} Designer Requests found</p>
+            </div>
 
             <FilterBar filters={VERIFICATION_FILTERS} getValue={getValue} onFilterChange={setFilter} />
 
-            <div className="bg-white/20 backdrop-blur-2xl border border-white/30 rounded-2xl shadow-[0_8px_32px_rgba(216,160,144,0.15)] overflow-hidden">
+            <div className="bg-surface backdrop-blur-2xl border border-surface-border rounded-2xl  overflow-hidden">
                 <table className="w-full">
                     <TableHeader columns={designerVerificationColumns} />
                     <TableBody
