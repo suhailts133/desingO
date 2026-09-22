@@ -18,6 +18,10 @@ export default function MyJobCard({ jobRequest, onDeleteClick }: Props) {
                 return "bg-success-tint text-success-text border-surface-border"
             case "Closed":
                 return "bg-surface-hover text-text-faint border-surface-border"
+            case "Terminated":
+                return "bg-surface-hover text-text-faint border border-surface-border"
+            case "Rejected":
+                return "bg-error-tint text-error-text border border-error"
         }
     }
     const getJobDetail = (id: string) => {
