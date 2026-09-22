@@ -42,13 +42,13 @@ export default function TransactionTable() {
     return (
         <div className="max-h-screen">
             <div className="mb-6">
-                <h1 className="font-Jost-Semibold text-3xl text-soft-black">Transactions</h1>
-                <p className="text-soft-black/50 text-sm mt-1">{totalTransactions} transactions found</p>
+                <h1 className="font-Jost-Semibold text-3xl text-accent">Transactions</h1>
+                <p className="text-text-primary text-sm mt-1">{totalTransactions} transactions found</p>
             </div>
 
             <FilterBar filters={TRANSACTION_FILTERS} getValue={getValue} onFilterChange={setFilter} />
 
-            <div className="bg-white/20 backdrop-blur-2xl border border-white/30 rounded-2xl shadow-[0_8px_32px_rgba(216,160,144,0.15)] overflow-hidden">
+            <div className="bg-surface backdrop-blur-2xl border border-surface-border rounded-2xl  overflow-hidden">
                 <table className="w-full">
                     <TableHeader columns={transactionColumns} />
                     <TableBody data={transactions} columns={transactionColumns} cellRenderers={cellRenderers} keyExtractor={(u) => u.id} />

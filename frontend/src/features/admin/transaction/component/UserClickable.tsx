@@ -8,7 +8,7 @@ export default function UserClickable(name: string, role: string, id: string) {
             type="button"
             disabled={!isClickable}
             onClick={() => isClickable && navigate(`/admin/users/${id}`)}
-            className={`font-Jost-Semibold text-sm text-left ${isClickable ? "text-primary hover:underline cursor-pointer" : "text-soft-black cursor-default"
+            className={`font-Jost-Semibold text-sm text-left ${isClickable ? "text-accent hover:text-accent-hover hover:underline cursor-pointer" : "text-text-primary cursor-default"
                 }`}
         >
             {name}
