@@ -2,7 +2,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import type { DateFilter } from "../../features/user/jobApplications/jobApplicationInterFace";
 
-
 interface DateFilterPickerProps {
     dateFilter: DateFilter;
     startDate: Date;
@@ -37,13 +36,13 @@ export default function DateFilterPicker({
         <div className="flex flex-wrap items-end gap-4">
             {/* Dropdown */}
             <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-soft-black/50 uppercase tracking-widest">
+                <label className="text-xs font-semibold text-text-faint uppercase tracking-widest">
                     Date
                 </label>
                 <select
                     value={dateFilter}
                     onChange={(e) => onDateFilterChange(e.target.value as DateFilter)}
-                    className="text-xs font-semibold text-soft-black bg-off-white border border-blush-light/40 rounded-lg px-3 py-1.5 focus:outline-none"
+                    className="text-xs font-semibold text-text-primary bg-surface-hover border border-surface-border rounded-lg px-3 py-1.5 focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-colors cursor-pointer"
                 >
                     {(["Latest", "Oldest", "Today", "Custom"] as DateFilter[]).map((d) => (
                         <option key={d} value={d}>{d}</option>
@@ -53,9 +52,9 @@ export default function DateFilterPicker({
 
             {/* Custom date range */}
             {dateFilter === "Custom" && (
-                <div className="flex items-end gap-3 px-4 py-2.5 bg-off-white border border-blush-light/40 rounded-xl">
+                <div className="flex items-end gap-3 px-4 py-2.5 bg-surface border border-surface-border rounded-xl">
                     <div className="flex flex-col gap-1">
-                        <label className="text-xs font-semibold text-soft-black/50 uppercase tracking-widest">
+                        <label className="text-xs font-semibold text-text-faint uppercase tracking-widest">
                             From
                         </label>
                         <DatePicker
@@ -65,12 +64,12 @@ export default function DateFilterPicker({
                             startDate={startDate}
                             endDate={endDate}
                             maxDate={today}
-                            className="text-xs font-semibold text-soft-black bg-transparent border border-blush-light/40 rounded-lg px-3 py-1.5 focus:outline-none w-32 cursor-pointer"
+                            className="text-xs font-semibold text-text-primary bg-surface-hover border border-surface-border rounded-lg px-3 py-1.5 placeholder-text-faint focus:border-accent focus:ring-1 focus:ring-accent outline-none w-32 transition-colors cursor-pointer"
                             dateFormat="dd MMM yyyy"
                         />
                     </div>
                     <div className="flex flex-col gap-1">
-                        <label className="text-xs font-semibold text-soft-black/50 uppercase tracking-widest">
+                        <label className="text-xs font-semibold text-text-faint uppercase tracking-widest">
                             To
                         </label>
                         <DatePicker
@@ -81,7 +80,7 @@ export default function DateFilterPicker({
                             endDate={endDate}
                             minDate={startDate}
                             maxDate={today}
-                            className="text-xs font-semibold text-soft-black bg-transparent border border-blush-light/40 rounded-lg px-3 py-1.5 focus:outline-none w-32 cursor-pointer"
+                            className="text-xs font-semibold text-text-primary bg-surface-hover border border-surface-border rounded-lg px-3 py-1.5 placeholder-text-faint focus:border-accent focus:ring-1 focus:ring-accent outline-none w-32 transition-colors cursor-pointer"
                             dateFormat="dd MMM yyyy"
                         />
                     </div>

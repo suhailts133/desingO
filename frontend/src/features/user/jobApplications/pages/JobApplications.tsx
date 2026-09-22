@@ -37,8 +37,8 @@ export default function JobApplications() {
     const navigate = useNavigate()
     const jobApplications = data?.data
 
-    if (isLoading) return <p>Loading...</p>
-    if (error || !jobApplications) return <p>Error loading job applications</p>
+    if (isLoading) return <p className="text-text-faint">Loading...</p>
+    if (error || !jobApplications) return <p className="text-error">Error loading job applications</p>
 
     const handleApproval = async () => {
         if (!approveJobApplication) return
@@ -61,15 +61,13 @@ export default function JobApplications() {
         setRejectJobApplication(null)
     }
 
-
-
     const totalPages = data.totalPages ?? 1
     const totalJobapplications = data.total ?? 1
 
     return (
         <div className="w-full flex flex-col gap-6">
-            <button onClick={() => navigate(-1)} className="flex items-center mb-4 text-sm text-soft-black hover:underline">
-                <ChevronLeft className="w-4 h-4" />
+            <button onClick={() => navigate(-1)} className="flex items-center mb-4 text-sm w-fit text-text-primary hover:text-accent-hover transition-colors">
+                <ChevronLeft className="w-4 h-4 mr-1" />
                 Back
             </button>
 
@@ -78,20 +76,19 @@ export default function JobApplications() {
 
                 {/* Status Filter */}
                 <div className="flex flex-col gap-1">
-                    <label className="text-xs font-semibold text-soft-black/50 uppercase tracking-widest">
+                    <label className="text-xs font-semibold text-text-faint uppercase tracking-widest">
                         Status
                     </label>
                     <select
                         value={status}
                         onChange={(e) => { setStatus(e.target.value as JobApplicationStatus | "All"); setPage(1) }}
-                        className="text-xs font-semibold text-soft-black bg-off-white border border-blush-light/40 rounded-lg px-3 py-1.5 focus:outline-none"
+                        className="text-xs font-semibold text-text-primary bg-surface-hover border border-surface-border rounded-lg px-3 py-1.5 focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-colors cursor-pointer"
                     >
                         {["All", "Pending", "Rejected", "Ongoing"].map(s => (
                             <option key={s} value={s}>{s}</option>
                         ))}
                     </select>
                 </div>
-
 
                 <DateFilterPicker
                     dateFilter={dateFilter}
@@ -104,10 +101,10 @@ export default function JobApplications() {
             </div>
 
             {approvalSuccess && (
-                <p className="text-green-600 text-sm text-center">{approvalSuccess}</p>
+                <p className="text-success text-sm text-center">{approvalSuccess}</p>
             )}
             {approvalError && (
-                <p className="text-red-500 text-sm text-center">{approvalError}</p>
+                <p className="text-error text-sm text-center">{approvalError}</p>
             )}
 
             <div>
@@ -122,15 +119,17 @@ export default function JobApplications() {
                     ))}
                 </div>
             </div>
-            <Pagination
-                page={page}
-                totalItem={totalJobapplications}
-                whichItem="job applications"
-                totalPages={totalPages}
-                onDecrease={() => setPage(p => p - 1)}
-                onIncrease={() => setPage(p => p + 1)}
-            />
 
+            <div className="sticky bottom-0 mt-auto pt-4 bg-bg">
+                <Pagination
+                    page={page}
+                    totalItem={totalJobapplications}
+                    whichItem="job applications"
+                    totalPages={totalPages}
+                    onDecrease={() => setPage(p => p - 1)}
+                    onIncrease={() => setPage(p => p + 1)}
+                />
+            </div>
 
             <ConfirmModal
                 isOpen={!!approveJobApplication}
@@ -139,7 +138,7 @@ export default function JobApplications() {
                 isLoading={isApproving}
                 text="Are you sure you want to accept this job Application?"
                 heading="Confirm approval?"
-                buttonLoadingText="approving"
+                buttonLoadingText="Approving"
                 buttonText="Confirm & approve"
             />
 
