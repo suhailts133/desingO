@@ -65,7 +65,7 @@ export default function DisputeForm({ isOpen, onClose, onConfirm, isLoading }: P
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
             <div className="relative w-full max-w-md bg-surface border border-surface-border rounded-2xl p-8 animate-in zoom-in duration-200">
-                <h2 className="text-4xl font-semibold text-text-primary mb-6 text-center font-Dynalight-Regular">designO</h2>
+                <h2 className="text-4xl font-semibold text-accent mb-6 text-center font-Dynalight-Regular">designO</h2>
                 <p className="text-center text-lg font-Jost-Semibold text-text-faint mb-6">Raise a Dispute</p>
 
                 <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>

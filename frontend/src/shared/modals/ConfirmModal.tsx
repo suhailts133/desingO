@@ -17,7 +17,7 @@ export default function ConfirmModal({ isOpen, onConfirm, onClose, isLoading, te
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-bg/60 backdrop-blur-md">
             <div className="relative w-full max-w-md bg-surface border border-surface-border rounded-2xl p-8 animate-in zoom-in duration-200">
-                <h2 className="text-4xl font-semibold text-text-primary mb-6 text-center font-Dynalight-Regular">designO</h2>
+                <h2 className="text-4xl font-semibold text-accent mb-6 text-center font-Dynalight-Regular">designO</h2>
                 <div className="text-center space-y-4">
                     <p className="text-xl font-Jost-Semibold text-text-primary">{heading}</p>
                     <p className="text-text-faint">{text} </p>
