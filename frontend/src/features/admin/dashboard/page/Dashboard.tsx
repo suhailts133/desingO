@@ -40,18 +40,18 @@ export default function Dashboard() {
                     type="button"
                     onClick={() => void handleDownload()}
                     disabled={!transactionReport}
-                    className="inline-flex items-center gap-2 rounded-md bg-soft-black px-3 py-2 text-sm font-medium text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="inline-flex items-center gap-2 rounded-md bg-accent px-3 py-2 text-sm font-medium text-text-on-accent hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                     Download Excel
                 </button>
             </div>
 
-            {isReportLoading && <p>Loading report...</p>}
-            {reportError && <p>Failed to load report</p>}
+            {isReportLoading && <p className="text-text-muted">Loading report...</p>}
+            {reportError && <p className="text-error">Failed to load report</p>}
             {transactionReport && <TransactionReportChart data={transactionReport.data} />}
 
-            {isDashboardLoading && <p>Loading dashboard...</p>}
-            {dashboardError && <p>Failed to load dashboard</p>}
+            {isDashboardLoading && <p className="text-text-muted">Loading dashboard...</p>}
+            {dashboardError && <p className="text-error">Failed to load dashboard</p>}
             {dashboard && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <AdminOngoingDisputesSection disputes={dashboard.disputes} />

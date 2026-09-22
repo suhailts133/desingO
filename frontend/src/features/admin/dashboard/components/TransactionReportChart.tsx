@@ -9,15 +9,21 @@ export default function TransactionReportChart({ data }: TransactionReportChartP
     return (
         <ResponsiveContainer width="100%" height={400}>
             <BarChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="period" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="Payment" fill="#4f46e5" stackId="a" barSize={50}/>
-                <Bar dataKey="Commission" fill="#22c55e" stackId="a" />
-                <Bar dataKey="Payout" fill="#f59e0b" stackId="a" />
-                <Bar dataKey="Refund" fill="#ef4444" stackId="a" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-surface-border)" />
+                <XAxis dataKey="period" stroke="var(--color-text-faint)" />
+                <YAxis stroke="var(--color-text-faint)" />
+                <Tooltip
+                    contentStyle={{
+                        backgroundColor: "var(--color-surface)",
+                        border: "1px solid var(--color-surface-border)",
+                        color: "var(--color-text-primary)",
+                    }}
+                />
+                <Legend wrapperStyle={{ color: "var(--color-text-muted)" }} />
+                <Bar dataKey="Payment" fill="var(--color-accent)" stackId="a" barSize={50}/>
+                <Bar dataKey="Commission" fill="var(--color-success)" stackId="a" />
+                <Bar dataKey="Payout" fill="var(--color-warning)" stackId="a" />
+                <Bar dataKey="Refund" fill="var(--color-error)" stackId="a" />
             </BarChart>
         </ResponsiveContainer>
     );
