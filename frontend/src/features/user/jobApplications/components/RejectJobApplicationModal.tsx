@@ -25,20 +25,20 @@ export default function RejectJobApplicationModal({ onClose, isOpen, onConfirm, 
 
     };
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 animate-in zoom-in duration-200">
-                <h2 className="text-4xl font-semibold text-soft-black mb-6 text-center font-Dynalight-Regular">designO</h2>
-                <p className="text-center text-lg font-Jost-Semibold text-gray-500 mb-6">Rejection Reason</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-bg/60 backdrop-blur-sm">
+            <div className="relative w-full max-w-md bg-surface border border-surface-border rounded-2xl p-8 animate-in zoom-in duration-200">
+                <h2 className="text-4xl font-semibold text-text-primary mb-6 text-center font-Dynalight-Regular">designO</h2>
+                <p className="text-center text-lg font-Jost-Semibold text-text-faint mb-6">Rejection Reason</p>
 
                 <form className="space-y-4" onSubmit={handleSubmit(onRejectSubmit)}>
                     <div>
-                        <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Explain the reason</label>
+                        <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Explain the reason</label>
                         <textarea
                             {...register("rejectionReason")}
                             className="auth-input min-h-30 pt-3"
                             placeholder="Tell the designer why their request was rejected..."
                         />
-                        {errors.rejectionReason && <p className="text-sm text-red-500 mt-1">{errors.rejectionReason.message}</p>}
+                        {errors.rejectionReason && <p className="text-sm text-error mt-1">{errors.rejectionReason.message}</p>}
                     </div>
 
                     <div className="flex flex-col gap-3 pt-4">
@@ -61,7 +61,7 @@ export default function RejectJobApplicationModal({ onClose, isOpen, onConfirm, 
                                 Rejecting
                             </button>
                         )}
-                        <button type="button" onClick={onClose} className="text-gray-500 hover:text-gray-800 text-sm font-medium">Cancel</button>
+                        <button type="button" onClick={onClose} className="text-text-faint hover:text-text-primary text-sm font-medium">Cancel</button>
                     </div>
                 </form>
             </div>

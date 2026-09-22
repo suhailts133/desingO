@@ -42,30 +42,30 @@ export default function UploadFloorPlan({ title, isOpen, onClose, onConfirm, isL
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 animate-in zoom-in duration-200">
-                <h2 className="text-4xl font-semibold text-soft-black mb-6 text-center font-Dynalight-Regular">designO</h2>
-                <p className="text-center text-lg font-Jost-Semibold text-gray-500 mb-6">{title === "upload" ? "Upload" : "Update"} Floor Plans</p>
+            <div className="relative w-full max-w-md bg-surface border border-surface-border rounded-2xl p-8 animate-in zoom-in duration-200">
+                <h2 className="text-4xl font-semibold text-text-primary mb-6 text-center font-Dynalight-Regular">designO</h2>
+                <p className="text-center text-lg font-Jost-Semibold text-text-faint mb-6">{title === "upload" ? "Upload" : "Update"} Floor Plans</p>
 
                 <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
                     <div className="space-y-3">
-                        <label className="block text-sm font-Jost-Semibold text-gray-700">Floor Plan Documents (PDF)</label>
+                        <label className="block text-sm font-Jost-Semibold text-text-primary">Floor Plan Documents (PDF)</label>
 
                         {fields.length < 10 && (
                             <>
                                 <label
                                     htmlFor="floorPlanUpload"
-                                    className="flex items-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-3 cursor-pointer hover:border-primary transition-colors"
+                                    className="flex items-center gap-3 w-full border border-surface-border rounded-lg px-4 py-3 cursor-pointer hover:border-accent transition-colors"
                                 >
-                                    <div className="bg-red-50 p-2 rounded-md">
-                                        <FileText className="h-5 w-5 text-red-500" />
+                                    <div className="bg-error-tint p-2 rounded-md">
+                                        <FileText className="h-5 w-5 text-error" />
                                     </div>
                                     <div className="flex flex-col overflow-hidden">
-                                        <span className="text-sm text-gray-700 font-medium">Select PDF Files</span>
-                                        <span className="text-[11px] text-gray-400 truncate">
+                                        <span className="text-sm text-text-primary font-medium">Select PDF Files</span>
+                                        <span className="text-[11px] text-text-faint truncate">
                                             {fields.length > 0 ? `${fields.length}/10 PDFs attached` : "Upload up to 10 PDF documents"}
                                         </span>
                                     </div>
-                                    <Plus className="h-5 w-5 text-gray-400 ml-auto shrink-0" />
+                                    <Plus className="h-5 w-5 text-text-faint ml-auto shrink-0" />
                                 </label>
 
                                 <input
@@ -80,7 +80,7 @@ export default function UploadFloorPlan({ title, isOpen, onClose, onConfirm, isL
                         )}
 
                         {fields.length > 0 && (
-                            <div className="max-h-56 overflow-y-auto space-y-2 p-3 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                            <div className="max-h-56 overflow-y-auto space-y-2 p-3 bg-surface-hover rounded-xl border border-dashed border-surface-border">
                                 {fields.map((field, index) => {
                                     const fileItem = watchedFloorPlans?.[index]?.file?.[0];
                                     const fileName = fileItem?.name || `Floor_Plan_${index + 1}.pdf`;
@@ -89,16 +89,16 @@ export default function UploadFloorPlan({ title, isOpen, onClose, onConfirm, isL
                                     return (
                                         <div
                                             key={field.id}
-                                            className="flex items-center justify-between p-2.5 bg-white rounded-lg border border-gray-100 shadow-sm"
+                                            className="flex items-center justify-between p-2.5 bg-surface rounded-lg border border-surface-border"
                                         >
                                             <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                                                <FileText className="h-5 w-5 text-red-500 shrink-0" />
+                                                <FileText className="h-5 w-5 text-error shrink-0" />
                                                 <div className="min-w-0">
-                                                    <p className="text-xs font-medium text-gray-700 truncate" title={fileName}>
+                                                    <p className="text-xs font-medium text-text-primary truncate" title={fileName}>
                                                         {fileName}
                                                     </p>
                                                     {fileSize && (
-                                                        <span className="text-xxs text-gray-400">{fileSize}</span>
+                                                        <span className="text-xxs text-text-faint">{fileSize}</span>
                                                     )}
                                                 </div>
                                             </div>
@@ -106,7 +106,7 @@ export default function UploadFloorPlan({ title, isOpen, onClose, onConfirm, isL
                                             <button
                                                 type="button"
                                                 onClick={() => remove(index)}
-                                                className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors shrink-0"
+                                                className="p-1 text-text-faint hover:text-error hover:bg-error-tint rounded-full transition-colors shrink-0"
                                             >
                                                 <X size={14} />
                                             </button>
@@ -117,7 +117,7 @@ export default function UploadFloorPlan({ title, isOpen, onClose, onConfirm, isL
                         )}
 
                         {errors.floorPlans && (
-                            <p className="text-xs text-red-500 mt-1">{errors.floorPlans.message}</p>
+                            <p className="text-xs text-error mt-1">{errors.floorPlans.message}</p>
                         )}
                     </div>
 
@@ -131,7 +131,7 @@ export default function UploadFloorPlan({ title, isOpen, onClose, onConfirm, isL
                         <button
                             type="button"
                             onClick={onClose}
-                            className="text-gray-500 hover:text-gray-800 text-sm font-medium"
+                            className="text-text-faint hover:text-text-primary text-sm font-medium"
                         >
                             Cancel
                         </button>

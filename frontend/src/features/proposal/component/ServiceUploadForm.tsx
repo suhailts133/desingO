@@ -51,31 +51,31 @@ export default function ServiceUploadForm({ onClose, isOpen, onConfirm, isLoadin
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 animate-in zoom-in duration-200">
-                <h2 className="text-4xl font-semibold text-soft-black mb-6 text-center font-Dynalight-Regular">designO</h2>
-                <p className="text-center text-lg font-Jost-Semibold text-gray-500 mb-6">Upload Outputs</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-bg/60 backdrop-blur-sm">
+            <div className="relative w-full max-w-md bg-surface border border-surface-border rounded-2xl p-8 animate-in zoom-in duration-200">
+                <h2 className="text-4xl font-semibold text-text-primary mb-6 text-center font-Dynalight-Regular">designO</h2>
+                <p className="text-center text-lg font-Jost-Semibold text-text-faint mb-6">Upload Outputs</p>
 
                 <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
                     <div className="space-y-4">
-                        <label className="block text-sm font-Jost-Semibold text-gray-700">Outputs</label>
+                        <label className="block text-sm font-Jost-Semibold text-text-primary">Outputs</label>
 
                         {fields.length < 10 && (
                             <>
                                 <label
                                     htmlFor="serviceOutput"
-                                    className="flex items-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer hover:border-primary transition-colors"
+                                    className="flex items-center gap-3 w-full border border-surface-border rounded-lg px-4 py-2 cursor-pointer hover:border-accent transition-colors"
                                 >
-                                    <div className="bg-gray-100 p-1.5 rounded-md">
-                                        <ImageIcon className="h-4 w-4 text-gray-500" />
+                                    <div className="bg-surface-hover p-1.5 rounded-md">
+                                        <ImageIcon className="h-4 w-4 text-text-faint" />
                                     </div>
                                     <div className="flex flex-col overflow-hidden">
-                                        <span className="text-sm text-gray-700 font-medium">Upload Output</span>
-                                        <span className="text-[11px] text-gray-400 truncate">
+                                        <span className="text-sm text-text-primary font-medium">Upload Output</span>
+                                        <span className="text-[11px] text-text-faint truncate">
                                             {fields.length > 0 ? `${fields.length} images selected` : "Select one or more images..."}
                                         </span>
                                     </div>
-                                    <Plus className="h-5 w-5 text-gray-400 ml-auto shrink-0" />
+                                    <Plus className="h-5 w-5 text-text-faint ml-auto shrink-0" />
                                 </label>
 
                                 <input
@@ -89,9 +89,9 @@ export default function ServiceUploadForm({ onClose, isOpen, onConfirm, isLoadin
                         )}
 
                         {fields.length > 0 && (
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-surface-hover rounded-xl border border-dashed border-surface-border">
                                 {fields.map((field, index) => (
-                                    <div key={field.id} className="relative aspect-square rounded-lg overflow-hidden bg-white shadow-sm group">
+                                    <div key={field.id} className="relative aspect-square rounded-lg overflow-hidden bg-surface border border-surface-border group">
                                         {outputPreviews[index] ? (
                                             <>
                                                 <Zoom>
@@ -104,7 +104,7 @@ export default function ServiceUploadForm({ onClose, isOpen, onConfirm, isLoadin
                                                 <button
                                                     type="button"
                                                     onClick={() => remove(index)}
-                                                    className="absolute top-1 right-1 z-10 bg-red-500/90 hover:bg-red-600 text-white p-1 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    className="absolute top-1 right-1 z-10 bg-error/90 hover:bg-error text-text-on-accent p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                                                 >
                                                     <X size={12} />
                                                 </button>
@@ -116,7 +116,7 @@ export default function ServiceUploadForm({ onClose, isOpen, onConfirm, isLoadin
                         )}
 
                         {errors.serviceResult && (
-                            <p className="text-xs text-red-500 mt-1">{errors.serviceResult.message}</p>
+                            <p className="text-xs text-error mt-1">{errors.serviceResult.message}</p>
                         )}
                     </div>
 
@@ -126,7 +126,7 @@ export default function ServiceUploadForm({ onClose, isOpen, onConfirm, isLoadin
                             type="button"
                             onClick={onClose}
                             disabled={isLoading}
-                            className="text-gray-500 hover:text-gray-800 text-sm font-medium"
+                            className="text-text-faint hover:text-text-primary text-sm font-medium"
                         >
                             Cancel
                         </button>

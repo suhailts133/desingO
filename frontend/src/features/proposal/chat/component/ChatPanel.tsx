@@ -42,8 +42,8 @@ export default function ChatPanel({ isOpen, onClose, activeJobId, otherPersonNam
 
             {/* Slide-in panel */}
             <div
-                className={`fixed top-0 right-0 z-50 h-full w-95 bg-white
-                    border-l border-blush-light/40 flex flex-col
+                className={`fixed top-0 right-0 z-50 h-full w-95 bg-surface
+                    border-l border-surface-border flex flex-col
                     transition-transform duration-300 ease-in-out
                     ${isOpen ? "translate-x-0" : "translate-x-full"}`}
             >

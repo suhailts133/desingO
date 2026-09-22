@@ -18,8 +18,8 @@ export default function FloorPlanSection({ floorPlans, role, isUploading, onUplo
 
     if (!floorPlans || floorPlans.length === 0) {
         return role === "Designer" ? (
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-5">
-                <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-soft-black mb-3">Floor Plans</h2>
+            <div className="bg-surface rounded-2xl border border-surface-border px-6 py-5">
+                <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-text-primary mb-3">Floor Plans</h2>
                 <button onClick={onUpload} disabled={isUploading} className="soft-black-button">
                     {isUploading ? "Uploading..." : "Upload Floor Plan"}
                 </button>
@@ -35,8 +35,8 @@ export default function FloorPlanSection({ floorPlans, role, isUploading, onUplo
     const canReview = role === "Customer" && latest.status === "Pending"
 
     return (
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-5">
-            <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-soft-black mb-3">Floor Plans</h2>
+        <div className="bg-surface rounded-2xl border border-surface-border px-6 py-5">
+            <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-text-primary mb-3">Floor Plans</h2>
 
             <FloorPlanVersionCard plan={latest} isLatest />
 
@@ -44,13 +44,13 @@ export default function FloorPlanSection({ floorPlans, role, isUploading, onUplo
                 <div className="flex items-center gap-2 mt-3">
                     <button
                         onClick={() => onApprove(latest.id)}
-                        className="inline-flex items-center justify-center gap-1.5 bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
+                        className="inline-flex items-center justify-center gap-1.5 bg-success-tint text-success-text border border-success hover:brightness-110 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                     >
                         Approve
                     </button>
                     <button
                         onClick={() => onReject(latest.id)}
-                        className="inline-flex items-center justify-center gap-1.5 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
+                        className="inline-flex items-center justify-center gap-1.5 bg-error-tint text-error-text border border-error hover:brightness-110 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                     >
                         Reject
                     </button>
@@ -66,10 +66,10 @@ export default function FloorPlanSection({ floorPlans, role, isUploading, onUplo
             )}
 
             {history.length > 0 && (
-                <div className="mt-3 pt-3 border-t border-blush-light/30">
+                <div className="mt-3 pt-3 border-t border-surface-border">
                     <button
                         onClick={() => setHistoryOpen(prev => !prev)}
-                        className="flex items-center gap-1.5 text-xs text-soft-black/50 hover:text-soft-black transition-colors mb-2"
+                        className="flex items-center gap-1.5 text-xs text-text-faint hover:text-text-primary transition-colors mb-2"
                     >
                         <span>{history.length} earlier version{history.length > 1 ? "s" : ""}</span>
                         <svg

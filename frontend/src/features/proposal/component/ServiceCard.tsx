@@ -16,25 +16,25 @@ interface ServiceCardProps {
     onUpload: (serviceNumber: number, serviceName: string) => void
 }
 const escrowStatusStyle: Record<EscrowStatus, string> = {
-    "Held": "bg-amber-50 text-amber-700 border-amber-200",
-    "Released": "bg-green-50 text-green-700 border-green-200",
-    "Refunded": "bg-blue-50 text-blue-700 border-blue-200",
-    "Disputed": "bg-red-50 text-red-700 border-red-200",
+    "Held": "bg-warning-tint text-warning-text border-warning",
+    "Released": "bg-success-tint text-success-text border-success",
+    "Refunded": "bg-accent-tint text-accent-tint-text border-surface-border",
+    "Disputed": "bg-error-tint text-error-text border-error",
 }
 
 const statusStyle: Record<ServiceStatus, string> = {
-    "Locked": "bg-gray-100 text-gray-500 border-gray-200",
-    "Open": "bg-blue-50 text-blue-700 border-blue-200",
-    "In Progress": "bg-amber-50 text-amber-700 border-amber-200",
-    "Uploaded": "bg-purple-50 text-purple-700 border-purple-200",
-    "Redo": "bg-red-50 text-red-700 border-red-200",
-    "Completed": "bg-green-50 text-green-700 border-green-200",
+    "Locked": "bg-surface-hover text-text-faint border-surface-border",
+    "Open": "bg-accent-tint text-accent-tint-text border-surface-border",
+    "In Progress": "bg-warning-tint text-warning-text border-warning",
+    "Uploaded": "bg-accent-tint text-accent-tint-text border-accent",
+    "Redo": "bg-error-tint text-error-text border-error",
+    "Completed": "bg-success-tint text-success-text border-success",
 }
 
 const paymentStyle: Record<PaymentStatus, string> = {
-    "Pending": "bg-amber-50 text-amber-700 border-amber-200",
-    "Paid": "bg-green-50 text-green-700 border-green-200",
-    "Refunded": "bg-gray-100 text-gray-500 border-gray-200",
+    "Pending": "bg-warning-tint text-warning-text border-warning",
+    "Paid": "bg-success-tint text-success-text border-success",
+    "Refunded": "bg-surface-hover text-text-faint border-surface-border",
 }
 
 export default function ServiceCard({ isPayLoading, service, role, onPay, onVerify, onRedo, onUpload }: ServiceCardProps) {
@@ -58,13 +58,13 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
     }
 
     return (
-        <div className={`bg-white rounded-xl border border-blush-light/40 p-4 transition-opacity duration-200 ${isLocked ? "opacity-50" : ""}`}>
+        <div className={`bg-surface rounded-xl border border-surface-border p-4 transition-opacity duration-200 ${isLocked ? "opacity-50" : ""}`}>
 
             {/* Header */}
             <div className="flex items-center justify-between gap-3 mb-3">
                 <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium text-soft-black/40">#{service.order}</span>
-                    <span className="text-sm font-Jost-Semibold text-soft-black">{service.serviceName}</span>
+                    <span className="text-xs font-medium text-text-faint">#{service.order}</span>
+                    <span className="text-sm font-Jost-Semibold text-text-primary">{service.serviceName}</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full border ${paymentStyle[service.paymentStatus]}`}>
@@ -85,14 +85,14 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
 
             {/* Meta */}
             <div className="flex items-center justify-between gap-2 mb-3">
-                <span className="text-xs text-soft-black/50">
+                <span className="text-xs text-text-faint">
                     Due {dateFormater(service.expectedDeliveryDate)}
                 </span>
             </div>
 
             {/* Pricing */}
             <div className="mb-3 space-y-1.5">
-                <div className="text-xs text-black">
+                <div className="text-xs text-text-primary">
                     ₹{service.price.toLocaleString("en-IN")} service &nbsp;+&nbsp; ₹{service.executionPrice.toLocaleString("en-IN")} execution
                 </div>
 
@@ -103,10 +103,10 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
 
             {/* Versions */}
             {service.versions.length > 0 && (
-                <div className="mt-3 pt-3 border-t border-blush-light/30">
+                <div className="mt-3 pt-3 border-t border-surface-border">
                     <button
                         onClick={() => setVersionsOpen(prev => !prev)}
-                        className="flex items-center gap-1.5 text-xs text-soft-black/50 hover:text-soft-black transition-colors mb-2"
+                        className="flex items-center gap-1.5 text-xs text-text-faint hover:text-text-primary transition-colors mb-2"
                     >
                         <span>{service.versions.length} version{service.versions.length > 1 ? "s" : ""}</span>
                         <svg
@@ -136,12 +136,12 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
             )}
 
             {(showPay || showVerify || showRedo || showUpload) && (
-                <div className="flex items-center gap-2 mt-3 pt-3 border-t border-blush-light/30">
+                <div className="flex items-center gap-2 mt-3 pt-3 border-t border-surface-border">
                     {showPay && (
                         <button
                             onClick={onPay}
                             disabled={isPayLoading}
-                            className="inline-flex items-center justify-center gap-1.5 bg-soft-black text-off-white hover:bg-blush-deep px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
+                            className="inline-flex items-center justify-center gap-1.5 bg-accent text-text-on-accent hover:bg-accent-hover active:bg-accent-active px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                         >
                             {isPayLoading ? "Preparing..." : "Pay"}
                         </button>
@@ -149,7 +149,7 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
                     {showVerify && (
                         <button
                             onClick={() => latestVersionId && onVerify?.(latestVersionId)}
-                            className="inline-flex items-center justify-center gap-1.5 bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
+                            className="inline-flex items-center justify-center gap-1.5 bg-success-tint text-success-text border border-success hover:brightness-110 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                         >
                             Verify
                         </button>
@@ -157,7 +157,7 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
                     {showRedo && (
                         <button
                             onClick={() => latestVersionId && onRedo?.(latestVersionId)}
-                            className="inline-flex items-center justify-center gap-1.5 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
+                            className="inline-flex items-center justify-center gap-1.5 bg-error-tint text-error-text border border-error hover:brightness-110 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                         >
                             Request redo
                         </button>
@@ -165,7 +165,7 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
                     {showUpload && (
                         <button
                             onClick={() => onUpload(service.order, service.serviceName)}
-                            className="inline-flex items-center justify-center gap-1.5 bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
+                            className="inline-flex items-center justify-center gap-1.5 bg-warning-tint text-warning-text border border-warning hover:brightness-110 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                         >
                             Upload result
                         </button>

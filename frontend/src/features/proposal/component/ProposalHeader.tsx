@@ -3,14 +3,14 @@ import { MessageCircle, ChevronLeft, PencilLine } from "lucide-react"
 import type { ContractStatus } from "../proposalInterface"
 
 const contractStatusStyle: Record<ContractStatus, string> = {
-    "Sent": "bg-blue-50 text-blue-700 border-blue-200",
-    "Accepted": "bg-green-50 text-green-700 border-green-200",
-    "Rejected": "bg-red-50 text-red-700 border-red-200",
-    "Ongoing": "bg-amber-50 text-amber-700 border-amber-200",
-    "Completed": "bg-green-100 text-green-800 border-green-300",
-    "Disputed": "bg-red-100 text-red-800 border-red-300",
-    "Expired": "bg-gray-100 text-gray-500 border-gray-200",
-    "Terminated": "bg-gray-50 text-gray-700 border-gray-200",
+    "Sent": "bg-accent-tint text-accent-tint-text border-surface-border",
+    "Accepted": "bg-success-tint text-success-text border-success",
+    "Rejected": "bg-error-tint text-error-text border-error",
+    "Ongoing": "bg-warning-tint text-warning-text border-warning",
+    "Completed": "bg-success-tint text-success-text border-success border-2",
+    "Disputed": "bg-error-tint text-error-text border-error border-2",
+    "Expired": "bg-surface-hover text-text-faint border-surface-border",
+    "Terminated": "bg-surface-hover text-text-faint border-surface-border-strong",
 }
 
 interface ProposalHeaderProps {
@@ -30,7 +30,7 @@ export default function ProposalHeader({ onChatOpen, id, status, role, showUpdat
             <div className="flex items-center gap-3">
                 <button
                     onClick={() => navigate(-1)}
-                    className="text-soft-black/50 hover:text-soft-black transition-colors"
+                    className="text-text-faint hover:text-text-primary transition-colors"
                 >
                     <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -44,7 +44,7 @@ export default function ProposalHeader({ onChatOpen, id, status, role, showUpdat
                 {showUpdateProposal && (
                     <button
                         onClick={() => navigate(`/proposal/edit/${id}`,)}
-                        className="inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-lg border border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all duration-200"
+                        className="inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-lg border border-warning bg-warning-tint text-warning-text hover:brightness-110 transition-all duration-200"
                     >
                         <PencilLine className="w-4 h-4" />
                         Update proposal
@@ -52,7 +52,7 @@ export default function ProposalHeader({ onChatOpen, id, status, role, showUpdat
                 )}
                 <button
                     onClick={onChatOpen}
-                    className="inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-lg border border-blush-light/50 bg-off-white hover:bg-blush-pale hover:text-blush-deep transition-all duration-200"
+                    className="inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-lg bg-surface text-text-muted border border-surface-border hover:border-surface-border-strong transition-all duration-200"
                 >
                     <MessageCircle className="w-4 h-4" />
                     {role === "Designer" ? "Chat with client" : "Chat with designer"}

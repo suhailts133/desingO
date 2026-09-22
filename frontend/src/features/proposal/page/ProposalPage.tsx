@@ -383,14 +383,7 @@ export default function ProposalPage() {
                 </Elements>
             )}
 
-            <ProposalHeader
-                id={id!}
-                status={proposal.contractStatus}
-                sourceId={sourceId}
-                role={role}
-                showUpdateProposal={showUpdateProposal}
-                onChatOpen={() => setChatOpen(true)}
-            />
+
             <ConfirmModal
                 isOpen={!!approveVersion}
                 onConfirm={handleApproveVersion}
@@ -418,11 +411,21 @@ export default function ProposalPage() {
                 onConfirm={handleRejectVersion}
                 isLoading={isVersionApprovingOrRejecting}
             />
-
+            <ProposalHeader
+                id={id!}
+                status={proposal.contractStatus}
+                sourceId={sourceId}
+                role={role}
+                showUpdateProposal={showUpdateProposal}
+                onChatOpen={() => setChatOpen(true)}
+            />
             {
                 (contractStatus === "Completed" || contractStatus === "Terminated") && role === "Customer" && !proposal.isReviewd && (
                     <div>
-                        <button onClick={() => setReview({ sourceId: proposal.sourceId })} className="soft-black-button">
+                        <button
+                            onClick={() => setReview({ sourceId: proposal.sourceId })}
+                            className="inline-flex items-center justify-center gap-2 text-sm font-Jost-Semibold px-4 py-2.5 rounded-lg bg-accent text-text-on-accent hover:bg-accent-hover active:bg-accent-active transition-all duration-200"
+                        >
                             Write Your Review
                         </button>
                     </div>
@@ -440,9 +443,9 @@ export default function ProposalPage() {
                 <div>
                     <button
                         onClick={() => setDispute({ sourceId: proposal.sourceId })}
-                        className="soft-black-button"
+                        className="inline-flex items-center justify-center gap-2 text-sm font-Jost-Semibold px-4 py-2.5 rounded-lg bg-accent text-text-on-accent border  hover:bg-accent-hover transition-all duration-200"
                     >
-                        Raise a Issue
+                        Raise an Issue
                     </button>
                 </div>
             )}
@@ -468,18 +471,18 @@ export default function ProposalPage() {
                 onReject={(floorPlanId) => setRejectFloorPlan(floorPlanId)}
             />
             {proposal.overallRejectionReason && (
-                <div className="bg-red-50 border border-red-200 rounded-2xl px-6 py-4">
-                    <p className="text-xs font-Jost-Semibold text-red-700 uppercase tracking-widest mb-1">Rejection reason</p>
-                    <p className="text-sm text-red-700">{proposal.overallRejectionReason}</p>
+                <div className="bg-error-tint border border-error rounded-2xl px-6 py-4">
+                    <p className="text-xs font-Jost-Semibold text-error-text uppercase tracking-widest mb-1">Rejection reason</p>
+                    <p className="text-sm text-error-text">{proposal.overallRejectionReason}</p>
                 </div>
             )}
 
             {paymentIntentError && (
-                <p className="text-xs text-red-500 text-center">{paymentIntentError}</p>
+                <p className="text-xs text-error text-center">{paymentIntentError}</p>
             )}
 
-            <div className="bg-white rounded-2xl border border-blush-light/40 shadow-sm px-6 py-5">
-                <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-soft-black/40 mb-4">Services</h2>
+            <div className="bg-surface rounded-2xl border border-surface-border px-6 py-5">
+                <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-text-faint mb-4">Services</h2>
                 <div className="flex flex-col gap-3">
                     {[...proposal.services]
                         .sort((a, b) => a.order - b.order)
