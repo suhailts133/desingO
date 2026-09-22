@@ -14,6 +14,7 @@ export default function Designs() {
     const { handleDeletion, isDeleting, deleteError, deleteSuccess } = useDeleteADesign()
     const { data, isLoading, error } = useGetMyDesignsQuery({ page })
     const designs = data?.data;
+    
     if (isLoading) {
         return <p>Loading...</p>
     }
@@ -31,7 +32,7 @@ export default function Designs() {
     const totalDesigns = data.total ?? 1;
 
     return (
-        <div className="w-full flex flex-col gap-6">
+        <div className="w-full min-h-full flex flex-col gap-6">
 
             {/* Top bar */}
             <div className="w-full flex justify-end">
@@ -49,7 +50,7 @@ export default function Designs() {
                 <p className="text-red-500 text-sm text-center">{deleteError}</p>
             )}
 
-            <div >
+            <div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {designs.map(data => (
                         <DesignerDesignCard
@@ -58,8 +59,8 @@ export default function Designs() {
                             key={data.id} />
                     ))}
                 </div>
-
             </div>
+            
             <ConfirmModal
                 isOpen={!!deleteDesign}
                 onConfirm={handleDelete}
@@ -71,8 +72,7 @@ export default function Designs() {
                 buttonText="Confirm & delete"
             />
 
-
-            <div className="sticky bottom-0 mt-auto pt-4 bg-bg">
+            <div className="mt-auto pt-4">
                 <Pagination
                     page={page}
                     totalItem={totalDesigns}
@@ -81,9 +81,7 @@ export default function Designs() {
                     onDecrease={() => setPage(p => p - 1)}
                     onIncrease={() => setPage(p => p + 1)}
                 />
-
             </div>
-
 
         </div>
     );
