@@ -34,7 +34,7 @@ export default function DesignerLayout() {
       <DesignerSidebar name={name} email={email} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <main className="flex-1 overflow-y-auto p-8 flex justify-center items-start bg-off-white">
+        <main className="flex-1 overflow-y-auto p-8 flex justify-center items-start bg-bg">
           <Outlet />
         </main>
       </div>

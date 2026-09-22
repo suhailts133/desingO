@@ -28,7 +28,7 @@ export default function DesignerDashboard() {
     const { role } = useDecodeAccessToken()
 
     if (isLoading || isTransactionLoading || isReviewLoading) {
-        return <div className="p-6 text-sm text-soft-black/50">Loading dashboard…</div>
+        return <div className="p-6 text-sm text-text-faint">Loading dashboard…</div>
     }
 
     if (error || !dashboardData || !transactions) {
