@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useGetMyJobApplicationsQuery } from "../myJobApplicationEndpoints";
 import type { JobApplicationStatus } from "../myJobApplicationInterFace";
@@ -15,14 +14,12 @@ export default function MyJobApplications() {
     const { data, isLoading, error } = useGetMyJobApplicationsQuery({
         page,
         status: status === "All" ? undefined : status
-
     })
-
 
     const jobApplications = data?.data
 
-    if (isLoading) return <p>Loading...</p>
-    if (error || !jobApplications) return <p>Error loading  job applications</p>
+    if (isLoading) return <p className="text-text-faint p-6 text-center">Loading...</p>
+    if (error || !jobApplications) return <p className="text-error p-6 text-center">Error loading job applications</p>
 
     const handleDelete = async () => {
         if (!deleteJobApplication) return
@@ -36,28 +33,27 @@ export default function MyJobApplications() {
     const totalJobapplications = data.total ?? 1
 
     return (
-        <div className="w-full flex flex-col gap-6">
+        <div className="w-full flex flex-col gap-6 min-h-full">
 
             {/* Filter */}
             <div className="flex items-center gap-3">
-                <label className="text-xs font-semibold text-soft-black/50 uppercase tracking-widest">Status</label>
+                <label className="text-xs font-semibold text-text-faint uppercase tracking-widest">Status</label>
                 <select
                     value={status}
                     onChange={(e) => { setStatus(e.target.value as JobApplicationStatus | "All"); setPage(1) }}
-                    className="text-xs font-semibold text-soft-black bg-off-white border border-blush-light/40 rounded-lg px-3 py-1.5 focus:outline-none"
+                    className="text-xs font-semibold text-text-primary bg-surface-hover border border-surface-border rounded-lg px-3 py-1.5 focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-colors cursor-pointer"
                 >
                     {["All", "Pending", "Rejected", "Ongoing"].map(s => (
                         <option key={s} value={s}>{s}</option>
                     ))}
                 </select>
-
             </div>
 
             {deleteSuccess && (
-                <p className="text-green-600 text-sm text-center">{deleteSuccess}</p>
+                <p className="text-success text-sm text-center">{deleteSuccess}</p>
             )}
             {deleteError && (
-                <p className="text-red-500 text-sm text-center">{deleteError}</p>
+                <p className="text-error text-sm text-center">{deleteError}</p>
             )}
 
             <div>
@@ -79,20 +75,21 @@ export default function MyJobApplications() {
                 isLoading={isDeleting}
                 text="Are you sure you want to delete this job Application?"
                 heading="Confirm Deletion?"
-                buttonLoadingText="deleting"
+                buttonLoadingText="Deleting"
                 buttonText="Confirm & delete"
             />
+            
+            <div className="sticky bottom-0 mt-auto py-4 bg-bg z-10 border-t border-surface-border">
+                <Pagination
+                    page={page}
+                    totalItem={totalJobapplications}
+                    totalPages={totalPages}
+                    whichItem="job applications"
+                    onDecrease={() => setPage(p => p - 1)}
+                    onIncrease={() => setPage(p => p + 1)}
+                />
+            </div>
 
-            <Pagination
-                page={page}
-                totalItem={totalJobapplications}
-                totalPages={totalPages}
-                whichItem="job applications"
-                onDecrease={() => setPage(p => p - 1)}
-                onIncrease={() => setPage(p => p + 1)}
-            />
-
-      
         </div>
     );
 }
