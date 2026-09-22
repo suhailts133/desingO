@@ -1,4 +1,4 @@
-import {  Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import DesignerDesignCard from "../components/DesignerDesignCard";
 import { useState } from "react";
@@ -23,7 +23,7 @@ export default function Designs() {
 
     const handleDelete = async () => {
         if (!deleteDesign) return
-    
+
         await handleDeletion(deleteDesign)
         setDeleteDesign(null)
     }
@@ -71,16 +71,20 @@ export default function Designs() {
                 buttonText="Confirm & delete"
             />
 
-            <Pagination
-            page={page}
-            totalItem={totalDesigns}
-            totalPages={totalPages}
-            whichItem="designs"
-            onDecrease={()=> setPage(p => p -1)}
-            onIncrease={()=> setPage(p => p +1)}
-            />
-            
-          
+
+            <div className="sticky bottom-0 mt-auto pt-4 bg-bg">
+                <Pagination
+                    page={page}
+                    totalItem={totalDesigns}
+                    totalPages={totalPages}
+                    whichItem="designs"
+                    onDecrease={() => setPage(p => p - 1)}
+                    onIncrease={() => setPage(p => p + 1)}
+                />
+
+            </div>
+
+
         </div>
     );
 }
