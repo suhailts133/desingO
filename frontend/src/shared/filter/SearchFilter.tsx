@@ -37,7 +37,7 @@ export function SearchFilter({
         onChange={(e) => setInput(e.target.value)}
         placeholder={placeholder}
       />
-      <span className="absolute right-3 inset-y-0 flex items-center text-gray-500 pointer-events-none">
+      <span className="absolute right-3 inset-y-0 flex items-center text-text-faint pointer-events-none">
         <Search size={18} />
       </span>
     </div>

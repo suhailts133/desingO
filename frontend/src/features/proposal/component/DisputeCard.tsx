@@ -6,16 +6,16 @@ import type { AcceptOrRejectDisputeDTO, DisputeResponseDTO } from "../proposalIn
 import ConfirmModal from "../../../shared/modals/ConfirmModal"
 
 const disputeStatusStyle: Record<DisputeResponseDTO["status"], string> = {
-    "Open": "bg-red-50 text-red-700 border-red-200",
-    "Under Review": "bg-blue-50 text-blue-700 border-blue-200",
-    "Resolved": "bg-green-50 text-green-700 border-green-200",
-    "Redo": "bg-amber-50 text-amber-700 border-amber-200",
-    "Awaiting Confirmation": "bg-purple-50 text-purple-700 border-purple-200",
-    "Terminated": "bg-gray-50 text-gray-700 border-gray-200", 
+    "Open": "bg-error-tint text-error-text border-error",
+    "Under Review": "bg-accent-tint text-accent-tint-text border-surface-border",
+    "Resolved": "bg-success-tint text-success-text border-success",
+    "Redo": "bg-warning-tint text-warning-text border-warning",
+    "Awaiting Confirmation": "bg-surface-hover text-text-primary border-accent",
+    "Terminated": "bg-surface-hover text-text-faint border-surface-border",
 };
 const raisedByStyle: Record<DisputeResponseDTO["raisedBy"], string> = {
-    "Customer": "bg-blush-pale text-blush-deep border-blush-light/50",
-    "Designer": "bg-gray-50 text-gray-700 border-gray-200",
+    "Customer": "bg-accent-tint text-accent-tint-text border-surface-border",
+    "Designer": "bg-surface-hover text-text-faint border-surface-border",
 }
 
 interface DisputeCardProps {
@@ -49,7 +49,7 @@ export default function DisputeCard({ dispute, onConfirm, isResponding, role }: 
     return (
 
 
-        <div className="bg-white rounded-2xl border border-blush-light/40 shadow-sm px-6 py-5 flex flex-col gap-4">
+        <div className="bg-surface rounded-2xl border border-surface-border px-6 py-5 flex flex-col gap-4">
 
 
             <ConfirmModal
@@ -85,8 +85,8 @@ export default function DisputeCard({ dispute, onConfirm, isResponding, role }: 
 
             <div className="flex items-center justify-between flex-wrap gap-3">
                 <div className="flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 text-red-500" />
-                    <span className="font-Jost-Semibold text-sm text-soft-black">Dispute</span>
+                    <AlertCircle className="w-4 h-4 text-error" />
+                    <span className="font-Jost-Semibold text-sm text-text-primary">Dispute</span>
                     <span className={`text-xs font-medium px-3 py-1 rounded-full border ${disputeStatusStyle[dispute.status]}`}>
                         {dispute.status}
                     </span>
@@ -97,7 +97,7 @@ export default function DisputeCard({ dispute, onConfirm, isResponding, role }: 
                         <User className="w-3 h-3" />
                         Raised by {dispute.raisedBy}
                     </span>
-                    <span className="inline-flex items-center gap-1 text-xs text-soft-black/40">
+                    <span className="inline-flex items-center gap-1 text-xs text-text-faint">
                         <Hash className="w-3 h-3" />
                         Service {dispute.serviceOrder}
                     </span>
@@ -105,18 +105,18 @@ export default function DisputeCard({ dispute, onConfirm, isResponding, role }: 
             </div>
 
             <div>
-                <p className="text-xs font-Jost-Semibold text-soft-black/40 uppercase tracking-widest mb-1">Reason</p>
-                <p className="text-sm text-soft-black">{dispute.reason}</p>
+                <p className="text-xs font-Jost-Semibold text-text-faint uppercase tracking-widest mb-1">Reason</p>
+                <p className="text-sm text-text-primary">{dispute.reason}</p>
             </div>
 
             {dispute.evidence.length > 0 && (
                 <div>
-                    <p className="text-xs font-Jost-Semibold text-soft-black/40 uppercase tracking-widest mb-2">
+                    <p className="text-xs font-Jost-Semibold text-text-faint uppercase tracking-widest mb-2">
                         Evidence ({dispute.evidence.length})
                     </p>
                     <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
                         {dispute.evidence.map((url, index) => (
-                            <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-gray-50 border border-gray-100">
+                            <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-surface-hover border border-surface-border">
                                 <Zoom>
                                     <img
                                         src={url}
@@ -131,16 +131,16 @@ export default function DisputeCard({ dispute, onConfirm, isResponding, role }: 
             )}
 
             {(dispute.resolution || dispute.resolutionType) && (
-                <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3">
+                <div className="bg-success-tint border border-success rounded-xl px-4 py-3">
                     <button
                         type="button"
                         onClick={() => setExpanded(!expanded)}
-                        className="text-xs font-Jost-Semibold text-green-700 uppercase tracking-widest"
+                        className="text-xs font-Jost-Semibold text-success-text uppercase tracking-widest"
                     >
                         Resolution {dispute.resolutionType ? `· ${dispute.resolution}` : ""}
                     </button>
                     {dispute.resolution && (expanded || !dispute.evidence.length) && (
-                        <p className="text-sm text-green-700 mt-1">{dispute.resolution}</p>
+                        <p className="text-sm text-success-text mt-1">{dispute.resolution}</p>
                     )}
                 </div>
             )}
@@ -151,7 +151,7 @@ export default function DisputeCard({ dispute, onConfirm, isResponding, role }: 
                         type="button"
                         onClick={() => setApproveDispute(dispute.id)}
                         disabled={isResponding}
-                        className="inline-flex items-center gap-2 text-xs font-Jost-Semibold px-4 py-2 rounded-lg bg-success text-white hover:opacity-90 transition-all disabled:opacity-50"
+                        className="inline-flex items-center gap-2 text-xs font-Jost-Semibold px-4 py-2 rounded-lg bg-success text-text-primary hover:opacity-90 transition-all disabled:opacity-50"
                     >
                         <Check className="w-3.5 h-3.5" />
                         Confirm Resolution
@@ -160,7 +160,7 @@ export default function DisputeCard({ dispute, onConfirm, isResponding, role }: 
                         type="button"
                         onClick={() => setRejectDispute(dispute.id)}
                         disabled={isResponding}
-                        className="inline-flex items-center gap-2 text-xs font-Jost-Semibold px-4 py-2 rounded-lg border border-red-200 text-error hover:bg-red-50 transition-all disabled:opacity-50"
+                        className="inline-flex items-center gap-2 text-xs font-Jost-Semibold px-4 py-2 rounded-lg border border-error text-error hover:bg-error-tint transition-all disabled:opacity-50"
                     >
                         <X className="w-3.5 h-3.5" />
                         Contest Resolution
@@ -170,7 +170,7 @@ export default function DisputeCard({ dispute, onConfirm, isResponding, role }: 
                         type="button"
                         onClick={() => setTerminateDispute(dispute.id)}
                         disabled={isResponding}
-                        className="inline-flex items-center gap-2 text-xs font-Jost-Semibold px-4 py-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition-all disabled:opacity-50"
+                        className="inline-flex items-center gap-2 text-xs font-Jost-Semibold px-4 py-2 rounded-lg bg-error text-text-primary hover:opacity-90 transition-all disabled:opacity-50"
                     >
                       
                         <AlertTriangle className="w-3.5 h-3.5" />

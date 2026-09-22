@@ -6,13 +6,16 @@ import { INDIAN_STATES } from "../../../designer/designerVerification/indianStat
 import { TIMELINE_OPTIONS } from "../jobData";
 import type { IJobRequest } from "../jobInterface";
 import LocationCaptureButtons from "./LocationCaptureButtons";
+import { selectStyles } from "../../../../shared/filter/selectStyle";
+import type { StylesConfig } from "react-select";
+import type { OptionType } from "../../../common/baseData";
 
 export default function LocationBudgetSection() {
     const { control, register, formState: { errors } } = useFormContext<IJobRequest>();
 
     return (
         <div className="space-y-4">
-            <h3 className="text-lg font-Jost-Semibold text-soft-black">7. Location, Budget & Timeline</h3>
+            <h3 className="text-lg font-Jost-Semibold text-text-primary">7. Location, Budget & Timeline</h3>
 
             <LocationCaptureButtons />
 
@@ -28,7 +31,14 @@ export default function LocationBudgetSection() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <ReactSelectField label="Project Timeline" name="timeline" control={control} options={TIMELINE_OPTIONS} error={errors.timeline?.message} />
+                <ReactSelectField
+                    label="Project Timeline"
+                    name="timeline"
+                    control={control}
+                    options={TIMELINE_OPTIONS}
+                    error={errors.timeline?.message}
+                    styles={selectStyles as StylesConfig<OptionType, false>}
+                />
                 <InputField type="number" label="Min Design Budget (₹)" placeholder="10000" registration={register("minBudget", { valueAsNumber: true })} error={errors.minBudget?.message} />
                 <InputField type="number" label="Max Design Budget (₹)" placeholder="30000" registration={register("maxBudget", { valueAsNumber: true })} error={errors.maxBudget?.message} />
             </div>

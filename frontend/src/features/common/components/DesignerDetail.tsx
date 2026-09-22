@@ -13,9 +13,11 @@ export default function DesignerDetail() {
   const [page, setPage] = useState(1)
   const [reviewPage, setReviewPage] = useState(1)
   const navigate = useNavigate()
+  
   const { data: designerData, isLoading: isDesignerDataLoading, error: designerDataError } = useGetDesignerDetailQuery(id!, { skip: !id })
   const { data: designData, isLoading: isDesignsLoading, error: designsError } = useGetDesignGallaryQuery({ id: id!, page }, { skip: !id })
   const { data: reviewData, isLoading: isReviewLoading, error: reveiwError } = useGetMyReivewsQuery({ designerId: id!, page: reviewPage }, { skip: !id })
+  
   const designer = designerData?.data
   const design = designData?.data
   const review = reviewData?.data
@@ -26,8 +28,8 @@ export default function DesignerDetail() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full border-2 border-blush-deep border-t-transparent animate-spin" />
-          <p className="text-xs text-soft-black/40 tracking-widest uppercase font-Jost">Loading</p>
+          <div className="w-8 h-8 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+          <p className="text-xs text-text-faint tracking-widest uppercase font-Jost">Loading</p>
         </div>
       </div>
     )
@@ -36,17 +38,18 @@ export default function DesignerDetail() {
   if (designerDataError || designsError || !design || !designer || reveiwError || !review) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-sm text-red-400 font-Jost">Failed to load designer.</p>
+        <p className="text-sm text-error font-Jost">Failed to load designer.</p>
       </div>
     )
   }
 
   const totalPages = designData.totalPages
   const totalDesigns = designData.total
+  
   return (
     <div className="max-w-4xl mx-auto px-5 py-10 flex flex-col gap-8">
-      <button onClick={() => navigate(-1)} className="flex items-center mb-4 text-sm text-soft-black hover:underline">
-        <ChevronLeft className="w-4 h-4" />
+      <button onClick={() => navigate(-1)} className="flex items-center mb-4 text-sm w-fit text-text-primary hover:text-accent-hover transition-colors">
+        <ChevronLeft className="w-4 h-4 mr-1" />
         Back
       </button>
 
@@ -54,9 +57,7 @@ export default function DesignerDetail() {
         designer={designer}
       />
 
-
       <div className="flex flex-col gap-5">
-
         <Gallary
           totalDesigns={totalDesigns}
           design={design}
@@ -70,7 +71,6 @@ export default function DesignerDetail() {
           onDecrease={() => setPage(p => p - 1)}
           onIncrease={() => setPage(p => p + 1)}
         />
-
       </div>
 
       {review && (
@@ -82,7 +82,7 @@ export default function DesignerDetail() {
           <Pagination
             page={reviewPage}
             totalPages={reviewTotalPage ?? 1}
-            totalItem={reveiwTotal?? 0}
+            totalItem={reveiwTotal ?? 0}
             whichItem="reviews"
             onDecrease={() => setReviewPage(p => p - 1)}
             onIncrease={() => setReviewPage(p => p + 1)}

@@ -12,7 +12,7 @@ export default function AIPromptInput({ value, onChange, disabled }: AIPromptInp
       disabled={disabled}
       rows={4}
       placeholder="e.g. A modern kitchen with warm wood tones and a marble island"
-      className="w-full resize-none rounded-lg border border-gray-200 p-3 text-sm focus:border-black focus:outline-none disabled:opacity-60"
+      className="w-full resize-none rounded-lg bg-surface-hover border border-surface-border text-text-primary placeholder-text-faint p-3 text-sm focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     />
   );
 }

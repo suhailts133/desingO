@@ -76,22 +76,22 @@ export default function JobRequestForm() {
 
     };
     return (
-        <div className="min-h-screen w-full flex justify-center items-start py-10 px-4 bg-seashell-tint/40">
-            <div className="w-full max-w-3xl bg-snow-white shadow-2xl rounded-2xl p-6 sm:p-10 border border-blush-pale">
+        <div className="min-h-screen w-full flex justify-center items-start py-10 px-4">
+            <div className="w-full max-w-3xl bg-surface rounded-2xl p-6 sm:p-10 border border-surface-border">
                 {/* Header Section */}
                 <div className="text-center mb-8">
-                    <h2 className="text-5xl font-semibold font-Dynalight-Regular text-soft-black">
+                    <h2 className="text-5xl font-semibold font-Dynalight-Regular text-accent">
                         designO
                     </h2>
-                    <p className="text-soft-black/60 font-Jost-Semibold text-xs tracking-widest uppercase mt-1">
+                    <p className="text-text-muted font-Jost-Semibold text-xs tracking-widest uppercase mt-1">
                         {isDirectHire
                             ? "Send a Direct Hire Proposal"
                             : "Post an Interior Drawing Job Request"}
                     </p>
 
                     {isDirectHire && (
-                        <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-blush-pale/70 border border-blush rounded-full text-xs font-Jost-Semibold text-soft-black">
-                            <UserCheck className="w-3.5 h-3.5 text-blush-deep" />
+                        <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-accent-tint border border-surface-border rounded-full text-xs font-Jost-Semibold text-accent-tint-text">
+                            <UserCheck className="w-3.5 h-3.5" />
                             <span>Direct Designer Inquiry</span>
                         </div>
                     )}
@@ -100,22 +100,22 @@ export default function JobRequestForm() {
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-8">
                         <ProjectOverviewSection />
-                        <hr className="border-blush-pale" />
+                        <hr className="border-surface-border" />
 
                         <SpaceStatusSection />
-                        <hr className="border-blush-pale" />
+                        <hr className="border-surface-border" />
 
                         <SpaceScopeSection />
-                        <hr className="border-blush-pale" />
+                        <hr className="border-surface-border" />
 
                         <DeliverablesSection />
-                        <hr className="border-blush-pale" />
+                        <hr className="border-surface-border" />
 
                         <AestheticsAndItemsSection />
-                        <hr className="border-blush-pale" />
+                        <hr className="border-surface-border" />
 
                         <HouseholdProfileSection />
-                        <hr className="border-blush-pale" />
+                        <hr className="border-surface-border" />
 
                         <LocationBudgetSection />
 

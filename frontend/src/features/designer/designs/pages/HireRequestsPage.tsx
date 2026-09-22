@@ -40,8 +40,8 @@ export default function HireRequestsPage() {
     const handleResponse = useHandleResponse()
     const hireRequests = data?.data
 
-    if (isLoading) return <p>Loading...</p>
-    if (error || !hireRequests) return <p>Error loading hire requests</p>
+    if (isLoading) return <p className="text-text-faint">Loading...</p>
+    if (error || !hireRequests) return <p className="text-error">Error loading hire requests</p>
 
     const handleApproval = async () => {
         if (!approveHireRequest) return
@@ -57,17 +57,14 @@ export default function HireRequestsPage() {
         setRejectHireRequest(null)
     }
 
-
-
     const totalHireRequests = data.total ?? 1
     const totalPages = data.totalPages ?? 1
 
     return (
         <div className="w-full flex flex-col gap-6">
 
-
-            <button onClick={() => navigate(-1)} className="flex items-center mb-4 text-sm text-soft-black hover:underline">
-                <ChevronLeft className="w-4 h-4" />
+            <button onClick={() => navigate(-1)} className="flex items-center mb-4 text-sm w-fit text-accent hover:text-accent-hover transition-colors">
+                <ChevronLeft className="w-4 h-4 mr-1" />
                 Back
             </button>
 
@@ -76,20 +73,19 @@ export default function HireRequestsPage() {
 
                 {/* Status Filter */}
                 {/* <div className="flex flex-col gap-1">
-                    <label className="text-xs font-semibold text-soft-black/50 uppercase tracking-widest">
+                    <label className="text-xs font-semibold text-text-faint uppercase tracking-widest">
                         Status
                     </label>
                     <select
                         value={status}
                         onChange={(e) => { setStatus(e.target.value as JobApplicationStatus | "All"); setPage(1) }}
-                        className="text-xs font-semibold text-soft-black bg-off-white border border-blush-light/40 rounded-lg px-3 py-1.5 focus:outline-none"
+                        className="text-xs font-semibold text-text-primary bg-surface-hover border border-surface-border rounded-lg px-3 py-1.5 focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-colors cursor-pointer"
                     >
                         {["All", "Pending", "Rejected", "Ongoing"].map(s => (
                             <option key={s} value={s}>{s}</option>
                         ))}
                     </select>
                 </div> */}
-
 
                 <DateFilterPicker
                     dateFilter={dateFilter}
@@ -101,7 +97,6 @@ export default function HireRequestsPage() {
                 />
             </div>
 
-       
             <div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {hireRequests.map(request => (
@@ -115,15 +110,16 @@ export default function HireRequestsPage() {
                 </div>
             </div>
 
-            <Pagination
-                page={page}
-                totalItem={totalHireRequests}
-                whichItem="Hire Requests"
-                totalPages={totalPages}
-                onDecrease={() => setPage(p => p - 1)}
-                onIncrease={() => setPage(p => p + 1)}
-            />
-
+            <div className="sticky bottom-0 mt-auto pt-4 bg-bg">
+                <Pagination
+                    page={page}
+                    totalItem={totalHireRequests}
+                    whichItem="Hire Requests"
+                    totalPages={totalPages}
+                    onDecrease={() => setPage(p => p - 1)}
+                    onIncrease={() => setPage(p => p + 1)}
+                />
+            </div>
 
             <ConfirmModal
                 isOpen={!!approveHireRequest}

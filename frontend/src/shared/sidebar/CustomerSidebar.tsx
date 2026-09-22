@@ -59,7 +59,7 @@ const CustomerSidebar = memo(({ name, email }: { name: string, email: string }) 
 
             <div className={`flex items-center gap-2 px-4 py-5 border-b border-surface-border ${collapsed ? "justify-center" : ""}`}>
 
-                {!collapsed && <Link to="/" className="font-Dynalight-Regular font-semibold text-text-primary text-xl">designO</Link>}
+                {!collapsed && <Link to="/" className="font-Dynalight-Regular font-semibold text-accent text-xl">designO</Link>}
             </div>
 
 

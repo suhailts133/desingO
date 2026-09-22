@@ -42,7 +42,7 @@ export default function EditJobRequestForm() {
     if (isFetching) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <div className="flex flex-col items-center gap-3 text-gray-400">
+                <div className="flex flex-col items-center gap-3 text-text-faint">
                     <svg className="size-8 animate-spin" viewBox="0 0 24 24" fill="none">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -56,7 +56,7 @@ export default function EditJobRequestForm() {
     if (error || !job) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <p className="text-sm text-red-500 flex items-center gap-2">
+                <p className="text-sm text-error flex items-center gap-2">
                     <AlertCircle size={16} /> Failed to load job request.
                 </p>
             </div>
@@ -286,17 +286,17 @@ function EditJobRequestFormFields({ job, jobId }: { job: JobRequestDetail; jobId
     const isDirectHire = job.sourceType === "DIRECT_HIRE";
 
     return (
-        <div className="min-h-screen w-full flex justify-center items-start py-10 px-4 bg-seashell-tint/40">
-            <div className="w-full max-w-3xl bg-snow-white shadow-2xl rounded-2xl p-6 sm:p-10 border border-blush-pale">
+        <div className="min-h-screen w-full flex justify-center items-start py-10 px-4">
+            <div className="w-full max-w-3xl bg-surface rounded-2xl p-6 sm:p-10 border border-surface-border">
                 <div className="text-center mb-8">
-                    <h2 className="text-5xl font-semibold font-Dynalight-Regular text-soft-black">designO</h2>
-                    <p className="text-soft-black/60 font-Jost-Semibold text-xs tracking-widest uppercase mt-1">
+                    <h2 className="text-5xl font-semibold font-Dynalight-Regular text-accent">designO</h2>
+                    <p className="text-text-muted font-Jost-Semibold text-xs tracking-widest uppercase mt-1">
                         Edit Job Request
                     </p>
 
                     {isDirectHire && (
-                        <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-blush-pale/70 border border-blush rounded-full text-xs font-Jost-Semibold text-soft-black">
-                            <UserCheck className="w-3.5 h-3.5 text-blush-deep" />
+                        <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-accent-tint border border-surface-border rounded-full text-xs font-Jost-Semibold text-accent-tint-text">
+                            <UserCheck className="w-3.5 h-3.5" />
                             <span>Direct Designer Inquiry</span>
                         </div>
                     )}
@@ -305,29 +305,29 @@ function EditJobRequestFormFields({ job, jobId }: { job: JobRequestDetail; jobId
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-8">
                         <ProjectOverviewSection />
-                        <hr className="border-blush-pale" />
+                        <hr className="border-surface-border" />
 
                         <SpaceStatusSection />
-                        <hr className="border-blush-pale" />
+                        <hr className="border-surface-border" />
 
                         <SpaceScopeSection hideFloorPlanUpload />
 
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
-                                <label className="block text-sm font-Jost-Semibold text-soft-black">
-                                    Floor Plans <span className="text-gray-400 font-normal">(Optional)</span>
+                                <label className="block text-sm font-Jost-Semibold text-text-primary">
+                                    Floor Plans <span className="text-text-faint font-normal">(Optional)</span>
                                 </label>
-                                <span className="text-xs text-gray-400">{floorPlans.length} / 10</span>
+                                <span className="text-xs text-text-faint">{floorPlans.length} / 10</span>
                             </div>
 
                             {floorPlans.length < 10 && (
                                 <>
                                     <label
                                         htmlFor="floorPlanEdit"
-                                        className="flex items-center justify-center gap-2 border-2 border-dashed border-blush-light rounded-xl p-4 cursor-pointer hover:border-blush-deep bg-white transition-colors"
+                                        className="flex items-center justify-center gap-2 border-2 border-dashed border-surface-border rounded-xl p-4 cursor-pointer hover:border-accent bg-surface transition-colors"
                                     >
-                                        <Upload className="w-5 h-5 text-blush-deep" />
-                                        <span className="text-sm text-soft-black font-medium">Click to upload Floor Plan(s)</span>
+                                        <Upload className="w-5 h-5 text-text-faint" />
+                                        <span className="text-sm text-text-primary font-medium">Click to upload Floor Plan(s)</span>
                                     </label>
                                     <input
                                         type="file"
@@ -343,9 +343,9 @@ function EditJobRequestFormFields({ job, jobId }: { job: JobRequestDetail; jobId
                             {floorPlans.length > 0 && (
                                 <div className="space-y-1">
                                     {floorPlans.map((item, index) => (
-                                        <div key={index} className="flex items-center justify-between p-2 bg-white rounded-lg border text-xs">
-                                            <span className="flex items-center gap-2 truncate text-soft-black font-medium">
-                                                <FileText className="w-4 h-4 text-blush-deep shrink-0" />
+                                        <div key={index} className="flex items-center justify-between p-2 bg-surface rounded-lg border border-surface-border text-xs">
+                                            <span className="flex items-center gap-2 truncate text-text-primary font-medium">
+                                                <FileText className="w-4 h-4 text-text-faint shrink-0" />
                                                 {item.type === "existing" ? (
                                                     <a href={item.path} target="_blank" rel="noopener noreferrer" className="truncate hover:underline">
                                                         {item.filename}
@@ -354,13 +354,15 @@ function EditJobRequestFormFields({ job, jobId }: { job: JobRequestDetail; jobId
                                                     item.file.name
                                                 )}
                                                 <span
-                                                    className={`shrink-0 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase ${item.type === "new" ? "bg-green-500" : "bg-gray-500/70"
+                                                    className={`shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase ${item.type === "new"
+                                                        ? "bg-success-tint text-success-text"
+                                                        : "bg-surface-hover text-text-faint"
                                                         }`}
                                                 >
                                                     {item.type === "new" ? "New" : "Saved"}
                                                 </span>
                                             </span>
-                                            <button type="button" onClick={() => handleRemoveFloorPlan(index)} className="text-error hover:text-red-700">
+                                            <button type="button" onClick={() => handleRemoveFloorPlan(index)} className="text-error hover:text-error-text">
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
                                         </div>
@@ -369,63 +371,65 @@ function EditJobRequestFormFields({ job, jobId }: { job: JobRequestDetail; jobId
                             )}
                         </div>
 
-                        <hr className="border-blush-pale" />
+                        <hr className="border-surface-border" />
 
                         <DeliverablesSection />
-                        <hr className="border-blush-pale" />
+                        <hr className="border-surface-border" />
 
                         <AestheticsAndItemsSection />
-                        <hr className="border-blush-pale" />
+                        <hr className="border-surface-border" />
 
                         <HouseholdProfileSection />
-                        <hr className="border-blush-pale" />
+                        <hr className="border-surface-border" />
 
                         <LocationBudgetSection />
 
 
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
-                                <label className="block text-sm font-Jost-Semibold text-soft-black">
-                                    Reference Images <span className="text-gray-400 font-normal">(Optional)</span>
+                                <label className="block text-sm font-Jost-Semibold text-text-primary">
+                                    Reference Images <span className="text-text-faint font-normal">(Optional)</span>
                                 </label>
-                                <span className="text-xs text-gray-400">{referenceImages.length} / 10</span>
+                                <span className="text-xs text-text-faint">{referenceImages.length} / 10</span>
                             </div>
 
                             {referenceImages.length < 10 && (
                                 <>
                                     <label
                                         htmlFor="referenceEdit"
-                                        className="flex items-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer hover:border-blush-deep transition-colors"
+                                        className="flex items-center gap-3 w-full border border-surface-border rounded-lg px-4 py-2 cursor-pointer hover:border-accent transition-colors"
                                     >
-                                        <div className="bg-gray-100 p-1.5 rounded-md">
-                                            <ImageIcon className="h-4 w-4 text-gray-500" />
+                                        <div className="bg-surface-hover p-1.5 rounded-md">
+                                            <ImageIcon className="h-4 w-4 text-text-faint" />
                                         </div>
                                         <div className="flex flex-col overflow-hidden">
-                                            <span className="text-sm text-gray-700 font-medium">Add Reference Photos</span>
-                                            <span className="text-[11px] text-gray-400 truncate">
+                                            <span className="text-sm text-text-primary font-medium">Add Reference Photos</span>
+                                            <span className="text-[11px] text-text-faint truncate">
                                                 {referenceImages.length > 0
                                                     ? `${referenceImages.length} selected — up to ${10 - referenceImages.length} more`
                                                     : "Select one or more images..."}
                                             </span>
                                         </div>
-                                        <Plus className="h-5 w-5 text-gray-400 ml-auto shrink-0" />
+                                        <Plus className="h-5 w-5 text-text-faint ml-auto shrink-0" />
                                     </label>
                                     <input type="file" id="referenceEdit" multiple hidden accept="image/*" onChange={handleReferenceUpload} />
                                 </>
                             )}
 
                             {referenceImages.length > 0 && (
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-surface-hover rounded-xl border border-dashed border-surface-border">
                                     {referenceImages.map((item, index) => {
                                         const src = item.type === "existing" ? item.path : item.preview;
                                         const isNew = item.type === "new";
                                         return (
-                                            <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-white shadow-sm group">
+                                            <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-surface border border-surface-border hover:border-accent transition-colors group">
                                                 <Zoom>
                                                     <img src={src} className="w-full h-full object-cover" alt={`Reference ${index + 1}`} />
                                                 </Zoom>
                                                 <span
-                                                    className={`absolute top-1 left-1 z-10 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase ${isNew ? "bg-green-500" : "bg-gray-500/70"
+                                                    className={`absolute top-1 left-1 z-10 text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase ${isNew
+                                                        ? "bg-success-tint text-success-text"
+                                                        : "bg-surface-hover text-text-faint"
                                                         }`}
                                                 >
                                                     {isNew ? "New" : "Saved"}
@@ -433,7 +437,7 @@ function EditJobRequestFormFields({ job, jobId }: { job: JobRequestDetail; jobId
                                                 <button
                                                     type="button"
                                                     onClick={() => handleRemoveReference(index)}
-                                                    className="absolute top-1 right-1 z-10 bg-red-500/90 hover:bg-red-600 text-white p-1 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    className="absolute top-1 right-1 z-10 bg-error-tint text-error-text border border-error hover:bg-error hover:text-text-primary p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                                                 >
                                                     <X size={12} />
                                                 </button>

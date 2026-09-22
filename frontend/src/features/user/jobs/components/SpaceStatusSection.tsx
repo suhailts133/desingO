@@ -23,14 +23,14 @@ export default function SpaceStatusSection() {
 
     return (
         <div className="space-y-4">
-            <h3 className="text-lg font-Jost-Semibold text-soft-black flex items-center gap-2">
-                <Compass className="w-5 h-5 text-blush-deep" /> 2. Space Status & Constraints
+            <h3 className="text-lg font-Jost-Semibold text-text-primary flex items-center gap-2">
+                <Compass className="w-5 h-5 text-text-faint" /> 2. Space Status & Constraints
             </h3>
 
             {projectType === "Renovation" ? (
-                <div className="p-4 bg-linen-rose rounded-xl border border-blush-light space-y-4">
+                <div className="p-4 bg-surface-hover rounded-xl border border-surface-border space-y-4">
                     <div>
-                        <label className="block text-sm font-Jost-Semibold text-soft-black mb-1">Renovation Level</label>
+                        <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Renovation Level</label>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                             {RENOVATION_LEVELS.map((lvl) => (
                                 <button
@@ -38,12 +38,12 @@ export default function SpaceStatusSection() {
                                     key={lvl.id}
                                     onClick={() => setValue("renovationDetails.level", lvl.id as RenovationLevel)}
                                     className={`p-3 text-left rounded-lg border text-xs ${renovationLevel === lvl.id
-                                        ? "bg-blush-pale border-blush-deep text-soft-black font-semibold"
-                                        : "bg-white border-gray-200 text-gray-600"
+                                        ? "bg-accent-tint border-accent text-text-primary font-semibold"
+                                        : "bg-surface border-surface-border text-text-muted hover:border-accent"
                                         }`}
                                 >
                                     <div className="font-semibold text-sm">{lvl.title}</div>
-                                    <div className="text-gray-400 mt-0.5">{lvl.desc}</div>
+                                    <div className="text-text-faint mt-0.5">{lvl.desc}</div>
                                 </button>
                             ))}
                         </div>
@@ -63,18 +63,18 @@ export default function SpaceStatusSection() {
                                 type="checkbox"
                                 id="livingIn"
                                 {...register("renovationDetails.livingInDuringRenovation")}
-                                className="h-4 w-4 accent-blush-deep rounded cursor-pointer"
+                                className="h-4 w-4 accent-accent rounded cursor-pointer"
                             />
-                            <label htmlFor="livingIn" className="text-sm font-Jost-Semibold text-soft-black cursor-pointer">
+                            <label htmlFor="livingIn" className="text-sm font-Jost-Semibold text-text-primary cursor-pointer">
                                 Will you be living in the house during renovation?
                             </label>
                         </div>
                     </div>
                 </div>
             ) : (
-                <div className="p-4 bg-linen-rose rounded-xl border border-blush-light space-y-4">
+                <div className="p-4 bg-surface-hover rounded-xl border border-surface-border space-y-4">
                     <div>
-                        <label className="block text-sm font-Jost-Semibold text-soft-black mb-1">Construction Stage</label>
+                        <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Construction Stage</label>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                             {NEW_BUILD_STAGES.map((stg) => (
                                 <button
@@ -82,12 +82,12 @@ export default function SpaceStatusSection() {
                                     key={stg.id}
                                     onClick={() => setValue("newbuildDetails.stage", stg.id as ConstructionStage)}
                                     className={`p-3 text-left rounded-lg border text-xs ${newbuildStage === stg.id
-                                        ? "bg-blush-pale border-blush-deep text-soft-black font-semibold"
-                                        : "bg-white border-gray-200 text-gray-600"
+                                        ? "bg-accent-tint border-accent text-text-primary font-semibold"
+                                        : "bg-surface border-surface-border text-text-muted hover:border-accent"
                                         }`}
                                 >
                                     <div className="font-semibold text-sm">{stg.title}</div>
-                                    <div className="text-gray-400 mt-0.5">{stg.desc}</div>
+                                    <div className="text-text-faint mt-0.5">{stg.desc}</div>
                                 </button>
                             ))}
                         </div>
@@ -98,9 +98,9 @@ export default function SpaceStatusSection() {
                             type="checkbox"
                             id="vastu"
                             {...register("newbuildDetails.vastuCompliantRequired")}
-                            className="h-4 w-4 accent-blush-deep rounded cursor-pointer"
+                            className="h-4 w-4 accent-accent rounded cursor-pointer"
                         />
-                        <label htmlFor="vastu" className="text-sm font-Jost-Semibold text-soft-black cursor-pointer">
+                        <label htmlFor="vastu" className="text-sm font-Jost-Semibold text-text-primary cursor-pointer">
                             Design must follow Vastu / Directional guidelines
                         </label>
                     </div>

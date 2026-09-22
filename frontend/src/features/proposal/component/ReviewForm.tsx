@@ -37,16 +37,16 @@ export default function WriteReviewModal({ onClose, isOpen, onConfirm, isLoading
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 animate-in zoom-in duration-200">
-                <h2 className="text-4xl font-semibold text-soft-black mb-6 text-center font-Dynalight-Regular">designO</h2>
-                <p className="text-center text-lg font-Jost-Semibold text-gray-500 mb-6">Write a Review</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-bg/60 backdrop-blur-sm">
+            <div className="relative w-full max-w-md bg-surface border border-surface-border rounded-2xl p-8 animate-in zoom-in duration-200">
+                <h2 className="text-4xl font-semibold text-accent mb-6 text-center font-Dynalight-Regular">designO</h2>
+                <p className="text-center text-lg font-Jost-Semibold text-text-faint mb-6">Write a Review</p>
 
                 <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
 
                     {/* Star Rating */}
                     <div>
-                        <label className="block text-sm font-Jost-Semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-Jost-Semibold text-text-primary mb-2">
                             Your Rating
                         </label>
                         <Controller
@@ -64,7 +64,7 @@ export default function WriteReviewModal({ onClose, isOpen, onConfirm, isLoading
                                             <svg
                                                 className={`w-8 h-8 transition-colors duration-150 ${star <= (selectedRating ?? 0)
                                                     ? 'text-yellow-400 fill-yellow-400'
-                                                    : 'text-gray-300 fill-gray-300'
+                                                    : 'text-text-faint fill-text-faint'
                                                     }`}
                                                 viewBox="0 0 24 24"
                                                 stroke="currentColor"
@@ -75,7 +75,7 @@ export default function WriteReviewModal({ onClose, isOpen, onConfirm, isLoading
                                         </button>
                                     ))}
                                     {selectedRating > 0 && (
-                                        <span className="ml-2 text-sm font-Jost-Semibold text-gray-500">
+                                        <span className="ml-2 text-sm font-Jost-Semibold text-text-faint">
                                             {starLabels[selectedRating]}
                                         </span>
                                     )}
@@ -83,13 +83,13 @@ export default function WriteReviewModal({ onClose, isOpen, onConfirm, isLoading
                             )}
                         />
                         {errors.rating && (
-                            <p className="text-sm text-red-500 mt-1">{errors.rating.message}</p>
+                            <p className="text-sm text-error mt-1">{errors.rating.message}</p>
                         )}
                     </div>
 
                     {/* Review Comment */}
                     <div>
-                        <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">
+                        <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">
                             Your Review
                         </label>
                         <textarea
@@ -98,7 +98,7 @@ export default function WriteReviewModal({ onClose, isOpen, onConfirm, isLoading
                             placeholder="Share your experience working with this designer..."
                         />
                         {errors.comment && (
-                            <p className="text-sm text-red-500 mt-1">{errors.comment.message}</p>
+                            <p className="text-sm text-error mt-1">{errors.comment.message}</p>
                         )}
                     </div>
 
@@ -109,7 +109,7 @@ export default function WriteReviewModal({ onClose, isOpen, onConfirm, isLoading
                             type="button"
                             onClick={onClose}
                             disabled={isLoading}
-                            className="text-gray-500 hover:text-gray-800 text-sm font-medium"
+                            className="text-text-faint hover:text-text-primary text-sm font-medium"
                         >
                             Cancel
                         </button>

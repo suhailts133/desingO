@@ -9,7 +9,7 @@ export const transactionColumns: ColumnDef<AllTransactionDTO>[] = [
     { key: "designationName", label: "Recipient" },
     { key: "destinationRole", label: "Recipient Role" },
     { key: "type", label: "Type" },
-    { key: "amount", label: "Amount", className: "font-Jost-Semibold text-soft-black text-sm" },
+    { key: "amount", label: "Amount", className: "font-Jost-Semibold text-text-primary text-sm" },
 ];
 
 export const transactionTypeTone: Record<Exclude<AllTransactionDTO["type"], "All">, Tone> = {
@@ -18,4 +18,3 @@ export const transactionTypeTone: Record<Exclude<AllTransactionDTO["type"], "All
     Payout: "success",
     Refund: "error",
 };
-

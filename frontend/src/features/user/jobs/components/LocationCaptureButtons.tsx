@@ -12,13 +12,13 @@ export default function LocationCaptureButtons() {
                 <MapLocationButton onResolved={applyResolvedLocation} />
 
                 {latitude != null && longitude != null && (
-                    <span className="text-xs text-soft-black/60">
+                    <span className="text-xs text-text-muted">
                         Location set: {latitude.toFixed(5)}, {longitude.toFixed(5)}
                     </span>
                 )}
             </div>
 
-            {latitudeError && <p className="text-xs text-red-500">{latitudeError}</p>}
+            {latitudeError && <p className="text-xs text-error">{latitudeError}</p>}
         </div>
     );
 }

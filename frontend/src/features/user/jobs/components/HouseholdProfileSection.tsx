@@ -9,8 +9,8 @@ export default function HouseholdProfileSection() {
 
     return (
         <div className="space-y-4">
-            <h3 className="text-lg font-Jost-Semibold text-soft-black flex items-center gap-2">
-                <Users className="w-5 h-5 text-blush-deep" /> 6. Household Profile
+            <h3 className="text-lg font-Jost-Semibold text-text-primary flex items-center gap-2">
+                <Users className="w-5 h-5 text-text-faint" /> 6. Household Profile
             </h3>
 
             <div className="grid grid-cols-3 gap-3">
@@ -37,9 +37,9 @@ export default function HouseholdProfileSection() {
                         type="checkbox"
                         id="hasPets"
                         {...register("householdProfile.hasPets")}
-                        className="h-4 w-4 accent-blush-deep rounded cursor-pointer"
+                        className="h-4 w-4 accent-accent rounded cursor-pointer"
                     />
-                    <label htmlFor="hasPets" className="text-sm font-Jost-Semibold text-soft-black cursor-pointer">
+                    <label htmlFor="hasPets" className="text-sm font-Jost-Semibold text-text-primary cursor-pointer">
                         We have pets in the house
                     </label>
                 </div>

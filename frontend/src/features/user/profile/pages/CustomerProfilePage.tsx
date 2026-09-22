@@ -26,7 +26,7 @@ export default function CustomerProfilePage() {
     const handleProfileDataUpdation = async (data: UserProfileUpdateDTO) => {
         await handleUpdateData(data)
     }
-    console.log(profile)
+    
     return (
         <div className="flex flex-col items-center w-full max-w-xl gap-8 py-10">
             <ProfileImage

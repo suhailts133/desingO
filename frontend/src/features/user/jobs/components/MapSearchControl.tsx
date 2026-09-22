@@ -57,7 +57,7 @@ export default function MapSearchControl({ onSelectLocation }: MapSearchControlP
   return (
     <div
       ref={containerRef}
-      className="absolute top-2.5 left-12 z-[1000] bg-snow-white rounded-md shadow-md p-2"
+      className="absolute top-2.5 left-12 z-1000 bg-surface border border-surface-border rounded-md p-2"
     >
       <div className="flex gap-1">
         <input
@@ -66,12 +66,12 @@ export default function MapSearchControl({ onSelectLocation }: MapSearchControlP
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Search location..."
-          className="px-2 py-1 w-52 text-sm border border-blush-pale rounded"
+          className="px-2 py-1 w-52 text-sm bg-surface-hover border border-surface-border text-text-primary placeholder-text-faint focus:border-accent focus:ring-1 focus:ring-accent focus:outline-none rounded"
         />
         <button
           type="button"
           onClick={() => void runSearch()}
-          className="px-2 py-1 text-sm bg-blush-deep text-white rounded"
+          className="px-2 py-1 text-sm bg-accent text-text-on-accent hover:bg-accent-hover active:bg-accent-active rounded"
         >
           Search
         </button>
@@ -83,7 +83,7 @@ export default function MapSearchControl({ onSelectLocation }: MapSearchControlP
             <li
               key={`${item.y}-${item.x}`}
               onClick={() => handlePick(item)}
-              className="p-1 cursor-pointer border-b border-blush-pale/60 last:border-0"
+              className="p-1 cursor-pointer text-text-muted hover:bg-surface-hover border-b border-surface-border last:border-0"
             >
               {item.label}
             </li>

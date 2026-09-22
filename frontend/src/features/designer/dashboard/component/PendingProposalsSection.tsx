@@ -14,9 +14,9 @@ const statusLabel: Record<PendingProposalDTOs["proposalStatus"], string> = {
 }
 
 const statusStyles: Record<PendingProposalDTOs["proposalStatus"], string> = {
-    NOT_CREATED: "bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100",
-    CREATED: "bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100",
-    REJECTED: "bg-red-50 text-red-700 border border-red-200 hover:bg-red-100",
+    NOT_CREATED: "bg-warning-tint text-warning-text border border-warning-tint hover:border-warning",
+    CREATED: "bg-accent-tint text-accent-tint-text border border-accent-tint hover:border-accent",
+    REJECTED: "bg-error-tint text-error border border-error-tint hover:border-error",
 }
 
 type Props = {
@@ -48,31 +48,31 @@ export default function PendingProposalsSection({ proposals }: Props) {
     }
 
     return (
-        <div className="bg-off-white rounded-2xl border border-blush-light/40 shadow-lg px-6 py-6 flex flex-col gap-4">
+        <div className="bg-surface rounded-2xl border border-surface-border px-6 py-6 flex flex-col gap-4">
             <div className="flex items-center gap-2.5">
-                <Clock size={20} className="text-blush-deep" />
-                <p className="text-base font-semibold text-soft-black">Active Jobs</p>
+                <Clock size={20} className="text-accent" />
+                <p className="text-base font-semibold text-text-primary">Active Jobs</p>
             </div>
 
             {proposals.length === 0 ? (
-                <p className="text-sm text-soft-black/40">Nothing needs your attention here.</p>
+                <p className="text-sm text-text-faint">Nothing needs your attention here.</p>
             ) : (
                 <ul className="flex flex-col gap-3">
                     {proposals.map((job) => (
                         <li
                             key={job.sourceId}
-                            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-blush-light/30 last:border-b-0 pb-3 last:pb-0"
+                            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-surface-border last:border-b-0 pb-3 last:pb-0"
                         >
                             <button
                                 onClick={() => goToJobDetail(job)}
-                                className="flex items-center gap-1.5 text-sm font-medium text-blush-deep hover:underline text-left truncate group"
+                                className="flex items-center gap-1.5 text-sm font-medium text-text-primary hover:text-accent-hover transition-colors text-left truncate group"
                             >
                                 <span className="truncate">{job.jobName}</span>
-                                <ExternalLink size={14} className="shrink-0 opacity-60 group-hover:opacity-100" />
+                                <ExternalLink size={14} className="shrink-0 text-text-faint group-hover:text-accent-hover transition-colors" />
                             </button>
 
                             <div className="flex items-center gap-2 shrink-0">
-                                <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-blush-pale text-blush-deep border border-blush-light/60">
+                                <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-surface-hover text-text-primary border border-surface-border">
                                     {sourceLabel[job.sourceType]}
                                 </span>
                                 <button

@@ -13,9 +13,7 @@ export default function AIDesignChatPanel() {
   const [prompt, setPrompt] = useState("");
   const dispatch = useDispatch();
 
-
   const isPanelOpen = useSelector((state: RootState) => state.aiDesignUI.isPanelOpen);
-
 
   const [generateDesign, { data, isLoading, error }] = useGenerateDesignMutation();
   const { data: suggestions, isFetching: isSuggestionsLoading } = useGetSuggestedDesignsQuery(
@@ -25,29 +23,32 @@ export default function AIDesignChatPanel() {
     },
     { skip: !data?.generatedImage }
   );
+  
   const handleClose = () => {
     dispatch(closeAIDesignPanel());
   };
 
   const handleGenerate = async () => {
     if (!prompt.trim() || isLoading) return;
-
-
     await generateDesign(prompt.trim());
   };
 
   return (
     <>
-
-      {isPanelOpen && <div className="fixed inset-0 z-50 bg-black/30" onClick={handleClose} />}
+      {isPanelOpen && <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity" onClick={handleClose} />}
 
       <aside
-        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300 ${isPanelOpen ? "translate-x-0" : "translate-x-full"
+        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-surface border-l border-surface-border transition-transform duration-300 ${isPanelOpen ? "translate-x-0" : "translate-x-full"
           }`}
       >
-        <div className="flex items-center justify-between border-b border-gray-100 p-4">
-          <h2 className="text-base font-semibold">AI Design Generator</h2>
-          <button type="button" onClick={handleClose} aria-label="Close">
+        <div className="flex items-center justify-between border-b border-surface-border p-4 bg-surface-hover/50">
+          <h2 className="text-base font-semibold text-text-primary">AI Design Generator</h2>
+          <button 
+            type="button" 
+            onClick={handleClose} 
+            aria-label="Close"
+            className="text-text-muted hover:text-text-primary transition-colors"
+          >
             <X size={20} />
           </button>
         </div>
@@ -59,24 +60,21 @@ export default function AIDesignChatPanel() {
             type="button"
             onClick={handleGenerate}
             disabled={isLoading || !prompt.trim()}
-            className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-black py-2.5 text-sm font-medium text-white transition disabled:cursor-not-allowed disabled:opacity-50"
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-accent py-2.5 text-sm font-medium text-text-on-accent hover:bg-accent-hover active:bg-accent-active transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isLoading && <Loader2 size={16} className="animate-spin" />}
             {isLoading ? "Generating..." : "Generate Design"}
           </button>
 
-
           {error && (
-            <p className="mt-3 text-sm text-red-600">
+            <p className="mt-3 text-sm text-error">
               {typeof error === "string" ? error : "Failed to generate design."}
             </p>
           )}
 
-
           {data?.generatedImage && (
             <AIGeneratedImageResult
               image={data.generatedImage}
-        
             />
           )}
           {data?.generatedImage && (

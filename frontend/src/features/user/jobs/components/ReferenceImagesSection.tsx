@@ -42,28 +42,28 @@ export default function ReferenceImagesSection() {
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <label className="block text-sm font-Jost-Semibold text-gray-700">
-                    Refrence images <span className="text-gray-400 font-normal">(Optional)</span>
+                <label className="block text-sm font-Jost-Semibold text-text-primary">
+                    Refrence images <span className="text-text-faint font-normal">(Optional)</span>
                 </label>
-                <span className="text-xs text-gray-400">{refrenceFields.length} / 10</span>
+                <span className="text-xs text-text-faint">{refrenceFields.length} / 10</span>
             </div>
 
             {refrenceFields.length < 10 && (
                 <>
                     <label
                         htmlFor="refrence"
-                        className="flex items-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer hover:border-primary transition-colors "
+                        className="flex items-center gap-3 w-full border border-surface-border rounded-lg px-4 py-2 cursor-pointer hover:border-accent transition-colors"
                     >
-                        <div className="bg-gray-100 p-1.5 rounded-md">
-                            <ImageIcon className="h-4 w-4 text-gray-500" />
+                        <div className="bg-surface-hover p-1.5 rounded-md">
+                            <ImageIcon className="h-4 w-4 text-text-faint" />
                         </div>
                         <div className="flex flex-col overflow-hidden">
-                            <span className="text-sm text-gray-700 font-medium">Upload refrence Photos</span>
-                            <span className="text-[11px] text-gray-400 truncate">
+                            <span className="text-sm text-text-primary font-medium">Upload refrence Photos</span>
+                            <span className="text-[11px] text-text-faint truncate">
                                 {refrenceFields.length > 0 ? `${refrenceFields.length} selected — up to ${10 - refrenceFields.length} more` : "Select one or more images..."}
                             </span>
                         </div>
-                        <Plus className="h-5 w-5 text-gray-400 ml-auto shrink-0" />
+                        <Plus className="h-5 w-5 text-text-faint ml-auto shrink-0" />
                     </label>
 
                     <input
@@ -78,13 +78,13 @@ export default function ReferenceImagesSection() {
             )}
 
             {refrenceFields.length > 0 && (
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-surface-hover rounded-xl border border-dashed border-surface-border">
                     {refrenceFields.map((field, index) => {
                         const previewSrc = refrenceImagesPreview[index];
                         const isNew = previewSrc?.startsWith('blob:');
 
                         return (
-                            <div key={field.id} className="relative aspect-square rounded-lg overflow-hidden bg-white shadow-sm group">
+                            <div key={field.id} className="relative aspect-square rounded-lg overflow-hidden bg-surface border border-surface-border hover:border-accent transition-colors group">
                                 {previewSrc ? (
                                     <>
                                         <Zoom>
@@ -95,14 +95,14 @@ export default function ReferenceImagesSection() {
                                             />
                                         </Zoom>
 
-                                        <span className={`absolute top-1 left-1 z-10 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase ${isNew ? 'bg-green-500' : 'bg-gray-500/70'}`}>
+                                        <span className={`absolute top-1 left-1 z-10 text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase ${isNew ? 'bg-success-tint text-success-text' : 'bg-surface-hover text-text-faint'}`}>
                                             {isNew ? 'New' : 'Saved'}
                                         </span>
 
                                         <button
                                             type="button"
                                             onClick={() => refrenceRemove(index)}
-                                            className="absolute top-1 right-1 z-10 bg-red-500/90 hover:bg-red-600 text-white p-1 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                            className="absolute top-1 right-1 z-10 bg-error-tint text-error-text border border-error hover:bg-error hover:text-text-primary p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                                         >
                                             <X size={12} />
                                         </button>
@@ -115,7 +115,7 @@ export default function ReferenceImagesSection() {
             )}
 
             {errors.referenceImages && !Array.isArray(errors.referenceImages) && (
-                <p className="text-xs text-red-500 mt-1">{errors.referenceImages.message as string}</p>
+                <p className="text-xs text-error mt-1">{errors.referenceImages.message as string}</p>
             )}
         </div>
     );

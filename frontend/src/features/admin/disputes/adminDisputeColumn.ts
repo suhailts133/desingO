@@ -9,13 +9,14 @@ export const disputeStatusTone: Record<DisputeStatus, Tone> = {
     Resolved: "success",
     Redo: "error",
     "Awaiting Confirmation": "warning",
+    Terminated: "archived"
 };
 
 
 
 
 export const disputeColumns: ColumnDef<AllDisputeAdminDTO>[] = [
-    { key: "type", label: "Type", className: "font-Jost-Semibold text-soft-black text-sm" },
+    { key: "type", label: "Type", className: "font-Jost-Semibold text-accent text-sm" },
     { key: "reason", label: "Reason" },
     { key: "raisedBy", label: "Raised By" },
     { key: "status", label: "Status" },

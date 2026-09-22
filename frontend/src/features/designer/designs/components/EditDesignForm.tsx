@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Select from "react-select";
+import type { StylesConfig } from "react-select";
 import makeAnimated from "react-select/animated";
 import { X, Plus, ImageIcon, AlertCircle } from "lucide-react";
 import Zoom from "react-medium-image-zoom";
@@ -14,6 +15,7 @@ import { useGetDesignDetailQuery } from "../designEndpoints";
 import { useEditDesign } from "../hooks/useEditDesign";
 import type { CoverState, DesignDetailResponseDTO, EditDesignFields, GalleryItem, SelectOption } from "../designInterface";
 import toast from "react-hot-toast";
+import { selectStyles } from "../../../../shared/filter/selectStyle";
 
 const animatedComponents = makeAnimated();
 
@@ -32,7 +34,7 @@ export default function EditDesignForm() {
   if (isFetching) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-gray-400">
+        <div className="flex flex-col items-center gap-3 text-text-faint">
           <svg className="size-8 animate-spin" viewBox="0 0 24 24" fill="none">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -46,13 +48,12 @@ export default function EditDesignForm() {
   if (error || !data) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-sm text-red-500 flex items-center gap-2">
+        <p className="text-sm text-error flex items-center gap-2">
           <AlertCircle size={16} /> Failed to load design.
         </p>
       </div>
     );
   }
-
 
   return <EditDesignFormInner key={id} id={id!} defaultData={data.data as DesignDetailResponseDTO} />;
 }
@@ -90,8 +91,6 @@ function EditDesignFormInner({ id, defaultData }: { id: string; defaultData: Des
     },
   });
 
-  // This effect is legitimate: it's cleaning up an external resource
-  // (blob object URLs), not deriving/syncing state from props.
   useEffect(() => {
     return () => {
       gallery.forEach(item => { if (item.type === "new") URL.revokeObjectURL(item.preview); });
@@ -174,101 +173,110 @@ function EditDesignFormInner({ id, defaultData }: { id: string; defaultData: Des
 
   return (
     <div className="min-h-screen w-full flex justify-center items-start py-10 px-4">
-      <div className="w-full max-w-2xl bg-white/50 backdrop-blur-2xl shadow-blush/30 rounded-xl shadow-2xl p-8">
+      <div className="w-full max-w-2xl bg-surface border border-surface-border rounded-xl p-8">
 
-        <h2 className="text-4xl font-semibold text-center font-Dynalight-Regular mb-2 text-soft-black">designO</h2>
-        <p className="text-center text-gray-400 font-Jost-Semibold mb-8 text-sm uppercase tracking-widest">Edit design</p>
+        <h2 className="text-4xl font-semibold text-center font-Dynalight-Regular mb-2 text-accent">designO</h2>
+        <p className="text-center text-text-faint font-Jost-Semibold mb-8 text-sm uppercase tracking-widest">Edit design</p>
 
         <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
 
           {/* Design Name */}
           <div>
-            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Design Name</label>
-            <input {...register("name")} className="auth-input w-full" placeholder="e.g. Modern Japandi Living Room" />
-            {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
+            <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Design Name</label>
+            <input
+              {...register("name")}
+              className="w-full bg-surface-hover border border-surface-border text-text-primary placeholder-text-faint focus:border-accent focus:ring-1 focus:ring-accent rounded-lg p-2.5 outline-none transition-colors"
+              placeholder="e.g. Modern Japandi Living Room"
+            />
+            {errors.name && <p className="text-xs text-error mt-1">{errors.name.message}</p>}
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Description</label>
-            <textarea {...register("description")} rows={3} className="auth-input w-full" placeholder="Describe your design process..." />
-            {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>}
+            <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Description</label>
+            <textarea
+              {...register("description")}
+              rows={3}
+              className="w-full bg-surface-hover border border-surface-border text-text-primary placeholder-text-faint focus:border-accent focus:ring-1 focus:ring-accent rounded-lg p-2.5 outline-none transition-colors"
+              placeholder="Describe your design process..."
+            />
+            {errors.description && <p className="text-xs text-error mt-1">{errors.description.message}</p>}
           </div>
 
           {/* Styles & Services */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Styles</label>
+              <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Styles</label>
               <Controller name="designStyles" control={control} render={({ field }) => (
-                <Select {...field} isMulti options={STYLE_OPTIONS} components={animatedComponents} className="text-sm" />
+                <Select {...field} isMulti options={STYLE_OPTIONS} components={animatedComponents} styles={selectStyles as StylesConfig<any, true>} />
               )} />
-              {errors.designStyles && <p className="text-xs text-red-500 mt-1">{errors.designStyles.message}</p>}
+              {errors.designStyles && <p className="text-xs text-error mt-1">{errors.designStyles.message}</p>}
             </div>
             <div>
-              <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Services</label>
+              <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Services</label>
               <Controller name="services" control={control} render={({ field }) => (
-                <Select {...field} isMulti options={SERVICE_OPTIONS} components={animatedComponents} className="text-sm" />
+                <Select {...field} isMulti options={SERVICE_OPTIONS} components={animatedComponents} styles={selectStyles as StylesConfig<any, true>} />
               )} />
-              {errors.services && <p className="text-xs text-red-500 mt-1">{errors.services.message}</p>}
+              {errors.services && <p className="text-xs text-error mt-1">{errors.services.message}</p>}
             </div>
           </div>
 
           {/* Space & Property */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Space</label>
+              <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Space</label>
               <Controller name="spaceType" control={control} render={({ field }) => (
-                <Select {...field} isMulti={false} options={SPACE_OPTIONS} components={animatedComponents} className="text-sm" />
+                <Select {...field} isMulti={false} options={SPACE_OPTIONS} components={animatedComponents} styles={selectStyles as StylesConfig<any, false>} />
               )} />
-              {errors.spaceType && <p className="text-xs text-red-500 mt-1">{errors.spaceType.message}</p>}
+              {errors.spaceType && <p className="text-xs text-error mt-1">{errors.spaceType.message}</p>}
             </div>
             <div>
-              <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Property</label>
+              <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Property</label>
               <Controller name="propertyType" control={control} render={({ field }) => (
-                <Select {...field} isMulti={false} options={PROPERTY_OPTIONS} components={animatedComponents} className="text-sm" />
+                <Select {...field} isMulti={false} options={PROPERTY_OPTIONS} components={animatedComponents} styles={selectStyles as StylesConfig<any, false>} />
               )} />
-              {errors.propertyType && <p className="text-xs text-red-500 mt-1">{errors.propertyType.message}</p>}
+              {errors.propertyType && <p className="text-xs text-error mt-1">{errors.propertyType.message}</p>}
             </div>
           </div>
 
           {/* Budget */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Minimum Budget (₹)</label>
+              <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Minimum Budget (₹)</label>
               <input
                 type="number"
                 {...register("minPrice", { valueAsNumber: true })}
-                className="auth-input w-full"
+                className="w-full bg-surface-hover border border-surface-border text-text-primary placeholder-text-faint focus:border-accent focus:ring-1 focus:ring-accent rounded-lg p-2.5 outline-none transition-colors"
                 placeholder="e.g. 50000"
               />
-              {errors.minPrice && <p className="text-xs text-red-500 mt-1">{errors.minPrice.message}</p>}
+              {errors.minPrice && <p className="text-xs text-error mt-1">{errors.minPrice.message}</p>}
             </div>
             <div>
-              <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Maximum Budget (₹)</label>
+              <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Maximum Budget (₹)</label>
               <input
                 type="number"
                 {...register("maxPrice", { valueAsNumber: true })}
-                className="auth-input w-full"
+                className="w-full bg-surface-hover border border-surface-border text-text-primary placeholder-text-faint focus:border-accent focus:ring-1 focus:ring-accent rounded-lg p-2.5 outline-none transition-colors"
                 placeholder="e.g. 50000"
               />
-              {errors.maxPrice && <p className="text-xs text-red-500 mt-1">{errors.maxPrice.message}</p>}
+              {errors.maxPrice && <p className="text-xs text-error mt-1">{errors.maxPrice.message}</p>}
             </div>
           </div>
 
-          <hr className="my-6 border-gray-100" />
+          <hr className="my-6 border-surface-border" />
 
           {/* Cover Image */}
           <div>
-            <label className="block text-sm font-Jost-Semibold text-gray-700 mb-1">Cover Image</label>
-            <label htmlFor="coverImageEdit" className="flex items-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer hover:border-primary transition-colors mb-2">
-              <div className="bg-gray-100 p-1.5 rounded-md">
-                <ImageIcon className="h-4 w-4 text-gray-500" />
+            <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Cover Image</label>
+            <label htmlFor="coverImageEdit" className="flex items-center gap-3 w-full bg-surface-hover border border-surface-border rounded-lg px-4 py-2 cursor-pointer hover:border-accent transition-colors mb-2">
+              <div className="bg-surface p-1.5 rounded-md border border-surface-border">
+                <ImageIcon className="h-4 w-4 text-text-faint" />
               </div>
               <div className="flex flex-col overflow-hidden">
-                <span className="text-sm text-gray-700 font-medium">
+                <span className="text-sm text-text-primary font-medium">
                   {coverIsChanged ? "Change Cover Image" : "Replace Cover Image"}
                 </span>
-                <span className="text-xs text-primary truncate italic">
+                <span className="text-xs text-text-faint truncate italic">
                   {coverFileName}
                 </span>
               </div>
@@ -277,14 +285,14 @@ function EditDesignFormInner({ id, defaultData }: { id: string; defaultData: Des
 
             {coverSrc && (
               <div className="mt-2 flex flex-col">
-                <span className="text-xs text-gray-400 font-bold mb-2 uppercase">
+                <span className="text-xs text-text-faint font-bold mb-2 uppercase">
                   {coverIsChanged ? "Cover Preview" : "Current Cover Image"}
                 </span>
                 <Zoom>
                   <img
                     src={coverSrc}
                     alt="Cover"
-                    className={`rounded-lg max-h-40 object-cover shadow-sm transition-all ${coverIsChanged ? "ring-2 ring-amber-400" : ""}`}
+                    className={`rounded-lg max-h-40 object-cover border border-surface-border transition-all ${coverIsChanged ? "ring-2 ring-accent" : ""}`}
                   />
                 </Zoom>
               </div>
@@ -294,45 +302,51 @@ function EditDesignFormInner({ id, defaultData }: { id: string; defaultData: Des
           {/* Gallery */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <label className="block text-sm font-Jost-Semibold text-gray-700">Gallery Portfolio</label>
-              <span className="text-xs text-gray-400">{gallery.length} / 10</span>
+              <label className="block text-sm font-Jost-Semibold text-text-primary">Gallery Portfolio</label>
+              <span className="text-xs text-text-faint">{gallery.length} / 10</span>
             </div>
 
             {gallery.length < 10 && (
               <>
-                <label htmlFor="galleryInputEdit" className="flex items-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer hover:border-primary transition-colors">
-                  <div className="bg-gray-100 p-1.5 rounded-md">
-                    <ImageIcon className="h-4 w-4 text-gray-500" />
+                <label htmlFor="galleryInputEdit" className="flex items-center gap-3 w-full bg-surface-hover border border-surface-border rounded-lg px-4 py-2 cursor-pointer hover:border-accent transition-colors">
+                  <div className="bg-surface p-1.5 rounded-md border border-surface-border">
+                    <ImageIcon className="h-4 w-4 text-text-faint" />
                   </div>
                   <div className="flex flex-col overflow-hidden">
-                    <span className="text-sm text-gray-700 font-medium">Upload Project Photos</span>
-                    <span className="text-[11px] text-gray-400 truncate">
+                    <span className="text-sm text-text-primary font-medium">Upload Project Photos</span>
+                    <span className="text-[11px] text-text-muted truncate">
                       {gallery.length > 0 ? `${gallery.length} images selected — up to ${10 - gallery.length} more` : "Select one or more images..."}
                     </span>
                   </div>
-                  <Plus className="h-5 w-5 text-gray-400 ml-auto shrink-0" />
+                  <Plus className="h-5 w-5 text-text-faint ml-auto shrink-0" />
                 </label>
                 <input type="file" id="galleryInputEdit" multiple hidden accept="image/*" onChange={handleGalleryUpload} />
               </>
             )}
 
             {gallery.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-surface rounded-xl border border-dashed border-surface-border">
                 {gallery.map((item, index) => {
                   const src = item.type === "existing" ? item.path : item.preview;
                   const isNew = item.type === "new";
                   return (
-                    <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-white shadow-sm group">
+                    <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-surface-hover border border-surface-border group">
                       <Zoom>
                         <img src={src} className="w-full h-full object-cover" alt={`Gallery ${index + 1}`} />
                       </Zoom>
-                      <span className={`absolute top-1 left-1 z-10 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase ${isNew ? "bg-green-500" : "bg-gray-500/70"}`}>
-                        {isNew ? "New" : "Old"}
-                      </span>
+                      {isNew ? (
+                        <span className="absolute top-1 left-1 z-10 text-success text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase bg-success-tint border border-success/30">
+                          New
+                        </span>
+                      ) : (
+                        <span className="absolute top-1 left-1 z-10 text-text-faint text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase bg-surface-hover border border-surface-border">
+                          Old
+                        </span>
+                      )}
                       <button
                         type="button"
                         onClick={() => handleRemoveGalleryItem(index)}
-                        className="absolute top-1 right-1 z-10 bg-red-500/90 hover:bg-red-600 text-white p-1 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute top-1 right-1 z-10 bg-error-tint hover:bg-error text-error hover:text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200"
                       >
                         <X size={12} />
                       </button>
@@ -343,40 +357,40 @@ function EditDesignFormInner({ id, defaultData }: { id: string; defaultData: Des
             )}
 
             {gallery.length === 0 && (
-              <div className="text-center py-8 text-gray-400 text-sm border border-dashed border-gray-200 rounded-xl">
+              <div className="text-center py-8 text-text-faint text-sm border border-dashed border-surface-border rounded-xl">
                 No gallery images. Add some above.
               </div>
             )}
           </div>
 
-          <p className="text-xs text-gray-400 italic mt-1">
+          <p className="text-xs text-text-muted italic mt-1">
             * Note: If you delete all gallery images without uploading new ones, your old gallery images will remain saved on the server.
           </p>
 
           {/* Action Buttons */}
           {!isEditing ? (
-            <div className="flex gap-3">
+            <div className="flex gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="w-full py-2.5 rounded-lg border border-gray-300 text-gray-600 font-Jost-Semibold text-sm hover:bg-gray-100 hover:border-gray-400 hover:text-gray-800 transition-all duration-200"
+                className="flex-1 py-2.5 rounded-lg border border-surface-border bg-surface text-text-muted text-sm font-medium hover:bg-surface-hover hover:border-surface-border-strong hover:text-text-primary transition-colors duration-200"
               >
                 Cancel
               </button>
-              <button type="submit" className="auth-button w-full">
+              <button type="submit" className="flex-1 py-2.5 bg-accent text-text-on-accent rounded-lg text-sm font-medium hover:bg-accent-hover active:bg-accent-active transition-colors duration-200">
                 Save Changes
               </button>
             </div>
           ) : (
-            <div className="flex gap-3">
+            <div className="flex gap-3 pt-2">
               <button
                 type="button"
                 disabled
-                className="w-full py-2.5 rounded-lg border border-gray-200 text-gray-300 font-Jost-Semibold text-sm cursor-not-allowed"
+                className="flex-1 py-2.5 rounded-lg border border-surface-border bg-surface text-text-faint text-sm font-medium cursor-not-allowed opacity-50"
               >
                 Cancel
               </button>
-              <button type="button" disabled className="auth-disabled-button w-full flex items-center justify-center gap-2">
+              <button type="button" disabled className="flex-1 py-2.5 bg-surface-hover text-text-faint rounded-lg text-sm font-medium flex items-center justify-center gap-2 cursor-not-allowed opacity-50 transition-colors">
                 <svg className="size-5 animate-spin shrink-0" viewBox="0 0 24 24" fill="none">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />

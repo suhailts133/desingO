@@ -22,8 +22,8 @@ export default function MyHireRequestPage() {
 
     const handleDelete = async () => {
         if (!deleteHireRequest) return
-        const result  = await handleDeletion(deleteHireRequest)
-        handleResponse(result.success, "Hire Request Deleted Successfully",  result.message, ); 
+        const result = await handleDeletion(deleteHireRequest)
+        handleResponse(result.success, "Hire Request Deleted Successfully", result.message,);
         setDeleteHireRequest(null)
     }
     const totalPages = data.totalPages ?? 1;
@@ -36,7 +36,7 @@ export default function MyHireRequestPage() {
             <div className="w-full flex justify-end">
 
             </div>
-          
+
 
             <div >
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -57,14 +57,18 @@ export default function MyHireRequestPage() {
                 isLoading={isDeleting}
                 text="Are you sure you want to delete this hire request?"
             />
-            <Pagination
-                page={page}
-                totalItem={totalJobRequest}
-                whichItem="hire request"
-                totalPages={totalPages}
-                onDecrease={() => setPage(p => p - 1)}
-                onIncrease={() => setPage(p => p + 1)}
-            />
+            
+            <div className="sticky bottom-0 mt-auto pt-4 bg-bg">
+                <Pagination
+                    page={page}
+                    totalItem={totalJobRequest}
+                    whichItem="hire request"
+                    totalPages={totalPages}
+                    onDecrease={() => setPage(p => p - 1)}
+                    onIncrease={() => setPage(p => p + 1)}
+                />
+
+            </div>
 
 
         </div>

@@ -28,7 +28,7 @@ export default function Navbar() {
       <nav className="z-50 flex items-center justify-between  bg-bg-raised text-text-primary p-4 backdrop-blur-3xl font-semibold">
 
         {/* Logo */}
-        <div className="font-Dynalight-Regular pl-1 text-md sm:text-lg md:text-2xl">
+        <div className="font-Dynalight-Regular pl-1 text-md sm:text-lg md:text-2xl text-accent">
           <Link to="/">designO</Link>
         </div>
       

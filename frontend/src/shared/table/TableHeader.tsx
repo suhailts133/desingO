@@ -9,12 +9,12 @@ interface TableHeaderProps<T> {
 
 export default function TableHeader<T>({ columns }: TableHeaderProps<T>) {
     return (
-        <thead className="border-b-2 border-soft-black/20">
-            <tr className="border-b border-white/25 bg-white/20 backdrop-blur-2xl">
+        <thead className="border-b-2 border-surface-border">
+            <tr className="border-b border-surface-border bg-surface-hover backdrop-blur-2xl">
                 {columns.map((col) => (
                     <th
                         key={col.key}
-                        className="text-left px-5 py-3.5 text-xs font-Jost-Semibold text-soft-black/50 uppercase tracking-widest"
+                        className="text-left px-5 py-3.5 text-xs font-Jost-Semibold text-text-faint uppercase tracking-widest"
                     >
                         {col.label}
                     </th>

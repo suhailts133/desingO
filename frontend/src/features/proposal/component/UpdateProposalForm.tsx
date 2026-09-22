@@ -16,10 +16,8 @@ export default function UpdateProposalForm() {
     const navigate = useNavigate()
     const [dropdownOpen, setDropdownOpen] = useState(false)
 
-
     const { data: proposalData, isLoading: isProposalLoading, error: proposalError } = useGetProposalQuery(id!, { skip: !id })
     const proposal: ProposalDetailDTO | undefined = proposalData?.data
-
 
     const { data: prefillData, isLoading: isPrefillLoading } = useGetProposalPrefillDataQuery(
         { jobId: proposal?.sourceId ?? "" },
@@ -31,6 +29,7 @@ export default function UpdateProposalForm() {
     const handleResponse = useHandleResponse()
 
     const effectiveSqFt = !proposal?.totalArea ? 0 : convertToSqFt(proposal.totalArea, proposal.unit)
+    
     const {
         register,
         control,
@@ -84,7 +83,6 @@ export default function UpdateProposalForm() {
     const watchedServices = useWatch({ control, name: "services" }) || []
     const drawingFeePerSqFt = useWatch({ control, name: "drawingFeePerSqFt" }) || 0
 
-
     const addedServiceNames = fields.map((f) => f.serviceName)
     const availableServices = (prefill?.services ?? []).filter((s) => !addedServiceNames.includes(s))
 
@@ -124,15 +122,15 @@ export default function UpdateProposalForm() {
     }
 
     if (!id) {
-        return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Invalid proposal ID.</div>
+        return <div className="p-10 text-center text-error font-Jost-Semibold">Invalid proposal ID.</div>
     }
 
     if (isProposalLoading || isPrefillLoading) {
-        return <div className="p-10 text-center animate-pulse text-soft-black/40">Loading proposal...</div>
+        return <div className="p-10 text-center animate-pulse text-text-faint">Loading proposal...</div>
     }
 
     if (proposalError || !proposal) {
-        return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Proposal not found.</div>
+        return <div className="p-10 text-center text-error font-Jost-Semibold">Proposal not found.</div>
     }
 
     return (
@@ -142,13 +140,13 @@ export default function UpdateProposalForm() {
                 <button
                     type="button"
                     onClick={() => navigate(-1)}
-                    className="text-soft-black/50 hover:text-soft-black transition-colors"
+                    className="text-text-muted hover:text-accent-hover transition-colors"
                 >
                     <ChevronLeft className="w-5 h-5" />
                 </button>
                 <div>
-                    <h1 className="font-Jost-Semibold text-xl text-soft-black">Update Proposal</h1>
-                    <p className="text-xs text-soft-black mt-0.5">
+                    <h1 className="font-Jost-Semibold text-xl text-text-primary">Update Proposal</h1>
+                    <p className="text-xs text-text-muted mt-0.5">
                         {proposal.sourceName} &nbsp;·&nbsp; {effectiveSqFt.toLocaleString("en-IN")} sqft
                         {proposal.unit === "m" && ` (${proposal.totalArea} m²)`}
                     </p>
@@ -160,31 +158,31 @@ export default function UpdateProposalForm() {
                 <input type="hidden" {...register("sourceId")} />
 
                 {/* Contract Details */}
-                <div className="bg-white rounded-2xl border border-blush-light/40 shadow-sm px-6 py-5">
-                    <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-soft-black/40 mb-4">
+                <div className="bg-surface rounded-2xl border border-surface-border px-6 py-5">
+                    <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-text-faint mb-4">
                         Contract details
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         {/* Drawing Fee per SqFt */}
                         <div className="flex flex-col gap-1.5">
-                            <label className="text-xs font-medium text-soft-black/60">
+                            <label className="text-xs font-medium text-text-muted">
                                 Drawing fee per sqft (₹)
                             </label>
                             <input
                                 type="number"
                                 {...register("drawingFeePerSqFt", { valueAsNumber: true })}
                                 placeholder="e.g. 10"
-                                className="w-full px-3 py-2.5 rounded-xl border border-blush-light/50 bg-off-white text-sm text-soft-black focus:outline-none focus:border-blush-deep transition-colors"
+                                className="w-full px-3 py-2.5 rounded-xl border border-surface-border bg-surface-hover text-sm text-text-primary placeholder-text-faint outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
                             />
                             {errors.drawingFeePerSqFt && (
-                                <p className="text-xs text-red-500">{errors.drawingFeePerSqFt.message}</p>
+                                <p className="text-xs text-error">{errors.drawingFeePerSqFt.message}</p>
                             )}
-                            <p className="text-xs text-soft-black/40">Total: ₹{totalDrawingFee.toLocaleString("en-IN")}</p>
+                            <p className="text-xs text-text-faint">Total: ₹{totalDrawingFee.toLocaleString("en-IN")}</p>
                         </div>
 
                         {/* Expected Completion Date */}
                         <div className="flex flex-col gap-1.5">
-                            <label className="text-xs font-medium text-soft-black/60">Expected completion date</label>
+                            <label className="text-xs font-medium text-text-muted">Expected completion date</label>
                             <Controller
                                 control={control}
                                 name="expectedCompletionDate"
@@ -193,37 +191,37 @@ export default function UpdateProposalForm() {
                                         type="date"
                                         value={field.value ? new Date(field.value).toISOString().split("T")[0] : ""}
                                         onChange={(e) => field.onChange(e.target.value)}
-                                        className="w-full px-3 py-2.5 rounded-xl border border-blush-light/50 bg-off-white text-sm text-soft-black focus:outline-none focus:border-blush-deep transition-colors"
+                                        className="w-full px-3 py-2.5 rounded-xl border border-surface-border bg-surface-hover text-sm text-text-primary outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
                                     />
                                 )}
                             />
                             {errors.expectedCompletionDate && (
-                                <p className="text-xs text-red-500">{errors.expectedCompletionDate.message}</p>
+                                <p className="text-xs text-error">{errors.expectedCompletionDate.message}</p>
                             )}
                         </div>
 
                         {/* Site Visit Checkbox */}
                         <div className="flex flex-col gap-1.5 justify-center">
-                            <label className="text-xs font-medium text-soft-black/60">Site visit required?</label>
+                            <label className="text-xs font-medium text-text-muted">Site visit required?</label>
                             <div className="flex items-center gap-2 pt-2">
                                 <label className="inline-flex items-center gap-2 cursor-pointer text-sm">
                                     <input
                                         type="checkbox"
                                         {...register("siteVisitingNeeded")}
-                                        className="rounded border-blush-light text-blush-deep focus:ring-0 w-4 h-4 cursor-pointer"
+                                        className="rounded border-surface-border bg-surface-hover text-accent focus:ring-accent w-4 h-4 cursor-pointer"
                                     />
-                                    <span className="text-soft-black text-xs">Yes, site visit needed</span>
+                                    <span className="text-text-primary text-xs">Yes, site visit needed</span>
                                 </label>
                             </div>
                             {errors.siteVisitingNeeded && (
-                                <p className="text-xs text-red-500">{errors.siteVisitingNeeded.message}</p>
+                                <p className="text-xs text-error">{errors.siteVisitingNeeded.message}</p>
                             )}
                         </div>
 
                         {/* Site Visit Date */}
                         {siteVisitingNeeded && (
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-medium text-soft-black/60">Expected site visit date</label>
+                                <label className="text-xs font-medium text-text-muted">Expected site visit date</label>
                                 <Controller
                                     control={control}
                                     name="expectedSiteVisitingDate"
@@ -232,12 +230,12 @@ export default function UpdateProposalForm() {
                                             type="date"
                                             value={field.value ? new Date(field.value).toISOString().split("T")[0] : ""}
                                             onChange={(e) => field.onChange(e.target.value)}
-                                            className="w-full px-3 py-2.5 rounded-xl border border-blush-light/50 bg-off-white text-sm text-soft-black focus:outline-none focus:border-blush-deep transition-colors"
+                                            className="w-full px-3 py-2.5 rounded-xl border border-surface-border bg-surface-hover text-sm text-text-primary outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
                                         />
                                     )}
                                 />
                                 {errors.expectedSiteVisitingDate && (
-                                    <p className="text-xs text-red-500">{errors.expectedSiteVisitingDate.message}</p>
+                                    <p className="text-xs text-error">{errors.expectedSiteVisitingDate.message}</p>
                                 )}
                             </div>
                         )}
@@ -245,9 +243,9 @@ export default function UpdateProposalForm() {
                 </div>
 
                 {/* Services Section */}
-                <div className="bg-white rounded-2xl border border-blush-light/40 shadow-sm px-6 py-5">
+                <div className="bg-surface rounded-2xl border border-surface-border px-6 py-5">
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-soft-black/40">
+                        <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-text-faint">
                             Services
                         </h2>
 
@@ -257,7 +255,7 @@ export default function UpdateProposalForm() {
                                 type="button"
                                 onClick={() => setDropdownOpen((v) => !v)}
                                 disabled={availableServices.length === 0}
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-soft-black text-off-white text-xs font-medium hover:bg-blush-deep transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent text-text-on-accent text-xs font-medium hover:bg-accent-hover transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
                             >
                                 <Plus className="w-3.5 h-3.5" />
                                 Add service
@@ -265,13 +263,13 @@ export default function UpdateProposalForm() {
                             </button>
 
                             {dropdownOpen && availableServices.length > 0 && (
-                                <div className="absolute right-0 top-full mt-1 w-56 bg-white border border-blush-light/40 rounded-xl shadow-lg z-10 overflow-hidden">
+                                <div className="absolute right-0 top-full mt-1 w-56 bg-surface border border-surface-border rounded-xl z-10 overflow-hidden">
                                     {availableServices.map((service) => (
                                         <button
                                             key={service}
                                             type="button"
                                             onClick={() => handleAddService(service)}
-                                            className="w-full text-left px-4 py-2.5 text-sm text-soft-black hover:bg-blush-pale hover:text-blush-deep transition-colors"
+                                            className="w-full text-left px-4 py-2.5 text-sm text-text-primary hover:bg-surface-hover hover:text-accent-hover transition-colors"
                                         >
                                             {service}
                                         </button>
@@ -282,13 +280,13 @@ export default function UpdateProposalForm() {
                     </div>
 
                     {errors.services?.root && (
-                        <p className="text-xs text-red-500 mb-3">{errors.services.root.message}</p>
+                        <p className="text-xs text-error mb-3">{errors.services.root.message}</p>
                     )}
 
                     {fields.length === 0 && (
-                        <div className="flex items-center gap-2 px-4 py-8 rounded-xl border border-dashed border-blush-light/60 text-center justify-center">
-                            <Info className="w-4 h-4 text-soft-black/30" />
-                            <p className="text-sm text-soft-black/30">Add services from the dropdown above</p>
+                        <div className="flex items-center gap-2 px-4 py-8 rounded-xl border border-dashed border-surface-border text-center justify-center">
+                            <Info className="w-4 h-4 text-text-faint" />
+                            <p className="text-sm text-text-faint">Add services from the dropdown above</p>
                         </div>
                     )}
 
@@ -296,21 +294,21 @@ export default function UpdateProposalForm() {
                         {fields.map((field, index) => (
                             <div
                                 key={field.id}
-                                className="rounded-xl border border-blush-light/40 bg-blush-pale/10 overflow-hidden"
+                                className="rounded-xl border border-surface-border bg-surface overflow-hidden"
                             >
                                 {/* Service Header */}
-                                <div className="flex items-center justify-between px-4 py-3 bg-blush-pale/30 border-b border-blush-light/30">
+                                <div className="flex items-center justify-between px-4 py-3 bg-surface-hover border-b border-surface-border">
                                     <div className="flex items-center gap-2">
-                                        <GripVertical className="w-4 h-4 text-soft-black/20" />
-                                        <span className="text-xs font-medium text-soft-black/50">#{index + 1}</span>
-                                        <span className="text-sm font-Jost-Semibold text-soft-black">
+                                        <GripVertical className="w-4 h-4 text-text-faint" />
+                                        <span className="text-xs font-medium text-text-faint">#{index + 1}</span>
+                                        <span className="text-sm font-Jost-Semibold text-text-primary">
                                             {field.serviceName}
                                         </span>
                                     </div>
                                     <button
                                         type="button"
                                         onClick={() => handleRemoveService(index)}
-                                        className="text-soft-black/30 hover:text-red-500 transition-colors"
+                                        className="text-text-faint hover:text-error transition-colors"
                                     >
                                         <Trash2 className="w-4 h-4" />
                                     </button>
@@ -322,33 +320,33 @@ export default function UpdateProposalForm() {
                                 {/* Service Inputs */}
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4">
                                     <div className="flex flex-col gap-1.5">
-                                        <label className="text-xs font-medium text-soft-black/50">Price (₹)</label>
+                                        <label className="text-xs font-medium text-text-muted">Price (₹)</label>
                                         <input
                                             type="number"
                                             {...register(`services.${index}.price`, { valueAsNumber: true })}
                                             placeholder="e.g. 5000"
-                                            className="w-full px-3 py-2 rounded-lg border border-blush-light/50 bg-white text-sm text-soft-black focus:outline-none focus:border-blush-deep transition-colors"
+                                            className="w-full px-3 py-2 rounded-lg border border-surface-border bg-surface-hover text-sm text-text-primary placeholder-text-faint outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
                                         />
                                         {errors.services?.[index]?.price && (
-                                            <p className="text-xs text-red-500">{errors.services[index]?.price?.message}</p>
+                                            <p className="text-xs text-error">{errors.services[index]?.price?.message}</p>
                                         )}
                                     </div>
 
                                     <div className="flex flex-col gap-1.5">
-                                        <label className="text-xs font-medium text-soft-black/50">Execution price (₹)</label>
+                                        <label className="text-xs font-medium text-text-muted">Execution price (₹)</label>
                                         <input
                                             type="number"
                                             {...register(`services.${index}.executionPrice`, { valueAsNumber: true })}
                                             placeholder="e.g. 2000"
-                                            className="w-full px-3 py-2 rounded-lg border border-blush-light/50 bg-white text-sm text-soft-black focus:outline-none focus:border-blush-deep transition-colors"
+                                            className="w-full px-3 py-2 rounded-lg border border-surface-border bg-surface-hover text-sm text-text-primary placeholder-text-faint outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
                                         />
                                         {errors.services?.[index]?.executionPrice && (
-                                            <p className="text-xs text-red-500">{errors.services[index]?.executionPrice?.message}</p>
+                                            <p className="text-xs text-error">{errors.services[index]?.executionPrice?.message}</p>
                                         )}
                                     </div>
 
                                     <div className="flex flex-col gap-1.5">
-                                        <label className="text-xs font-medium text-soft-black/50">Expected delivery</label>
+                                        <label className="text-xs font-medium text-text-muted">Expected delivery</label>
                                         <Controller
                                             control={control}
                                             name={`services.${index}.expectedDeliveryDate`}
@@ -357,12 +355,12 @@ export default function UpdateProposalForm() {
                                                     type="date"
                                                     value={field.value ? new Date(field.value).toISOString().split("T")[0] : ""}
                                                     onChange={(e) => field.onChange(e.target.value)}
-                                                    className="w-full px-3 py-2 rounded-lg border border-blush-light/50 bg-white text-sm text-soft-black focus:outline-none focus:border-blush-deep transition-colors"
+                                                    className="w-full px-3 py-2 rounded-lg border border-surface-border bg-surface-hover text-sm text-text-primary outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
                                                 />
                                             )}
                                         />
                                         {errors.services?.[index]?.expectedDeliveryDate && (
-                                            <p className="text-xs text-red-500">{errors.services[index]?.expectedDeliveryDate?.message}</p>
+                                            <p className="text-xs text-error">{errors.services[index]?.expectedDeliveryDate?.message}</p>
                                         )}
                                     </div>
                                 </div>
@@ -373,27 +371,27 @@ export default function UpdateProposalForm() {
 
                 {/* Summary */}
                 {fields.length > 0 && (
-                    <div className="bg-white rounded-2xl border border-blush-light/40 shadow-sm px-6 py-5">
-                        <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-soft-black/40 mb-4">
+                    <div className="bg-surface rounded-2xl border border-surface-border px-6 py-5">
+                        <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-text-faint mb-4">
                             Summary
                         </h2>
                         <div className="flex flex-col gap-2 text-sm">
                             <div className="flex items-center justify-between">
-                                <span className="text-soft-black/50">Drawing fee ({effectiveSqFt} sqft)</span>
-                                <span className="font-medium text-soft-black">₹{totalDrawingFee.toLocaleString("en-IN")}</span>
+                                <span className="text-text-muted">Drawing fee ({effectiveSqFt} sqft)</span>
+                                <span className="font-medium text-text-primary">₹{totalDrawingFee.toLocaleString("en-IN")}</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-soft-black/50">Total service price</span>
-                                <span className="font-medium text-soft-black">₹{totalServicePrice.toLocaleString("en-IN")}</span>
+                                <span className="text-text-muted">Total service price</span>
+                                <span className="font-medium text-text-primary">₹{totalServicePrice.toLocaleString("en-IN")}</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-soft-black/50">Total execution price</span>
-                                <span className="font-medium text-soft-black">₹{totalExecutionPrice.toLocaleString("en-IN")}</span>
+                                <span className="text-text-muted">Total execution price</span>
+                                <span className="font-medium text-text-primary">₹{totalExecutionPrice.toLocaleString("en-IN")}</span>
                             </div>
-                            <div className="h-px bg-blush-light/40 my-1" />
+                            <div className="h-px bg-surface-border my-1" />
                             <div className="flex items-center justify-between">
-                                <span className="font-Jost-Semibold text-soft-black">Total contract value</span>
-                                <span className="font-Jost-Semibold text-soft-black">
+                                <span className="font-Jost-Semibold text-text-primary">Total contract value</span>
+                                <span className="font-Jost-Semibold text-text-primary">
                                     ₹{totalContractValue.toLocaleString("en-IN")}
                                 </span>
                             </div>
@@ -407,14 +405,14 @@ export default function UpdateProposalForm() {
                         <button
                             type="button"
                             onClick={() => navigate(-1)}
-                            className="px-6 py-2.5 rounded-xl border border-blush-light/50 bg-off-white text-soft-black text-sm font-medium hover:bg-blush-pale transition-all duration-200"
+                            className="px-6 py-2.5 rounded-xl border border-surface-border bg-surface text-text-muted text-sm font-medium hover:bg-surface-hover hover:border-surface-border-strong hover:text-text-primary transition-all duration-200"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isProposalUpdating || fields.length === 0}
-                            className="px-6 py-2.5 rounded-xl bg-soft-black text-off-white text-sm font-medium hover:bg-blush-deep transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="px-6 py-2.5 rounded-xl bg-accent text-text-on-accent text-sm font-medium hover:bg-accent-hover active:bg-accent-active transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                             {isProposalUpdating ? "Updating..." : "Save Changes"}
                         </button>

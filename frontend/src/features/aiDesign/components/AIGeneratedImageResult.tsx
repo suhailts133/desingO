@@ -3,7 +3,6 @@ import type { GeneratedDesignImage } from "../aiDesignInterface";
 
 interface AIGeneratedImageResultProps {
   image: GeneratedDesignImage;
-
 }
 
 export default function AIGeneratedImageResult({ image, }: AIGeneratedImageResultProps) {
@@ -19,13 +18,13 @@ export default function AIGeneratedImageResult({ image, }: AIGeneratedImageResul
       <img
         src={image.dataUrl}
         alt="AI generated interior design"
-        className="w-full rounded-lg border border-gray-200"
+        className="w-full rounded-lg border border-surface-border"
       />
 
       <button
         type="button"
         onClick={handleDownload}
-        className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 py-2 text-sm font-medium transition hover:bg-gray-50"
+        className="flex w-full items-center justify-center gap-2 rounded-lg bg-surface border border-surface-border text-text-muted hover:bg-surface-hover hover:border-surface-border-strong hover:text-text-primary py-2 text-sm font-medium transition-colors"
       >
         <Download size={16} />
         Download

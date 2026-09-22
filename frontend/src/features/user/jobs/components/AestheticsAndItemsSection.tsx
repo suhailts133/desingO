@@ -3,6 +3,9 @@ import { Layers, } from "lucide-react";
 import { ReactSelectField } from "../../../../shared/form/ReactSelectField";
 import { STYLE_OPTIONS } from "../../../designer/designs/designData";
 import type { IJobRequest } from "../jobInterface";
+import { selectStyles } from "../../../../shared/filter/selectStyle";
+import type { StylesConfig } from "react-select";
+import type { OptionType } from "../../../common/baseData";
 
 const MATERIAL_OPTIONS = [
   { value: "Teak Wood", label: "Teak Wood" },
@@ -22,8 +25,8 @@ export default function AestheticsAndItemsSection() {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-Jost-Semibold text-soft-black flex items-center gap-2">
-        <Layers className="w-5 h-5 text-blush-deep" /> 5. Aesthetics & Existing Heirlooms
+      <h3 className="text-lg font-Jost-Semibold text-text-primary flex items-center gap-2">
+        <Layers className="w-5 h-5 text-text-faint" /> 5. Aesthetics & Existing Heirlooms
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -34,6 +37,7 @@ export default function AestheticsAndItemsSection() {
           control={control}
           options={STYLE_OPTIONS}
           error={errors.designStyles?.message}
+          styles={selectStyles as StylesConfig<OptionType, true>}
         />
 
         <ReactSelectField
@@ -42,6 +46,7 @@ export default function AestheticsAndItemsSection() {
           isMulti={true}
           control={control}
           options={MATERIAL_OPTIONS}
+          styles={selectStyles as StylesConfig<OptionType, true>}
         />
       </div>
 

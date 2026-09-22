@@ -19,7 +19,7 @@ export default function MapLocationButton({ onResolved }: MapLocationButtonProps
             <button
                 type="button"
                 onClick={() => setShowMap(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-blush text-sm font-Jost-Semibold text-soft-black"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border bg-surface border-surface-border hover:border-surface-border-strong text-sm font-Jost-Semibold text-text-muted"
             >
                 <MapPin className="w-4 h-4" />
                 Pick Location on Map

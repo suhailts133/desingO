@@ -28,7 +28,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="fixed inset-0 flex bg-seashell-tint overflow-hidden">
+    <div className="fixed inset-0 flex bg-bg overflow-hidden">
       <AdminSidebar name={name} email={email} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
