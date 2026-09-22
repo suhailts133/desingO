@@ -11,7 +11,7 @@ interface TableRowProps<T> {
 
 const DEFAULT_CELL_CLASS = "text-text-primary text-sm";
 
-export default function TableRow<T>({ row, columns, cellRenderers, isLast, isEven }: TableRowProps<T>) {
+export default function TableRow<T>({ row, columns, cellRenderers }: TableRowProps<T>) {
   return (
     <tr
       className="bg-bg-raised transition-colors duration-150 hover:bg-surface-hover"
