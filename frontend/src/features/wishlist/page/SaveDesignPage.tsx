@@ -23,7 +23,7 @@ export default function SaveDesignPage() {
 
   return (
     <div className="w-full flex flex-col gap-6">
-      <button onClick={() => navigate(-1)} className="flex items-center mb-4 text-sm text-soft-black hover:underline">
+      <button onClick={() => navigate(-1)} className="flex items-center mb-4 text-sm text-accent hover:underline">
         <ChevronLeft className="w-4 h-4" />
         Back
       </button>
@@ -41,14 +41,17 @@ export default function SaveDesignPage() {
         </div>
       </div>
 
-      <Pagination
-        page={page}
-        totalItem={data?.total ?? 0}
-        whichItem="designs"
-        totalPages={data?.totalPages ?? 1}
-        onDecrease={() => setPage(p => p - 1)}
-        onIncrease={() => setPage(p => p + 1)}
-      />
+      <div className="sticky bottom-0 mt-auto pt-4 bg-bg">
+        <Pagination
+          page={page}
+          totalItem={data?.total ?? 0}
+          whichItem="designs"
+          totalPages={data?.totalPages ?? 1}
+          onDecrease={() => setPage(p => p - 1)}
+          onIncrease={() => setPage(p => p + 1)}
+        />
+      </div>
+
     </div>
   );
 }
