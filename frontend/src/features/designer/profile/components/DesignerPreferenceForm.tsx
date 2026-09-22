@@ -7,6 +7,7 @@ import { PROPERTY_OPTIONS, STYLE_OPTIONS } from "../../designs/designData";
 import { toOptions } from "../../../../helpers/optionHelper";
 import type { StylesConfig } from "react-select";
 import { selectStyles } from "../../../../shared/filter/selectStyle";
+import type { OptionType } from "../../../common/baseData";
 
 interface Props {
     isOpen: boolean;
@@ -52,7 +53,7 @@ export default function DesignerPreferenceForm({ data, isOpen, onClose, isLoadin
                         placeholder="Select property type (Apartment, Villa, Cafe...)"
                         options={PROPERTY_OPTIONS}
                         error={errors.propertyType?.message}
-                        styles={selectStyles as StylesConfig<any, true>}
+                        styles={selectStyles as StylesConfig<OptionType, true>}
                     />
 
                     <ReactSelectField
@@ -62,7 +63,7 @@ export default function DesignerPreferenceForm({ data, isOpen, onClose, isLoadin
                         control={control}
                         options={STYLE_OPTIONS}
                         error={errors.designStyle?.message}
-                        styles={selectStyles as StylesConfig<any, true>}
+                        styles={selectStyles as StylesConfig<OptionType, true>}
                     />
 
                     <div className="flex gap-3 mt-2">

@@ -16,6 +16,7 @@ import { useEditDesign } from "../hooks/useEditDesign";
 import type { CoverState, DesignDetailResponseDTO, EditDesignFields, GalleryItem, SelectOption } from "../designInterface";
 import toast from "react-hot-toast";
 import { selectStyles } from "../../../../shared/filter/selectStyle";
+import type { OptionType } from "../../../common/baseData";
 
 const animatedComponents = makeAnimated();
 
@@ -208,14 +209,14 @@ function EditDesignFormInner({ id, defaultData }: { id: string; defaultData: Des
             <div>
               <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Styles</label>
               <Controller name="designStyles" control={control} render={({ field }) => (
-                <Select {...field} isMulti options={STYLE_OPTIONS} components={animatedComponents} styles={selectStyles as StylesConfig<any, true>} />
+                <Select {...field} isMulti options={STYLE_OPTIONS} components={animatedComponents} styles={selectStyles as StylesConfig<OptionType, true>} />
               )} />
               {errors.designStyles && <p className="text-xs text-error mt-1">{errors.designStyles.message}</p>}
             </div>
             <div>
               <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Services</label>
               <Controller name="services" control={control} render={({ field }) => (
-                <Select {...field} isMulti options={SERVICE_OPTIONS} components={animatedComponents} styles={selectStyles as StylesConfig<any, true>} />
+                <Select {...field} isMulti options={SERVICE_OPTIONS} components={animatedComponents} styles={selectStyles as StylesConfig<OptionType, true>} />
               )} />
               {errors.services && <p className="text-xs text-error mt-1">{errors.services.message}</p>}
             </div>
@@ -226,14 +227,14 @@ function EditDesignFormInner({ id, defaultData }: { id: string; defaultData: Des
             <div>
               <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Space</label>
               <Controller name="spaceType" control={control} render={({ field }) => (
-                <Select {...field} isMulti={false} options={SPACE_OPTIONS} components={animatedComponents} styles={selectStyles as StylesConfig<any, false>} />
+                <Select {...field} isMulti={false} options={SPACE_OPTIONS} components={animatedComponents} styles={selectStyles as StylesConfig<OptionType, false>} />
               )} />
               {errors.spaceType && <p className="text-xs text-error mt-1">{errors.spaceType.message}</p>}
             </div>
             <div>
               <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">Property</label>
               <Controller name="propertyType" control={control} render={({ field }) => (
-                <Select {...field} isMulti={false} options={PROPERTY_OPTIONS} components={animatedComponents} styles={selectStyles as StylesConfig<any, false>} />
+                <Select {...field} isMulti={false} options={PROPERTY_OPTIONS} components={animatedComponents} styles={selectStyles as StylesConfig<OptionType, false>} />
               )} />
               {errors.propertyType && <p className="text-xs text-error mt-1">{errors.propertyType.message}</p>}
             </div>

@@ -14,6 +14,7 @@ import { useAddDesign } from "../hooks/useAddDesign";
 import { UNIT_OPTIONS } from "../../../user/jobs/jobData";
 import SubmitButton from "../../../../shared/common/SubmitButton";
 import { selectStyles } from "../../../../shared/filter/selectStyle";
+import type { OptionType } from "../../../common/baseData";
 
 const animatedComponents = makeAnimated();
 
@@ -136,7 +137,7 @@ export default function DesignForm() {
                                         isMulti
                                         options={STYLE_OPTIONS}
                                         components={animatedComponents}
-                                        styles={selectStyles as StylesConfig<any, true>}
+                                        styles={selectStyles as StylesConfig<OptionType, true>}
                                     />
                                 )}
                             />
@@ -153,7 +154,7 @@ export default function DesignForm() {
                                         isMulti
                                         options={SERVICE_OPTIONS}
                                         components={animatedComponents}
-                                        styles={selectStyles as StylesConfig<any, true>}
+                                        styles={selectStyles as StylesConfig<OptionType, true>}
                                     />
                                 )}
                             />
@@ -174,7 +175,7 @@ export default function DesignForm() {
                                         isMulti={false}
                                         options={SPACE_OPTIONS}
                                         components={animatedComponents}
-                                        styles={selectStyles as StylesConfig<any, false>}
+                                        styles={selectStyles as StylesConfig<OptionType, false>}
                                     />
                                 )}
                             />
@@ -191,7 +192,7 @@ export default function DesignForm() {
                                         isMulti={false}
                                         options={PROPERTY_OPTIONS}
                                         components={animatedComponents}
-                                        styles={selectStyles as StylesConfig<any, false>}
+                                        styles={selectStyles as StylesConfig<OptionType, false>}
                                     />
                                 )}
                             />
@@ -236,7 +237,7 @@ export default function DesignForm() {
                                         isMulti={false}
                                         options={UNIT_OPTIONS}
                                         components={animatedComponents}
-                                        styles={selectStyles as StylesConfig<any, false>}
+                                        styles={selectStyles as StylesConfig<OptionType, false>}
                                     />
                                 )}
                             />
