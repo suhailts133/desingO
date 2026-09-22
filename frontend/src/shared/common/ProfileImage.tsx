@@ -8,7 +8,7 @@ interface Props {
     onChangeImage?: () => void;
 }
 
-export default function ProfileImage({ isGoogle, profileImage, profile_image_url, onChangeImage,newProfileImage }: Props) {
+export default function ProfileImage({ isGoogle, profileImage, profile_image_url, onChangeImage, newProfileImage }: Props) {
     const src = newProfileImage ?? (isGoogle ? profile_image_url : profileImage ?? undefined);
 
     return (
@@ -19,18 +19,18 @@ export default function ProfileImage({ isGoogle, profileImage, profile_image_url
                     alt="Profile"
                     referrerPolicy="no-referrer"
                     crossOrigin="anonymous"
-                    className="w-20 h-20 rounded-full object-cover border border-gray-200"
+                    className="w-20 h-20 rounded-full object-cover border border-surface-border"
                 />
             ) : (
-                <div className="w-20 h-20 rounded-full bg-gray-100 border-2 border-gray-200 flex items-center justify-center">
-                    <User className="w-10 h-10 text-gray-400" />
+                <div className="w-20 h-20 rounded-full bg-surface-hover border-2 border-surface-border flex items-center justify-center">
+                    <User className="w-10 h-10 text-text-faint" />
                 </div>
             )}
 
             {!isGoogle && (
                 <button
                     onClick={onChangeImage}
-                    className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-white border border-gray-300 flex items-center justify-center shadow-sm hover:bg-gray-50 transition-colors hover:cursor-pointer"
+                    className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-surface border border-surface-border flex items-center justify-center text-text-faint hover:bg-surface-hover hover:border-accent hover:text-accent transition-colors hover:cursor-pointer"
                     aria-label="Change profile image"
                 >
                     <svg width="12" height="12" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -43,9 +43,6 @@ export default function ProfileImage({ isGoogle, profileImage, profile_image_url
                     </svg>
                 </button>
             )}
-
-
-
         </div>
     );
 }
