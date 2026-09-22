@@ -11,27 +11,27 @@ export default function ReviewCard({ review }: { review: ReviewsLIST }) {
   })
 
   return (
-    <div className="flex gap-3 p-4 rounded-xl border border-soft-black/10 bg-white">
+    <div className="flex gap-3 p-4 rounded-xl border border-surface-border bg-surface">
       {/* Avatar */}
-      <div className="w-9 h-9 min-w-9 rounded-full bg-blush-deep/10 flex items-center justify-center overflow-hidden">
+      <div className="w-9 h-9 rounded-full bg-surface-hover border-2 border-surface-border flex items-center justify-center overflow-hidden shrink-0">
         {profileImage ? (
           <img
             src={profileImage}
             alt={userName}
-            className="w-full h-full rounded-full object-cover"
+            className="w-full h-full object-cover"
           />
         ) : (
-          <User className="w-5 h-5 text-blush-deep" />
+          <User className="w-5 h-5 text-text-faint" />
         )}
       </div>
 
       {/* Content */}
       <div className="flex flex-col gap-1 flex-1">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold font-Jost text-soft-black">
+          <span className="text-sm font-semibold font-Jost text-text-primary">
             {userName}
           </span>
-          <span className="text-xs text-soft-black/40 font-Jost">{formatted}</span>
+          <span className="text-xs text-text-faint font-Jost">{formatted}</span>
         </div>
 
         {/* Stars */}
@@ -39,16 +39,15 @@ export default function ReviewCard({ review }: { review: ReviewsLIST }) {
           {Array.from({ length: 5 }).map((_, i) => (
             <Star
               key={i}
-              className={`w-3 h-3 ${
-                i < rating
-                  ? "fill-blush-deep text-blush-deep"
-                  : "fill-soft-black/10 text-soft-black/10"
-              }`}
+              className={`w-3 h-3 ${i < rating
+                  ? "fill-accent text-accent"
+                  : "fill-surface-border text-surface-border"
+                }`}
             />
           ))}
         </div>
 
-        <p className="text-sm text-soft-black/70 font-Jost leading-relaxed">
+        <p className="text-sm text-text-muted font-Jost leading-relaxed mt-0.5">
           {comment}
         </p>
       </div>
