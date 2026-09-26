@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
+import "dotenv/config";
 import connectDB from "./config/mongodb";
 import connectRedis from "./config/redis";
 
@@ -35,7 +35,7 @@ import reviewRoutes from "./routes/proposal/reviewRoutes"
 
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 // import passport from "passport";
-dotenv.config();
+// dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000
 app.use(cors({
