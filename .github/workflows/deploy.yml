@@ -17,20 +17,18 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 1. Ensure Node & PM2 are found in PATH
+            set -e
+
             export PATH=$PATH:/usr/bin:/usr/local/bin:$HOME/.nvm/versions/node/$(ls $HOME/.nvm/versions/node 2>/dev/null | tail -n 1)/bin
 
-            # 2. Enter project folder
-            cd /home/ubuntu/backend
-
-            # 3. Pull latest code
+            cd /home/ubuntu/designo
             git fetch origin main
             git reset --hard origin/main
 
-            # 4. Install dependencies and compile TypeScript
+
+            cd /home/ubuntu/designo/backend
             npm install
             npm run build
 
-            # 5. Restart PM2 with zero downtime
             pm2 reload designo-backend || pm2 start dist/server.js --name "designo-backend"
             pm2 save
