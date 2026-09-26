@@ -37,7 +37,6 @@ import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 import { allowedOrigins } from "./config/cors";
 const app = express();
 const PORT = process.env.PORT || 3000;
-console.log("testin cicd")
 app.use(
   cors({
     origin: (origin, callback) => {
