@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import Cropper from "react-easy-crop";
-import type { CroppedAreaPixels } from "../helpers/cropImageHelper";
+import type { CroppedAreaPixels } from "../../helpers/cropImageHelper";
+
 
 type Props = {
   src: string;
