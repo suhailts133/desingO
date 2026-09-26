@@ -11,30 +11,32 @@ import { NotificationService } from "../services/common/notificationService";
 import { NotificationRepository } from "../repositories/socket/notificationRepository";
 import { registerNotificationHandlers } from "./notificationHandler";
 import { setIO } from "./ioInstance";
+import { allowedOrigins } from "../config/cors"; 
 
 export function initSocket(httpServer: HttpServer) {
-    const io = new SocketServer(httpServer, {
-        cors: {
-            origin: "*",
-            methods: ["GET", "POST"],
-            credentials: true,
-        }
-    })
-    setIO(io)
+  const io = new SocketServer(httpServer, {
+    cors: {
+      origin: allowedOrigins,
+      methods: ["GET", "POST"],
+      credentials: true,
+    },
+    transports: ["websocket", "polling"],
+  });
+  setIO(io);
 
-    const msgRepo = new MessageRepository()
-    const activeJobRepo = new ActiveJobRepository()
-    const activeJobService = new ActiveJobService(activeJobRepo)
-    const chatService = new ChatService(msgRepo, activeJobService)
-    const notificationRepo = new NotificationRepository()
-    const notificationService = new NotificationService(notificationRepo)
-    io.use(socketAuthenticate)
-    io.on("connection", (socket: AuthSocket) => {
-        const userId = socket.user?.userId as string
-        socket.join(`user:${userId}`);
+  const msgRepo = new MessageRepository();
+  const activeJobRepo = new ActiveJobRepository();
+  const activeJobService = new ActiveJobService(activeJobRepo);
+  const chatService = new ChatService(msgRepo, activeJobService);
+  const notificationRepo = new NotificationRepository();
+  const notificationService = new NotificationService(notificationRepo);
 
-        registerChatHandlers(io, socket, chatService, notificationService)
-        registerNotificationHandlers(socket, notificationService)
+  io.use(socketAuthenticate);
+  io.on("connection", (socket: AuthSocket) => {
+    const userId = socket.user?.userId as string;
+    socket.join(`user:${userId}`);
 
-    })
+    registerChatHandlers(io, socket, chatService, notificationService);
+    registerNotificationHandlers(socket, notificationService);
+  });
 }
