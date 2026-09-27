@@ -51,43 +51,45 @@
 }
 @theme {
   /* ---- 60% — dominant background ---- */
-  --color-bg: #0D0D0D;             /* page background */
-  --color-bg-raised: #1C1C1C;      /* navbar / footer, one step above page bg */
+  --color-bg: #0A0A0C;              /* near-black, cool tint */
+  --color-bg-raised: #131316;       /* navbar / footer, one step up */
 
-  /* ---- 30% — surfaces (cards, panels) ---- */
-  --color-surface: #191919;
-  --color-surface-hover: #212121;
-  --color-surface-border: #2C2C2C;
-  --color-surface-border-strong: #3D3D3D;
+  /* ---- 30% — surfaces ---- */
+  --color-surface: #17171B;
+  --color-surface-hover: #1F1F24;
+  --color-surface-border: #27272E;
+  --color-surface-border-strong: #38383F;
 
   /* ---- 10% — accent ---- */
-  --color-accent: #8F90D0;
-  --color-accent-hover: #A3A4DA;
-  --color-accent-active: #B7B8E4;
-  --color-accent-tint: #23233E;        /* dark tinted bg for badges */
-  --color-accent-tint-text: #C7C8EC;   /* text/icons on accent-tint */
+  --color-accent: #4ADE80;              /* electric green — the Supabase/Linear-adjacent move */
+  --color-accent-hover: #6EE7A0;
+  --color-accent-active: #92F0BF;
+  --color-accent-tint: #10261B;
+  --color-accent-tint-text: #A7F3C6;
 
   /* ---- Text ---- */
-  --color-text-primary: #F0F0F0;   /* headings, titles, main copy */
-  --color-text-muted: #A8A8A8;     /* descriptions, secondary info */
-  --color-text-faint: #757575;     /* labels, meta icons, placeholders */
-  --color-text-on-accent: #16172E; /* text/icons sitting on solid accent */
+  --color-text-primary: #F4F4F5;    /* off-white, not pure white */
+  --color-text-muted: #A1A1AA;
+  --color-text-faint: #6B6B72;
+  --color-text-on-accent: #06210F;
 
   /* ---- Semantic: success ---- */
-  --color-success: #57B98C;
-  --color-success-tint: #17251D;
-  --color-success-text: #9FDDB8;
+  --color-success: #4ADE80;
+  --color-success-tint: #10261B;
+  --color-success-text: #A7F3C6;
 
   /* ---- Semantic: error ---- */
-  --color-error: #DE6B66;
-  --color-error-tint: #301818;
-  --color-error-text: #F0ACA8;
+  --color-error: #F87171;
+  --color-error-tint: #2A1515;
+  --color-error-text: #FCA5A5;
 
   /* ---- Semantic: warning ---- */
-  --color-warning: #DBA94D;
-  --color-warning-tint: #2E2413;
-  --color-warning-text: #EECB86;
+  --color-warning: #FBBF24;
+  --color-warning-tint: #2A2010;
+  --color-warning-text: #FDE68A;
 }
+
+
 @theme {
     --font-Dynalight-Regular: "Dynalight";
     --font-Jost-Semibold: "jostSemiBold";
