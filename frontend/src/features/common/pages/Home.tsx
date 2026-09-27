@@ -3,6 +3,9 @@ import { useRecommendDesignsQuery, useRecommendJobsQuery } from "../commonEndpoi
 import DesignCard from "../components/cards/DesignCard";
 import DesignCardSkeleton from "../skeltons/DesignCardSkeleton";
 import JobCard from "../components/cards/JobCard";
+import HomeHero from "../components/HomeHero"; // adjust path to wherever you save it
+import HowItWorks from "../components/HowItWorks";
+import FeatureStrip from "../components/FeatureStrip";
 
 export default function Home() {
   const { role } = useDecodeAccessToken();
@@ -10,11 +13,11 @@ export default function Home() {
   const isCustomer = role === "Customer";
   const isDesigner = role === "Designer";
 
+  const { data: designData, isLoading: isDesignLoading, error: designError } =
+    useRecommendDesignsQuery(undefined, { skip: !isCustomer });
 
-  const { data: designData, isLoading: isDesignLoading, error: designError, } = useRecommendDesignsQuery(undefined, { skip: !isCustomer });
-
-  const { data: jobData, isLoading: isJobLoading, error: jobError, } = useRecommendJobsQuery(undefined, { skip: !isDesigner });
-
+  const { data: jobData, isLoading: isJobLoading, error: jobError } =
+    useRecommendJobsQuery(undefined, { skip: !isDesigner });
 
   const data = isCustomer ? designData : isDesigner ? jobData : null;
   const isLoading = isCustomer ? isDesignLoading : isDesigner ? isJobLoading : false;
@@ -24,18 +27,18 @@ export default function Home() {
     return <div>Error loading data...</div>;
   }
 
-
   if (!isCustomer && !isDesigner) {
     return (
-      <div className="m-6 max-w-7xl mx-auto px-6 py-8 text-center text-gray-500">
-        Welcome to the platform.
-      </div>
+      <>
+        <HomeHero />
+        <HowItWorks />
+        <FeatureStrip />
+      </>
     );
   }
 
-
-  const dataType = data?.DataType; 
-  const recommendType = data?.type; 
+  const dataType = data?.DataType;
+  const recommendType = data?.type;
 
   let title = "";
   if (recommendType === "RECOMENDED") {
@@ -47,8 +50,6 @@ export default function Home() {
   return (
     <div className="m-6">
       <div className="max-w-7xl mx-auto px-6 py-8">
-
-    
         {title && (
           <h2 className="text-2xl font-Jost-Semibold mb-6 text-text-primary">
             {title}
@@ -57,16 +58,12 @@ export default function Home() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {isLoading ? (
-            Array.from({ length: 8 }).map((_, i) => (
-              <DesignCardSkeleton key={i} />
-            ))
+            Array.from({ length: 8 }).map((_, i) => <DesignCardSkeleton key={i} />)
           ) : (
-           
             <>
               {isCustomer && designData?.data?.map((item) => (
                 <DesignCard design={item} key={item.id} />
               ))}
-
               {isDesigner && jobData?.data?.map((item) => (
                 <JobCard job={item} key={item.id} />
               ))}
