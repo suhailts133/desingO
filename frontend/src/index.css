@@ -49,6 +49,7 @@
     --color-off-white: #FAF9F6
         /* warm snow */
 }
+
 @theme {
   /* ---- 60% — dominant background ---- */
   --color-bg: #0A0A0C;              /* near-black, cool tint */

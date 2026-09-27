@@ -12,6 +12,9 @@ export const API_ROUTES = {
         GOOGLE_LOGIN: "/auth/google",
         REFRESH_TOKEN: "/auth/refresh"
     },
+    TRANSACTION:{
+        HISTORY:"/transaction/transaction-history"
+    },
     RECOMENDATION: {
         DESIGN: "/recomendation/designs",
         JOBS: "/recomendation/jobs",

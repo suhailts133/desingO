@@ -13,6 +13,30 @@ export class TranscationRepository extends BaseRepository<ITransaction> implemen
         super(TransactionModel)
     }
 
+
+    async getTransactionHistory(userId: string, pageNo?: string): Promise<{ data: TransactionPopulated[]; pagination: Pagination; }> {
+        const page = pageNo ? Number(pageNo):1;
+        const limit = 10
+        const skip = (page -1) * limit
+         const query: QueryFilter<ITransaction> = {destinationUserId:userId}
+        const [result, total] = await Promise.all([
+            this._model.find(query)
+                .sort({ createdAt: -1 })
+                .populate<{ destinationUserId: IUser }>("destinationUserId")
+                .populate<{ sourceUserId: IUser }>("sourceUserId")
+                .skip(skip)
+                .limit(limit)
+                .exec(),
+            this._model.countDocuments(query)
+        ])
+        const pagination:Pagination = {
+            total,
+            totalPages:Math.ceil(total/limit)
+        }
+        return {data:result, pagination}
+        
+    }
+
     async getIncomingTransactions(userId: string): Promise<TransactionPopulated[]> {
         return this._model.find({ destinationUserId: userId })
             .sort({ createdAt: -1 })
@@ -51,7 +75,7 @@ export class TranscationRepository extends BaseRepository<ITransaction> implemen
     }
 
     async createTransaction(data: TransactionRepoDTO,session?:ClientSession): Promise<ITransaction> {
-        console.log(session?.id, "create transaction")
+    
         return this.create({
             ...data,
             proposalId: new mongoose.Types.ObjectId(data.proposalId),

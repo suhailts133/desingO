@@ -6,24 +6,28 @@ import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
 import { DASHBOARD_MESSAGES } from "../../shared/messages/dashobardMessages";
 
 export class TransactionService implements ITransactionService {
-    constructor(private _transactionRepo: ITransactionRepository) { }
+  constructor(private _transactionRepo: ITransactionRepository) {}
 
-    async getAllTransaction(filter?: TransactionFilter): Promise<IApiResponseWithPagination<AllTransactionDTO[]>> {
-        const { pagination, data } = await this._transactionRepo.getAllTransaction(filter)
-        const transactionData = TransactionMapper.toTransactionDTOList(data)
-        return { message: ADMIN_MESSAGES.TRANSACTION.FETCH_ALL, data: transactionData, total: pagination.total, totalPages: pagination.totalPages }
-    }
+  async getAllTransaction(filter?: TransactionFilter): Promise<IApiResponseWithPagination<AllTransactionDTO[]>> {
+    const { pagination, data } = await this._transactionRepo.getAllTransaction(filter);
+    const transactionData = TransactionMapper.toTransactionDTOList(data);
+    return { message: ADMIN_MESSAGES.TRANSACTION.FETCH_ALL, data: transactionData, total: pagination.total, totalPages: pagination.totalPages };
+  }
 
+  async generateReport(filters: ReportFilters): Promise<IApiResponse<ReportResponseDto>> {
+    const report = await this._transactionRepo.getTransactionReport(filters);
+    const reportData = TransactionMapper.toAggregationReport(report, filters);
+    return { message: ADMIN_MESSAGES.TRANSACTION.REPORT, data: reportData };
+  }
 
-    async generateReport(filters: ReportFilters): Promise<IApiResponse<ReportResponseDto>> {
-        const report = await this._transactionRepo.getTransactionReport(filters)
-        const reportData = TransactionMapper.toAggregationReport(report, filters)
-        return { message: ADMIN_MESSAGES.TRANSACTION.REPORT, data: reportData }
-    }
-
-    async getMyTransaction(userId: string): Promise<IApiResponse<DashboardTransactionHistory[]>> {
-        const transactions = await this._transactionRepo.getIncomingTransactions(userId)
-        const transactionData = TransactionMapper.toMyTransactionDTOList(transactions)
-        return { data: transactionData, message: DASHBOARD_MESSAGES.TRANSACTION.SUCCESS }
-    }
+  async getMyTransaction(userId: string): Promise<IApiResponse<DashboardTransactionHistory[]>> {
+    const transactions = await this._transactionRepo.getIncomingTransactions(userId);
+    const transactionData = TransactionMapper.toMyTransactionDTOList(transactions);
+    return { data: transactionData, message: DASHBOARD_MESSAGES.TRANSACTION.SUCCESS };
+  }
+  async getTransactionHistory(userId: string, page?: string): Promise<IApiResponseWithPagination<DashboardTransactionHistory[]>> {
+    const { data, pagination } = await this._transactionRepo.getTransactionHistory(userId, page);
+    const transactionData = TransactionMapper.toMyTransactionDTOList(data);
+    return { data: transactionData, message: DASHBOARD_MESSAGES.TRANSACTION.SUCCESS, total: pagination.total, totalPages: pagination.totalPages };
+  }
 }

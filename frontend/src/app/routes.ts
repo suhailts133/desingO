@@ -49,125 +49,110 @@ import DisputeDetailAdmin from "../features/admin/disputes/component/DisputeDeta
 import TransactionTable from "../features/admin/transaction/component/TransactionTable";
 import ChatPage from "../features/proposal/chat/ChatPage";
 import UpdateProposalForm from "../features/proposal/component/UpdateProposalForm";
+import TransactionHistoryPage from "../features/common/transactionHistory/TransactionHistoryPage";
 
 const router = createBrowserRouter([
-    {
-        path: "/",
-        Component: MainLayout,
-        children: [
-            { index: true, Component: Home },
-            { path: "jobs", Component: BrowseJobs },
-            { path: "jobs/:id", Component: JobRequestDetail },
-            { path: "designs/:id", Component: DesignDetail },
-            { path: "designs", Component: BrowseDesigns },
-            { path: "designers", Component: BrowseDesigners },
-            { path: "designers/:id", Component: DesignerDetail },
-            { path: "chat/:id", Component: ChatPage },
-            { path: "proposal/edit/:id", Component: UpdateProposalForm },
-           
+  {
+    path: "/",
+    Component: MainLayout,
+    children: [
+      { index: true, Component: Home },
+      { path: "jobs", Component: BrowseJobs },
+      { path: "jobs/:id", Component: JobRequestDetail },
+      { path: "designs/:id", Component: DesignDetail },
+      { path: "designs", Component: BrowseDesigns },
+      { path: "designers", Component: BrowseDesigners },
+      { path: "designers/:id", Component: DesignerDetail },
+      { path: "chat/:id", Component: ChatPage },
+      { path: "proposal/edit/:id", Component: UpdateProposalForm },
+    ],
+  },
+  {
+    path: "auth",
+    Component: AuthLayout,
+    children: [
+      { path: "signup", Component: SignupForm },
+      { path: "login", Component: LoginFrom },
+      { path: "verify-otp", Component: OtpForm },
+      { path: "forgetpassword", Component: ForgetPassword },
+      { path: "change-password", Component: ChangePassword },
+    ],
+  },
+  {
+    path: "auth",
+    Component: AdminAuthLayout,
+    children: [{ path: "admin-login", Component: AdminLoginForm }],
+  },
+  {
+    path: "designer",
+    Component: DesignerVerificationLayout,
+    children: [{ path: "designer-verification", Component: DesignerVerificationForm }],
+  },
+  {
+    path: "admin",
+    Component: AdminLayout,
+    children: [
+      { path: "dashboard", Component: Dashboard },
+      { path: "users", Component: UsersTable },
+      { path: "disputes", Component: DisputeTable },
+      { path: "transaction", Component: TransactionTable },
+      { path: "disputes/:id", Component: DisputeDetailAdmin },
+      { path: "users/:id", Component: UserDetail },
+      { path: "designer-requests", Component: DesignerVerificationTable },
+      { path: "designer-requests/:id", Component: DesignerVerificationDetails },
+    ],
+  },
+  {
+    path: "designer",
+    Component: DesignerLayout,
+    children: [
+      { path: "dashboard", Component: DesignerDashboard },
+      { path: "transaction", Component: TransactionHistoryPage },
+      { path: "designs", Component: Designs },
+      { path: "hire-requests/:id", Component: HireRequestsPage },
+      { path: "add-design", Component: DesignForm },
+      { path: "job-applications/my", Component: MyJobApplications },
+      { path: "designs/edit/:id", Component: EditDesignForm },
+      { path: "active-jobs", Component: DesignerActiveJobPage },
+      { path: "proposal/create/:id", Component: ProposalForm },
+      { path: "proposal/:id", Component: ProposalPage },
+    ],
+  },
+  {
+    path: "customer",
+    Component: CustomerLayout,
+    children: [
+      { path: "dashboard", Component: CustomerDashboard },
+      { path: "transaction", Component: TransactionHistoryPage },
+      { path: "jobs", Component: Jobs },
+      { path: "my-hire", Component: MyHireRequestPage },
+      { path: "add-job", Component: JobRequestForm },
+      { path: "jobs/edit/:id", Component: EditJobRequestForm },
+      { path: "job-applications/:id", Component: JobApplications },
+      { path: "active-jobs", Component: CustomerActiveJobPage },
+      { path: "proposal/:id", Component: ProposalPage },
+    ],
+  },
+  {
+    path: "profile",
+    Component: DesignerLayout,
+    children: [{ path: "designer", Component: DesignerProfilePage }],
+  },
+  {
+    path: "profile",
+    Component: CustomerLayout,
+    children: [{ path: "customer", Component: CustomerProfilePage }],
+  },
+  {
+    path: "customer/saved-design",
+    Component: CustomerLayout,
+    children: [{ path: "my", Component: SaveDesignPage }],
+  },
+  {
+    path: "designer/saved-design",
+    Component: DesignerLayout,
+    children: [{ path: "my", Component: SaveDesignPage }],
+  },
+]);
 
-        ]
-    },
-    {
-        path: "auth",
-        Component: AuthLayout,
-        children: [
-            { path: "signup", Component: SignupForm },
-            { path: "login", Component: LoginFrom },
-            { path: "verify-otp", Component: OtpForm },
-            { path: "forgetpassword", Component: ForgetPassword },
-            { path: "change-password", Component: ChangePassword },
-        ]
-    },
-    {
-        path: "auth",
-        Component: AdminAuthLayout,
-        children: [
-            { path: "admin-login", Component: AdminLoginForm }
-
-        ]
-    },
-    {
-        path: "designer",
-        Component: DesignerVerificationLayout,
-        children: [
-            { path: "designer-verification", Component: DesignerVerificationForm }
-        ]
-    },
-    {
-        path: "admin",
-        Component: AdminLayout,
-        children: [
-            { path: "dashboard", Component: Dashboard },
-            { path: "users", Component: UsersTable },
-            { path: "disputes", Component: DisputeTable },
-            { path: "transaction", Component: TransactionTable },
-            { path: "disputes/:id", Component: DisputeDetailAdmin },
-            { path: "users/:id", Component: UserDetail },
-            { path: "designer-requests", Component: DesignerVerificationTable },
-            { path: "designer-requests/:id", Component: DesignerVerificationDetails }
-
-        ]
-    },
-    {
-        path: "designer",
-        Component: DesignerLayout,
-        children: [
-            { path: "dashboard", Component: DesignerDashboard },
-            { path: "designs", Component: Designs },
-            { path: "hire-requests/:id", Component: HireRequestsPage },
-            { path: "add-design", Component: DesignForm },
-            { path: "job-applications/my", Component: MyJobApplications },
-            { path: "designs/edit/:id", Component: EditDesignForm },
-            { path: "active-jobs", Component: DesignerActiveJobPage },
-            { path: "proposal/create/:id", Component: ProposalForm },
-            { path: "proposal/:id", Component: ProposalPage }
-
-        ]
-    },
-    {
-        path: "customer",
-        Component: CustomerLayout,
-        children: [
-            { path: "dashboard", Component: CustomerDashboard },
-            { path: "jobs", Component: Jobs },
-            { path: "my-hire", Component: MyHireRequestPage },
-            { path: "add-job", Component: JobRequestForm },
-            { path: "jobs/edit/:id", Component: EditJobRequestForm },
-            { path: "job-applications/:id", Component: JobApplications },
-            { path: "active-jobs", Component: CustomerActiveJobPage },
-            { path: "proposal/:id", Component: ProposalPage }
-        ]
-    },
-    {
-        path: "profile",
-        Component: DesignerLayout,
-        children: [
-            { path: "designer", Component: DesignerProfilePage }
-        ]
-    },
-    {
-        path: "profile",
-        Component: CustomerLayout,
-        children: [
-            { path: "customer", Component: CustomerProfilePage }
-        ]
-    },
-    {
-        path: "customer/saved-design",
-        Component: CustomerLayout,
-        children: [
-            { path: "my", Component: SaveDesignPage }
-        ]
-    },
-    {
-        path: "designer/saved-design",
-        Component: DesignerLayout,
-        children: [
-            { path: "my", Component: SaveDesignPage }
-        ]
-    },
-
-])
-
-export default router
+export default router;
