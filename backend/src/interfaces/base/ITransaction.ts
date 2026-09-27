@@ -6,30 +6,31 @@ import type { ClientSession } from "mongoose";
 
 export type TransactionType = "Payment" | "Commission" | "Payout" | "Refund";
 
-
 export interface ITransaction {
-    id: string;
-    TransactionId: string;
-    amount: number;
-    type: TransactionType;
-    sourceUserId: mongoose.Types.ObjectId;
-    destinationUserId: mongoose.Types.ObjectId;
-    proposalId?: mongoose.Types.ObjectId;
-    disputeId?: mongoose.Types.ObjectId;
-    createdAt: Date;
-    updatedAt: Date;
+  id: string;
+  TransactionId: string;
+  amount: number;
+  type: TransactionType;
+  sourceUserId: mongoose.Types.ObjectId;
+  destinationUserId: mongoose.Types.ObjectId;
+  proposalId?: mongoose.Types.ObjectId;
+  disputeId?: mongoose.Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ITransactionRepository {
-    getIncomingTransactions(userId: string): Promise<TransactionPopulated[]>
-    createTransaction(data: TransactionRepoDTO,session?:ClientSession): Promise<ITransaction>
-    getAllTransaction(filter?: TransactionFilter): Promise<{ data: TransactionPopulated[]; pagination: Pagination; }>
-    getTransactionReport(filters: ReportFilters): Promise<AggregatedBucketRaw[]>
-    getCommisionTransactions(): Promise<ITransaction[]>
+  getIncomingTransactions(userId: string): Promise<TransactionPopulated[]>;
+  createTransaction(data: TransactionRepoDTO, session?: ClientSession): Promise<ITransaction>;
+  getAllTransaction(filter?: TransactionFilter): Promise<{ data: TransactionPopulated[]; pagination: Pagination }>;
+  getTransactionReport(filters: ReportFilters): Promise<AggregatedBucketRaw[]>;
+  getCommisionTransactions(): Promise<ITransaction[]>;
+  getTransactionHistory(userId: string, pageNo?: string): Promise<{ data: TransactionPopulated[]; pagination: Pagination }>;
 }
 
 export interface ITransactionService {
-    getAllTransaction(filter?: TransactionFilter): Promise<IApiResponseWithPagination<AllTransactionDTO[]>>
-    generateReport(filters: ReportFilters): Promise<IApiResponse<ReportResponseDto>>
-    getMyTransaction(userId:string):Promise<IApiResponse<DashboardTransactionHistory[]>>
+  getAllTransaction(filter?: TransactionFilter): Promise<IApiResponseWithPagination<AllTransactionDTO[]>>;
+  getTransactionHistory(userId: string, page?: string): Promise<IApiResponseWithPagination<DashboardTransactionHistory[]>>;
+  generateReport(filters: ReportFilters): Promise<IApiResponse<ReportResponseDto>>;
+  getMyTransaction(userId: string): Promise<IApiResponse<DashboardTransactionHistory[]>>;
 }
