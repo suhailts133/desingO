@@ -5,7 +5,8 @@ import {
   ScrollText,
   House,
   Heart,
-  BriefcaseBusiness
+  BriefcaseBusiness,
+  ArrowLeftRight
 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import type { AppDispatch } from "../../app/store"
@@ -107,6 +108,11 @@ const DesignerSidebar = memo(({ name, email }: { name: string, email: string }) 
           {active === "savedDesign" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-accent" />}
           <Heart size={18} strokeWidth={active === "savedDesign" ? 2.2 : 1.8} className={iconClass("savedDesign")} />
           {!collapsed && <span className="flex-1">Saved Designs</span>}
+        </Link>
+        <Link to="/designer/transaction" onClick={() => setActive("transaction")} className={linkClass("transaction")}>
+          {active === "transaction" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-accent" />}
+          <ArrowLeftRight  size={18} strokeWidth={active === "transaction" ? 2.2 : 1.8} className={iconClass("transaction")} />
+          {!collapsed && <span className="flex-1">Transactions</span>}
         </Link>
 
       </nav>

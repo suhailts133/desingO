@@ -1,6 +1,7 @@
 import { API_ROUTES } from "../../api/apiRoutes";
 import { baseApi } from "../../api/baseApi";
 import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../../api/responseType";
+import type { DashboardTransactionHistory } from "../designer/dashboard/dashboardInterface";
 import type { GetAllDesignCommonResponseDTO } from "../designer/designs/designInterface";
 import type { JobsCommonResponseDTO } from "../user/jobs/jobInterface";
 import type { DesignerCardDTO, DesignerFilter, DesignGallaryDTO, ISavedDesignDTO } from "./commonInterface";
@@ -54,6 +55,16 @@ export const commonApis = baseApi.injectEndpoints({
                 method:"GET"
             })
         }),
+        getTransactionHistory:builder.query<IApiResponseWithPagination<DashboardTransactionHistory[]>,string>({
+            query:(page) => ({
+                url:API_ROUTES.TRANSACTION.HISTORY,
+                method:"GET",
+                params:{
+                    page
+                }
+                
+            })
+        }),
     })
 })
 
@@ -64,5 +75,6 @@ export const {
     useGetDesignGallaryQuery,
     useSaveDesignMutation,
     useRecommendDesignsQuery,
-    useRecommendJobsQuery
+    useRecommendJobsQuery,
+    useGetTransactionHistoryQuery
 } = commonApis
