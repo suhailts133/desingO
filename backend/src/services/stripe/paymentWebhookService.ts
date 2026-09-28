@@ -10,6 +10,7 @@ export class PaymentWebhookService implements IPaymentWebhookService {
   ) {}
 
   async handleWebhook(rawBody: Buffer, signature: string) {
+    console.log(rawBody)
     const webhookSrc = process.env.NODE_ENV === "production" ? process.env.STRIPE_WEBHOOK_SECRET_PROD : process.env.STRIPE_WEBHOOK_SECRET_DEV;
     if (!webhookSrc) {
       Logger.error("Stripe webhook secret is not defined in environment variables");
