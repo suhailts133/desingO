@@ -79,7 +79,7 @@ export class PaymentService implements IPaymentService {
       return { message: PROPOSAL_MESSAGES.PAYMENT.ALREADY_SUCCESS };
     }
     const intent = await this._paymentGateway.getPaymentIntent(paymentIntent);
-    Logger.info(`${intent}`)
+    Logger.info(`${JSON.stringify(intent)}`)
     if (intent.status === Payment_Status.SUCCEEDED) {
       await this.markPaymentSucceeded(intent.paymentIntentId, intent.jobId, Number(intent.serviceOrder));
     }
