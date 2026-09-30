@@ -85,11 +85,11 @@ export class PaymentService implements IPaymentService {
   }
 
   async markPaymentSucceeded(paymentIntentId: string, sourceId: string, order: number): Promise<void> {
-    Logger.info(`handle markpaymentsucceeded - service order number ${order}`)
+    Logger.error(`handle markpaymentsucceeded - service order number ${order}`)
     const payment = await this._paymentRepo.findByIntentId(paymentIntentId);
 
     if (payment && payment.status === Payment_Status.SUCCEEDED) {
-      Logger.info(`Payment ${paymentIntentId} already marked as SUCCEEDED. Skipping.`);
+      Logger.error(`Payment ${paymentIntentId} already marked as SUCCEEDED. Skipping.`);
       return;
     }
     await this._tranasctionManager.runInTransaction(async (session) => {
@@ -105,7 +105,7 @@ export class PaymentService implements IPaymentService {
       }
       const service = proposal.services.find((e) => e.order === order);
       if (!service) {
-        Logger.error(`Service not found`);
+        Logger.error(`eth thanna alle Service not found`);
         return;
       }
       const serviceProportion = service.price / proposal.totalDrawingFee;
