@@ -10,9 +10,9 @@ export class PaymentWebhookService implements IPaymentWebhookService {
   ) {}
 
   async handleWebhook(rawBody: Buffer, signature: string) {
-    Logger.info("handle web hook hit stripe")
+    Logger.error("handle web hook hit stripe")
     const webhookSrc = process.env.NODE_ENV === "production" ? process.env.STRIPE_WEBHOOK_SECRET_PROD : process.env.STRIPE_WEBHOOK_SECRET_DEV;
-    Logger.info(webhookSrc)
+    Logger.error(webhookSrc)
     if (!webhookSrc) {
       Logger.error("Stripe webhook secret is not defined in environment variables");
       throw new Error("Missing Stripe webhook secret");
@@ -23,7 +23,7 @@ export class PaymentWebhookService implements IPaymentWebhookService {
       case "payment_intent.succeeded": {
         const intent = event.data.object as Stripe.PaymentIntent;
         const { jobId, serviceOrder } = intent.metadata;
-        Logger.info(`${jobId}, "jobid from meta data", ${serviceOrder}, "from meta data"`)
+        Logger.error(`${jobId}, "jobid from meta data", ${serviceOrder}, "from meta data"`)
         try {
           await this._paymentService.markPaymentSucceeded(intent.id, jobId as string, Number(serviceOrder));
         } catch (err) {
