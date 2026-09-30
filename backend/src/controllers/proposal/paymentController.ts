@@ -59,6 +59,7 @@ export class PaymentController {
      */
     getpaymentIntent = asyncHandler(async (req: Request, res: Response) => {
         const { intentId } = req.body
+        Logger.info(intentId , "from getPaymentIntent")
         if (!intentId) {
             throw new AppError(PROPOSAL_MESSAGES.PAYMENT.INTENT_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
