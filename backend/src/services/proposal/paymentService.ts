@@ -85,6 +85,7 @@ export class PaymentService implements IPaymentService {
   }
 
   async markPaymentSucceeded(paymentIntentId: string, sourceId: string, order: number): Promise<void> {
+    Logger.info(`handle markpaymentsucceeded - service order number ${order}`)
     const payment = await this._paymentRepo.findByIntentId(paymentIntentId);
 
     if (payment && payment.status === Payment_Status.SUCCEEDED) {
