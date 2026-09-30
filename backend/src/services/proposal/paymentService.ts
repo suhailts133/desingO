@@ -73,13 +73,15 @@ export class PaymentService implements IPaymentService {
   }
 
   async verifyPaymentIntent(paymentIntent: string): Promise<IApiResponse> {
+    Logger.info(`${paymentIntent} from verify payment intent`)
     const exsistingPayment = await this._paymentRepo.findByIntentId(paymentIntent);
     if (exsistingPayment && exsistingPayment.status === Payment_Status.SUCCEEDED) {
       return { message: PROPOSAL_MESSAGES.PAYMENT.ALREADY_SUCCESS };
     }
     const intent = await this._paymentGateway.getPaymentIntent(paymentIntent);
+    Logger.info(`${intent}`)
     if (intent.status === Payment_Status.SUCCEEDED) {
-      await this.markPaymentSucceeded(intent.paymentIntentId, intent.jobId, intent.serviceOrder);
+      await this.markPaymentSucceeded(intent.paymentIntentId, intent.jobId, Number(intent.serviceOrder));
     }
     return { message: PROPOSAL_MESSAGES.PAYMENT.MARKED_SUCCESS };
   }
