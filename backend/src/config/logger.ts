@@ -14,9 +14,8 @@ const levels: winston.config.AbstractConfigSetLevels = {
 
 const getLevel = (): string => {
   const env = process.env.NODE_ENV || 'development';
-  return env === 'development' ? 'debug' : 'warn';
+  return env === 'development' ? 'debug' : 'info';
 };
-
 
 const colors: winston.config.AbstractConfigSetColors = {
   error: 'red',
