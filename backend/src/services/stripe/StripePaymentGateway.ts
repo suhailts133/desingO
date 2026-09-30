@@ -33,7 +33,7 @@ export class StripePaymentGateway implements IPaymentGateway {
     async getPaymentIntent(intentId: string): Promise<PaymentIntentDTO> {
         const intent = await this._stripe.paymentIntents.retrieve(intentId)
         const jobId = intent.metadata.jobId
-        const serviceOrder = intent.metadata.jobId
+        const serviceOrder = intent.metadata.serviceOrder
         if (!jobId || !serviceOrder) {
             throw new AppError(PROPOSAL_MESSAGES.PAYMENT.STRIPE_META_DATA_NOT_FOUND, RESPONSE_CODE.BAD_REQUEST)
         }
