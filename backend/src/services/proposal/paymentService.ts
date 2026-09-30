@@ -102,7 +102,6 @@ export class PaymentService implements IPaymentService {
         Logger.error(`Proposal not found`);
         return;
       }
-      Logger.info(`${order} service order`);
       const service = proposal.services.find((e) => e.order === order);
       if (!service) {
         Logger.error(`Service not found`);
