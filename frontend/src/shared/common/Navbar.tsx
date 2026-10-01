@@ -117,6 +117,10 @@ export default function Navbar() {
         </nav>
 
         <div className="px-4 pb-5 pt-2 sm:px-6">
+          <div className="mb-3 flex items-center justify-between">
+            <span className="text-sm font-Jost-Semibold text-text-muted">Theme</span>
+            <ThemeToggle />
+          </div>
           {isLoggedIn ? (
             <button
               onClick={handleLogout}
