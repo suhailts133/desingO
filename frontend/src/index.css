@@ -21,47 +21,61 @@
     src: url("./assets/fonts/DMSans_18pt-Light.ttf");
 }
 
-
 @theme {
-  /* ---- 60% — dominant background ---- */
-  --color-bg: #0A0A0C;              /* near-black, cool tint */
-  --color-bg-raised: #131316;       /* navbar / footer, one step up */
+  /* defaults = light mode */
+  --color-bg: #F6F3EE;
+  --color-bg-raised: #FBF9F6;
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #F1EEE8;
+  --color-surface-border: #E4E0D8;
+  --color-surface-border-strong: #D2CCBF;
+  --color-accent: #3F7A5E;
+  --color-accent-hover: #356B51;
+  --color-accent-active: #2C5C44;
+  --color-accent-tint: #E4EFE9;
+  --color-accent-tint-text: #24523C;
+  --color-text-primary: #2B2822;
+  --color-text-muted: #6B675E;
+  --color-text-faint: #9A968A;
+  --color-text-on-accent: #FBF9F6;
+  --color-success: #3F7A5E;
+  --color-success-tint: #E4EFE9;
+  --color-success-text: #24523C;
+  --color-error: #B4453D;
+  --color-error-tint: #F6E9E7;
+  --color-error-text: #7C2E28;
+  --color-warning: #B8863A;
+  --color-warning-tint: #F5EDE0;
+  --color-warning-text: #7A5A21;
+}
 
-  /* ---- 30% — surfaces ---- */
+/* dark mode: same variable names, new values */
+.dark {
+  --color-bg: #0A0A0C;
+  --color-bg-raised: #131316;
   --color-surface: #17171B;
   --color-surface-hover: #1F1F24;
   --color-surface-border: #27272E;
   --color-surface-border-strong: #38383F;
-
-  /* ---- 10% — accent ---- */
-  --color-accent: #4ADE80;              /* electric green — the Supabase/Linear-adjacent move */
+  --color-accent: #4ADE80;
   --color-accent-hover: #6EE7A0;
   --color-accent-active: #92F0BF;
   --color-accent-tint: #10261B;
   --color-accent-tint-text: #A7F3C6;
-
-  /* ---- Text ---- */
-  --color-text-primary: #F4F4F5;    /* off-white, not pure white */
+  --color-text-primary: #F4F4F5;
   --color-text-muted: #A1A1AA;
   --color-text-faint: #6B6B72;
   --color-text-on-accent: #06210F;
-
-  /* ---- Semantic: success ---- */
   --color-success: #4ADE80;
   --color-success-tint: #10261B;
   --color-success-text: #A7F3C6;
-
-  /* ---- Semantic: error ---- */
   --color-error: #F87171;
   --color-error-tint: #2A1515;
   --color-error-text: #FCA5A5;
-
-  /* ---- Semantic: warning ---- */
   --color-warning: #FBBF24;
   --color-warning-tint: #2A2010;
   --color-warning-text: #FDE68A;
 }
-
 
 @theme {
     --font-Dynalight-Regular: "Dynalight";
@@ -90,7 +104,7 @@
 }
 
 .navabr-mobile-menu {
-    @apply hover:border-b text-center font-Jost-Semibold text-sm px-6 py-2 cursor-pointer hover:scale-105 border-soft-black transition-all duration-200
+    @apply hover:border-b text-center font-Jost-Semibold text-sm px-6 py-2 cursor-pointer hover:scale-105 border-surface transition-all duration-200
 }
 
 .auth-button {
@@ -100,16 +114,8 @@
     @apply w-full text-text-faint font-Jost-Semibold py-3 rounded-sm bg-surface-border-strong tracking-wide cursor-not-allowed opacity-70 flex items-center justify-center gap-2;
 }
 
-
-.google-button {
-    @apply font-Jost-Semibold text-white w-full bg-linear-to-r from-peach via-blush to-blush-deep/85 hover:brightness-110 hover:scale-110 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center mr-2 mb-2 transition-all duration-300
-}
-
 .gradient-button {
     @apply flex items-center gap-2 mt-3 p-5 text-text-on-accent font-Jost-Semibold py-3 rounded-sm bg-accent tracking-wide transition-colors duration-200 hover:bg-accent-hover cursor-pointer
-}
-.soft-black-button {
-    @apply  inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-soft-black text-off-white text-xs font-medium hover:bg-blush-deep transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed
 }
 
 @layer base {
