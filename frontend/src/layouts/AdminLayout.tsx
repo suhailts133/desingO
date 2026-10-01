@@ -6,6 +6,7 @@ import { useDecodeAccessToken } from "../helpers/decodeAccessToken";
 import { logOut } from "../app/authSlice";
 import { useEffect } from "react";
 import MeshBackDrop from "../shared/common/MeshBackDrop";
+import SidebarTopbar from "../shared/sidebar/SidebarTopbar";
 
 export default function AdminLayout() {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,6 +34,7 @@ export default function AdminLayout() {
       <AdminSidebar name={name} email={email} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <SidebarTopbar />
         <main className="flex-1 overflow-y-auto p-8">
           <MeshBackDrop />
           <Outlet />

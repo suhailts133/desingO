@@ -35,11 +35,11 @@ const CustomerSidebar = memo(({ name, email }: { name: string, email: string }) 
     return (
         <aside
             className={`
-  
+
           relative flex flex-col
           bg-bg-raised
           border-r border-surface-border
-            
+
           transition-all duration-300 ease-in-out
           ${collapsed ? "w-20" : "w-64"}
         `}

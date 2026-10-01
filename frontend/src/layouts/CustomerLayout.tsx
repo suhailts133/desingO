@@ -6,6 +6,7 @@ import { logOut } from "../app/authSlice";
 import { useEffect } from "react";
 import CustomerSidebar from "../shared/sidebar/CustomerSidebar";
 import MeshBackdrop from "../shared/common/MeshBackDrop";
+import SidebarTopbar from "../shared/sidebar/SidebarTopbar";
 
 export default function CustomerLayout() {
   const dispatch = useDispatch<AppDispatch>();
@@ -35,6 +36,7 @@ export default function CustomerLayout() {
       <CustomerSidebar name={name} email={email} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <SidebarTopbar/>
         <main className="flex-1 overflow-y-auto p-8 flex justify-center  bg-bg">
           <MeshBackdrop />
           <Outlet />
