@@ -55,32 +55,6 @@ export default function PreviewDesignCard({ design: d }: { design: PreviewDesign
             {d.minPrice.toLocaleString("en-IN")} - {d.maxPrice.toLocaleString("en-IN")}
           </span>
         </div>
-
-        <div className="h-px bg-surface-border" />
-
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-surface-border bg-surface-hover">
-            <User className="h-4 w-4 text-text-faint" />
-          </div>
-          <div>
-            <p className="text-[12px] font-semibold leading-tight text-text-primary">{d.designerName}</p>
-            <div className="mt-0.5 flex items-center gap-0.5">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <svg
-                  key={i}
-                  viewBox="0 0 10 10"
-                  className="h-2.5 w-2.5"
-                  strokeWidth="1"
-                  fill={i <= d.rating ? "var(--color-accent)" : "none"}
-                  stroke={i <= d.rating ? "var(--color-accent)" : "var(--color-text-faint)"}
-                >
-                  <polygon points={STAR} />
-                </svg>
-              ))}
-              <span className="ml-0.5 text-xxs text-text-faint">({d.rating.toFixed(1)})</span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
