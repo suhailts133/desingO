@@ -1,12 +1,17 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import { useDecodeAccessToken } from "../../../helpers/decodeAccessToken";
-import {useRecommendDesignsQuery,useRecommendJobsQuery,} from "../commonEndpoints";
+import {
+  useRecommendDesignsQuery,
+  useRecommendJobsQuery,
+} from "../commonEndpoints";
 import DesignCard from "../components/cards/DesignCard";
 import DesignCardSkeleton from "../skeltons/DesignCardSkeleton";
 import JobCard from "../components/cards/JobCard";
 import HomeHero from "../components/homeComponents/HomeHero";
 import HowItWorks from "../components/homeComponents/HowItWorks";
 import FeatureStrip from "../components/homeComponents/FeatureStrip";
+import AIDesignButton from "../../aiDesign/components/AIDesignButton";
+import AIDesignChatPanel from "../../aiDesign/components/AIDesignChatPanel";
 
 export default function Home() {
   const { role } = useDecodeAccessToken();
@@ -82,33 +87,41 @@ export default function Home() {
   }
 
   return (
-    <div className="m-6">
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {title && (
-          <h2 className="text-2xl font-Jost-Semibold mb-6 text-text-primary">
-            {title}
-          </h2>
-        )}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {isLoading ? (
-            Array.from({ length: 8 }).map((_, i) => (
-              <DesignCardSkeleton key={i} />
-            ))
-          ) : (
-            <>
-              {isCustomer &&
-                designData?.data?.map((item) => (
-                  <DesignCard design={item} key={item.id} />
-                ))}
-              {isDesigner &&
-                jobData?.data?.map((item) => (
-                  <JobCard job={item} key={item.id} />
-                ))}
-            </>
+    <>
+      <div className="m-6">
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          {title && (
+            <h2 className="text-2xl font-Jost-Semibold mb-6 text-text-primary">
+              {title}
+            </h2>
           )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {isLoading ? (
+              Array.from({ length: 8 }).map((_, i) => (
+                <DesignCardSkeleton key={i} />
+              ))
+            ) : (
+              <>
+                {isCustomer &&
+                  designData?.data?.map((item) => (
+                    <DesignCard design={item} key={item.id} />
+                  ))}
+                {isDesigner &&
+                  jobData?.data?.map((item) => (
+                    <JobCard job={item} key={item.id} />
+                  ))}
+              </>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+      {isCustomer && (
+        <>
+          <AIDesignButton />
+          <AIDesignChatPanel />
+        </>
+      )}
+    </>
   );
 }
