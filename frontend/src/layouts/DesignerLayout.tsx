@@ -21,7 +21,6 @@ export default function DesignerLayout() {
     }
   }, [name, email, dispatch]);
 
-
   if (!isAuthenticated || !accessToken) {
     return <Navigate to="/auth/login" />;
   }
@@ -32,13 +31,12 @@ export default function DesignerLayout() {
 
   return (
     <div className="fixed inset-0 flex overflow-hidden">
-
       <DesignerSidebar name={name} email={email} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <SidebarTopbar/>
-        <main className="flex-1 overflow-y-auto p-8 flex justify-center  bg-bg">
-          <MeshBackdrop/>
+        <SidebarTopbar />
+        <main className="flex-1 overflow-y-auto p-8 flex justify-center items-start bg-bg">
+          <MeshBackdrop />
           <Outlet />
         </main>
       </div>

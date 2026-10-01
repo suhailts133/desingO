@@ -40,11 +40,11 @@ export default function DesignerDashboard() {
     );
   }
 
-  if (error || !dashboardData || !transactions) {
+  if (error || !dashboardData) {
     return <div className="p-6 text-sm text-error">Couldn't load your dashboard. Please try again.</div>;
   }
 
-  if (transactionError) {
+  if (transactionError || !transactions) {
     return <div className="p-6 text-sm text-error">Couldn't load your transactions. Please try again.</div>;
   }
 
@@ -59,7 +59,7 @@ export default function DesignerDashboard() {
   const jobHeading = jobData?.type === "RECOMENDED" ? "These are your recommended jobs" : "These are recent jobs";
 
   return (
-    <div className="w-full max-w-7xl flex flex-col gap-8">
+    <div className="w-full max-w-7xl flex flex-col gap-8 pb-12 lg:pb-16">
       <DesignerStatsOverview data={dashboardData} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -83,7 +83,7 @@ export default function DesignerDashboard() {
             ))}
           </div>
         ) : (
-          <div className="text-sm text-gray-500">No jobs found.</div>
+          <div className="text-sm text-text-muted">No jobs found.</div>
         )}
       </div>
     </div>
