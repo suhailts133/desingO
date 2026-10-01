@@ -9,6 +9,7 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { adminDesignerReject } from "../../../../validations/adminValidations";
 import { useApproveOrRejectDesigner } from "../hooks/useApproveOrRejectDesigner";
 import { Check, X } from "lucide-react"
+import Spinner from "../../../../shared/common/Spinner";
 
 
 export default function DesignerVerificationDetails() {
