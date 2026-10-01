@@ -1,4 +1,4 @@
-import { Heart, IndianRupee, User } from "lucide-react"
+import { Heart, IndianRupee } from "lucide-react"
 import type { GetAllDesignCommonResponseDTO } from "../../../designer/designs/designInterface"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"

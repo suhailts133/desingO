@@ -1,4 +1,4 @@
-import { Heart, IndianRupee, User } from "lucide-react";
+import { Heart, IndianRupee } from "lucide-react";
 
 export type PreviewDesign = {
   img: string;
@@ -12,7 +12,7 @@ export type PreviewDesign = {
   saved?: boolean;
 };
 
-const STAR = "5,1 6.18,3.41 9,3.76 7,5.73 7.45,8.5 5,7.22 2.55,8.5 3,5.73 1,3.76 3.82,3.41";
+
 
 export default function PreviewDesignCard({ design: d }: { design: PreviewDesign }) {
   return (
