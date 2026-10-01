@@ -6,6 +6,7 @@ import type { AppDispatch, RootState } from "../../app/store";
 import { logOut } from "../../app/authSlice";
 import { useDecodeAccessToken } from "../../helpers/decodeAccessToken";
 import NotificationBell from "../../features/notification/components/NotificationBell";
+import ThemeToggle from "./ToggleTheme";
 
 const navLinkClass =
   "relative py-2 text-sm font-Jost-Semibold text-text-muted transition-colors hover:text-text-primary " +
@@ -55,7 +56,7 @@ export default function Navbar() {
         {/* Right cluster */}
         <div className="flex items-center gap-3">
           {isLoggedIn && <NotificationBell />}
-
+           <ThemeToggle />
           {isLoggedIn ? (
             <>
               <button
