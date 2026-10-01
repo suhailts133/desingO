@@ -9,7 +9,7 @@ import { useGoogleLogin } from "@react-oauth/google"
 import SubmitButton from "../../../shared/common/SubmitButton"
 import GoogleLoginButton from "../../../shared/form/GoogleLoginButton"
 import { InputField } from "../../../shared/form/InputField"
-import { useHandleResponse } from "../../../helpers/useHandleResponse"
+import { useNavigate } from "react-router-dom"
 
 
 export default function SignupForm() {
@@ -20,30 +20,29 @@ export default function SignupForm() {
   })
   const { handleSignUp, isLoading } = useSignUp()
   const { isGoogle, handleGoogleLogin } = useLoginGoogle()
-  const handleResponse = useHandleResponse()
+  const navigate = useNavigate()
   const login = useGoogleLogin({
     flow: "auth-code",
     onSuccess: async (code) => {
       const result = await handleGoogleLogin(code)
-      handleResponse(result.success, "Please Confirm the OTP", result.message, "/auth/verify-otp")
+      if (result.success) {
+        navigate("/")
+      }
 
     }
   })
-
   const onSubmit = async (data: ISignup) => {
     const result = await handleSignUp({
       full_name: data.full_name,
       email: data.email,
       password: data.password
     })
-    handleResponse(result.success, "Please Verify Your OTP", result.message, "/auth/verify-otp", { state: { where: "signup", email: data.email } })
+    if (result.success) {
+      navigate("/auth/verify-otp", { state: { where: "signup", email: data.email } })
+    }
   }
 
-
-
   return (
-
-
     <div className="max-w-md w-full bg-surface backdrop-blur-2xl border border-surface-border rounded-xl p-8">
       <h2 className="text-4xl font-semibold text-accent mb-2 text-center font-Dynalight-Regular tracking-tight">
         designO

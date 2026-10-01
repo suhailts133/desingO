@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useVerifyOtp } from "../hooks/useVerifyOtp";
 import { useResendOtp } from "../hooks/useResendOtp";
 import { useForgetPasswordOtpVerification } from "../hooks/useForgetPasswordOtpVerification";
 import { useForgetPasswordResendOtp } from "../hooks/useForgetPasswordResendOtp";
-import { useHandleResponse } from "../../../helpers/useHandleResponse";
 import ResendOtpSection from "./ResendOtpSection";
 
 
@@ -13,12 +12,13 @@ export default function OtpForm() {
     const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
     const inputRefs = useRef<(HTMLInputElement | null)[]>(Array(6).fill(null));
     const [error1, setError] = useState<string>("");
-    const handleResponse = useHandleResponse()
+    const navigate = useNavigate();
+
     const location = useLocation();
     const email = location.state?.email;
     const where = location.state?.where;
 
-    
+
     const { handleVerification, error, isLoading } = useVerifyOtp();
     const { handleResendOtp, resendOTPError, resendOtpSuccessMessage, isResendOtpLoading } = useResendOtp();
     const { handleForgetpasswordOtpVerification, forgetPasswordError, isLoadingForgetPassword } = useForgetPasswordOtpVerification();
@@ -51,19 +51,20 @@ export default function OtpForm() {
         }
     };
 
-    const handdleSubmit = async () => {
-        if (otp.some((d) => d === "")) {
-            setError("Please enter all 6 digits.");
-            return;
-        }
-        if (where === "signup") {
-            const result = await handleVerification({ email, otp: otp.join("") });
-            handleResponse(result.success, "OTP Verification Successfull", result.message, "/", { state: { where: "signUpOtpVerification" } })
-        } else {
-            await handleForgetpasswordOtpVerification({ email, otp: otp.join("") });
-        }
+  const handdleSubmit = async () => {
+    if (otp.some((d) => d === "")) {
+      setError("Please enter all 6 digits.");
+      return;
+    }
+    if (where === "signup") {
+      const result = await handleVerification({ email, otp: otp.join("") });
+      if (result.success) {
+        navigate("/", { state: { where: "signUpOtpVerification" } });
+      } else {
+        await handleForgetpasswordOtpVerification({ email, otp: otp.join("") });
+      }
     };
-
+  }
     const handleResend = async () => {
         if (isResendLoading) return;
         if (where === "signup") {
