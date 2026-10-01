@@ -273,7 +273,7 @@ export default function ProposalPage() {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Invalid proposal source.</div>
     }
     if (isLoading) {
-        return <div className="p-10 text-center animate-pulse text-soft-black/40">Loading proposal...</div>
+        return <div className="p-10 text-center animate-pulse text-text-faint">Loading proposal...</div>
     }
     if (error) {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Something went wrong. Please try again.</div>
@@ -292,7 +292,7 @@ export default function ProposalPage() {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Something went wrong. Please try again.</div>
     }
     if (isDisputeLoading || isReviewLoading) {
-        return <div className="p-10 text-center animate-pulse text-soft-black/40">Loading proposal...</div>
+        return <div className="p-10 text-center animate-pulse text-text-faint">Loading proposal...</div>
     }
     const ACTIVE_STATUSES = ["Open", "In Progress", "Uploaded", "Redo"];
 

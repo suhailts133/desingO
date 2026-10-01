@@ -21,34 +21,6 @@
     src: url("./assets/fonts/DMSans_18pt-Light.ttf");
 }
 
-@theme {
-    --color-error: #C0503A;
-    --color-success: #2F8F5B;
-    --color-soft-black: #7A5C54;
-    --color-blush: #D9A090;
-    /* warm clay rose */
-    --color-blush-deep: #B86040;
-    /* rich clay */
-    --color-peach: #DDB070;
-    /* warm amber */
-    --color-blush-pale: #F2E0D8;
-    /* pale clay */
-    --color-blush-light: #E8C8BC;
-    /* soft clay rose */
-    --color-powder-petal: #EDD4A8;
-    /* warm petal sand */
-    --color-peach-glow: #DDB855;
-    /* golden amber glow */
-    --color-seashell-tint: #FAF0E8;
-    /* warm seashell */
-    --color-off-white: #F7E8DF;
-    /* warm ivory */
-    --color-linen-rose: #FFF0EB;
-    /* deep linen */
-    --color-snow-white: #FFFCFB;
-    --color-off-white: #FAF9F6
-        /* warm snow */
-}
 
 @theme {
   /* ---- 60% — dominant background ---- */
@@ -127,7 +99,7 @@
 .auth-disabled-button {
     @apply w-full text-text-faint font-Jost-Semibold py-3 rounded-sm bg-surface-border-strong tracking-wide cursor-not-allowed opacity-70 flex items-center justify-center gap-2;
 }
- 
+
 
 .google-button {
     @apply font-Jost-Semibold text-white w-full bg-linear-to-r from-peach via-blush to-blush-deep/85 hover:brightness-110 hover:scale-110 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center mr-2 mb-2 transition-all duration-300
