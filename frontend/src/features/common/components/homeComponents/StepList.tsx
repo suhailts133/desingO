@@ -6,15 +6,15 @@ type Step = {
 type StepListProps = {
     label: string;
     tag: string;
-    tagTone: "success" | "warning";
+    tagTone: "accent" | "neutral";
     steps: Step[];
 };
 
 export default function StepList({ label, tag, tagTone, steps }: StepListProps) {
-    const tagClasses =
-        tagTone === "success"
-            ? "bg-success-tint text-success-text"
-            : "bg-warning-tint text-warning-text";
+  const tagClasses =
+      tagTone === "accent"
+          ? "bg-accent-tint text-accent-tint-text"
+          : "border border-surface-border-strong bg-surface text-text-muted"
 
     return (
         <div>
