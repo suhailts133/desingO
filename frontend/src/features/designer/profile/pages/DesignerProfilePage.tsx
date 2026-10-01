@@ -12,6 +12,7 @@ import DesignerPreferenceForm from "../components/DesignerPreferenceForm"
 import { useUpdatePreference } from "../hooks/useUpdateDesignerPreference"
 import { fromOptions } from "../../../../helpers/optionHelper"
 import { useHandleResponse } from "../../../../helpers/useHandleResponse"
+import Spinner from "../../../../shared/common/Spinner"
 
 export default function DesignerProfilePage() {
     const [changeImage, setChangeImage] = useState<boolean>(false)
@@ -24,7 +25,7 @@ export default function DesignerProfilePage() {
     const { data, error, isLoading } = useGetDesignerProfileQuery()
     const profile = data?.data
     const responseHelper = useHandleResponse()
-    if (isLoading) return <p>Loading...</p>
+    if (isLoading) return <Spinner />
     if (error || !profile) return <p>Error while loading profile</p>
 
     const handleImageChange = async (data: FormData) => {

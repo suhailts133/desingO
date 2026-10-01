@@ -5,6 +5,7 @@ import { useDeleteAJob } from "../../jobs/hooks/useDeleteAjob";
 import DeleteConfirmModal from "../../../designer/designs/components/DeleteConfirmModal";
 import Pagination from "../../../../shared/common/Pagination";
 import { useHandleResponse } from "../../../../helpers/useHandleResponse";
+import Spinner from "../../../../shared/common/Spinner";
 
 export default function MyHireRequestPage() {
     const [page, setPage] = useState(1)
@@ -14,7 +15,7 @@ export default function MyHireRequestPage() {
     const jobRequest = data?.data
     const handleResponse = useHandleResponse()
     if (isLoading) {
-        return <p>Loading...</p>
+        return <Spinner />
     }
     if (error || !jobRequest) {
         return <p>Error loading hire requests</p>;
@@ -57,7 +58,7 @@ export default function MyHireRequestPage() {
                 isLoading={isDeleting}
                 text="Are you sure you want to delete this hire request?"
             />
-            
+
             <div className="sticky bottom-0 mt-auto pt-4 bg-bg">
                 <Pagination
                     page={page}

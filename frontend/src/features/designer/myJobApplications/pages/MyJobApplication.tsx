@@ -5,6 +5,7 @@ import MyJobApplicationCard from "../components/MyJobApplicationCard";
 import ConfirmModal from "../../../../shared/modals/ConfirmModal";
 import { useDeleteMyJobApplication } from "../hooks/useDeleteMyJobApplication";
 import Pagination from "../../../../shared/common/Pagination";
+import Spinner from "../../../../shared/common/Spinner";
 
 export default function MyJobApplications() {
     const [page, setPage] = useState(1)
@@ -18,7 +19,7 @@ export default function MyJobApplications() {
 
     const jobApplications = data?.data
 
-    if (isLoading) return <p className="text-text-faint p-6 text-center">Loading...</p>
+    if (isLoading) return <Spinner />
     if (error || !jobApplications) return <p className="text-error p-6 text-center">Error loading job applications</p>
 
     const handleDelete = async () => {
@@ -78,7 +79,7 @@ export default function MyJobApplications() {
                 buttonLoadingText="Deleting"
                 buttonText="Confirm & delete"
             />
-            
+
             <div className="sticky bottom-0 mt-auto py-4 bg-bg z-10 border-t border-surface-border">
                 <Pagination
                     page={page}

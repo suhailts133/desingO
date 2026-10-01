@@ -5,6 +5,7 @@ import DesignerCard from "../components/cards/DesignerCard";
 import type { DesingerFilterForm } from "../commonInterface";
 import Pagination from "../../../shared/common/Pagination";
 import DesignerFilter from "../components/filters/DesignerFilter";
+import Spinner from "../../../shared/common/Spinner";
 
 export default function BrowseDesigners() {
     const [page, setPage] = useState(1);
@@ -32,7 +33,7 @@ export default function BrowseDesigners() {
     });
 
     const designers = data?.data;
-    console.log(designers)
+
     const handleClearAll = () => {
         reset({ full_name: "" });
         setDebouncedName("")
@@ -40,7 +41,7 @@ export default function BrowseDesigners() {
     };
 
     if (isLoading) {
-        return <div className="p-10 text-center animate-pulse text-gray-400 font-Jost">Loading designers...</div>;
+        return <Spinner/>
     }
 
     if (error || !designers) {

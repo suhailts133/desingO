@@ -11,6 +11,7 @@ import { transactionColumns, transactionTypeTone } from "../transactionColumn";
 import { useFilterParams } from "../../../../shared/filter/useFilterParams";
 import { FilterBar } from "../../../../shared/filter/FilterBar";
 import { TRANSACTION_FILTERS } from "../transactionFilter";
+import Spinner from "../../../../shared/common/Spinner";
 
 
 export default function TransactionTable() {
@@ -36,7 +37,7 @@ export default function TransactionTable() {
         type: (t: AllTransactionDTO) => <StatusBadge label={t.type} tone={transactionTypeTone[t.type as Exclude<AllTransactionDTO["type"], "All">]} />,
     };
 
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <Spinner/>
     if (error || !transactions) return <p>Error loading transactions</p>;
 
     return (

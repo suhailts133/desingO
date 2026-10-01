@@ -17,6 +17,7 @@ import type { CoverState, DesignDetailResponseDTO, EditDesignFields, GalleryItem
 import toast from "react-hot-toast";
 import { selectStyles } from "../../../../shared/filter/selectStyle";
 import type { OptionType } from "../../../common/baseData";
+import Spinner from "../../../../shared/common/Spinner";
 
 const animatedComponents = makeAnimated();
 
@@ -33,17 +34,7 @@ export default function EditDesignForm() {
   const { data, isLoading: isFetching, error } = useGetDesignDetailQuery(id!, { skip: !id });
 
   if (isFetching) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-text-faint">
-          <svg className="size-8 animate-spin" viewBox="0 0 24 24" fill="none">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-          <p className="text-sm">Loading design...</p>
-        </div>
-      </div>
-    );
+    return <Spinner />
   }
 
   if (error || !data) {

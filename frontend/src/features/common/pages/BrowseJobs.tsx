@@ -8,6 +8,7 @@ import JobFilter from "../components/filters/JobFilter";
 import { useSearchParams } from "react-router-dom";
 import { createFilterChangeHandler } from "../../../helpers/handleFilterChagne";
 import { useUserCoordinates } from "../../../shared/hooks/useUserCoordinates";
+import Spinner from "../../../shared/common/Spinner";
 
 export default function BrowseJobs() {
     const [filtersVisible, setFiltersVisible] = useState(true);
@@ -85,7 +86,7 @@ export default function BrowseJobs() {
     };
 
     if (isLoading) {
-        return <div className="p-10 text-center animate-pulse text-gray-400 font-Jost">Loading jobs...</div>;
+        return <Spinner/>
     }
 
     if (error || !jobs) {

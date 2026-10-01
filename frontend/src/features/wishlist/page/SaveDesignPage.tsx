@@ -6,6 +6,7 @@ import Pagination from "../../../shared/common/Pagination";
 import DesignCard from "../../common/components/cards/DesignCard";
 import { ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../../../shared/common/Spinner";
 
 
 export default function SaveDesignPage() {
@@ -18,7 +19,7 @@ export default function SaveDesignPage() {
 
 
   const savedDesigns = data?.data
-  if (isLoading) return <p>Loading...</p>
+  if (isLoading) return <Spinner/>
   if (error || !savedDesigns) return <div className="p-10 text-center text-red-500">Error loading designs.</div>;
 
   return (

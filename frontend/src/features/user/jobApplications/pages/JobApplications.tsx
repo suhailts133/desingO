@@ -11,6 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { getDateRange } from "../../../../helpers/getDateRange";
 import DateFilterPicker from "../../../../shared/common/DatePickerFilter";
 import Pagination from "../../../../shared/common/Pagination";
+import Spinner from "../../../../shared/common/Spinner";
 
 
 export default function JobApplications() {
@@ -37,7 +38,7 @@ export default function JobApplications() {
     const navigate = useNavigate()
     const jobApplications = data?.data
 
-    if (isLoading) return <p className="text-text-faint">Loading...</p>
+    if (isLoading) return <Spinner />
     if (error || !jobApplications) return <p className="text-error">Error loading job applications</p>
 
     const handleApproval = async () => {

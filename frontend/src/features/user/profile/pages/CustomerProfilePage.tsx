@@ -7,6 +7,7 @@ import CustomerUpdateForm from "../components/CustomerUpdateForm"
 import { useChangeProfileImage } from "../../../designer/profile/hooks/useChangeProfileImage"
 import { useUpdateUserProfile } from "../hooks/useUpdateUserProfile"
 import type { UserProfileUpdateDTO } from "../customerProfileInterfaces"
+import Spinner from "../../../../shared/common/Spinner"
 
 export default function CustomerProfilePage() {
     const [changeImage, setChangeImage] = useState<boolean>(false)
@@ -16,7 +17,7 @@ export default function CustomerProfilePage() {
     const { data, error, isLoading } = useGetUserProfileQuery()
     const profile = data?.data
 
-    if (isLoading) return <p>Loading...</p>
+    if (isLoading) return <Spinner />
     if (error || !profile) return <p>Error while loading profile</p>
 
     const handleImageChange = async (data: FormData) => {
@@ -26,7 +27,7 @@ export default function CustomerProfilePage() {
     const handleProfileDataUpdation = async (data: UserProfileUpdateDTO) => {
         await handleUpdateData(data)
     }
-    
+
     return (
         <div className="flex flex-col items-center w-full max-w-xl gap-8 py-10">
             <ProfileImage

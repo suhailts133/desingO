@@ -14,6 +14,7 @@ import ConfirmModal from "../../../../shared/modals/ConfirmModal";
 import RejectJobApplicationModal from "../../../user/jobApplications/components/RejectJobApplicationModal";
 import { useApproveOrRejectHireRequest } from "../hooks/useApproveOrRejectHireRequest";
 import { useHandleResponse } from "../../../../helpers/useHandleResponse";
+import Spinner from "../../../../shared/common/Spinner";
 
 
 export default function HireRequestsPage() {
@@ -40,7 +41,7 @@ export default function HireRequestsPage() {
     const handleResponse = useHandleResponse()
     const hireRequests = data?.data
 
-    if (isLoading) return <p className="text-text-faint">Loading...</p>
+    if (isLoading) return <Spinner />
     if (error || !hireRequests) return <p className="text-error">Error loading hire requests</p>
 
     const handleApproval = async () => {

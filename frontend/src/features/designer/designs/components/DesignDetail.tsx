@@ -6,6 +6,7 @@ import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { useToggleSaveDesign } from "../../../common/hooks/useToggleSaveDesign";
 import { useDecodeAccessToken } from "../../../../helpers/decodeAccessToken";
+import Spinner from "../../../../shared/common/Spinner";
 
 export default function DesignDetail() {
     const { id } = useParams<{ id: string }>();
@@ -20,7 +21,7 @@ export default function DesignDetail() {
     const design = data?.data;
 
     if (isLoading) {
-        return <div className="p-10 text-center animate-pulse text-text-faint font-Jost">Loading Design Details...</div>;
+        return <Spinner/>
     }
     if (error || !design) {
         return <div className="p-10 text-center text-error font-Jost-Semibold">Design not found.</div>;
@@ -84,7 +85,7 @@ export default function DesignDetail() {
                                 onClick={toggleSave}
                                 disabled={isToggling}
                                 aria-label={isSaved ? "Unsave design" : "Save design"}
-                                className={`absolute top-3 right-3 w-8 h-8 rounded-full bg-surface border border-surface-border 
+                                className={`absolute top-3 right-3 w-8 h-8 rounded-full bg-surface border border-surface-border
                flex items-center justify-center transition-opacity duration-200 hover:bg-surface-hover
                ${isSaved ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
                             >
@@ -157,7 +158,7 @@ export default function DesignDetail() {
                         </div>
                     </div>
 
-              
+
                 </div>
 
                 {/* RIGHT COLUMN (Sticky Sidebar) */}

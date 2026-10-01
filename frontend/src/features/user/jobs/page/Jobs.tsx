@@ -8,6 +8,7 @@ import DeleteConfirmModal from "../../../designer/designs/components/DeleteConfi
 import { useDeleteAJob } from "../hooks/useDeleteAjob";
 import Pagination from "../../../../shared/common/Pagination";
 import { useHandleResponse } from "../../../../helpers/useHandleResponse";
+import Spinner from "../../../../shared/common/Spinner";
 
 export default function Jobs() {
     const [page, setPage] = useState(1)
@@ -17,7 +18,7 @@ export default function Jobs() {
     const jobRequest = data?.data
     const handleResponse = useHandleResponse()
     if (isLoading) {
-        return <p>Loading...</p>
+        return <Spinner />
     }
     if (error || !jobRequest) {
         return <p>Error loading job requests</p>;

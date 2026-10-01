@@ -22,7 +22,7 @@ export default function DesignerVerificationDetails() {
   });
   const navigate = useNavigate()
   const designerRequest = data?.data;
-  if (isLoading) return <div className="p-10 text-center animate-pulse text-text-faint">Loading Application...</div>;
+  if (isLoading) return <Spinner/>
   if (error || !designerRequest) return <div className="p-10 text-center text-error font-Jost-Semibold">Application not found.</div>;
   const designerStatus = status ? status : designerRequest.status
 
@@ -46,6 +46,8 @@ export default function DesignerVerificationDetails() {
     Approved: "bg-success-tint text-success-text",
     Rejected: "bg-error-tint text-error-text",
   };
+
+
 
   return (
     <div className="font-Jost-Regular h-full">

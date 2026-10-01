@@ -1,4 +1,5 @@
 import { useDecodeAccessToken } from "../../../../helpers/decodeAccessToken"
+import Spinner from "../../../../shared/common/Spinner"
 import OngoingDisputesSection from "../../../../shared/dashboard/OngoingDisputesSection"
 import OngoingProposalsSection from "../../../../shared/dashboard/OngoingProposalsSection"
 import TransactionHistorySection from "../../../../shared/dashboard/TransactionHistorySection"
@@ -19,7 +20,7 @@ export default function CustomerDashboard() {
   const { role } = useDecodeAccessToken()
 
   if (isLoading || isTransactionLoading) {
-    return <div className="p-6 text-sm text-text-faint">Loading dashboard…</div>
+    return <Spinner />
   }
 
   if (error || !dashboardData || !transactions) {

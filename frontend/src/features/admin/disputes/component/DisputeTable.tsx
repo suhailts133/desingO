@@ -11,6 +11,7 @@ import { disputeColumns, disputeStatusTone } from "../adminDisputeColumn";
 import { useFilterParams } from "../../../../shared/filter/useFilterParams";
 import { DISPUTE_FILTERS } from "../adminDisputeFilter";
 import { FilterBar } from "../../../../shared/filter/FilterBar";
+import Spinner from "../../../../shared/common/Spinner";
 
 
 export default function DisputeTable() {
@@ -37,7 +38,7 @@ export default function DisputeTable() {
     view: (d: AllDisputeAdminDTO) => <ViewButton onClick={() => navigate(`/admin/disputes/${d.id}`)} />,
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Spinner/>
   if (error || !disputes) return <p>Error loading disputes</p>;
 
   return (

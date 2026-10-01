@@ -8,6 +8,7 @@ import OngoingProposalsSection from "../../../../shared/dashboard/OngoingProposa
 import OngoingDisputesSection from "../../../../shared/dashboard/OngoingDisputesSection"
 import TransactionHistorySection from "../../../../shared/dashboard/TransactionHistorySection"
 import TopReviewsSection from "../component/TopReviewsSection"
+import Spinner from "../../../../shared/common/Spinner"
 
 export default function DesignerDashboard() {
     const { data, error, isLoading } = useGetDesignerDashboardQuery()
@@ -28,7 +29,7 @@ export default function DesignerDashboard() {
     const { role } = useDecodeAccessToken()
 
     if (isLoading || isTransactionLoading || isReviewLoading) {
-        return <div className="p-6 text-sm text-text-faint">Loading dashboard…</div>
+        return <Spinner/>
     }
 
     if (error || !dashboardData || !transactions) {

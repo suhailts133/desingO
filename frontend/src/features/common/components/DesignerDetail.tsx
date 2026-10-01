@@ -7,17 +7,18 @@ import Gallary from "./Gallary"
 import { ChevronLeft } from "lucide-react"
 import { useGetMyReivewsQuery } from "../../proposal/wishlistEndpoints"
 import DesignerReviews from "../../proposal/page/DesignerReviews"
+import Spinner from "../../../shared/common/Spinner"
 
 export default function DesignerDetail() {
   const { id } = useParams<{ id: string }>()
   const [page, setPage] = useState(1)
   const [reviewPage, setReviewPage] = useState(1)
   const navigate = useNavigate()
-  
+
   const { data: designerData, isLoading: isDesignerDataLoading, error: designerDataError } = useGetDesignerDetailQuery(id!, { skip: !id })
   const { data: designData, isLoading: isDesignsLoading, error: designsError } = useGetDesignGallaryQuery({ id: id!, page }, { skip: !id })
   const { data: reviewData, isLoading: isReviewLoading, error: reveiwError } = useGetMyReivewsQuery({ designerId: id!, page: reviewPage }, { skip: !id })
-  
+
   const designer = designerData?.data
   const design = designData?.data
   const review = reviewData?.data
@@ -25,14 +26,7 @@ export default function DesignerDetail() {
   const reveiwTotal = reviewData?.total
 
   if (isDesignerDataLoading || isDesignsLoading || isReviewLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full border-2 border-accent border-t-transparent animate-spin" />
-          <p className="text-xs text-text-faint tracking-widest uppercase font-Jost">Loading</p>
-        </div>
-      </div>
-    )
+    return <Spinner/>
   }
 
   if (designerDataError || designsError || !design || !designer || reveiwError || !review) {
@@ -45,7 +39,7 @@ export default function DesignerDetail() {
 
   const totalPages = designData.totalPages
   const totalDesigns = designData.total
-  
+
   return (
     <div className="max-w-4xl mx-auto px-5 py-10 flex flex-col gap-8">
       <button onClick={() => navigate(-1)} className="flex items-center mb-4 text-sm w-fit text-text-primary hover:text-accent-hover transition-colors">

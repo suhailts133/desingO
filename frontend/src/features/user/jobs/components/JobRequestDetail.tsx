@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetAJobRequestDetailQuery } from "../jobEndpoints";
 import ApplyForJob from "./applyForJob";
+import Spinner from "../../../../shared/common/Spinner";
 
 export default function JobRequestDetail() {
     const [modalType, setModalType] = useState<boolean>(false);
@@ -14,7 +15,7 @@ export default function JobRequestDetail() {
     const job = data?.data;
 
     if (isLoading) {
-        return <div className="p-10 text-center animate-pulse text-text-faint">Loading Job Request Details...</div>;
+        return <Spinner/>
     }
     if (error || !job) {
         return <div className="p-10 text-center text-error font-Jost-Semibold">Job Request not found.</div>;

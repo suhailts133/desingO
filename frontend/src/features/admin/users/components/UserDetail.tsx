@@ -5,6 +5,7 @@ import { useState } from "react"
 import ConfirmModal from "../../../../shared/modals/ConfirmModal"
 import StatCard from "../../../../shared/dashboard/StatCard"
 import { User, Wallet, Briefcase, Layers, Star, ArrowLeft, AlertCircle } from "lucide-react"
+import Spinner from "../../../../shared/common/Spinner"
 
 export default function UserDetail() {
     const { id } = useParams<{ id: string }>()
@@ -16,14 +17,7 @@ export default function UserDetail() {
     const user = data?.data
 
     if (isLoading) {
-        return (
-            <div className="flex items-center justify-center min-h-100">
-                <div className="flex items-center gap-3 text-text-faint animate-pulse">
-                    <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-                    <span className="text-sm font-medium">Loading user...</span>
-                </div>
-            </div>
-        )
+        return <Spinner/>
     }
 
     if (error || !user) {

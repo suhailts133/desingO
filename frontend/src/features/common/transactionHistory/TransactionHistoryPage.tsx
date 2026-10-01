@@ -2,6 +2,7 @@ import { useSearchParams } from "react-router-dom";
 import Pagination from "../../../shared/common/Pagination"
 import { useGetTransactionHistoryQuery } from "../commonEndpoints"
 import TransactionHistoryTable from "../../../shared/common/TransactionHistoryTable";
+import Spinner from "../../../shared/common/Spinner";
 
 export default function TransactionHistoryPage() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -20,7 +21,7 @@ export default function TransactionHistoryPage() {
     const totalPages = data?.totalPages ?? 0
 
     if (isLoading) {
-        return <div className="text-text-muted p-6">Loading transactions...</div>
+        return <Spinner/>
     }
 
     if (error || !transactionData) {
