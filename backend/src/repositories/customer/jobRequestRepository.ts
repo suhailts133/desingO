@@ -191,8 +191,8 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
     };
     if (jobFilter) {
       if (jobFilter.designStyles) matchQuery.designStyles = { $in: jobFilter.designStyles.split(",") };
-      if (jobFilter.propertyTypes) matchQuery.propertyTypes = { $in: jobFilter.propertyTypes.split(",") };
-      if (jobFilter.timeLines) matchQuery.timeLines = { $in: jobFilter.timeLines.split(",") };
+      if (jobFilter.propertyTypes) matchQuery.propertyType = { $in: jobFilter.propertyTypes.split(",") };
+      if (jobFilter.timeLines) matchQuery.timeline = { $in: jobFilter.timeLines.split(",") };
     }
     const sortOrder: Record<string, 1 | -1> = {};
     const isGeoQuery = jobFilter?.lat && jobFilter?.lng && jobFilter?.radiusKm;
