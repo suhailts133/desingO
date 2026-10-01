@@ -30,7 +30,7 @@ export default function Navbar() {
     setOpen(false);
     navigate("/auth/login");
   };
-  const homePath = role === "Designer" ? "/designer/dashboard" : "/";
+  const homePath = role === "Designer" ? "/designer/dashboard" : "/customer/dashboard";
   return (
     <header className="sticky top-0 z-50 border-b border-surface-border bg-bg-raised/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">

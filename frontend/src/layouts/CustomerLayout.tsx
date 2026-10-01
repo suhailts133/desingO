@@ -32,12 +32,12 @@ export default function CustomerLayout() {
   }
 
   return (
-    <div className="fixed inset-0 flex bg-overflow-hidden">
+    <div className="fixed inset-0 flex overflow-hidden">
       <CustomerSidebar name={name} email={email} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <SidebarTopbar/>
-        <main className="flex-1 overflow-y-auto p-8 flex justify-center  bg-bg">
+        <SidebarTopbar />
+        <main className="flex-1 overflow-y-auto p-8 flex justify-center items-start bg-bg">
           <MeshBackdrop />
           <Outlet />
         </main>
