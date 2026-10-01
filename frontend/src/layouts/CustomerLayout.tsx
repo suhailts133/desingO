@@ -5,39 +5,41 @@ import { useDecodeAccessToken } from "../helpers/decodeAccessToken";
 import { logOut } from "../app/authSlice";
 import { useEffect } from "react";
 import CustomerSidebar from "../shared/sidebar/CustomerSidebar";
+import MeshBackdrop from "../shared/common/MeshBackDrop";
 
 export default function CustomerLayout() {
-    const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
 
-    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-    const accessToken = useSelector((state: RootState) => state.auth.accessToken);
-    const { name, email, } = useDecodeAccessToken();
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated,
+  );
+  const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+  const { name, email } = useDecodeAccessToken();
 
-    useEffect(() => {
-        if (!name && !email) {
-            dispatch(logOut());
-        }
-    }, [name, email,dispatch]);
-
-
-    if (!isAuthenticated || !accessToken) {
-        return <Navigate to="/auth/login" />;
-    }
-
+  useEffect(() => {
     if (!name && !email) {
-        return <Navigate to="/auth/login" />;
+      dispatch(logOut());
     }
+  }, [name, email, dispatch]);
 
-    return (
-        <div className="fixed inset-0 flex bg-overflow-hidden">
+  if (!isAuthenticated || !accessToken) {
+    return <Navigate to="/auth/login" />;
+  }
 
-            <CustomerSidebar name={name} email={email} />
+  if (!name && !email) {
+    return <Navigate to="/auth/login" />;
+  }
 
-            <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-                <main className="flex-1 overflow-y-auto p-8 flex justify-center  bg-bg">
-                    <Outlet />
-                </main>
-            </div>
-        </div>
-    );
+  return (
+    <div className="fixed inset-0 flex bg-overflow-hidden">
+      <CustomerSidebar name={name} email={email} />
+
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <main className="flex-1 overflow-y-auto p-8 flex justify-center  bg-bg">
+          <MeshBackdrop />
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
 }

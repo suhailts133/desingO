@@ -1,4 +1,8 @@
+import { useTheme } from "../../app/themeContext";
+
 export default function MeshBackdrop() {
+  const { theme } = useTheme();
+  if (theme !== "light") return null;
    return (
     <div
       aria-hidden

@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import Navbar from "../shared/common/Navbar";
 import AIDesignButton from "../features/aiDesign/components/AIDesignButton";
 import AIDesignChatPanel from "../features/aiDesign/components/AIDesignChatPanel";
-// import MeshBackdrop from "../shared/common/MeshBackDrop";
+import MeshBackDrop from "../shared/common/MeshBackDrop";
 
 export default function MainLayout() {
     return (
@@ -11,7 +11,7 @@ export default function MainLayout() {
                 <Navbar />
             </div>
             <main className="relative z-0 flex-1 overflow-hidden">
-                {/* <MeshBackdrop /> */}
+                 <MeshBackDrop />
                 <Outlet />
             </main>
             <AIDesignButton />

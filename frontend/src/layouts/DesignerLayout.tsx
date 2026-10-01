@@ -5,6 +5,7 @@ import { useDecodeAccessToken } from "../helpers/decodeAccessToken";
 import { logOut } from "../app/authSlice";
 import { useEffect } from "react";
 import DesignerSidebar from "../shared/sidebar/DesignerSidebar";
+import MeshBackdrop from "../shared/common/MeshBackDrop";
 
 export default function DesignerLayout() {
   const dispatch = useDispatch<AppDispatch>();
@@ -35,6 +36,7 @@ export default function DesignerLayout() {
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <main className="flex-1 overflow-y-auto p-8 flex justify-center  bg-bg">
+          <MeshBackdrop/>
           <Outlet />
         </main>
       </div>
