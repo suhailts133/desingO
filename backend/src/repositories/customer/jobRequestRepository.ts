@@ -124,63 +124,6 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
     return { data: result, pagination };
   }
 
-  // async getAllJobs(JobFilter?: JobFilter): Promise<{ data: IJobRequestPopulated[]; pagination: Pagination; }> {
-  //     const page = JobFilter?.page ? Number(JobFilter?.page) : 1;
-  //     const limit = 9;
-  //     const query: QueryFilter<IJobRequest> = {}
-  //     if (JobFilter) {
-  //         if (JobFilter.designStyles) {
-  //             query.designStyles = { $in: JobFilter.designStyles.split(",") }
-  //         }
-  //         if (JobFilter.propertyTypes) {
-  //             query.propertyType = { $in: JobFilter.propertyTypes.split(",") }
-  //         }
-  //         if (JobFilter.timeLines) {
-  //             query.timeline = { $in: JobFilter.timeLines.split(",") }
-  //         }
-
-  //     }
-  //     query.status = JOB_REQUEST_STATUS.PENDING
-  //     query.sourceType = JOB_SOURCE_TYPE.JOB_REQUEST
-
-  //     const sortOrder: { [key: string]: SortOrder } = {}
-  //     if (JobFilter?.sortBy) {
-  //         if (JobFilter.sortBy === JOB_REQUEST_FILTERS.PRICE_INCREASING) {
-  //             sortOrder.minBudget = 1
-  //         }
-  //         if (JobFilter.sortBy === JOB_REQUEST_FILTERS.LATEST) {
-  //             sortOrder.createdAt = -1
-  //         }
-  //         if (JobFilter.sortBy === JOB_REQUEST_FILTERS.OLDEST) {
-  //             sortOrder.createdAt = 1
-  //         }
-  //         if (JobFilter.sortBy === JOB_REQUEST_FILTERS.PRICE_DECREASING) {
-  //             sortOrder.minBudget = -1
-  //         }
-  //         if (JobFilter.sortBy === JOB_REQUEST_FILTERS.AZ) {
-  //             sortOrder.projectTitle = 1
-  //         }
-  //         if (JobFilter.sortBy === JOB_REQUEST_FILTERS.ZA) {
-  //             sortOrder.projectTitle = -1
-  //         }
-  //     }
-
-  //     const result = await this._model.find(query)
-  //         .populate<{ userId: IUser }>("userId")
-  //         .populate<{ designerId: IUser }>("designerId")
-  //         .skip((page - 1) * limit)
-  //         .limit(limit)
-  //         .sort(sortOrder)
-  //         .exec()
-
-  //     const total = await this._model.countDocuments(query)
-  //     const pagination: Pagination = {
-  //         total,
-  //         totalPages: Math.ceil(total / limit)
-  //     }
-
-  //     return { data: result, pagination }
-  // }
 
   async getAllJobs(jobFilter?: JobFilter): Promise<{ data: IJobRequestPopulated[]; pagination: Pagination }> {
     const page = jobFilter?.page ? Number(jobFilter.page) : 1;
