@@ -7,6 +7,7 @@ import Pagination from "../../../shared/common/Pagination";
 import DesignFilter from "../components/filters/DesignFilter";
 import { createFilterChangeHandler } from "../../../helpers/handleFilterChagne";
 import Spinner from "../../../shared/common/Spinner";
+import { SlidersHorizontal } from "lucide-react";
 
 export default function BrowseDesigns() {
   const [filtersVisible, setFiltersVisible] = useState(true);
@@ -18,20 +19,13 @@ export default function BrowseDesigns() {
   const propertyTypesParam = searchParams.get("propertyTypes");
   const spaceTypesParam = searchParams.get("spaceTypes");
 
-  const designStyles = designStylesParam
-    ? designStylesParam.split(",").map((v) => ({ label: v, value: v }))
-    : null;
+  const designStyles = designStylesParam ? designStylesParam.split(",").map((v) => ({ label: v, value: v })) : null;
 
-  const propertyTypes = propertyTypesParam
-    ? propertyTypesParam.split(",").map((v) => ({ label: v, value: v }))
-    : null;
+  const propertyTypes = propertyTypesParam ? propertyTypesParam.split(",").map((v) => ({ label: v, value: v })) : null;
 
-  const spaceTypes = spaceTypesParam
-    ? spaceTypesParam.split(",").map((v) => ({ label: v, value: v }))
-    : null;
+  const spaceTypes = spaceTypesParam ? spaceTypesParam.split(",").map((v) => ({ label: v, value: v })) : null;
 
-  const selectedSort =
-    SORT_OPTIONS.find((s) => s.value === sortByValue) ?? SORT_OPTIONS[0];
+  const selectedSort = SORT_OPTIONS.find((s) => s.value === sortByValue) ?? SORT_OPTIONS[0];
 
   const { data, isLoading, error } = useGetAllDesignsCommonQuery({
     page,
@@ -62,23 +56,31 @@ export default function BrowseDesigns() {
     return <Spinner />;
   }
 
-  if (error || !designs)
-    return (
-      <div className="p-10 text-center text-error">Error loading designs.</div>
-    );
+  if (error || !designs) return <div className="p-10 text-center text-error">Error loading designs.</div>;
 
   return (
     <div className="min-h-screen bg-bg font-Jost">
-      <DesignFilter
-        designStyles={designStyles}
-        propertyTypes={propertyTypes}
-        spaceTypes={spaceTypes}
-        sortBy={selectedSort}
-        onFilterChange={onFilterChange}
-        onClear={handleClearAll}
-        filtersVisible={filtersVisible}
-        setFiltersVisible={setFiltersVisible}
-      />
+      <div className="flex justify-end px-6 py-3">
+        <button
+          onClick={() => setFiltersVisible((v) => !v)}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all
+            ${filtersVisible ? "bg-accent text-text-on-accent border-accent" : "bg-surface text-text-muted border-surface-border hover:border-surface-border-strong"}`}
+        >
+          <SlidersHorizontal className="w-4 h-4" />
+          Filters
+        </button>
+      </div>
+
+      {filtersVisible && (
+        <DesignFilter
+          designStyles={designStyles}
+          propertyTypes={propertyTypes}
+          spaceTypes={spaceTypes}
+          sortBy={selectedSort}
+          onFilterChange={onFilterChange}
+          onClear={handleClearAll}
+        />
+      )}
 
       <div className="max-w-7xl mx-auto px-6 py-8 pb-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
