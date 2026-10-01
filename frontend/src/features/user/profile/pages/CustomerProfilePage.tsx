@@ -8,24 +8,41 @@ import { useChangeProfileImage } from "../../../designer/profile/hooks/useChange
 import { useUpdateUserProfile } from "../hooks/useUpdateUserProfile"
 import type { UserProfileUpdateDTO } from "../customerProfileInterfaces"
 import Spinner from "../../../../shared/common/Spinner"
+import { useHandleResponse } from "../../../../helpers/useHandleResponse"
 
 export default function CustomerProfilePage() {
     const [changeImage, setChangeImage] = useState<boolean>(false)
     const [updateProfile, setUpdateProfile] = useState<boolean>(false)
-    const { handleUpdateImage, isChanging, updateError, updateSuccess, newImage, resetState } = useChangeProfileImage()
-    const { handleUpdateData, isUpdating, dataError, dataSuccess, newData, resetStateProfileUpdation } = useUpdateUserProfile()
+    const [newData, setNewData] = useState<UserProfileUpdateDTO | null>(null)
+    const [newImage, setNewImage] = useState<string | null>(null)
+
+    const handleResponse = useHandleResponse()
+    const { handleUpdateImage, isChanging } = useChangeProfileImage()
+    const { handleUpdateData, isUpdating } = useUpdateUserProfile()
     const { data, error, isLoading } = useGetUserProfileQuery()
+
     const profile = data?.data
 
     if (isLoading) return <Spinner />
     if (error || !profile) return <p>Error while loading profile</p>
 
     const handleImageChange = async (data: FormData) => {
-        await handleUpdateImage(data)
+      const result = await handleUpdateImage(data)
+      handleResponse(result.success, "Profile Image Updated Successfully", result.message)
+      if (result.success) {
+        setNewImage(result.data as string)
+        setChangeImage(false)
+      }
     }
 
-    const handleProfileDataUpdation = async (data: UserProfileUpdateDTO) => {
-        await handleUpdateData(data)
+    const handleProfileDataUpdation = async (body: UserProfileUpdateDTO) => {
+        const result = await handleUpdateData(body)
+        handleResponse(result.success, "Profile updated successfully", result.message)
+
+        if (result.success) {
+            setNewData(result.data as UserProfileUpdateDTO)
+            setUpdateProfile(false)
+        }
     }
 
     return (
@@ -37,6 +54,7 @@ export default function CustomerProfilePage() {
                 profile_image_url={profile.profile_image_url}
                 onChangeImage={() => setChangeImage(true)}
             />
+
             <CustomerInfo
                 newData={newData ?? undefined}
                 profile={profile}
@@ -45,27 +63,17 @@ export default function CustomerProfilePage() {
 
             <ProfileImageUploadForm
                 isLoading={isChanging}
-                errorMessage={updateError ?? undefined}
-                successMessage={updateSuccess ?? undefined}
                 isOpen={changeImage}
-                onClose={() => {
-                    setChangeImage(false)
-                    resetState()
-                }}
+                onClose={() => setChangeImage(false)}
                 updateImage={handleImageChange}
             />
 
             <CustomerUpdateForm
                 isLoading={isUpdating}
-                dataError={dataError ?? undefined}
-                dataSuccess={dataSuccess ?? undefined}
-                updateProfileData={handleProfileDataUpdation}
                 data={profile}
                 isOpen={updateProfile}
-                onClose={() => {
-                    setUpdateProfile(false)
-                    resetStateProfileUpdation()
-                }}
+                onClose={() => setUpdateProfile(false)}
+                updateProfileData={handleProfileDataUpdation}
             />
         </div>
     )
