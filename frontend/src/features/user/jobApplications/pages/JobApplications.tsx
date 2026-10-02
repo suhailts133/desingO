@@ -12,6 +12,7 @@ import { getDateRange } from "../../../../helpers/getDateRange";
 import DateFilterPicker from "../../../../shared/common/DatePickerFilter";
 import Pagination from "../../../../shared/common/Pagination";
 import Spinner from "../../../../shared/common/Spinner";
+import { useHandleResponse } from "../../../../helpers/useHandleResponse";
 
 
 export default function JobApplications() {
@@ -22,9 +23,9 @@ export default function JobApplications() {
     const [endDate, setEndDate] = useState<Date>(new Date());
     const [approveJobApplication, setApproveJobApplication] = useState<{ id: string, jobId: string } | null>(null)
     const [rejectJobApplication, setRejectJobApplication] = useState<{ id: string, jobId: string } | null>(null)
-    const { handleApproveOrReject, approvalError, approvalSuccess, isApproving } = useApproveOrRejectJobApplication()
+    const { handleApproveOrReject, isApproving } = useApproveOrRejectJobApplication()
     const { id } = useParams<{ id: string }>();
-    const { startDate: queryStart, endDate: queryEnd } = getDateRange(dateFilter, startDate, endDate)
+  const { startDate: queryStart, endDate: queryEnd } = getDateRange(dateFilter, startDate, endDate)
 
     const { data, isLoading, error } = useGetAllJobApplicationsQuery({
         page,
@@ -34,7 +35,7 @@ export default function JobApplications() {
         startDate: queryStart,
         endDate: queryEnd,
     }, { skip: !id })
-
+const handleResponse = useHandleResponse()
     const navigate = useNavigate()
     const jobApplications = data?.data
 
@@ -43,22 +44,24 @@ export default function JobApplications() {
 
     const handleApproval = async () => {
         if (!approveJobApplication) return
-        await handleApproveOrReject({
+        const result = await handleApproveOrReject({
             id: approveJobApplication.id,
             status: "Ongoing",
             jobId: approveJobApplication.jobId
         })
+      handleResponse(result.success, "Job application approved", result.message)
         setApproveJobApplication(null)
     }
 
     const handleRejection = async (data: RejectionPayload) => {
         if (!rejectJobApplication) return
-        await handleApproveOrReject({
+       const result = await handleApproveOrReject({
             id: rejectJobApplication.id,
             jobId: rejectJobApplication.jobId,
             status: "Rejected",
             rejectionReason: data.rejectionReason
         })
+            handleResponse(result.success, "Job application rejected", result.message)
         setRejectJobApplication(null)
     }
 
@@ -100,13 +103,6 @@ export default function JobApplications() {
                     onEndDateChange={(date) => { setEndDate(date); setPage(1) }}
                 />
             </div>
-
-            {approvalSuccess && (
-                <p className="text-success text-sm text-center">{approvalSuccess}</p>
-            )}
-            {approvalError && (
-                <p className="text-error text-sm text-center">{approvalError}</p>
-            )}
 
             <div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
