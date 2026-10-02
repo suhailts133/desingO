@@ -81,7 +81,10 @@ export class JobRequestMapper {
         }))
     }
 
-    static toJobRequestDTO(data: IJobRequestPopulated): JobDetailResponseDTO {
+  static toJobRequestDTO(data: IJobRequestPopulated): JobDetailResponseDTO {
+    console.log(data)
+         const userProfileImage = data.userId.profileImage?.path ?? data.userId.profile_image_url;
+         const designerProfileImage = data.designerId?.profileImage?.path ?? data.designerId?.profile_image_url;
         return {
             id: data.id,
             jobNumber: data.jobNumber,
@@ -93,6 +96,8 @@ export class JobRequestMapper {
             ...(data.designId && { designId: data.designId.toString() }),
             ...(data.designerId && { designerId: data.designerId.id }),
             ...(data.designerId && { designerName: data.designerId.full_name }),
+            ...(designerProfileImage && { designerProfile: designerProfileImage }),
+            ...(userProfileImage && { userProfile: userProfileImage }),
 
             userId: data.userId.id,
             userName: data.userId.full_name,

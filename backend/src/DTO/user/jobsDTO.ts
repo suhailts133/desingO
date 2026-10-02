@@ -89,6 +89,8 @@ export type JobDetailResponseDTO = Omit<IJobRequest, "designId" | "userId" | "de
     designId?: string;
     designerName?: string;
     createdAt: string;
+    userProfile?:string
+    designerProfile?:string
 
 };
 
