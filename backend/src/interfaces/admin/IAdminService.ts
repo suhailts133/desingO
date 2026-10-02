@@ -14,7 +14,7 @@ export interface IAdminUserManagementService {
 export interface IAdminDesignerVerificatoinServices {
     getallDesignerRequests(filter?: DesignerFilterDTO): Promise<IApiResponseWithPagination<AdminDesignersResponseDTO[]>>
     getDesignerRequest(id: string): Promise<IApiResponse<AdminDesignerRequestResponseDTO>>
-    ApproveOrRejectDesignerRequest(id: string, data: AdminDesignerApprovalRequestDTO): Promise<IApiResponse<AdminDesignerStatusDTO>>
+    ApproveOrRejectDesignerRequest(adminId:string,id: string, data: AdminDesignerApprovalRequestDTO): Promise<IApiResponse<AdminDesignerStatusDTO>>
 }
 
 

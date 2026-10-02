@@ -9,6 +9,7 @@ import { designerStatusChangeValidator } from "../../validators/admin/designerSt
 import asyncHandler from "express-async-handler";
 import type { Request, Response } from "express"
 import Logger from "../../config/logger";
+import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
 
 /**
  * Handle all admin designer verificaion related Routes
@@ -57,7 +58,11 @@ export class DesingerVerificationController {
         if (error) {
             const err = error.details[0]?.message || "Missing fields or Invalid Data"
             RespsonseHelper.error(res, "Invalid data", err, RESPONSE_CODE.BAD_REQUEST)
-        }
+      }
+      const userid = req.user?.userId
+      if (!userid) {
+        throw new AppError(AUTH_MESSAGES.AUTH.NOT_ADMIN, RESPONSE_CODE.UNAUTHORIZED)
+      }
         const validatedData = value as AdminDesignerApprovalRequestDTO
         const applicationId = req.params.id as string;
         if (!applicationId) {
@@ -66,7 +71,7 @@ export class DesingerVerificationController {
         if (!isObjectId(applicationId)) {
             throw new AppError(ADMIN_MESSAGES.DESIGNER_VERFICATION.ID_NOT_PROVIDED, RESPONSE_CODE.BAD_REQUEST)
         }
-        const result = await this._adminDesignerVerificationServices.ApproveOrRejectDesignerRequest(applicationId, validatedData)
+        const result = await this._adminDesignerVerificationServices.ApproveOrRejectDesignerRequest(userid,applicationId, validatedData)
         RespsonseHelper.success(res, result);
     })
 }

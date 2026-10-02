@@ -9,7 +9,7 @@ export interface IMessage {
     createdAt: Date
 }
 
-export type NotificationType = "Message" | "Job_Request" | "Hire_Request" | "Proposal"
+export type NotificationType = "Message" | "Job_Request" | "Hire_Request" | "Proposal" | "Designer_Application"
 
 export interface INotification {
     id: string
