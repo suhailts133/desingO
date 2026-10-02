@@ -1,7 +1,6 @@
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload"
-import type { ICreateJobRequest, IHouseholdProfile, IJobRequest, IJobRequestPopulated, INewBuildDetails, IRenovationDetails, Source_type } from "../../interfaces/customer/ICustomer"
+import type { ICreateJobRequest, IHouseholdProfile, IJobRequest, IJobRequestPopulated, INewBuildDetails, IRenovationDetails, JobStatus, Source_type } from "../../interfaces/customer/ICustomer"
 
-export type JobStatus = "Pending" | "Closed" | "Ongoing" | "Rejected" | "Accepted"
 
 export interface JobsResponseDTO {
     id: string
