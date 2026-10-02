@@ -153,26 +153,28 @@ export default function DesignerVerificationDetails() {
             </div>
           </section>
 
-          <section className="space-y-4">
-            <h2 className="text-2xl font-Jost-Semibold px-2 text-text-primary">Professional Experience</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              {designerRequest.workExperience.map((work, i) => (
-                <div key={i} className="bg-surface p-8 rounded-2xl border border-surface-border flex flex-col md:flex-row gap-6">
-                  <div className="flex-1 space-y-3">
-                    <span className="bg-accent-tint px-3 py-1 rounded text-xs font-bold text-accent-tint-text">EXPERIENCE {i + 1}</span>
-                    <h3 className="text-xl font-Jost-Semibold text-text-primary">{work.role}</h3>
-                    <p className="text-text-muted">{work.companyName}</p>
-                    <p className="text-text-faint font-medium">{work.yearsOfExperience} Years of Service</p>
+          {designerRequest.workExperience.length > 0 && (
+            <section className="space-y-4">
+              <h2 className="text-2xl font-Jost-Semibold px-2 text-text-primary">Professional Experience</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                {designerRequest.workExperience.map((work, i) => (
+                  <div key={i} className="bg-surface p-8 rounded-2xl border border-surface-border flex flex-col md:flex-row gap-6">
+                    <div className="flex-1 space-y-3">
+                      <span className="bg-accent-tint px-3 py-1 rounded text-xs font-bold text-accent-tint-text">EXPERIENCE {i + 1}</span>
+                      <h3 className="text-xl font-Jost-Semibold text-text-primary">{work.role}</h3>
+                      <p className="text-text-muted">{work.companyName}</p>
+                      <p className="text-text-faint font-medium">{work.yearsOfExperience} Years of Service</p>
+                    </div>
+                    <div className="md:w-48">
+                      <Zoom>
+                        <img src={work.proof} className="w-full h-full object-cover rounded-lg border border-surface-border hover:scale-105 transition-transform" alt="Experience Proof" />
+                      </Zoom>
+                    </div>
                   </div>
-                  <div className="md:w-48">
-                    <Zoom>
-                      <img src={work.proof} className="w-full h-full object-cover rounded-lg border border-surface-border hover:scale-105 transition-transform" alt="Experience Proof" />
-                    </Zoom>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+                ))}
+              </div>
+            </section>
+          )}
 
         </div>
       </div>
