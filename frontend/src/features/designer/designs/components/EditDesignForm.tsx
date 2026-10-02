@@ -14,10 +14,10 @@ import { STYLE_OPTIONS, SERVICE_OPTIONS, PROPERTY_OPTIONS, SPACE_OPTIONS } from 
 import { useGetDesignDetailQuery } from "../designEndpoints";
 import { useEditDesign } from "../hooks/useEditDesign";
 import type { CoverState, DesignDetailResponseDTO, EditDesignFields, GalleryItem, SelectOption } from "../designInterface";
-import toast from "react-hot-toast";
 import { selectStyles } from "../../../../shared/filter/selectStyle";
 import type { OptionType } from "../../../common/baseData";
 import Spinner from "../../../../shared/common/Spinner";
+import { useHandleResponse } from "../../../../helpers/useHandleResponse";
 
 const animatedComponents = makeAnimated();
 
@@ -52,7 +52,7 @@ export default function EditDesignForm() {
 
 
 function EditDesignFormInner({ id, defaultData }: { id: string; defaultData: DesignDetailResponseDTO }) {
-  const { handleUpdation, updateError, isEditing } = useEditDesign();
+  const { handleUpdation, isEditing } = useEditDesign();
   const navigate = useNavigate();
 
   const [cover, setCover] = useState<CoverState>({
@@ -82,7 +82,7 @@ function EditDesignFormInner({ id, defaultData }: { id: string; defaultData: Des
       propertyType: labelToOption(defaultData.propertyType, PROPERTY_OPTIONS),
     },
   });
-
+const handleResponse = useHandleResponse();
   useEffect(() => {
     return () => {
       gallery.forEach(item => { if (item.type === "new") URL.revokeObjectURL(item.preview); });
@@ -151,12 +151,8 @@ function EditDesignFormInner({ id, defaultData }: { id: string; defaultData: Des
     });
 
     const result = await handleUpdation({ formdata: formData, id });
-    if (result) {
-      toast.success("Design updated successfully!");
-      navigate("/designer/designs");
-    } else {
-      toast.error(updateError || "Something Went Wrong.");
-    }
+    handleResponse(result.success, "Design updated successfully!", result.message, "/designer/designs")
+
   };
 
   const coverSrc = cover.type === "new" ? cover.preview : cover.path;

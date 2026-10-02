@@ -15,6 +15,7 @@ import { UNIT_OPTIONS } from "../../../user/jobs/jobData";
 import SubmitButton from "../../../../shared/common/SubmitButton";
 import { selectStyles } from "../../../../shared/filter/selectStyle";
 import type { OptionType } from "../../../common/baseData";
+import { useHandleResponse } from "../../../../helpers/useHandleResponse";
 
 const animatedComponents = makeAnimated();
 
@@ -26,7 +27,8 @@ export default function DesignForm() {
     });
 
     const { fields, append, remove } = useFieldArray({ control, name: "gallery" });
-    const { handleSubmission, designError, designSuccess, isLoading } = useAddDesign();
+  const { handleSubmission, isLoading } = useAddDesign();
+  const handleResponse = useHandleResponse();
     const watchGallery = useWatch({ control, name: "gallery" });
     const watchedCover = useWatch({ control, name: "coverImage" });
 
@@ -89,7 +91,8 @@ export default function DesignForm() {
             }
         })
 
-        await handleSubmission(formData)
+      const result = await handleSubmission(formData)
+      handleResponse(result.success, "Design posted successfully!", result.message, "/designer/designs")
     }
 
     return (
@@ -375,8 +378,6 @@ export default function DesignForm() {
                     <SubmitButton isLoading={isLoading} label="Submit" loadingLabel="Submitting" type="submit" />
 
                 </form>
-                {designError && <p className="text-sm text-error text-center mt-4">{designError}</p>}
-                {designSuccess && <p className="text-sm text-success text-center mt-4">{designSuccess}</p>}
             </div>
         </div>
     );
