@@ -4,23 +4,25 @@ import { useForm } from "react-hook-form";
 import { useGetDesignerRequestQuery } from "../adminDesignerVerificationEndpoints";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css"
-import type { AdminDesignerReject } from "../adminDesignerVerificationInterfaces";
+import type { AdminDesignerReject, Status } from "../adminDesignerVerificationInterfaces";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { adminDesignerReject } from "../../../../validations/adminValidations";
 import { useApproveOrRejectDesigner } from "../hooks/useApproveOrRejectDesigner";
-import { Check, X } from "lucide-react"
 import Spinner from "../../../../shared/common/Spinner";
+import { useHandleResponse } from "../../../../helpers/useHandleResponse";
 
 
 export default function DesignerVerificationDetails() {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading, error } = useGetDesignerRequestQuery(id!, { skip: !id });
-  const { handleApproveOrReject, isApprovalLoading, approvalError, approvalSuccess, status } = useApproveOrRejectDesigner()
+    const [status, setStatus] = useState<string | null>(null)
+  const { handleApproveOrReject, isApprovalLoading } = useApproveOrRejectDesigner()
   const [modalType, setModalType] = useState<"approve" | "reject" | null>(null);
   const { register, handleSubmit, formState: { errors } } = useForm<AdminDesignerReject>({
     resolver: joiResolver(adminDesignerReject),
     mode: "onBlur"
   });
+  const handleResponse = useHandleResponse();
   const navigate = useNavigate()
   const designerRequest = data?.data;
   if (isLoading) return <Spinner/>
@@ -28,16 +30,19 @@ export default function DesignerVerificationDetails() {
   const designerStatus = status ? status : designerRequest.status
 
   const onRejectSubmit = async (data: AdminDesignerReject) => {
-    const success = await handleApproveOrReject({ id: id as string, status: "Rejected", rejectionReason: data.rejectionReason })
-    if (success) {
+    const result = await handleApproveOrReject({ id: id as string, status: "Rejected", rejectionReason: data.rejectionReason })
+    handleResponse(result.success, "⚠️ Application was rejected",)
+    if (result.success) {
+      setStatus(result.data?.status as Status)
       setModalType(null);
     }
   };
 
   const handleApprove = async () => {
-
-    const success = await handleApproveOrReject({ id: id as string, status: "Approved" })
-    if (success) {
+    const result = await handleApproveOrReject({ id: id as string, status: "Approved" })
+    handleResponse(result.success, "Application accepted successfully!",)
+    if (result.success) {
+      setStatus(result.data?.status as Status)
       setModalType(null);
     }
   };
@@ -69,7 +74,7 @@ export default function DesignerVerificationDetails() {
             <div className="flex gap-3">
               <button
                 onClick={() => setModalType('approve')}
-                className="px-6 py-2.5 bg-success text-text-on-accent rounded-xl hover:opacity-90 transition-all font-medium"
+                className="px-6 py-2.5 bg-success text-text-on-accent font-Jost-Semibold rounded-xl hover:opacity-90 transition-all font-medium"
               >
                 Approve Request
               </button>
@@ -82,22 +87,6 @@ export default function DesignerVerificationDetails() {
             </div>
           )}
         </div>
-
-
-        {approvalError && (
-          <div className="flex items-center gap-2 p-3 rounded-xl bg-error-tint border border-error text-error-text animate-in fade-in zoom-in duration-200">
-            <X />
-            <p className="text-sm font-medium leading-tight">{approvalError}</p>
-          </div>
-        )}
-
-
-        {approvalSuccess && (
-          <div className="flex items-center gap-2 p-3 rounded-xl bg-success-tint border border-success text-success-text animate-in fade-in zoom-in duration-200">
-            <Check />
-            <p className="text-sm font-medium leading-tight">{approvalSuccess}</p>
-          </div>
-        )}
 
         <div className="grid grid-cols-1 gap-8">
 
