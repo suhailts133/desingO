@@ -195,7 +195,8 @@ export interface JobRequestDetailDTO {
   id: string;
   userId: string;
   userName: string;
-
+  userProfile?:string
+  designerProfile?:string
   designerId?: string;
   designerName?: string;
   designId?: string;

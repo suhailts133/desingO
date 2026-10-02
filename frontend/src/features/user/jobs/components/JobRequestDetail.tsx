@@ -29,6 +29,7 @@ import { useGetAJobRequestDetailQuery } from "../jobEndpoints";
 import ApplyForJob from "./applyForJob";
 import Spinner from "../../../../shared/common/Spinner";
 import { useDecodeAccessToken } from "../../../../helpers/decodeAccessToken";
+import { nameInitials } from "../../../../helpers/initialExtractor";
 
 export default function JobRequestDetail() {
   const [modalType, setModalType] = useState<boolean>(false);
@@ -393,15 +394,28 @@ export default function JobRequestDetail() {
         <div className="space-y-5">
           {/* Customer card */}
           <div className="bg-surface rounded-2xl border border-surface-border px-6 py-5">
-            <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-text-faint mb-4">Posted By</h2>
+            <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-text-faint mb-4">
+              Posted By
+            </h2>
             <div className="flex flex-col items-center text-center gap-3">
-              <div className="w-16 h-16 rounded-full bg-surface-hover border-2 border-surface-border flex items-center justify-center">
-                <User className="w-7 h-7 text-text-faint" />
+              <div className="w-16 h-16 rounded-full bg-surface-hover border-2 border-surface-border overflow-hidden flex items-center justify-center shrink-0">
+                {job.userProfile ? (
+                  <img
+                    src={job.userProfile}
+                    alt={job.userName || "Customer avatar"}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="font-Jost-Semibold text-lg text-text-primary">
+                    {nameInitials(job.userName)}
+                  </span>
+                )}
               </div>
               <p className="font-Jost-Semibold text-text-primary">{job.userName}</p>
             </div>
           </div>
 
+          {/* Designer card (direct hire only) */}
           {/* Designer card (direct hire only) */}
           {isDirectHire && job.designerName && (
             <div className="bg-surface rounded-2xl border border-surface-border px-6 py-5">
@@ -409,14 +423,25 @@ export default function JobRequestDetail() {
                 Assigned Designer
               </h2>
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-success-tint border-2 border-success flex items-center justify-center shrink-0">
-                  <Sparkles className="w-5 h-5 text-success" />
+                <div className="w-12 h-12 rounded-full bg-success-tint border-2 border-success overflow-hidden flex items-center justify-center shrink-0">
+                  {job.designerProfile ? (
+                    <img
+                      src={job.designerProfile}
+                      alt={job.designerName || "Designer avatar"}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="font-Jost-Semibold text-sm text-success-text">
+                      {nameInitials(job.designerName)}
+                    </span>
+                  )}
                 </div>
-                <p className="font-Jost-Semibold text-text-primary text-sm">{job.designerName}</p>
+                <p className="font-Jost-Semibold text-text-primary text-sm">
+                  {job.designerName}
+                </p>
               </div>
             </div>
           )}
-
           {/* Quick summary */}
           <div className="bg-surface rounded-2xl border border-surface-border px-6 py-5">
             <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-text-faint mb-4">Quick Summary</h2>
