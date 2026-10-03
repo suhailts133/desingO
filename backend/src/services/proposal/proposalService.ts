@@ -1,4 +1,12 @@
-import type { CreateProposalDTO, CreateProposalRepoDataDTO, ProposalAcceptOrRejectDTO, ProposalDetailDTO, ProposalInputData, UpdateProposalDTO, UpdateProposalRepoDataDTO } from "../../DTO/proposal/proposal";
+import type {
+  CreateProposalDTO,
+  CreateProposalRepoDataDTO,
+  ProposalAcceptOrRejectDTO,
+  ProposalDetailDTO,
+  ProposalInputData,
+  UpdateProposalDTO,
+  UpdateProposalRepoDataDTO,
+} from "../../DTO/proposal/proposal";
 import type { CreateNotificationDTO } from "../../DTO/socket/notificationDTO";
 import { ProposalMapper } from "../../dtoMappers/proposal/proposalMapper";
 import { HireDesignerMapper } from "../../dtoMappers/user/hireDesignerMapper";
@@ -6,7 +14,7 @@ import type { IApiResponse } from "../../interfaces/base/IApiResponse";
 import type { ITransactionManager } from "../../interfaces/base/ITransactionManager";
 import type { IActiveJobRepository, IJobRepository } from "../../interfaces/customer/ICustomerRepository";
 import type { IFloorPlanRepository } from "../../interfaces/proposal/IFloorPlan";
-import type { IServiceItem } from "../../interfaces/proposal/IProposal";
+import type { ContractStatus, IServiceItem } from "../../interfaces/proposal/IProposal";
 import type { IProposalRepository, IServiceVersionRepository } from "../../interfaces/proposal/IProposalRepository";
 import type { IProposalService } from "../../interfaces/proposal/IProposalService";
 import type { INotificationService } from "../../interfaces/socket/ISocketService";
@@ -178,12 +186,17 @@ export class ProposalService implements IProposalService {
       throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
     }
 
-    const isSiteVisiting = proposal.siteVisitingNeeded === true;
-    const isFloorPlanApproved = proposal.isFloorPlanApproved === true;
-
-    const shouldUpdateServiceStatus = !isSiteVisiting || isFloorPlanApproved;
-
-    const contractStatusToPersist = shouldUpdateServiceStatus ? CONTRACT_STATUS.ONGOING : CONTRACT_STATUS.ACCEPTED;
+    const isRejected = data.contractStatus === CONTRACT_STATUS.REJECTED;
+    let contractStatusToPersist: ContractStatus;
+    let shouldUpdateServiceStatus = false;
+    if (isRejected) {
+      contractStatusToPersist = CONTRACT_STATUS.REJECTED;
+    } else {
+      const isSiteVisiting = proposal.siteVisitingNeeded === true;
+      const isFloorPlanApproved = proposal.isFloorPlanApproved === true;
+      shouldUpdateServiceStatus = !isSiteVisiting || isFloorPlanApproved;
+      contractStatusToPersist = shouldUpdateServiceStatus ? CONTRACT_STATUS.ONGOING : CONTRACT_STATUS.ACCEPTED;
+    }
 
     const updated = await this._proposalRepo.acceptOrRejectProposal(data.sourceId, contractStatusToPersist, shouldUpdateServiceStatus, data.overallRejectionReason);
 
