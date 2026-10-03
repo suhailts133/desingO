@@ -4,7 +4,7 @@ import type { IJobRepository } from "../../interfaces/customer/ICustomerReposito
 import { JobRequestModel } from "../../models/user/jobModel";
 import { BaseRepository } from "../baseRepository";
 import type { Pagination } from "../../DTO/admin/adminDTO";
-import type { AggregationResultJobRequest, createJobRepoDTO, EditJobRepoData, JobFilter } from "../../DTO/user/jobsDTO";
+import type { AggregationResultJobRequest, createJobRepoDTO, EditJobRepoData, JobFilter, JobReportDTO } from "../../DTO/user/jobsDTO";
 import type { IUser } from "../../interfaces/auth/IUser";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
 import { JOB_REQUEST_FILTERS } from "../../shared/enums/filterEnums";
@@ -14,6 +14,25 @@ import type { HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
 export class JobRequestRepository extends BaseRepository<IJobRequest> implements IJobRepository {
   constructor() {
     super(JobRequestModel);
+  }
+  async getJobReport(): Promise<JobReportDTO> {
+    const [result] = await this._model.aggregate<JobReportDTO>([
+      {
+        $group: {
+          _id: "$status",
+          value: { $sum: 1 }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          data: { $push: { name: "$_id", value: "$value" } },
+          totalValue: { $sum: "$value" }
+        }
+      },
+      { $project: { _id: 0, data: 1, totalValue: 1 } }
+    ])
+    return result ?? { data: [], totalValue: 0 }
   }
 
   async findCandidatesExcluding(): Promise<IJobRequestPopulated[]> {

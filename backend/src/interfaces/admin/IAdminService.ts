@@ -1,5 +1,6 @@
 import type { AdminDashboardDTO } from "../../DTO/admin/adminDashboard";
 import type { AdminDesignerApprovalRequestDTO, AdminDesignerRequestResponseDTO, AdminDesignersResponseDTO, AdminDesignerStatusDTO, AdminUserDetailDTO, AdminUsersResponseDTO, AdminUserToggleStatusDTO, DesignerFilterDTO, UserFilterDTO } from "../../DTO/admin/adminDTO";
+import type { JobReportDTO } from "../../DTO/user/jobsDTO";
 import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse";
 
 export interface IAdminUserManagementService {
@@ -21,4 +22,5 @@ export interface IAdminDesignerVerificatoinServices {
 
 export interface IAdminDashboardService {
     getAdminDashBoard(): Promise<IApiResponse<AdminDashboardDTO>>
+    getJobReport(): Promise<IApiResponse<JobReportDTO>>
 }

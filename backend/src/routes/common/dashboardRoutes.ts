@@ -34,12 +34,13 @@ const designerRepo = new DesignerRepository()
 
 const designerDashboardService = new DesignerDashboardService(designRepo, disputeRepo, userRepo, proposalRepo, reviewRepo, activeJobRepo)
 const customerDashboardService = new CustomerDashboardService(jobRepo, disputeRepo, userRepo, proposalRepo, activeJobRepo)
-const adminDashboardService = new AdminDashboardService(disputeRepo, userRepo, designerRepo, transactionRepo, activeJobRepo)
+const adminDashboardService = new AdminDashboardService(jobRepo, disputeRepo, userRepo, designerRepo, transactionRepo, activeJobRepo)
 const dashboardController = new DashboardController(designerDashboardService, customerDashboardService, adminDashboardService)
 
 router.get("/designer", designerAuthentication, dashboardController.getDesignerDashboard)
 router.get("/customer", customerAuthentication, dashboardController.getCustomerDashboard)
 router.get("/admin", adminAuthentication, dashboardController.getAdminDashboard)
+router.get("/admin/job-report",adminAuthentication, dashboardController.getJobReport)
 router.get("/recent-transaction", authenticate, transactionController.getMyTransaction)
 router.get("/top-reviews", designerAuthentication, reviewController.getTopReviews)
 export default router

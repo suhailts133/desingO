@@ -26,6 +26,16 @@ export class DashboardController {
         const result = await this._adminDashboardService.getAdminDashBoard();
         RespsonseHelper.success(res, result)
     })
+
+    /**
+     * thi controlle gets job report
+     * @route GET / dashboard/admin/job-report
+     */
+    getJobReport = asyncHandler(async (req:Request, res:Response) => {
+        const result = await this._adminDashboardService.getJobReport();
+        RespsonseHelper.success(res, result)
+    })
+
     /**
      * this controller handle designer designer dashboard
      * 

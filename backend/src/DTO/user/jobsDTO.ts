@@ -114,3 +114,16 @@ export type createJobRepoDTO = ICreateJobRequest & {
     jobNumber: string;
     userId: string
 };
+
+
+
+
+export interface IStatusStat{
+  name: JobStatus,
+  value:number
+}
+
+export interface JobReportDTO{
+  data: IStatusStat[],
+  totalValue:number
+}
