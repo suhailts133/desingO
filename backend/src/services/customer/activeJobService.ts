@@ -19,7 +19,7 @@ export class ActiveJobService implements IActiveJobService {
         return { message: JOB_MESSAGES.ACTIVE_JOB.FETCH_ALL, data: activeJobData, total: pagination.total, totalPages: pagination.totalPages }
 
     }
-    async validateJobForChat(activeJobId: string, userId: string): Promise<JobChatValidation> {
+    async validateJobForChat(activeJobId: string, userId: string, activeCheckSkip?:boolean): Promise<JobChatValidation> {
 
         const job = await this._activeJobRepo.getActiveJob(activeJobId);
 
@@ -28,9 +28,11 @@ export class ActiveJobService implements IActiveJobService {
         }
 
 
-        if (job.status !== ACTIVE_JOB_STATUS.ACTIVE) {
+       if(!activeCheckSkip){
+         if (job.status !== ACTIVE_JOB_STATUS.ACTIVE) {
             throw new AppError(SOCKET_MESSAGES.CHAT.CANNOT_CHAT, RESPONSE_CODE.BAD_REQUEST);
         }
+       }
 
         if (job.userId.toString() === userId) {
             return {

@@ -24,7 +24,7 @@ export interface IJobRequestService {
 export interface IActiveJobService {
     getCustomerActiveJobs(id: string, filter?: ActiveJobFilter): Promise<IApiResponseWithPagination<ActiveJobResponseDTO[]>>
     getDesignerActiveJobs(id: string, filter?: ActiveJobFilter): Promise<IApiResponseWithPagination<ActiveJobResponseDTO[]>>
-    validateJobForChat(activeJobId: string, userId: string): Promise<JobChatValidation>
+    validateJobForChat(activeJobId: string, userId: string, activeCheckSkip?:boolean): Promise<JobChatValidation>
 }
 
 
