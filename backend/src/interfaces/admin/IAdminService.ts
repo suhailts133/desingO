@@ -1,5 +1,7 @@
 import type { AdminDashboardDTO } from "../../DTO/admin/adminDashboard";
 import type { AdminDesignerApprovalRequestDTO, AdminDesignerRequestResponseDTO, AdminDesignersResponseDTO, AdminDesignerStatusDTO, AdminUserDetailDTO, AdminUsersResponseDTO, AdminUserToggleStatusDTO, DesignerFilterDTO, UserFilterDTO } from "../../DTO/admin/adminDTO";
+import type { DisputeReportDTO } from "../../DTO/proposal/dispute";
+import type { JobReportDTO } from "../../DTO/user/jobsDTO";
 import type { IApiResponse, IApiResponseWithPagination } from "../base/IApiResponse";
 
 export interface IAdminUserManagementService {
@@ -14,11 +16,13 @@ export interface IAdminUserManagementService {
 export interface IAdminDesignerVerificatoinServices {
     getallDesignerRequests(filter?: DesignerFilterDTO): Promise<IApiResponseWithPagination<AdminDesignersResponseDTO[]>>
     getDesignerRequest(id: string): Promise<IApiResponse<AdminDesignerRequestResponseDTO>>
-    ApproveOrRejectDesignerRequest(id: string, data: AdminDesignerApprovalRequestDTO): Promise<IApiResponse<AdminDesignerStatusDTO>>
+    ApproveOrRejectDesignerRequest(adminId:string,id: string, data: AdminDesignerApprovalRequestDTO): Promise<IApiResponse<AdminDesignerStatusDTO>>
 }
 
 
 
 export interface IAdminDashboardService {
     getAdminDashBoard(): Promise<IApiResponse<AdminDashboardDTO>>
+    getJobReport(): Promise<IApiResponse<JobReportDTO>>
+    getDisputeReport():Promise<IApiResponse<DisputeReportDTO>>
 }

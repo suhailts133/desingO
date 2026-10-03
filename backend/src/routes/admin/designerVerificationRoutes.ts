@@ -5,6 +5,7 @@ import { DesignerVerificationManagementRepository } from "../../repositories/adm
 import { AdminDesignerVerificationservice } from "../../services/admin/designerVerificationService";
 import { UserRepository } from "../../repositories/auth/userRepository";
 import { MongooseTransactionManager } from "../../shared/helpers/MongooseTransactionManager";
+import { notificationService } from "../designer/jobApplicationRoutes";
 
 const router = Router();
 // repos
@@ -12,7 +13,7 @@ const designerVerificationRepository = new DesignerVerificationManagementReposit
 const userRepo = new UserRepository();
 // services
 const dbTransaction = new MongooseTransactionManager();
-const designerVerificationServices = new AdminDesignerVerificationservice(designerVerificationRepository, userRepo, dbTransaction);
+const designerVerificationServices = new AdminDesignerVerificationservice(notificationService, designerVerificationRepository, userRepo, dbTransaction);
 const designerVerificationController = new DesingerVerificationController(designerVerificationServices);
 
 router.get("/", adminAuthentication, designerVerificationController.getAllDesignerApplication);

@@ -10,6 +10,7 @@ import { useFilterParams } from "../../../../shared/filter/useFilterParams";
 import { FilterBar } from "../../../../shared/filter/FilterBar";
 import { USER_FILTERS } from "../adminUserFilter";
 import { userColumns } from "../adminUserColumn";
+import Spinner from "../../../../shared/common/Spinner";
 
 
 export default function UsersTable() {
@@ -38,7 +39,7 @@ export default function UsersTable() {
     view: (u: AdminUsersResponseDTO) => <ViewButton onClick={() => navigate(`/admin/users/${u.id}`)} />,
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Spinner/>
   if (error || !users) return <p>Error loading users</p>;
 
   return (

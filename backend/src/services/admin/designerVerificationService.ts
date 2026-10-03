@@ -10,12 +10,17 @@ import { AppError } from "../../shared/errors/appError";
 import { ADMIN_MESSAGES } from "../../shared/messages/adminMessages";
 import { DesignerMapper } from "../../dtoMappers/designer/designerMapper";
 import type { ITransactionManager } from "../../interfaces/base/ITransactionManager";
+import type { CreateNotificationDTO } from "../../DTO/socket/notificationDTO";
+import { NOTIFICATION_TYPES } from "../../shared/enums/notificationEnum";
+import { SOCKET_MESSAGES } from "../../shared/messages/socketMessage";
+import type { INotificationService } from "../../interfaces/socket/ISocketService";
 
 /**
  * Service handling all workflows related to designer verification requests.
  */
 export class AdminDesignerVerificationservice implements IAdminDesignerVerificatoinServices {
   constructor(
+    private _notificationService: INotificationService,
     private _designerVerificationRepo: IDesignerVerificationRepository,
     private _userRepo: IUserRepository,
     private _transactionManager: ITransactionManager,
@@ -63,13 +68,13 @@ export class AdminDesignerVerificationservice implements IAdminDesignerVerificat
    * - If **Approved**: Updates the verification status, upgrades the user role to `DESIGNER`,
    *   and dispatches a confirmation email.
    * - If **Rejected**: Updates the verification status and sends an explanation email.
-   *
+   * send notification after updation
    * @param id - Unique identifier of the designer request.
    * @param data - Payload containing decision status (`APPROVED` / `REJECTED`) ,optional rejection reason , email and name.
    * @returns Updated application status.
    * @throws {AppError} 500 - If updating the request status or user role fails.
    */
-  async ApproveOrRejectDesignerRequest(id: string, data: AdminDesignerApprovalDTO): Promise<IApiResponse<AdminDesignerStatusDTO>> {
+  async ApproveOrRejectDesignerRequest(adminId:string, id: string, data: AdminDesignerApprovalDTO): Promise<IApiResponse<AdminDesignerStatusDTO>> {
     const updatedDesignerRequest = await this._transactionManager.runInTransaction(async (session) => {
       const updatedDesignerRequest = await this._designerVerificationRepo.ApproveOrReject(id, data, session);
       if (!updatedDesignerRequest) {
@@ -86,7 +91,15 @@ export class AdminDesignerVerificationservice implements IAdminDesignerVerificat
 
     const userData = DesignerMapper.toDesignerApprovalOrRejectionDTO(updatedDesignerRequest);
     await sendDesignerStatusEmail(userData.email, userData.name, userData.status, userData.rejectionReason);
-
+    const title = data.status === DESIGNER_STATUS.APPROVED ? SOCKET_MESSAGES.NOTIFICATION_TITLES.DESIGNER_APPLICATION_APPROVED : SOCKET_MESSAGES.NOTIFICATION_TITLES.DESIGNER_APPLICATION_REJECTED
+    const notification: CreateNotificationDTO = {
+      recipientId: updatedDesignerRequest.userId.id,
+      senderId: adminId,
+      title,
+      type: NOTIFICATION_TYPES.DESIGENR_APPLICATION,
+      message: SOCKET_MESSAGES.NOTIFICATION_MESSAGES.DESIGNER_APPLICATION(data.status)
+    };
+    await this._notificationService.notify(notification);
     return {
       message: ADMIN_MESSAGES.DESIGNER_VERFICATION.STATUS_CHANGE_SUCCESS,
       data: { status: updatedDesignerRequest.status },

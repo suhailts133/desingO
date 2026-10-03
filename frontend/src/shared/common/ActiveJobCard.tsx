@@ -48,6 +48,7 @@ export default function ActiveJobCard({ data }: Props) {
                 activeJobId: data.id,
                 sourceType: data.sourceType,
                 sourceId: data.sourceId,
+                isActive:data.status === "Active"
             },
         });
     };

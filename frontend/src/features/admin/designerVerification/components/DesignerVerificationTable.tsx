@@ -10,6 +10,7 @@ import { designerVerificationStatusTone, designerVerificationColumns } from "../
 import { useFilterParams } from "../../../../shared/filter/useFilterParams";
 import { FilterBar } from "../../../../shared/filter/FilterBar";
 import { VERIFICATION_FILTERS } from "../adminDesignerVerificationFilter";
+import Spinner from "../../../../shared/common/Spinner";
 
 export default function DesignerVerificationTable() {
     const navigate = useNavigate();
@@ -38,7 +39,7 @@ export default function DesignerVerificationTable() {
         ),
     };
 
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <Spinner/>
     if (error || !designerApplicationData) return <p>Error loading designer Requests</p>;
 
     return (

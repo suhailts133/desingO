@@ -8,15 +8,16 @@ import type { IActiveJob } from "../../interfaces/customer/ICustomer";
 import type { IDesignerPopulated } from "../../interfaces/designer/IDesigner";
 import type { IDispute } from "../../interfaces/proposal/IDispute";
 import type { IReview } from "../../interfaces/proposal/IProposal";
-import { ACTIVE_JOB_STATUS } from "../../shared/enums/commonEnums";
+import { ACTIVE_JOB_STATUS, TRANSACTION_TYPE } from "../../shared/enums/commonEnums";
 import { CONTRACT_STATUS, DISPUTE_STATUS, ServiceStatus } from "../../shared/enums/proposalEnums";
 
 export class DashboardMapper {
 
 
 
-    static adminDashboardDTO(dispute: IDispute[], activeUserCount: number, pendingRequests: IDesignerPopulated[], commision: ITransaction[], activeJobCount: number): AdminDashboardDTO {
-        const totalCommision = commision.reduce((acc, cur) => acc + cur.amount, 0)
+    static adminDashboardDTO(dispute: IDispute[], activeUserCount: number, pendingRequests: IDesignerPopulated[], transactions: ITransaction[], activeJobCount: number): AdminDashboardDTO {
+      const totalCommision = transactions.reduce((acc, cur) => acc + cur.amount, 0)
+      const totalRefund = transactions.reduce((acc, cur) => cur.type === TRANSACTION_TYPE.REFUND ? cur.amount + acc : acc, 0)
         const pendingDesignerVerificationRequsts: PendingVerificationRequests[] = pendingRequests.map(e => {
             return {
                 id: e.id,
@@ -38,7 +39,8 @@ export class DashboardMapper {
         return {
             activeUsersCount: activeUserCount,
             activeJobCount: activeJobCount,
-            totalCommision,
+          totalCommision,
+            totalRefund,
             disputes: pendingDisputes,
             designerVerificationRequests: pendingDesignerVerificationRequsts,
         }

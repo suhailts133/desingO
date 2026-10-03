@@ -25,7 +25,7 @@ export class ChatService implements IChatService {
 
     async getHistory(activeJobId: string, userId: string, before?: string): Promise<MessageResponseDTO[]> {
 
-        await this._activeJobService.validateJobForChat(activeJobId, userId);
+        await this._activeJobService.validateJobForChat(activeJobId, userId, true);
         const messages = await this._messageRepo.findByActiveJob(activeJobId, before)
         return MessageMapper.toMessageDTOlist(messages).reverse();
     }

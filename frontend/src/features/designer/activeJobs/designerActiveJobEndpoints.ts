@@ -13,7 +13,8 @@ export const designerActiveJobApi = baseApi.injectEndpoints({
                     page:args.page,
                     ...(args.sourceType && {sourceType:args.sourceType})
                 }
-            })
+            }),
+            providesTags:["activeJobs"]
             
         })
     })

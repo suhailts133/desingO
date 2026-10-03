@@ -84,7 +84,6 @@ export class ProposalVersionService implements IProposalVersionService {
     }
 
     return await this._transactionManager.runInTransaction(async (session) => {
-      console.log(session.id, "accept or reject version");
       const updatedVersion = await this._serviceVersionRepo.acceptOrRejectVersion(data, session);
       if (!updatedVersion) {
         throw new AppError(PROPOSAL_MESSAGES.VERSION.UPDATE_FAIL, RESPONSE_CODE.NOT_FOUND);
@@ -118,6 +117,7 @@ export class ProposalVersionService implements IProposalVersionService {
             type: TRANSACTION_TYPE.PAYOUT,
             TransactionId: generateUniqueId(TRANSACTION_UNIQUE_ID.PAYOUT),
             proposalId: proposal.id,
+            jobId:proposal.sourceId.toString()
           },
           session,
         );
@@ -146,6 +146,7 @@ export class ProposalVersionService implements IProposalVersionService {
             type: TRANSACTION_TYPE.COMMISSION,
             TransactionId: generateUniqueId(TRANSACTION_UNIQUE_ID.COMMISSION),
             proposalId: proposal.id,
+            jobId:proposal.sourceId.toString()
           },
           session,
         );

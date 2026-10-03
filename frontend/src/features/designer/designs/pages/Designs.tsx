@@ -7,6 +7,7 @@ import { useGetMyDesignsQuery } from "../designEndpoints";
 import { useDeleteADesign } from "../hooks/useDeleteDesign";
 import ConfirmModal from "../../../../shared/modals/ConfirmModal";
 import Pagination from "../../../../shared/common/Pagination";
+import Spinner from "../../../../shared/common/Spinner";
 
 export default function Designs() {
     const [page, setPage] = useState(1)
@@ -14,9 +15,9 @@ export default function Designs() {
     const { handleDeletion, isDeleting, deleteError, deleteSuccess } = useDeleteADesign()
     const { data, isLoading, error } = useGetMyDesignsQuery({ page })
     const designs = data?.data;
-    
+
     if (isLoading) {
-        return <p>Loading...</p>
+        return <Spinner />
     }
     if (error || !designs) {
         return <p>Error loading designs</p>;
@@ -60,7 +61,7 @@ export default function Designs() {
                     ))}
                 </div>
             </div>
-            
+
             <ConfirmModal
                 isOpen={!!deleteDesign}
                 onConfirm={handleDelete}

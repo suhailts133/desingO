@@ -13,6 +13,7 @@ export interface ITransaction {
   type: TransactionType;
   sourceUserId: mongoose.Types.ObjectId;
   destinationUserId: mongoose.Types.ObjectId;
+  jobId: mongoose.Types.ObjectId;
   proposalId?: mongoose.Types.ObjectId;
   disputeId?: mongoose.Types.ObjectId;
   createdAt: Date;

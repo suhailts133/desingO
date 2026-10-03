@@ -1,6 +1,7 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { useAuthenticate } from "../helpers/authentication";
 import { useEffect } from "react";
+import MeshBackdrop from "../shared/common/MeshBackDrop";
 
 export default function AdminAuthLayout() {
   const { isAccessTokenValid, getNewAccessToken } = useAuthenticate()
@@ -16,6 +17,7 @@ export default function AdminAuthLayout() {
   } else {
     return (
       <div className="min-h-screen bg-bg flex items-center justify-center p-4">
+        <MeshBackdrop/>
         <Outlet />
       </div>
     )

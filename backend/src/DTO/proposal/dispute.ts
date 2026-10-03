@@ -31,6 +31,17 @@ export interface DisputeResponseDTO {
     resolutionType?: string;
 }
 
+export interface IDisputeStat{
+  name: DisputeStatus,
+  value:number
+}
+
+export interface DisputeReportDTO{
+  data: IDisputeStat[],
+  totalValue:number
+}
+
+
 
 export interface DisputeRepoDTO {
     proposalId: string,

@@ -1,5 +1,5 @@
 import type { Pagination } from "../../DTO/admin/adminDTO";
-import type { AcceptOrRejectDisputeDTO, DisputeAdminFilters, DisputePopulated, DisputePopulatedAll, DisputePopulateProposal, DisputeRaiseDTO, DisputeRepoDTO, DisputeResponseDTO, DisputeUpdateDTO } from "../../DTO/proposal/dispute";
+import type { AcceptOrRejectDisputeDTO, DisputeAdminFilters, DisputePopulated, DisputePopulatedAll, DisputePopulateProposal, DisputeRaiseDTO, DisputeRepoDTO, DisputeReportDTO, DisputeResponseDTO, DisputeUpdateDTO } from "../../DTO/proposal/dispute";
 import type { IApiResponse } from "../base/IApiResponse";
 import type { ImageUploadResult } from "../base/IImageUpload";
 import type { DisputeStatus } from "./IProposal";
@@ -27,6 +27,7 @@ export interface IDispute {
 
 
 export interface IDisputeRepository {
+    getDisputeReport():Promise<DisputeReportDTO>
     getDisputesRequiringAdminAction(): Promise<IDispute[]>
     updateDisputeIfStatus(id: string, expectedStatus: DisputeStatus, updates: Partial<IDispute>, session?:ClientSession): Promise<IDispute | null>;
     createDispute(data: DisputeRepoDTO,session?:ClientSession): Promise<IDispute>

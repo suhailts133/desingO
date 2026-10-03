@@ -146,5 +146,3 @@ export interface ICustomerInteraction {
     weight: number
     createdAt: Date
 }
-
-

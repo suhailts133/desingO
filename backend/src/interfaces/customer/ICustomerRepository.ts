@@ -4,7 +4,7 @@ import type { CustomerInteraction, CustomerInteractionPopulated } from "../../DT
 import type { ActiveJobFilter, ActiveJobPopulated, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO";
 import type { HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
 
-import type { createJobRepoDTO, EditJobRepoData, JobFilter } from "../../DTO/user/jobsDTO";
+import type { createJobRepoDTO, EditJobRepoData, JobFilter, JobReportDTO } from "../../DTO/user/jobsDTO";
 import type { ImageUploadResult } from "../base/IImageUpload";
 import type { IActiveJob, ICustomerInteraction, IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, Source_type, JobStatus } from "./ICustomer";
 
@@ -20,7 +20,8 @@ export interface IJobRepository {
     updateHireRequest(id: string, data: Partial<IJobRequest>, session?:ClientSession): Promise<IJobRequest | null>
     countJobs(userId: string): Promise<number>
     findMostRecent(): Promise<IJobRequestPopulated[]>;
-    findCandidatesExcluding(): Promise<IJobRequestPopulated[]>
+  findCandidatesExcluding(): Promise<IJobRequestPopulated[]>
+    getJobReport():Promise<JobReportDTO>
 }
 
 

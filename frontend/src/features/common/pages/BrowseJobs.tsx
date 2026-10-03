@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { SingleValue } from "react-select";
+import { SlidersHorizontal } from "lucide-react";
 import { RADIUS_OPTIONS, SORT_OPTIONS, type OptionType } from "../baseData";
 import { useGetAllJobsCommonQuery } from "../../user/jobs/jobEndpoints";
 import JobCard from "../components/cards/JobCard";
@@ -8,134 +9,143 @@ import JobFilter from "../components/filters/JobFilter";
 import { useSearchParams } from "react-router-dom";
 import { createFilterChangeHandler } from "../../../helpers/handleFilterChagne";
 import { useUserCoordinates } from "../../../shared/hooks/useUserCoordinates";
+import Spinner from "../../../shared/common/Spinner";
 
 export default function BrowseJobs() {
-    const [filtersVisible, setFiltersVisible] = useState(true);
-    const [searchParams, setSearchParams] = useSearchParams();
-    const { getCoordinates, isLocating, error: locationError } = useUserCoordinates();
+  const [filtersVisible, setFiltersVisible] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { getCoordinates, isLocating, error: locationError } = useUserCoordinates();
 
-    const page = Number(searchParams.get("page") ?? "1");
-    const sortByValue = searchParams.get("sortBy") ?? SORT_OPTIONS[0].value;
-    const designStylesParam = searchParams.get("designStyles");
-    const propertyTypesParam = searchParams.get("propertyTypes");
-    const timeLinesParam = searchParams.get("timeLines");
-    const latParam = searchParams.get("lat");
-    const lngParam = searchParams.get("lng");
-    const radiusKmParam = searchParams.get("radiusKm") ?? RADIUS_OPTIONS[1].value;
+  const page = Number(searchParams.get("page") ?? "1");
+  const sortByValue = searchParams.get("sortBy") ?? SORT_OPTIONS[0].value;
+  const designStylesParam = searchParams.get("designStyles");
+  const propertyTypesParam = searchParams.get("propertyTypes");
+  const timeLinesParam = searchParams.get("timeLines");
+  const latParam = searchParams.get("lat");
+  const lngParam = searchParams.get("lng");
+  const radiusKmParam = searchParams.get("radiusKm") ?? RADIUS_OPTIONS[1].value;
 
-    const designStyles = designStylesParam ? designStylesParam.split(",").map((v) => ({ label: v, value: v })) : null;
-    const propertyTypes = propertyTypesParam ? propertyTypesParam.split(",").map((v) => ({ label: v, value: v })) : null;
-    const timeLines = timeLinesParam ? timeLinesParam.split(",").map((v) => ({ label: v, value: v })) : null;
-    const selectedSort = SORT_OPTIONS.find((s) => s.value === sortByValue) ?? SORT_OPTIONS[0];
-    const selectedRadius = RADIUS_OPTIONS.find((r) => r.value === radiusKmParam) ?? RADIUS_OPTIONS[1];
+  const designStyles = designStylesParam ? designStylesParam.split(",").map((v) => ({ label: v, value: v })) : null;
+  const propertyTypes = propertyTypesParam ? propertyTypesParam.split(",").map((v) => ({ label: v, value: v })) : null;
+  const timeLines = timeLinesParam ? timeLinesParam.split(",").map((v) => ({ label: v, value: v })) : null;
+  const selectedSort = SORT_OPTIONS.find((s) => s.value === sortByValue) ?? SORT_OPTIONS[0];
+  const selectedRadius = RADIUS_OPTIONS.find((r) => r.value === radiusKmParam) ?? RADIUS_OPTIONS[1];
 
-    const lat = latParam ? Number(latParam) : null;
-    const lng = lngParam ? Number(lngParam) : null;
-    const hasLocation = lat != null && lng != null;
+  const lat = latParam ? Number(latParam) : null;
+  const lng = lngParam ? Number(lngParam) : null;
+  const hasLocation = lat != null && lng != null;
 
-    const { data, isLoading, error } = useGetAllJobsCommonQuery({
-        page,
-        designStyles,
-        propertyTypes,
-        timeLines,
-        sortBy: selectedSort,
-        lat: hasLocation ? lat : null,
-        lng: hasLocation ? lng : null,
-        radiusKm: hasLocation ? selectedRadius.value : null,
+  const { data, isLoading, error } = useGetAllJobsCommonQuery({
+    page,
+    designStyles,
+    propertyTypes,
+    timeLines,
+    sortBy: selectedSort,
+    lat: hasLocation ? lat : null,
+    lng: hasLocation ? lng : null,
+    radiusKm: hasLocation ? selectedRadius.value : null,
+  });
+
+  const jobs = data?.data;
+
+  const onFilterChange = createFilterChangeHandler(setSearchParams);
+
+  const handlePageChange = (newPage: number) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set("page", String(newPage));
+      return next;
     });
+  };
 
-    const jobs = data?.data
+  const handleClearAll = () => {
+    setSearchParams({ page: "1" });
+  };
 
-    const onFilterChange = createFilterChangeHandler(setSearchParams);
-    const handlePageChange = (newPage: number) => {
-        setSearchParams((prev) => {
-            const next = new URLSearchParams(prev);
-            next.set("page", String(newPage));
-            return next;
-        });
-    };
-
-    const handleClearAll = () => {
-        setSearchParams({ page: "1" });
-    };
-
-    const handleUseMyLocation = async () => {
-        try {
-            const { latitude, longitude } = await getCoordinates();
-            setSearchParams((prev) => {
-                const next = new URLSearchParams(prev);
-                next.set("lat", String(latitude));
-                next.set("lng", String(longitude));
-                if (!next.get("radiusKm")) next.set("radiusKm", RADIUS_OPTIONS[1].value);
-                next.set("page", "1");
-                return next;
-            });
-        } catch (error) {
-            console.error("Failed to fetch location:", error);
-        }
-    };
-
-    const handleRadiusChange = (selected: SingleValue<OptionType>) => {
-        setSearchParams((prev) => {
-            const next = new URLSearchParams(prev);
-            next.set("radiusKm", selected?.value ?? RADIUS_OPTIONS[1].value);
-            next.set("page", "1");
-            return next;
-        });
-    };
-
-    if (isLoading) {
-        return <div className="p-10 text-center animate-pulse text-gray-400 font-Jost">Loading jobs...</div>;
+  const handleUseMyLocation = async () => {
+    try {
+      const { latitude, longitude } = await getCoordinates();
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        next.set("lat", String(latitude));
+        next.set("lng", String(longitude));
+        if (!next.get("radiusKm")) next.set("radiusKm", RADIUS_OPTIONS[1].value);
+        next.set("page", "1");
+        return next;
+      });
+    } catch (error) {
+      console.error("Failed to fetch location:", error);
     }
+  };
 
-    if (error || !jobs) {
-        return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Error loading jobs.</div>;
-    }
+  const handleRadiusChange = (selected: SingleValue<OptionType>) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set("radiusKm", selected?.value ?? RADIUS_OPTIONS[1].value);
+      next.set("page", "1");
+      return next;
+    });
+  };
 
-    const totalJobs = data.total ?? 0
-    const totalPages = data.totalPages ?? 1
+  if (isLoading) {
+    return <Spinner />;
+  }
 
-    return (
-        <div className="min-h-screen font-Jost">
+  if (error || !jobs) {
+    return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Error loading jobs.</div>;
+  }
 
-            <JobFilter
-                designStyles={designStyles}
-                propertyTypes={propertyTypes}
-                timeLines={timeLines}
-                sortBy={selectedSort}
-                onFilterChange={onFilterChange}
-                onClear={handleClearAll}
-                filtersVisible={filtersVisible}
-                setFiltersVisible={setFiltersVisible}
-                hasLocation={hasLocation}
-                radiusValue={selectedRadius}
-                isLocating={isLocating}
-                locationError={locationError}
-                onUseMyLocation={handleUseMyLocation}
-                onRadiusChange={handleRadiusChange}
-            />
+  const totalJobs = data.total ?? 0;
+  const totalPages = data.totalPages ?? 1;
 
-            <div className="max-w-7xl mx-auto px-6 py-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {jobs.map(data => (
+  return (
+    <div className="min-h-screen font-Jost">
+      <div className="flex justify-end px-6 py-3">
+        <button
+          onClick={() => setFiltersVisible((v) => !v)}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all
+                        ${filtersVisible ? "bg-accent text-text-on-accent border-accent" : "bg-surface text-text-muted border-surface-border hover:border-surface-border-strong"}`}
+        >
+          <SlidersHorizontal className="w-4 h-4" />
+          Filters
+        </button>
+      </div>
 
-                        <JobCard job={data} key={data.id} />
-                    ))}
-                </div>
-            </div>
+      {filtersVisible && (
+        <JobFilter
+          designStyles={designStyles}
+          propertyTypes={propertyTypes}
+          timeLines={timeLines}
+          sortBy={selectedSort}
+          onFilterChange={onFilterChange}
+          onClear={handleClearAll}
+          hasLocation={hasLocation}
+          radiusValue={selectedRadius}
+          isLocating={isLocating}
+          locationError={locationError}
+          onUseMyLocation={handleUseMyLocation}
+          onRadiusChange={handleRadiusChange}
+        />
+      )}
 
-
-            <div className="fixed bottom-0 left-0 right-0 z-40">
-                <Pagination
-                    page={page}
-                    totalItem={totalJobs}
-                    whichItem="jobs"
-                    totalPages={totalPages}
-                    onDecrease={() => handlePageChange(Math.max(1, page - 1))}
-                    onIncrease={() => handlePageChange(Math.min(totalPages, page + 1))}
-                />
-            </div>
-
+      <div className="max-w-7xl mx-auto px-6 py-8 pb-24">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {jobs.map((job) => (
+            <JobCard job={job} key={job.id} />
+          ))}
         </div>
-    );
+      </div>
+
+      <div className="fixed bottom-0 left-0 right-0 z-40">
+        <Pagination
+          page={page}
+          totalItem={totalJobs}
+          whichItem="jobs"
+          totalPages={totalPages}
+          onDecrease={() => handlePageChange(Math.max(1, page - 1))}
+          onIncrease={() => handlePageChange(Math.min(totalPages, page + 1))}
+        />
+      </div>
+    </div>
+  );
 }

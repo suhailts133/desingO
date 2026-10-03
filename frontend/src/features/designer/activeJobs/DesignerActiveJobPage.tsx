@@ -2,6 +2,7 @@ import { useState } from "react";
 import Pagination from "../../../shared/common/Pagination";
 import { useGetDesignerActiveJobsQuery } from "./designerActiveJobEndpoints";
 import ActiveJobCard from "../../../shared/common/ActiveJobCard";
+import Spinner from "../../../shared/common/Spinner";
 
 export default function DesignerActiveJobPage() {
     const [page, setPage] = useState(1)
@@ -15,7 +16,7 @@ export default function DesignerActiveJobPage() {
 
     const activeJobs = data?.data
 
-    if (isLoading) return <p>Loading...</p>
+    if (isLoading) return <Spinner />
     if (error || !activeJobs) return <p>Error loading  active Jobs</p>
 
 

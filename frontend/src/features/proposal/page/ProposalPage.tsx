@@ -41,6 +41,7 @@ import { useUploadFloorPlan } from "../hooks/useUploadFloorPlan"
 import FloorPlanSection from "../component/FloorPlanSection"
 import { useAcceptOrRejectFloorPlan } from "../hooks/useAcceptOrRejectFloorPlan"
 import ProposalReviewCard from "../component/ProposalReviewCard"
+import Spinner from "../../../shared/common/Spinner"
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
 
@@ -55,7 +56,8 @@ export default function ProposalPage() {
     const sourceType = location.state?.sourceType as "jobRequest" | "direct_hire" | undefined
     const sourceId = location.state?.sourceId as string | undefined
     const activeJobId = location.state?.activeJobId as string | undefined
-
+    const isActive = location.state?.isActive as boolean | undefined
+    console.log(isActive, "from working propsal")
     const { data, isLoading, error, refetch } = useGetProposalQuery(id ?? "", { skip: !id })
 
     const proposal = data?.data
@@ -273,7 +275,7 @@ export default function ProposalPage() {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Invalid proposal source.</div>
     }
     if (isLoading) {
-        return <div className="p-10 text-center animate-pulse text-soft-black/40">Loading proposal...</div>
+        return <Spinner />
     }
     if (error) {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Something went wrong. Please try again.</div>
@@ -282,8 +284,8 @@ export default function ProposalPage() {
         return (
             <div className="w-full flex flex-col gap-6">
                 {role === "Designer"
-                    ? <NoProposalDesigner activeJobId={activeJobId} jobId={id!} sourceType={sourceType!} sourceId={sourceId!} />
-                    : <NoProposalCustomer activeJobId={activeJobId!} />
+                    ? <NoProposalDesigner isActive={isActive} activeJobId={activeJobId} jobId={id!} sourceType={sourceType!} sourceId={sourceId!} />
+                    : <NoProposalCustomer isActive={isActive} activeJobId={activeJobId!} />
                 }
             </div>
         )
@@ -292,7 +294,7 @@ export default function ProposalPage() {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Something went wrong. Please try again.</div>
     }
     if (isDisputeLoading || isReviewLoading) {
-        return <div className="p-10 text-center animate-pulse text-soft-black/40">Loading proposal...</div>
+        return <Spinner />
     }
     const ACTIVE_STATUSES = ["Open", "In Progress", "Uploaded", "Redo"];
 
@@ -369,6 +371,7 @@ export default function ProposalPage() {
                 activeJobId={activeJobId}
                 otherPersonName={"other"}
                 role={role}
+                 isActive={isActive ?? false}
             />
 
             {clientSecret && payingService && (
@@ -399,7 +402,7 @@ export default function ProposalPage() {
                 onConfirm={HandleApproveFloorPlan}
                 onClose={() => setApproveFloorPlan(null)}
                 isLoading={isFloorPlanVerifying}
-                text="Are you sure you want to accept this Floor Plan?"
+                text="Accepting this floor plan will enable the payment option. This action cannot be undone."
                 heading="Confirm?"
                 buttonLoadingText="Accepting"
                 buttonText="Confirm & Accept"
@@ -465,6 +468,7 @@ export default function ProposalPage() {
             <FloorPlanSection
                 floorPlans={proposal.floorPlans}
                 role={role}
+                canUploadFloorPlan={contractStatus === "Accepted"}
                 isUploading={isFloorPlanUploading}
                 onUpload={() => setUploadFloorPlan(proposal.id)}
                 onApprove={(floorPlanId) => setApproveFloorPlan(floorPlanId)}

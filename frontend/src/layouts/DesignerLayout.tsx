@@ -5,6 +5,8 @@ import { useDecodeAccessToken } from "../helpers/decodeAccessToken";
 import { logOut } from "../app/authSlice";
 import { useEffect } from "react";
 import DesignerSidebar from "../shared/sidebar/DesignerSidebar";
+import MeshBackdrop from "../shared/common/MeshBackDrop";
+import SidebarTopbar from "../shared/sidebar/SidebarTopbar";
 
 export default function DesignerLayout() {
   const dispatch = useDispatch<AppDispatch>();
@@ -19,7 +21,6 @@ export default function DesignerLayout() {
     }
   }, [name, email, dispatch]);
 
-
   if (!isAuthenticated || !accessToken) {
     return <Navigate to="/auth/login" />;
   }
@@ -30,11 +31,12 @@ export default function DesignerLayout() {
 
   return (
     <div className="fixed inset-0 flex overflow-hidden">
-
       <DesignerSidebar name={name} email={email} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <main className="flex-1 overflow-y-auto p-8 flex justify-center  bg-bg">
+        <SidebarTopbar />
+        <main className="flex-1 overflow-y-auto p-8 flex justify-center items-start bg-bg">
+          <MeshBackdrop />
           <Outlet />
         </main>
       </div>

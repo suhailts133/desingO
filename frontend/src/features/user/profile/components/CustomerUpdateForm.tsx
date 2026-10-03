@@ -1,8 +1,6 @@
 import { joiResolver } from "@hookform/resolvers/joi"
 import { useForm } from "react-hook-form"
-
 import { CustomerprofileUpdationValidations } from "../../../../validations/profileValidation"
-import { useEffect } from "react"
 import type { UserProfileResponseDTO, UserProfileUpdateDTO } from "../customerProfileInterfaces"
 import { InputField } from "../../../../shared/form/InputField"
 import SubmitButton from "../../../../shared/common/SubmitButton"
@@ -11,15 +9,13 @@ import SubmitButton from "../../../../shared/common/SubmitButton"
 type Props = {
     data: UserProfileResponseDTO
     isOpen: boolean
-    dataError?: string
-    dataSuccess?: string
     onClose: () => void
     updateProfileData: (data: UserProfileUpdateDTO) => void,
     isLoading: boolean
 
 }
 
-export default function CustomerUpdationForm({ data, isOpen, onClose, dataError, dataSuccess, updateProfileData, isLoading }: Props) {
+export default function CustomerUpdationForm({ data, isOpen, onClose, updateProfileData, isLoading }: Props) {
 
     const { register, handleSubmit, formState: { errors } } = useForm<UserProfileUpdateDTO>({
         resolver: joiResolver(CustomerprofileUpdationValidations, { abortEarly: false, allowUnknown: true }),
@@ -27,23 +23,9 @@ export default function CustomerUpdationForm({ data, isOpen, onClose, dataError,
         defaultValues: data
     })
 
-    useEffect(() => {
-        if (dataSuccess) {
-            const timer = setTimeout(() => {
-                onClose();
-            }, 2000);
-            return () => clearTimeout(timer);
-        }
-    }, [dataSuccess, onClose]);
 
-
-    const onSubmit = async (data: UserProfileUpdateDTO) => {
-        try {
-
+    const onSubmit =  (data: UserProfileUpdateDTO) => {
             updateProfileData(data)
-        } catch (err) {
-            console.error("update failed", err);
-        }
     };
     if (!isOpen) {
         return null
@@ -71,8 +53,6 @@ export default function CustomerUpdationForm({ data, isOpen, onClose, dataError,
                         Cancel
                     </button>
                 </div>
-                {dataError && <p className="text-sm text-error text-center">{dataError}</p>}
-                {dataSuccess && <p className="text-sm text-success text-center">{dataSuccess}</p>}
             </form>
 
         </div>

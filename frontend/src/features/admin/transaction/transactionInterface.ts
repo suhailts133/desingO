@@ -10,6 +10,7 @@ export interface AllTransactionDTO {
     sourceName: string
     sourceRole: string
     transactionNumber:string
+    jobNumber:string
     sourceId: string
     designationName: string
     destinationRole: string

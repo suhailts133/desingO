@@ -120,13 +120,17 @@ export class DisputeService implements IDisputeService {
     if (!dispute) {
       throw new AppError(PROPOSAL_MESSAGES.DISPUTE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
     }
+    const cannotTerminate = data.status === DISPUTE_STATUS.TERMINATED && !dispute.canTerminate;
 
+    if (cannotTerminate) {
+      throw new AppError(PROPOSAL_MESSAGES.DISPUTE.CANT_TERMINATE, RESPONSE_CODE.BAD_REQUEST);
+    }
     if (dispute.status !== DISPUTE_STATUS.AWAITING_CONFIRMATION) {
       throw new AppError(PROPOSAL_MESSAGES.DISPUTE.DECISION_PENDING, RESPONSE_CODE.BAD_REQUEST);
     }
 
     await this._transactionManager.runInTransaction(async (session) => {
-        console.log(session.id, "From accept or reject disputd")
+      console.log(session.id, "From accept or reject disputd");
       const claimed = await this._disputeRepo.updateDisputeIfStatus(data.disputeId, DISPUTE_STATUS.AWAITING_CONFIRMATION, { status: data.status }, session);
 
       if (!claimed) {
@@ -183,6 +187,7 @@ export class DisputeService implements IDisputeService {
                 TransactionId: generateUniqueId(TRANSACTION_UNIQUE_ID.COMMISSION),
                 type: TRANSACTION_TYPE.COMMISSION,
                 proposalId: proposal.id,
+                jobId: proposal.sourceId.toString(),
               },
               session,
             );
@@ -216,6 +221,7 @@ export class DisputeService implements IDisputeService {
               type: isCustomerRaised ? TRANSACTION_TYPE.REFUND : TRANSACTION_TYPE.PAYOUT,
               TransactionId: generateUniqueId(isCustomerRaised ? TRANSACTION_UNIQUE_ID.REFUND : TRANSACTION_UNIQUE_ID.PAYOUT),
               proposalId: proposal.id,
+              jobId: proposal.sourceId.toString(),
             },
             session,
           );

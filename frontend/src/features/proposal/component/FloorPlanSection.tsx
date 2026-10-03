@@ -7,20 +7,25 @@ type Role = "Designer" | "Admin" | "Customer"
 interface FloorPlanSectionProps {
     floorPlans: floorPlanDTO[]
     role: Role
+    canUploadFloorPlan:boolean
     isUploading?: boolean
     onUpload: () => void
     onApprove: (floorPlanId: string) => void
     onReject: (floorPlanId: string) => void
 }
 
-export default function FloorPlanSection({ floorPlans, role, isUploading, onUpload, onApprove, onReject, }: FloorPlanSectionProps) {
+export default function FloorPlanSection({canUploadFloorPlan, floorPlans, role, isUploading, onUpload, onApprove, onReject }: FloorPlanSectionProps) {
     const [historyOpen, setHistoryOpen] = useState(false)
 
     if (!floorPlans || floorPlans.length === 0) {
-        return role === "Designer" ? (
+        return role === "Designer" && canUploadFloorPlan ? (
             <div className="bg-surface rounded-2xl border border-surface-border px-6 py-5">
                 <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-text-primary mb-3">Floor Plans</h2>
-                <button onClick={onUpload} disabled={isUploading} className="soft-black-button">
+                <button
+                    onClick={onUpload}
+                    disabled={isUploading}
+                    className="inline-flex items-center justify-center bg-accent text-text-on-accent hover:bg-accent-hover active:bg-accent-active disabled:opacity-50 disabled:cursor-not-allowed font-medium text-xs px-4 py-2 rounded-lg transition-colors duration-150"
+                >
                     {isUploading ? "Uploading..." : "Upload Floor Plan"}
                 </button>
             </div>
@@ -59,7 +64,11 @@ export default function FloorPlanSection({ floorPlans, role, isUploading, onUplo
 
             {canUpload && (
                 <div className="mt-3">
-                    <button onClick={onUpload} disabled={isUploading} className="soft-black-button">
+                    <button
+                        onClick={onUpload}
+                        disabled={isUploading}
+                        className="inline-flex items-center justify-center bg-accent text-text-on-accent hover:bg-accent-hover active:bg-accent-active disabled:opacity-50 disabled:cursor-not-allowed font-medium text-xs px-4 py-2 rounded-lg transition-colors duration-150"
+                    >
                         {isUploading ? "Uploading..." : "Upload New Floor Plan"}
                     </button>
                 </div>

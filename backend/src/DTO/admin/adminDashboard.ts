@@ -3,7 +3,8 @@ import type { DisputeStatus } from "../../interfaces/proposal/IProposal"
 export interface AdminDashboardDTO {
     activeUsersCount: number,
     activeJobCount: number,
-    totalCommision: number
+  totalCommision: number
+  totalRefund:number
     disputes: AdminOngoingDisputeDTOs[]
     designerVerificationRequests: PendingVerificationRequests[]
 }

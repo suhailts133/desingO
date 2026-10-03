@@ -1,9 +1,8 @@
 import Select from "react-select";
-import type { StylesConfig } from "react-select";
-import { SlidersHorizontal, X } from "lucide-react";
+import type { StylesConfig, SingleValue, MultiValue } from "react-select";
+import { X } from "lucide-react";
 import { PROPERTY_OPTIONS, STYLE_OPTIONS, SPACE_OPTIONS } from "../../../designer/designs/designData";
 import { SORT_OPTIONS, type OptionType } from "../../baseData";
-import type { SingleValue, MultiValue } from "react-select";
 import { selectStyles } from "../../../../shared/filter/selectStyle";
 
 interface Props {
@@ -13,11 +12,9 @@ interface Props {
     sortBy: OptionType;
     onFilterChange: (key: string, value: string | string[] | null) => void;
     onClear: () => void;
-    filtersVisible: boolean;
-    setFiltersVisible: (visible: boolean) => void;
 }
 
-export default function DesignFilters({ designStyles, propertyTypes, spaceTypes, sortBy, onFilterChange, onClear, filtersVisible, setFiltersVisible }: Props) {
+export default function DesignFilters({ designStyles, propertyTypes, spaceTypes, sortBy, onFilterChange, onClear }: Props) {
     const handleMultiSelectChange = (key: "designStyles" | "propertyTypes" | "spaceTypes", selected: MultiValue<OptionType>) => {
         const labels = selected.map((opt) => opt.label);
 
@@ -31,21 +28,8 @@ export default function DesignFilters({ designStyles, propertyTypes, spaceTypes,
     return (
         <div className="bg-surface border-b border-surface-border px-6 py-5">
             <div className="max-w-7xl mx-auto">
-                <div className="flex flex-col gap-1 mb-6">
-                    <h1 className="font-semibold text-2xl text-text-primary">Browse Designs</h1>
-                </div>
-
                 <div className="flex flex-wrap items-center gap-4">
-                    <button
-                        onClick={() => setFiltersVisible(!filtersVisible)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all
-                            ${filtersVisible ? "bg-accent text-text-on-accent border-accent" : "bg-surface text-text-muted border-surface-border hover:border-surface-border-strong"}`}
-                    >
-                        <SlidersHorizontal className="w-4 h-4" />
-                        Filters
-                    </button>
-
-                    <div className={`flex flex-wrap items-center gap-3 ${filtersVisible ? "opacity-100" : "hidden"}`}>
+                    <div className="flex flex-wrap items-center gap-3">
                         <div className="min-w-50">
                             <Select
                                 value={designStyles}

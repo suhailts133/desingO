@@ -8,6 +8,7 @@ import DisputeVerdictModal from "./DisputeVerditModal";
 import type { DisputeSolutionDTO, DisputeSolutionResponseDTO } from "../adminDisputeInterface";
 import { useDisputeVerdit } from "../hooks/useDisputeVerdit";
 import toast from "react-hot-toast";
+import Spinner from "../../../../shared/common/Spinner";
 
 const statusColors: Record<DisputeStatus, string> = {
   "Open": "bg-error-tint text-error border-error-tint",
@@ -37,7 +38,7 @@ export default function DisputeDetailAdmin() {
 
   const dispute = data?.data;
 
-  if (isLoading) return <div className="p-10 text-center animate-pulse text-text-faint">Loading dispute...</div>;
+  if (isLoading) return <Spinner/>
   if (error || !dispute) return <div className="p-10 text-center text-error font-Jost-Semibold">Dispute not found.</div>;
 
   const status = verdictResult?.status ?? dispute.status;

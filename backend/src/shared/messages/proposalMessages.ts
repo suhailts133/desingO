@@ -13,6 +13,7 @@ export const PROPOSAL_MESSAGES = {
     ALREADY_RESOLVED_OR_AWATING_CONFIRMATION: "This dispute is already solved or awaiting confrimation",
     ONGOING: "A Dispute is already on going please wait till it get resolved.",
     SUCCESS: "Successfully reported the issue.",
+    CANT_TERMINATE: "Termination not Available.",
     NOT_FOUND: "Dispute not found.",
     NOT_DISPUTED: "Either part hasnet risen a ticket.",
     DECISION_PENDING: "Admin has yet to make a decision.",

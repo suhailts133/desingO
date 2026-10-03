@@ -166,16 +166,18 @@ export default function DisputeCard({ dispute, onConfirm, isResponding, role }: 
                         Contest Resolution
                     </button>
 
-                    <button
-                        type="button"
-                        onClick={() => setTerminateDispute(dispute.id)}
-                        disabled={isResponding}
-                        className="inline-flex items-center gap-2 text-xs font-Jost-Semibold px-4 py-2 rounded-lg bg-error text-text-primary hover:opacity-90 transition-all disabled:opacity-50"
-                    >
-                      
-                        <AlertTriangle className="w-3.5 h-3.5" />
-                        Accept & Terminate
-                    </button>
+                    {dispute.canTerminate && (
+                        <button
+                            type="button"
+                            onClick={() => setTerminateDispute(dispute.id)}
+                            disabled={isResponding}
+                            className="inline-flex items-center gap-2 text-xs font-Jost-Semibold px-4 py-2 rounded-lg bg-error text-text-primary hover:opacity-90 transition-all disabled:opacity-50"
+                        >
+
+                            <AlertTriangle className="w-3.5 h-3.5" />
+                            Accept & Terminate
+                        </button>
+                    )}
                 </div>
             )}
 

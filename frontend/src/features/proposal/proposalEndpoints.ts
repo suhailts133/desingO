@@ -66,7 +66,8 @@ export const proposalApi = baseApi.injectEndpoints({
                 url: API_ROUTES.PROPOSAL.CREATE,
                 method: "POST",
                 body
-            })
+            }),
+            invalidatesTags:["activeJobs"]
         }),
         UpdateProposal: builder.mutation<IApiResponse, UpdateProposalDTO>({
             query: (body) => ({

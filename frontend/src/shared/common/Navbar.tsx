@@ -6,6 +6,7 @@ import type { AppDispatch, RootState } from "../../app/store";
 import { logOut } from "../../app/authSlice";
 import { useDecodeAccessToken } from "../../helpers/decodeAccessToken";
 import NotificationBell from "../../features/notification/components/NotificationBell";
+import ThemeToggle from "./ToggleTheme";
 
 const navLinkClass =
   "relative py-2 text-sm font-Jost-Semibold text-text-muted transition-colors hover:text-text-primary " +
@@ -29,21 +30,28 @@ export default function Navbar() {
     setOpen(false);
     navigate("/auth/login");
   };
-
+  const homePath = role === "Designer" ? "/designer/dashboard" : "/customer/dashboard";
   return (
     <header className="sticky top-0 z-50 border-b border-surface-border bg-bg-raised/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <NavLink to="/" className="font-Dynalight-Regular text-xl text-accent sm:text-2xl">
+        <NavLink to={homePath} className="font-Dynalight-Regular text-xl text-accent sm:text-2xl">
           designO
         </NavLink>
-
         {/* Desktop links */}
         <nav className="hidden items-center gap-7 md:flex">
-          <NavLink to="/designs" className={navLinkClass}>Designs</NavLink>
-          <NavLink to="/jobs" className={navLinkClass}>Jobs</NavLink>
-          <NavLink to="/designers" className={navLinkClass}>Designers</NavLink>
+          <NavLink to="/designs" className={navLinkClass}>
+            Designs
+          </NavLink>
+          <NavLink to="/jobs" className={navLinkClass}>
+            Jobs
+          </NavLink>
+          <NavLink to="/designers" className={navLinkClass}>
+            Designers
+          </NavLink>
           {dashboardPath && (
-            <NavLink to={dashboardPath} className={navLinkClass}>Dashboard</NavLink>
+            <NavLink to={dashboardPath} className={navLinkClass}>
+              Dashboard
+            </NavLink>
           )}
           {role === "Customer" && (
             <NavLink to="/designer/designer-verification" className={navLinkClass}>
@@ -55,7 +63,7 @@ export default function Navbar() {
         {/* Right cluster */}
         <div className="flex items-center gap-3">
           {isLoggedIn && <NotificationBell />}
-
+          <ThemeToggle />
           {isLoggedIn ? (
             <>
               <button
@@ -94,28 +102,52 @@ export default function Navbar() {
         }`}
       >
         <nav className="flex flex-col divide-y divide-surface-border px-4 sm:px-6">
-          <NavLink to="/designs" onClick={() => setOpen(false)} className="py-3.5 text-sm font-Jost-Semibold text-text-primary">
+          <NavLink
+            to="/designs"
+            onClick={() => setOpen(false)}
+            className="py-3.5 text-sm font-Jost-Semibold text-text-primary"
+          >
             Designs
           </NavLink>
-          <NavLink to="/jobs" onClick={() => setOpen(false)} className="py-3.5 text-sm font-Jost-Semibold text-text-primary">
+          <NavLink
+            to="/jobs"
+            onClick={() => setOpen(false)}
+            className="py-3.5 text-sm font-Jost-Semibold text-text-primary"
+          >
             Jobs
           </NavLink>
-          <NavLink to="/designers" onClick={() => setOpen(false)} className="py-3.5 text-sm font-Jost-Semibold text-text-primary">
+          <NavLink
+            to="/designers"
+            onClick={() => setOpen(false)}
+            className="py-3.5 text-sm font-Jost-Semibold text-text-primary"
+          >
             Designers
           </NavLink>
           {dashboardPath && (
-            <NavLink to={dashboardPath} onClick={() => setOpen(false)} className="py-3.5 text-sm font-Jost-Semibold text-text-primary">
+            <NavLink
+              to={dashboardPath}
+              onClick={() => setOpen(false)}
+              className="py-3.5 text-sm font-Jost-Semibold text-text-primary"
+            >
               Dashboard
             </NavLink>
           )}
           {role === "Customer" && (
-            <NavLink to="/designer/designer-verification" onClick={() => setOpen(false)} className="py-3.5 text-sm font-Jost-Semibold text-text-primary">
+            <NavLink
+              to="/designer/designer-verification"
+              onClick={() => setOpen(false)}
+              className="py-3.5 text-sm font-Jost-Semibold text-text-primary"
+            >
               Become a Designer
             </NavLink>
           )}
         </nav>
 
         <div className="px-4 pb-5 pt-2 sm:px-6">
+          <div className="mb-3 flex items-center justify-between">
+            <span className="text-sm font-Jost-Semibold text-text-muted">Theme</span>
+            <ThemeToggle />
+          </div>
           {isLoggedIn ? (
             <button
               onClick={handleLogout}

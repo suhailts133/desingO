@@ -1,9 +1,21 @@
 import { useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import { X } from "lucide-react";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import MapSearchControl from "./MapSearchControl";
 
+// @ts-expect-error - _getIconUrl is a private Leaflet property
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
 interface AddressDetails {
   state?: string;
   postcode?: string;
@@ -37,10 +49,7 @@ interface LocationMapModalProps {
 }
 
 async function reverseGeocode(lat: number, lon: number): Promise<MapSelectedLocation> {
-  const response = await fetch(
-    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`,
-    { headers: { "User-Agent": "designO/1.0" } }
-  );
+  const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
   const data = (await response.json()) as NominatimResponse;
   const address = data.address || {};
 

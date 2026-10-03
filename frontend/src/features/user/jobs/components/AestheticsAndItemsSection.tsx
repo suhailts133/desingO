@@ -6,17 +6,8 @@ import type { IJobRequest } from "../jobInterface";
 import { selectStyles } from "../../../../shared/filter/selectStyle";
 import type { StylesConfig } from "react-select";
 import type { OptionType } from "../../../common/baseData";
+import { MATERIAL_OPTIONS } from "../jobData";
 
-const MATERIAL_OPTIONS = [
-  { value: "Teak Wood", label: "Teak Wood" },
-  { value: "Laminate", label: "Laminate" },
-  { value: "Veneer", label: "Veneer" },
-  { value: "Italian Marble", label: "Italian Marble" },
-  { value: "Granite", label: "Granite" },
-  { value: "PU Finish", label: "PU Finish" },
-  { value: "Fluted Charcoal Panels", label: "Fluted Charcoal Panels" },
-  { value: "Cane / Rattan", label: "Cane / Rattan" },
-];
 
 export default function AestheticsAndItemsSection() {
   const { control, formState: { errors } } = useFormContext<IJobRequest>();

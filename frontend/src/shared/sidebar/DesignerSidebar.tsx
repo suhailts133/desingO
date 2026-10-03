@@ -1,41 +1,103 @@
-import { useState, memo } from "react"
+import { useState, memo } from "react";
 import {
-  LayoutDashboard, User,
-  ChevronRight, LogOut,
+  LayoutDashboard,
+  User,
+  ChevronRight,
+  LogOut,
   ScrollText,
   House,
   Heart,
   BriefcaseBusiness,
-  ArrowLeftRight
-} from "lucide-react"
-import { Link, useNavigate } from "react-router-dom"
-import type { AppDispatch } from "../../app/store"
-import { useDispatch } from "react-redux"
-import { logOut } from "../../app/authSlice"
+  ArrowLeftRight,
+  Search,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import type { AppDispatch } from "../../app/store";
+import { useDispatch } from "react-redux";
+import { logOut } from "../../app/authSlice";
 
-const DesignerSidebar = memo(({ name, email }: { name: string, email: string }) => {
-  const [collapsed, setCollapsed] = useState(false)
-  const [active, setActive] = useState("Dashboard")
-  const dispatch = useDispatch<AppDispatch>()
-  const navigate = useNavigate()
+type NavItem = {
+  to: string;
+  label: string;
+  icon: LucideIcon;
+  end?: boolean;
+};
+
+type NavSection = {
+  title: string;
+  items: NavItem[];
+};
+
+const sections: NavSection[] = [
+  {
+    title: "Main Menu",
+    items: [
+      { to: "/designer/dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { to: "/profile/designer", label: "Profile", icon: User },
+      { to: "/designer/designs", label: "My Designs", icon: House },
+      {
+        to: "/designer/job-applications/my",
+        label: "Job applications",
+        icon: ScrollText,
+      },
+      {
+        to: "/designer/active-jobs",
+        label: "Active Jobs",
+        icon: BriefcaseBusiness,
+      },
+      { to: "/designer/saved-design/my", label: "Saved Designs", icon: Heart },
+      {
+        to: "/designer/transaction",
+        label: "Transactions",
+        icon: ArrowLeftRight,
+      },
+    ],
+  },
+  {
+    title: "Browse",
+    items: [
+      { to: "/jobs", label: "Browse Jobs", icon: Search },
+      {
+        to: "/designs",
+        label: "Browse Designs",
+        icon: House,
+      },
+      {
+        to: "/designers",
+        label: "Browse Designers",
+        icon: Users,
+      },
+    ],
+  },
+];
+
+const DesignerSidebar = memo(({ name, email }: { name: string; email: string }) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    dispatch(logOut())
-    navigate("/auth/login")
-  }
+    dispatch(logOut());
+    navigate("/auth/login");
+  };
 
-  const linkClass = (label: string) => `
+  const linkClass = (isActive: boolean) => `
     group relative flex items-center gap-3 px-3 py-2.5 rounded-xl
     font-Jost-Semibold text-sm transition-all duration-200 no-underline cursor-pointer
     ${collapsed ? "justify-center" : ""}
-    ${active === label
-      ? "bg-accent-tint text-accent-tint-text border border-accent-tint"
-      : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
+    ${
+      isActive
+        ? "bg-accent-tint text-accent-tint-text border border-accent-tint"
+        : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
     }
-  `
+  `;
 
-  const iconClass = (label: string) =>
-    `shrink-0 transition-colors duration-200 ${active === label ? "text-accent-tint-text" : "text-text-faint group-hover:text-text-primary"}`
+  const iconClass = (isActive: boolean) =>
+    `shrink-0 transition-colors duration-200 ${
+      isActive ? "text-accent-tint-text" : "text-text-faint group-hover:text-text-primary"
+    }`;
 
   return (
     <aside
@@ -47,84 +109,73 @@ const DesignerSidebar = memo(({ name, email }: { name: string, email: string }) 
           ${collapsed ? "w-20" : "w-64"}
         `}
     >
-
       <button
         onClick={() => setCollapsed(!collapsed)}
+        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         className="absolute -right-3.5 top-6 z-10 flex items-center justify-center
-            w-7 h-7 rounded-full bg-surface-hover border border-surface-border text-text-primary 
+            w-7 h-7 rounded-full bg-surface-hover border border-surface-border text-text-primary
             hover:border-accent transition-colors duration-200"
       >
         <ChevronRight
-          size={14} strokeWidth={2.5}
+          size={14}
+          strokeWidth={2.5}
           className={`transition-transform duration-300 ${collapsed ? "" : "rotate-180"}`}
         />
       </button>
 
-      <div className={`flex items-center gap-2 px-4 py-5 border-b border-surface-border ${collapsed ? "justify-center" : ""}`}>
-        {!collapsed && <Link to="/" className="font-Dynalight-Regular font-semibold text-accent text-xl">designO</Link>}
+      <div
+        className={`flex items-center gap-2 px-4 py-5 border-b border-surface-border ${collapsed ? "justify-center" : ""}`}
+      >
+        <Link to="/designer/dashboard" className="font-Dynalight-Regular font-semibold text-accent text-xl">
+          {collapsed ? "d" : "designO"}
+        </Link>
       </div>
 
-      <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
-        {!collapsed && (
-          <p className="px-3 mb-2 text-xxs font-Jost-Semibold text-text-faint uppercase tracking-widest">
-            Main Menu
-          </p>
-        )}
+      <nav className="flex-1 px-2 py-4 overflow-y-auto">
+        {sections.map((section, i) => (
+          <div key={section.title} className={i > 0 ? "mt-5" : ""}>
+            {collapsed ? (
+              i > 0 && <div className="mx-3 mb-3 border-t border-surface-border" />
+            ) : (
+              <p className="px-3 mb-2 text-xxs font-Jost-Semibold text-text-faint uppercase tracking-widest">
+                {section.title}
+              </p>
+            )}
 
-        <Link to="/designer/dashboard" onClick={() => setActive("Dashboard")} className={linkClass("Dashboard")}>
-          {active === "Dashboard" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-accent" />}
-          <LayoutDashboard size={18} strokeWidth={active === "Dashboard" ? 2.2 : 1.8} className={iconClass("Dashboard")} />
-          {!collapsed && <span className="flex-1">Dashboard</span>}
-        </Link>
-
-        <Link to="/profile/designer" onClick={() => setActive("profile")} className={linkClass("profile")}>
-          {active === "profile" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-accent" />}
-          <User size={18} strokeWidth={active === "profile" ? 2.2 : 1.8} className={iconClass("profile")} />
-          {!collapsed && <span className="flex-1">Profile</span>}
-        </Link>
-
-        {/* designs */}
-        <Link to="/designer/designs" onClick={() => setActive("designs")} className={linkClass("designs")}>
-          {active === "designs" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-accent" />}
-          <House size={18} strokeWidth={active === "designs" ? 2.2 : 1.8} className={iconClass("designs")} />
-          {!collapsed && <span className="flex-1">Designs</span>}
-        </Link>
-
-        {/* job applications */}
-        <Link to="/designer/job-applications/my" onClick={() => setActive("jobApplications")} className={linkClass("jobApplications")}>
-          {active === "jobApplications" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-accent" />}
-          <ScrollText size={18} strokeWidth={active === "jobApplications" ? 2.2 : 1.8} className={iconClass("jobApplications")} />
-          {!collapsed && <span className="flex-1">Job applications</span>}
-        </Link>
-
-        {/* active jobs */}
-        <Link to="/designer/active-jobs" onClick={() => setActive("activeJobs")} className={linkClass("activeJobs")}>
-          {active === "activeJobs" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-accent" />}
-          <BriefcaseBusiness size={18} strokeWidth={active === "activeJobs" ? 2.2 : 1.8} className={iconClass("activeJobs")} />
-          {!collapsed && <span className="flex-1">Active Jobs</span>}
-        </Link>
-
-        <Link to="/designer/saved-design/my" onClick={() => setActive("savedDesign")} className={linkClass("savedDesign")}>
-          {active === "savedDesign" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-accent" />}
-          <Heart size={18} strokeWidth={active === "savedDesign" ? 2.2 : 1.8} className={iconClass("savedDesign")} />
-          {!collapsed && <span className="flex-1">Saved Designs</span>}
-        </Link>
-        <Link to="/designer/transaction" onClick={() => setActive("transaction")} className={linkClass("transaction")}>
-          {active === "transaction" && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-accent" />}
-          <ArrowLeftRight  size={18} strokeWidth={active === "transaction" ? 2.2 : 1.8} className={iconClass("transaction")} />
-          {!collapsed && <span className="flex-1">Transactions</span>}
-        </Link>
-
+            <div className="space-y-1">
+              {section.items.map(({ to, label, icon: Icon, end }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end={end}
+                  title={collapsed ? label : undefined}
+                  className={({ isActive }) => linkClass(isActive)}
+                >
+                  {({ isActive }) => (
+                    <>
+                      {isActive && (
+                        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-accent" />
+                      )}
+                      <Icon size={18} strokeWidth={isActive ? 2.2 : 1.8} className={iconClass(isActive)} />
+                      {!collapsed && <span className="flex-1">{label}</span>}
+                    </>
+                  )}
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        ))}
       </nav>
 
       {/* Profile card */}
       <div className="p-3 border-t border-surface-border">
-        <div className={`
+        <div
+          className={`
             bg-surface-hover border border-surface-border
             rounded-xl px-3 py-2.5 flex items-center gap-3
             ${collapsed ? "flex-col justify-center gap-2" : ""}
-          `}>
-
+          `}
+        >
           {!collapsed && (
             <div className="flex-1 min-w-0">
               <p className="font-Jost-Semibold text-text-primary text-sm truncate leading-tight">{name}</p>
@@ -133,18 +184,18 @@ const DesignerSidebar = memo(({ name, email }: { name: string, email: string }) 
           )}
 
           <button
-            onClick={() => handleLogout()}
+            onClick={handleLogout}
             title="Logout"
+            aria-label="Logout"
             className="flex items-center justify-center w-7 h-7 rounded-lg shrink-0
-                text-text-faint hover:bg-error-tint hover:text-error transition-colors duration-200"
+              text-error hover:bg-error-tint hover:text-error-text transition-colors duration-200"
           >
             <LogOut size={15} strokeWidth={2} />
           </button>
         </div>
       </div>
-
     </aside>
-  )
-})
+  );
+});
 
-export default DesignerSidebar
+export default DesignerSidebar;

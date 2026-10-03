@@ -3,19 +3,17 @@ import { useForm } from "react-hook-form"
 import { INDIAN_STATES } from "../../designerVerification/indianStates"
 import { DesignerprofileUpdationValidations } from "../../../../validations/profileValidation"
 import type { DesignerProfileDTO, DesignerUpdateResponseDTO } from "../designerProfileInterface"
-import { useEffect } from "react"
 
 type Props = {
     data: DesignerProfileDTO
     isOpen: boolean
-    dataError?: string
-    dataSuccess?: string
+
     onClose: () => void
     updateProfileData: (data: DesignerUpdateResponseDTO) => void,
     isLoading: boolean
 }
 
-export default function DesignerUpdationForm({ data, isOpen, onClose, dataError, dataSuccess, updateProfileData, isLoading }: Props) {
+export default function DesignerUpdationForm({ data, isOpen, onClose, updateProfileData, isLoading }: Props) {
 
     const { register, handleSubmit, formState: { errors } } = useForm<DesignerUpdateResponseDTO>({
         resolver: joiResolver(DesignerprofileUpdationValidations, { abortEarly: false, allowUnknown: true }),
@@ -23,18 +21,10 @@ export default function DesignerUpdationForm({ data, isOpen, onClose, dataError,
         defaultValues: data
     })
 
-    useEffect(() => {
-        if (dataSuccess) {
-            const timer = setTimeout(() => {
-                onClose();
-            }, 2000);
-            return () => clearTimeout(timer);
-        }
-    }, [dataSuccess, onClose]);
 
     const onSubmit = async (data: DesignerUpdateResponseDTO) => {
         try {
-            console.log(data)
+
             updateProfileData(data)
         } catch (err) {
             console.error("update failed", err);
@@ -43,7 +33,7 @@ export default function DesignerUpdationForm({ data, isOpen, onClose, dataError,
     if (!isOpen) {
         return null
     }
-    
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
             <div className="relative w-full max-w-xl bg-surface border border-surface-border rounded-2xl p-8 animate-in zoom-in duration-200">
@@ -79,9 +69,9 @@ export default function DesignerUpdationForm({ data, isOpen, onClose, dataError,
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-Jost-Semibold text-text-primary mb-1">State</label>
-                            <select 
-                                {...register("state")} 
-                                className="w-full bg-surface-hover border border-surface-border text-text-primary focus:border-accent focus:ring-1 focus:ring-accent rounded-lg p-2.5 outline-none transition-colors cursor-pointer" 
+                            <select
+                                {...register("state")}
+                                className="w-full bg-surface-hover border border-surface-border text-text-primary focus:border-accent focus:ring-1 focus:ring-accent rounded-lg p-2.5 outline-none transition-colors cursor-pointer"
                                 defaultValue=""
                             >
                                 <option value="" disabled className="text-text-faint">Select your state</option>
@@ -141,7 +131,7 @@ export default function DesignerUpdationForm({ data, isOpen, onClose, dataError,
                         />
                         <p className="text-sm text-error mt-1">{errors.bio?.message}</p>
                     </div>
-                    
+
                     <div className="flex flex-col gap-3 pt-4">
                         {!isLoading ? (
                             <button
@@ -165,8 +155,6 @@ export default function DesignerUpdationForm({ data, isOpen, onClose, dataError,
                         )}
                         <button type="button" onClick={onClose} className="text-text-muted hover:text-text-primary text-sm font-medium transition-colors">Cancel</button>
                     </div>
-                    {dataError && <p className="text-sm text-error text-center">{dataError}</p>}
-                    {dataSuccess && <p className="text-sm text-success text-center">{dataSuccess}</p>}
                 </form>
 
             </div>

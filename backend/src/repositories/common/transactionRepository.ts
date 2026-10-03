@@ -6,6 +6,7 @@ import { BaseRepository } from "../baseRepository";
 import type { Pagination } from "../../DTO/admin/adminDTO";
 import type { IUser } from "../../interfaces/auth/IUser";
 import { TRANSACTION_TYPE } from "../../shared/enums/commonEnums";
+import type { IJobRequest } from "../../interfaces/customer/ICustomer";
 
 
 export class TranscationRepository extends BaseRepository<ITransaction> implements ITransactionRepository {
@@ -24,6 +25,7 @@ export class TranscationRepository extends BaseRepository<ITransaction> implemen
                 .sort({ createdAt: -1 })
                 .populate<{ destinationUserId: IUser }>("destinationUserId")
                 .populate<{ sourceUserId: IUser }>("sourceUserId")
+                .populate<{ jobId: IJobRequest }>("jobId")
                 .skip(skip)
                 .limit(limit)
                 .exec(),
@@ -43,6 +45,7 @@ export class TranscationRepository extends BaseRepository<ITransaction> implemen
             .limit(15)
             .populate<{ destinationUserId: IUser }>("destinationUserId")
             .populate<{ sourceUserId: IUser }>("sourceUserId")
+            .populate<{ jobId: IJobRequest }>("jobId")
     }
 
     async getCommisionTransactions(): Promise<ITransaction[]> {
@@ -78,6 +81,7 @@ export class TranscationRepository extends BaseRepository<ITransaction> implemen
     
         return this.create({
             ...data,
+            jobId: new mongoose.Types.ObjectId(data.jobId),
             proposalId: new mongoose.Types.ObjectId(data.proposalId),
             sourceUserId: new mongoose.Types.ObjectId(data.sourceUserId),
             destinationUserId: new mongoose.Types.ObjectId(data.destinationUserId),
@@ -101,6 +105,7 @@ export class TranscationRepository extends BaseRepository<ITransaction> implemen
                 .sort({ createdAt: -1 })
                 .populate<{ destinationUserId: IUser }>("destinationUserId")
                 .populate<{ sourceUserId: IUser }>("sourceUserId")
+                .populate<{ jobId: IJobRequest }>("jobId")
                 .skip(skip)
                 .limit(limit)
                 .exec(),

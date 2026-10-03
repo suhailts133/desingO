@@ -1,3 +1,5 @@
+import type { DisputeStatus } from "../../proposal/proposalInterface";
+import type { JobStatus } from "../../user/jobs/jobInterface";
 import type { TransactionType } from "../transaction/transactionInterface";
 
 export interface ReportBucketDto {
@@ -32,10 +34,34 @@ export type ReportGroupBy = "day" | "week" | "month" | "year" | "custom";
 
 
 
+export interface IStatusStat{
+  name: JobStatus,
+  value:number
+}
+
+export interface JobReportDTO{
+  data: IStatusStat[],
+  totalValue:number
+}
+
+export interface IDisputeStat{
+  name: DisputeStatus,
+  value:number
+}
+
+export interface DisputeReportDTO{
+  data: IDisputeStat[],
+  totalValue:number
+}
+
+
+
+
 
 export interface AdminDashboardDTO {
     activeUsersCount: number,
     activeJobCount: number,
+      totalRefund:number
     totalCommision: number
     disputes: AdminOngoingDisputeDTOs[]
     designerVerificationRequests: PendingVerificationRequests[]

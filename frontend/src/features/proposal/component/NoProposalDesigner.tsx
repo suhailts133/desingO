@@ -6,9 +6,10 @@ interface Props {
     sourceType: 'jobRequest' | 'direct_hire',
     sourceId: string
     activeJobId: string
+    isActive?:boolean
 }
 
-export default function NoProposalDesigner({ activeJobId, jobId, sourceType, sourceId }: Props) {
+export default function NoProposalDesigner({isActive, activeJobId, jobId, sourceType, sourceId }: Props) {
     const navigate = useNavigate()
 
     return (
@@ -28,7 +29,7 @@ export default function NoProposalDesigner({ activeJobId, jobId, sourceType, sou
                     Create proposal
                 </button>
                 <button
-                    onClick={() => navigate(`/chat/${activeJobId}`)}
+                    onClick={() => navigate(`/chat/${activeJobId}`, {state:{isActive}})}
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-surface-border bg-surface text-text-muted text-sm font-medium hover:bg-surface-hover hover:border-surface-border-strong hover:text-text-primary transition-colors duration-200"
                 >
                     <MessageCircle className="w-4 h-4" />

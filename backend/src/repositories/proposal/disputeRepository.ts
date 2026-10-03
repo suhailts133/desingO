@@ -1,5 +1,5 @@
 import type { Pagination } from "../../DTO/admin/adminDTO";
-import type { DisputeAdminFilters, DisputePopulated, DisputePopulatedAll, DisputePopulateProposal, DisputeRepoDTO, DisputeUpdateDTO } from "../../DTO/proposal/dispute";
+import type { DisputeAdminFilters, DisputePopulated, DisputePopulatedAll, DisputePopulateProposal, DisputeRepoDTO, DisputeReportDTO, DisputeUpdateDTO } from "../../DTO/proposal/dispute";
 import type { IUser } from "../../interfaces/auth/IUser";
 import type { IDispute, IDisputeRepository } from "../../interfaces/proposal/IDispute";
 import type { DisputeStatus, IProposal } from "../../interfaces/proposal/IProposal";
@@ -12,6 +12,26 @@ export class DisputeRepository extends BaseRepository<IDispute> implements IDisp
   constructor() {
     super(DisputeModel);
   }
+
+    async getDisputeReport(): Promise<DisputeReportDTO> {
+      const [result] = await this._model.aggregate<DisputeReportDTO>([
+        {
+          $group: {
+            _id: "$status",
+            value: { $sum: 1 }
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            data: { $push: { name: "$_id", value: "$value" } },
+            totalValue: { $sum: "$value" }
+          }
+        },
+        { $project: { _id: 0, data: 1, totalValue: 1 } }
+      ])
+      return result ?? { data: [], totalValue: 0 }
+    }
 
   async getDisputesRequiringAdminAction(): Promise<IDispute[]> {
     return await this.find({ status: { $in: [DISPUTE_STATUS.OPEN, DISPUTE_STATUS.REDO] } });
