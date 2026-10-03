@@ -39,6 +39,12 @@ export default function Navbar() {
         </NavLink>
         {/* Desktop links */}
         <nav className="hidden items-center gap-7 md:flex">
+          <NavLink to="/" className={navLinkClass}>
+            Home
+          </NavLink>
+          <NavLink to="/designs" className={navLinkClass}>
+            Designs
+          </NavLink>
           <NavLink to="/designs" className={navLinkClass}>
             Designs
           </NavLink>
@@ -103,12 +109,20 @@ export default function Navbar() {
       >
         <nav className="flex flex-col divide-y divide-surface-border px-4 sm:px-6">
           <NavLink
+            to="/"
+            onClick={() => setOpen(false)}
+            className="py-3.5 text-sm font-Jost-Semibold text-text-primary"
+          >
+            Home
+          </NavLink>
+          <NavLink
             to="/designs"
             onClick={() => setOpen(false)}
             className="py-3.5 text-sm font-Jost-Semibold text-text-primary"
           >
             Designs
           </NavLink>
+          
           <NavLink
             to="/jobs"
             onClick={() => setOpen(false)}
@@ -144,10 +158,6 @@ export default function Navbar() {
         </nav>
 
         <div className="px-4 pb-5 pt-2 sm:px-6">
-          <div className="mb-3 flex items-center justify-between">
-            <span className="text-sm font-Jost-Semibold text-text-muted">Theme</span>
-            <ThemeToggle />
-          </div>
           {isLoggedIn ? (
             <button
               onClick={handleLogout}
