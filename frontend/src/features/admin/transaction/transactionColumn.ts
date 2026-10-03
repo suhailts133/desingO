@@ -4,6 +4,7 @@ import type { AllTransactionDTO } from "./transactionInterface";
 
 export const transactionColumns: ColumnDef<AllTransactionDTO>[] = [
     { key: "transactionNumber", label: "Id" },
+    { key: "jobNumber", label: "Job Id" },
     { key: "sourceName", label: "Sender" },
     { key: "sourceRole", label: "Sender Role" },
     { key: "designationName", label: "Recipient" },

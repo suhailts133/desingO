@@ -28,6 +28,7 @@ export default function TransactionHistoryTable({ transactions }: TransactionHis
                 <thead>
                     <tr className="bg-bg-raised text-text-muted border-b border-surface-border">
                         <th className="text-left font-medium px-4 py-3">Transaction ID</th>
+                        <th className="text-left font-medium px-4 py-3">Job ID</th>
                         <th className="text-left font-medium px-4 py-3">Type</th>
                         <th className="text-left font-medium px-4 py-3">From</th>
                         <th className="text-left font-medium px-4 py-3">Date</th>
@@ -42,6 +43,9 @@ export default function TransactionHistoryTable({ transactions }: TransactionHis
                         >
                             <td className="px-4 py-3 text-text-primary font-mono text-xs">
                                 {tx.transactionId}
+                            </td>
+                            <td className="px-4 py-3 text-text-primary font-mono text-xs">
+                                {tx.jobNumber}
                             </td>
                             <td className="px-4 py-3">
                                 <span

@@ -55,6 +55,7 @@ export interface OngoingProposalDTOs {
 export interface DashboardTransactionHistory {
   id: string,
   transactionId: string,
+  jobNumber:string
   amount: number,
   from: string,
   type: TransactionType
