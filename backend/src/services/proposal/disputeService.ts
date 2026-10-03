@@ -126,7 +126,7 @@ export class DisputeService implements IDisputeService {
     }
 
     await this._transactionManager.runInTransaction(async (session) => {
-        console.log(session.id, "From accept or reject disputd")
+      console.log(session.id, "From accept or reject disputd");
       const claimed = await this._disputeRepo.updateDisputeIfStatus(data.disputeId, DISPUTE_STATUS.AWAITING_CONFIRMATION, { status: data.status }, session);
 
       if (!claimed) {
@@ -183,6 +183,7 @@ export class DisputeService implements IDisputeService {
                 TransactionId: generateUniqueId(TRANSACTION_UNIQUE_ID.COMMISSION),
                 type: TRANSACTION_TYPE.COMMISSION,
                 proposalId: proposal.id,
+                jobId: proposal.sourceId.toString(),
               },
               session,
             );
@@ -216,6 +217,7 @@ export class DisputeService implements IDisputeService {
               type: isCustomerRaised ? TRANSACTION_TYPE.REFUND : TRANSACTION_TYPE.PAYOUT,
               TransactionId: generateUniqueId(isCustomerRaised ? TRANSACTION_UNIQUE_ID.REFUND : TRANSACTION_UNIQUE_ID.PAYOUT),
               proposalId: proposal.id,
+              jobId: proposal.sourceId.toString(),
             },
             session,
           );

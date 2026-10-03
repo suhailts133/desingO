@@ -1,10 +1,12 @@
 import type { IUser } from "../../interfaces/auth/IUser";
 import type { ITransaction, TransactionType } from "../../interfaces/base/ITransaction";
+import type { IJobRequest } from "../../interfaces/customer/ICustomer";
 
 export interface TransactionRepoDTO {
   amount: number;
   type: TransactionType;
   sourceUserId: string;
+  jobId:string
   destinationUserId: string;
   proposalId?: string;
   disputeId?: string;
@@ -18,6 +20,7 @@ export interface TransactionFilter {
 }
 export interface AllTransactionDTO {
   transactionNumber: string
+  jobNumber: string
   id: string;
   amount: number;
   type: TransactionType;
@@ -29,9 +32,10 @@ export interface AllTransactionDTO {
   destinationId: string
 }
 
-export type TransactionPopulated = Omit<ITransaction, "sourceUserId" | "destinationUserId"> & {
+export type TransactionPopulated = Omit<ITransaction, "sourceUserId" | "destinationUserId" | "jobId"> & {
   sourceUserId: IUser;
   destinationUserId: IUser;
+  jobId: IJobRequest;
 };
 
 export type ReportGroupBy = "day" | "week" | "month" | "year" | "custom";

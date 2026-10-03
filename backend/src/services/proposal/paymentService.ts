@@ -63,6 +63,7 @@ export class PaymentService implements IPaymentService {
     const payment = await this._paymentRepo.createPayment(paymentRepo);
     const transactionData: TransactionRepoDTO = {
       amount: payment.amount,
+      jobId:proposal.sourceId.toString(),
       TransactionId: generateUniqueId(TRANSACTION_UNIQUE_ID.PAYMENT),
       sourceUserId: payment.customerId.toString(),
       destinationUserId: admin.id,

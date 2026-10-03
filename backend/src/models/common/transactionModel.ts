@@ -8,6 +8,7 @@ export const transactionSchema = new Schema<ITransaction>({
     sourceUserId: { type: Schema.Types.ObjectId, ref: "User", required: true, },
     destinationUserId: { type: Schema.Types.ObjectId, ref: "User", required: true, },
     proposalId: { type: Schema.Types.ObjectId, ref: "Proposal", },
+    jobId: { type: Schema.Types.ObjectId, ref: "JobRequest", },
     disputeId: { type: Schema.Types.ObjectId, ref: "Dispute", },
 }, {
     timestamps: true,
