@@ -3,9 +3,6 @@ import { useDecodeAccessToken } from "../../../helpers/decodeAccessToken";
 import HomeHero from "../components/homeComponents/HomeHero";
 import HowItWorks from "../components/homeComponents/HowItWorks";
 import FeatureStrip from "../components/homeComponents/FeatureStrip";
-import AIDesignButton from "../../aiDesign/components/AIDesignButton";
-import AIDesignChatPanel from "../../aiDesign/components/AIDesignChatPanel";
-
 export default function Home() {
   const { role } = useDecodeAccessToken();
   const navigate = useNavigate();
@@ -37,8 +34,6 @@ export default function Home() {
       />
       <HowItWorks />
       <FeatureStrip />
-      <AIDesignButton />
-      <AIDesignChatPanel />
     </>
   );
 }

@@ -3,6 +3,8 @@ import Spinner from "../../../../shared/common/Spinner";
 import OngoingDisputesSection from "../../../../shared/dashboard/OngoingDisputesSection";
 import OngoingProposalsSection from "../../../../shared/dashboard/OngoingProposalsSection";
 import TransactionHistorySection from "../../../../shared/dashboard/TransactionHistorySection";
+import AIDesignButton from "../../../aiDesign/components/AIDesignButton";
+import AIDesignChatPanel from "../../../aiDesign/components/AIDesignChatPanel";
 import { useRecommendDesignsQuery } from "../../../common/commonEndpoints";
 import DesignCard from "../../../common/components/cards/DesignCard";
 import { useGetMyRecentTransactionQuery } from "../../../designer/dashboard/dashboardEndpoints";
@@ -71,6 +73,9 @@ export default function CustomerDashboard() {
           <div className="text-sm text-text-muted">No designs found.</div>
         )}
       </div>
+
+      <AIDesignButton />
+      <AIDesignChatPanel />
     </div>
   );
 }
