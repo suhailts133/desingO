@@ -1,4 +1,5 @@
 import type { AdminDashboardDTO } from "../../DTO/admin/adminDashboard";
+import type { DisputeReportDTO } from "../../DTO/proposal/dispute";
 import type { JobReportDTO } from "../../DTO/user/jobsDTO";
 import { DashboardMapper } from "../../dtoMappers/common/dashboardMapper";
 import type { IAdminDashboardService } from "../../interfaces/admin/IAdminService";
@@ -29,5 +30,9 @@ export class AdminDashboardService implements IAdminDashboardService {
   async getJobReport(): Promise<IApiResponse<JobReportDTO>> {
     const jobData = await this._jobRepo.getJobReport();
     return { message: DASHBOARD_MESSAGES.DASHBOARD.JOB_REPORT_SUCCESS, data: jobData }
+  }
+  async getDisputeReport(): Promise<IApiResponse<DisputeReportDTO>> {
+    const disputeData = await this._disputeRepo.getDisputeReport();
+    return { message: DASHBOARD_MESSAGES.DASHBOARD.JOB_REPORT_SUCCESS, data: disputeData }
   }
 }

@@ -41,6 +41,7 @@ router.get("/designer", designerAuthentication, dashboardController.getDesignerD
 router.get("/customer", customerAuthentication, dashboardController.getCustomerDashboard)
 router.get("/admin", adminAuthentication, dashboardController.getAdminDashboard)
 router.get("/admin/job-report",adminAuthentication, dashboardController.getJobReport)
+router.get("/admin/dispute-report", dashboardController.getDisputeReport)
 router.get("/recent-transaction", authenticate, transactionController.getMyTransaction)
 router.get("/top-reviews", designerAuthentication, reviewController.getTopReviews)
 export default router
