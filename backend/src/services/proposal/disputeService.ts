@@ -120,7 +120,11 @@ export class DisputeService implements IDisputeService {
     if (!dispute) {
       throw new AppError(PROPOSAL_MESSAGES.DISPUTE.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
     }
+    const cannotTerminate = data.status === DISPUTE_STATUS.TERMINATED && !dispute.canTerminate;
 
+    if (cannotTerminate) {
+      throw new AppError(PROPOSAL_MESSAGES.DISPUTE.CANT_TERMINATE, RESPONSE_CODE.BAD_REQUEST);
+    }
     if (dispute.status !== DISPUTE_STATUS.AWAITING_CONFIRMATION) {
       throw new AppError(PROPOSAL_MESSAGES.DISPUTE.DECISION_PENDING, RESPONSE_CODE.BAD_REQUEST);
     }
