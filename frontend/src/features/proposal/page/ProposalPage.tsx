@@ -274,7 +274,7 @@ export default function ProposalPage() {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Invalid proposal source.</div>
     }
     if (isLoading) {
-        return <Spinner/>
+        return <Spinner />
     }
     if (error) {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Something went wrong. Please try again.</div>
@@ -293,8 +293,8 @@ export default function ProposalPage() {
         return <div className="p-10 text-center text-red-500 font-Jost-Semibold">Something went wrong. Please try again.</div>
     }
     if (isDisputeLoading || isReviewLoading) {
-            return <Spinner />
-        }
+        return <Spinner />
+    }
     const ACTIVE_STATUSES = ["Open", "In Progress", "Uploaded", "Redo"];
 
     const hasActiveService = (proposal?.services ?? []).some((e) =>
@@ -400,7 +400,7 @@ export default function ProposalPage() {
                 onConfirm={HandleApproveFloorPlan}
                 onClose={() => setApproveFloorPlan(null)}
                 isLoading={isFloorPlanVerifying}
-                text="Are you sure you want to accept this Floor Plan?"
+                text="Accepting this floor plan will enable the payment option. This action cannot be undone."
                 heading="Confirm?"
                 buttonLoadingText="Accepting"
                 buttonText="Confirm & Accept"
