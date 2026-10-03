@@ -56,7 +56,8 @@ export default function ProposalPage() {
     const sourceType = location.state?.sourceType as "jobRequest" | "direct_hire" | undefined
     const sourceId = location.state?.sourceId as string | undefined
     const activeJobId = location.state?.activeJobId as string | undefined
-
+    const isActive = location.state?.isActive as boolean | undefined
+    console.log(isActive, "from working propsal")
     const { data, isLoading, error, refetch } = useGetProposalQuery(id ?? "", { skip: !id })
 
     const proposal = data?.data
@@ -283,8 +284,8 @@ export default function ProposalPage() {
         return (
             <div className="w-full flex flex-col gap-6">
                 {role === "Designer"
-                    ? <NoProposalDesigner activeJobId={activeJobId} jobId={id!} sourceType={sourceType!} sourceId={sourceId!} />
-                    : <NoProposalCustomer activeJobId={activeJobId!} />
+                    ? <NoProposalDesigner isActive={isActive} activeJobId={activeJobId} jobId={id!} sourceType={sourceType!} sourceId={sourceId!} />
+                    : <NoProposalCustomer isActive={isActive} activeJobId={activeJobId!} />
                 }
             </div>
         )
@@ -370,6 +371,7 @@ export default function ProposalPage() {
                 activeJobId={activeJobId}
                 otherPersonName={"other"}
                 role={role}
+                 isActive={isActive ?? false}
             />
 
             {clientSecret && payingService && (

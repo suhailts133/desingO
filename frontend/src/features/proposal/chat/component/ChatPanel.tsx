@@ -13,16 +13,17 @@ interface ChatPanelProps {
     activeJobId: string
     otherPersonName: string
     role: string
+    isActive?:boolean
 }
 
-export default function ChatPanel({ isOpen, onClose, activeJobId, otherPersonName, role}: ChatPanelProps) {
+export default function ChatPanel({ isActive, isOpen, onClose, activeJobId, otherPersonName, role}: ChatPanelProps) {
     const { id } = useDecodeAccessToken()
     const { messages, sendMessage, isConnected, error, hasMore, isLoadingMore, loadMore } =
         useChat(activeJobId, isOpen)
 
     const initials = getInitials(otherPersonName)
 
-    // Close on Escape
+    
     useEffect(() => {
         const handler = (e: KeyboardEvent) => {
             if (e.key === "Escape") onClose()
@@ -65,10 +66,16 @@ export default function ChatPanel({ isOpen, onClose, activeJobId, otherPersonNam
                     onLoadMore={loadMore}
                 />
 
+            {isActive ? (
                 <ChatInput
                     isConnected={isConnected}
                     onSendMessage={sendMessage}
                 />
+            ) : (
+                <div className="px-4 py-3 border-t border-surface-border text-center text-sm text-text-muted">
+                    This conversation is closed. You can no longer send messages.
+                </div>
+            )}
             </div>
         </>
     )
