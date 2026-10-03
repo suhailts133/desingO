@@ -8,7 +8,6 @@ import {
   Calendar,
   FileText,
   Layers,
-  Sparkles,
   Wrench,
   Users,
   PawPrint,

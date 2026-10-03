@@ -92,6 +92,7 @@ export const API_ROUTES = {
         DESIGNER: "/dashboard/designer",
         CUSTOMER: "/dashboard/customer",
         ADMIN: "/dashboard/admin",
+        JOB_REPORT: "/dashboard/admin/job-report",
         RECENT_TRANSACTION: "/dashboard/recent-transaction",
         TOP_REIVEWS: "/dashboard/top-reviews",
 
