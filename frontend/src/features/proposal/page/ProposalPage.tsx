@@ -466,6 +466,7 @@ export default function ProposalPage() {
             <FloorPlanSection
                 floorPlans={proposal.floorPlans}
                 role={role}
+                canUploadFloorPlan={contractStatus === "Accepted"}
                 isUploading={isFloorPlanUploading}
                 onUpload={() => setUploadFloorPlan(proposal.id)}
                 onApprove={(floorPlanId) => setApproveFloorPlan(floorPlanId)}

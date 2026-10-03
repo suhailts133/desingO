@@ -7,17 +7,18 @@ type Role = "Designer" | "Admin" | "Customer"
 interface FloorPlanSectionProps {
     floorPlans: floorPlanDTO[]
     role: Role
+    canUploadFloorPlan:boolean
     isUploading?: boolean
     onUpload: () => void
     onApprove: (floorPlanId: string) => void
     onReject: (floorPlanId: string) => void
 }
 
-export default function FloorPlanSection({ floorPlans, role, isUploading, onUpload, onApprove, onReject }: FloorPlanSectionProps) {
+export default function FloorPlanSection({canUploadFloorPlan, floorPlans, role, isUploading, onUpload, onApprove, onReject }: FloorPlanSectionProps) {
     const [historyOpen, setHistoryOpen] = useState(false)
 
     if (!floorPlans || floorPlans.length === 0) {
-        return role === "Designer" ? (
+        return role === "Designer" && canUploadFloorPlan ? (
             <div className="bg-surface rounded-2xl border border-surface-border px-6 py-5">
                 <h2 className="font-Jost-Semibold text-xs uppercase tracking-widest text-text-primary mb-3">Floor Plans</h2>
                 <button
