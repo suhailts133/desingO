@@ -1,7 +1,7 @@
 import { API_ROUTES } from "../../../api/apiRoutes";
 import { baseApi } from "../../../api/baseApi";
 import type { IApiResponse } from "../../../api/responseType";
-import type { AdminDashboardDTO, JobReportDTO } from "./adminDashboardInterface";
+import type { AdminDashboardDTO, DisputeReportDTO, JobReportDTO } from "./adminDashboardInterface";
 
 export const adminDisputesApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -14,6 +14,11 @@ export const adminDisputesApi = baseApi.injectEndpoints({
             query:() => ({
                 url:API_ROUTES.DASHBOARD.JOB_REPORT
             })
+        }),
+        getDisputeReport:builder.query<IApiResponse<DisputeReportDTO>,void>({
+            query:() => ({
+                url:API_ROUTES.DASHBOARD.DISPUTE_REPORT
+            })
         })
     })
 })
@@ -21,5 +26,6 @@ export const adminDisputesApi = baseApi.injectEndpoints({
 
 export const {
     useGetAdminDashboardQuery,
-    useGetJobReportQuery
+    useGetJobReportQuery,
+    useGetDisputeReportQuery
 } = adminDisputesApi

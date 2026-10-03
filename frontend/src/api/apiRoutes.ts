@@ -93,6 +93,7 @@ export const API_ROUTES = {
         CUSTOMER: "/dashboard/customer",
         ADMIN: "/dashboard/admin",
         JOB_REPORT: "/dashboard/admin/job-report",
+        DISPUTE_REPORT: "/dashboard/admin/dispute-report",
         RECENT_TRANSACTION: "/dashboard/recent-transaction",
         TOP_REIVEWS: "/dashboard/top-reviews",
 
