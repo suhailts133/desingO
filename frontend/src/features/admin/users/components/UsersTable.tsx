@@ -20,7 +20,7 @@ export default function UsersTable() {
   const page = Number(searchParams.get("page") ?? "1");
   const role = getValue("role") as "All" | "Customer" | "Designer";
   const status = getValue("status") as "All" | "Active" | "Blocked";
-  const name = searchParams.get("name") ?? "";
+  const name = searchParams.get("name");
 
   const { data, isLoading, error } = useGetAllusersQuery({
     page,

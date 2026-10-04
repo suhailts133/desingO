@@ -3,8 +3,7 @@ import { useSearchParams } from "react-router-dom";
 export function useFilterParams(defaults: Record<string, string> = {}) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const getValue = (key: string) =>
-    searchParams.get(key) ?? defaults[key] ?? "All";
+  const getValue = (key: string, fallback?: string) => searchParams.get(key) ?? fallback ?? defaults[key] ?? "All";
 
   const setFilter = (key: string, value: string) => {
     setSearchParams((prev) => {
