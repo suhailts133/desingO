@@ -24,6 +24,7 @@ export class ProposalMapper {
             return {
                 ...(d.escrow?.status && { escrowStatus: d.escrow.status }),
                 ...(d.escrow?.designerPayout && { amountHeld: d.escrow.designerPayout }),
+                ...(d.escrow?.designerPayout && { platformFee: d.escrow.platformCommission }),
                 serviceName: d.serviceName,
                 order: d.order,
                 price: d.price,

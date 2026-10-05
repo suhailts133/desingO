@@ -173,6 +173,7 @@ export interface ProposalServiceItemDTO {
     paidAt?: string
     escrowStatus?: EscrowStatus
     amountHeld?: number
+    platformFee?: number
 }
 
 
