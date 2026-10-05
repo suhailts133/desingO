@@ -1,36 +1,62 @@
 import { SearchFilter } from "./SearchFilter";
 import { SelectFilter } from "./SelectFilter";
+import { DateFilter } from "./DateFilter";
 import type { FilterFieldConfig } from "./types";
 
 type Props = {
   filters: FilterFieldConfig[];
-  getValue: (key: string) => string;
+  getValue: (key: string, fallback?: string) => string;
   onFilterChange: (key: string, value: string) => void;
 };
 
 export function FilterBar({ filters, getValue, onFilterChange }: Props) {
   return (
-    <div className="rounded-2xl flex items-center justify-center gap-3 mb-5 bg-surface p-5 border border-surface-border-strong">
-      {filters.map((f) =>
-        f.type === "search" ? (
-          <SearchFilter
-            key={f.key}
-            value={getValue(f.key)}
-            onChange={(v) => onFilterChange(f.key, v)}
-            placeholder={f.placeholder}
-            debounceMs={f.debounceMs}
-            widthClass={f.widthClass}
-          />
-        ) : (
-          <SelectFilter
-            key={f.key}
-            value={getValue(f.key)}
-            onChange={(v) => onFilterChange(f.key, v)}
-            options={f.options}
-            widthClass={f.widthClass}
-          />
-        )
-      )}
+    <div className="rounded-2xl flex flex-wrap items-end justify-center gap-3 mb-5 bg-surface p-5 border border-surface-border-strong">
+      {filters.map((f) => {
+        if (f.type === "date") {
+          return (
+            <DateFilter
+              key={f.key}
+              filterKey={f.key}
+              label={f.label}
+              options={f.options}
+              getValue={getValue}
+              onChange={onFilterChange}
+              widthClass={f.widthClass}
+            />
+          );
+        }
+
+        return (
+          <div key={f.key} className="flex flex-col gap-1">
+            <label
+              htmlFor={`filter-${f.key}`}
+              className="text-xs text-text-primary/70 pl-1"
+            >
+              {f.label}
+            </label>
+
+            {f.type === "search" ? (
+              <SearchFilter
+                id={`filter-${f.key}`}
+                value={getValue(f.key, "")}
+                onChange={(v) => onFilterChange(f.key, v)}
+                placeholder={f.placeholder}
+                debounceMs={f.debounceMs}
+                widthClass={f.widthClass}
+              />
+            ) : (
+              <SelectFilter
+                id={`filter-${f.key}`}
+                value={getValue(f.key)}
+                onChange={(v) => onFilterChange(f.key, v)}
+                options={f.options}
+                widthClass={f.widthClass}
+              />
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

@@ -9,12 +9,40 @@ import { useDeleteAJob } from "../hooks/useDeleteAjob";
 import Pagination from "../../../../shared/common/Pagination";
 import { useHandleResponse } from "../../../../helpers/useHandleResponse";
 import Spinner from "../../../../shared/common/Spinner";
+import { FilterBar } from "../../../../shared/filter/FilterBar";
+import { JOB_FILTERS } from "../jobFilter";
+import { useFilterParams } from "../../../../shared/filter/useFilterParams";
+import { getDateRange } from "../../../../shared/filter/dateOptions";
+import type { SortByTypes } from "../../../../api/responseType";
+import type { JobStatus } from "../jobInterface";
 
 export default function Jobs() {
-    const [page, setPage] = useState(1)
     const [deleteJobRequest, setDeleteJobRequest] = useState<string | null>(null)
-    const { data, isLoading, error } = useGetMyJobsQuery({ page, sourceType: "JOB_REQUEST" })
     const { handleDeletion, isDeleting } = useDeleteAJob()
+
+    const { searchParams, getValue, setFilter, setPage } = useFilterParams({ sortBy: "newest" });
+    const projectTitle = searchParams.get("projectTitle");
+    const sortBy = getValue("sortBy") as SortByTypes;
+    const status = getValue("status") as JobStatus | "All";
+    const page = Number(searchParams.get("page") ?? "1");
+    const { startDate, endDate } = getDateRange(
+        getValue("date"),
+        getValue("dateFrom", ""),
+        getValue("dateTo", "")
+    );
+  
+
+
+    const { data, isLoading, error } = useGetMyJobsQuery({ 
+        page,
+         sourceType: "JOB_REQUEST",
+         sortBy,
+         status,
+         startDate,
+         endDate,
+         projectTitle:projectTitle || undefined
+        
+        })
     const jobRequest = data?.data
     const handleResponse = useHandleResponse()
     if (isLoading) {
@@ -35,7 +63,7 @@ export default function Jobs() {
     const totalJobRequest = data.total ?? 1;
 
     return (
-        <div className="w-full flex flex-col gap-6">
+    <div className="w-full min-h-full flex flex-col gap-6">
 
             {/* Top bar */}
             <div className="w-full flex justify-end">
@@ -46,6 +74,8 @@ export default function Jobs() {
                     Add new job <Plus />
                 </Link>
             </div>
+
+            <FilterBar filters={JOB_FILTERS} getValue={getValue} onFilterChange={setFilter} />
 
 
             <div >
@@ -69,14 +99,14 @@ export default function Jobs() {
             />
 
 
-            <div className="sticky bottom-0 mt-auto pt-4 bg-bg">
+            <div className="mt-auto pt-4">
                 <Pagination
                     page={page}
                     totalItem={totalJobRequest}
                     whichItem="Job Request"
                     totalPages={totalPages}
-                    onDecrease={() => setPage(p => p - 1)}
-                    onIncrease={() => setPage(p => p + 1)}
+                    onDecrease={() => setPage(Math.max(1, page - 1))}
+                    onIncrease={() => setPage(Math.min(totalPages, page + 1))}
                 />
             </div>
 

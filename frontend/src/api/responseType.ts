@@ -14,3 +14,6 @@ export interface IApiResponseWithRecomendation<T> extends IApiResponse<T> {
     DataType: "JOB" | "DESIGN";
     type: "RECOMENDED" | "RECENT";
 }
+
+
+export type SortByTypes = "newest" | "oldest" | "name_asc" | "name_desc"

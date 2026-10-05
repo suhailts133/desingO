@@ -2,6 +2,9 @@ export interface AdminUserFilter {
   debouncedName?: string;
   role: "All" | "Customer" | "Designer";
   status: "All" | "Active" | "Blocked";
+  sortBy: "newest" | "oldest" | "name_asc" | "name_desc";
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface AdminUserQueryParams extends AdminUserFilter {

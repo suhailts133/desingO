@@ -1,12 +1,32 @@
-import type { createJobRepoDTO, EditJobRepoData, EditJobRequest, HireDesignerDTO, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO } from "../../DTO/user/jobsDTO";
+import type {
+  createJobRepoDTO,
+  EditJobRepoData,
+  EditJobRequest,
+  HireDesignerDTO,
+  HireDesignerQueryParam,
+  JobDetailResponseDTO,
+  JobFilter,
+  JobsCommonResponseDTO,
+  JobsResponseDTO,
+  MyJobsQueryParams,
+} from "../../DTO/user/jobsDTO";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../../interfaces/base/IApiResponse";
-import type { ICreateJobRequest, Source_type } from "../../interfaces/customer/ICustomer";
+import type { ICreateJobRequest } from "../../interfaces/customer/ICustomer";
 import type { IActiveJobRepository, IJobRepository } from "../../interfaces/customer/ICustomerRepository";
 import type { IJobRequestService } from "../../interfaces/customer/ICustomerService";
 import { AppError } from "../../shared/errors/appError";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload";
-import { CLOUDINARY_FOLDER_NAME, DESIGN_JOB_COUNT, JOB_REQUEST_STATUS, JOB_REQUEST_UNIQUE_ID, JOB_SOURCE_TYPE, RECOMENDATION_DATA_TYPE, RECOMENDATION_TYPE, SOURCE_TYPE } from "../../shared/enums/commonEnums";
+import {
+  CLOUDINARY_FOLDER_NAME,
+  DESIGN_JOB_COUNT,
+  JOB_REQUEST_STATUS,
+  JOB_REQUEST_UNIQUE_ID,
+  JOB_SOURCE_TYPE,
+  RECOMENDATION_DATA_TYPE,
+  RECOMENDATION_TYPE,
+  SOURCE_TYPE,
+} from "../../shared/enums/commonEnums";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { JobRequestMapper } from "../../dtoMappers/user/jobRequestMapper";
 import type { AcceptOrRejectHireDesignerDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
@@ -50,7 +70,7 @@ export class JobRequestService implements IJobRequestService {
     }
 
     await this._transactionManager.runInTransaction(async (session) => {
-        console.log(session.id, "from service")
+      console.log(session.id, "from service");
       const updatedHireRequst = await this._jobRequestRepo.updateHireRequest(id, data, session);
       if (!updatedHireRequst || !updatedHireRequst.designerId) {
         throw new AppError(JOB_MESSAGES.HIRE_DESIGNER.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
@@ -109,7 +129,7 @@ export class JobRequestService implements IJobRequestService {
     }
     return { message: JOB_MESSAGES.JOB_REQUEST.JOB_REQUEST_SUCCESS };
   }
-  async getjobRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<IApiResponseWithPagination<HireDesignerDTO[]>> {
+  async getjobRequestPerDesign(designId: string, filters?: HireDesignerQueryParam): Promise<IApiResponseWithPagination<HireDesignerDTO[]>> {
     const { data, pagination } = await this._jobRequestRepo.getjobRequestPerDesign(designId, filters);
     const hireDesignerData = JobRequestMapper.toHireRequestDTOList(data);
     return { message: JOB_MESSAGES.HIRE_DESIGNER.MY_REQUEST, data: hireDesignerData, total: pagination.total, totalPages: pagination.totalPages };
@@ -169,8 +189,12 @@ export class JobRequestService implements IJobRequestService {
     return { message: JOB_MESSAGES.JOB_REQUEST.UPDATION_SUCCESS };
   }
 
-  async getMyJobs(userId: string, sourceType: Source_type, page?: string): Promise<IApiResponseWithPagination<JobsResponseDTO[]>> {
-    const result = await this._jobRequestRepo.getMyJobs(userId, sourceType, page);
+  async getMyJobs(userId: string, filter?: MyJobsQueryParams): Promise<IApiResponseWithPagination<JobsResponseDTO[]>> {
+    if ( typeof filter?.sourceType  !== "string" || (filter?.sourceType !== "JOB_REQUEST" && filter?.sourceType !== "DIRECT_HIRE")) {
+        throw new AppError(JOB_MESSAGES.JOB_REQUEST.SOURCE_INVALID, RESPONSE_CODE.BAD_REQUEST);
+    }
+
+    const result = await this._jobRequestRepo.getMyJobs(userId, filter.sourceType, filter);
     const jobsData = JobRequestMapper.toMyJobRequestsDTOlist(result.data);
     return {
       total: result.pagination.total,

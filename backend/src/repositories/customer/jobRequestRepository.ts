@@ -4,12 +4,14 @@ import type { IJobRepository } from "../../interfaces/customer/ICustomerReposito
 import { JobRequestModel } from "../../models/user/jobModel";
 import { BaseRepository } from "../baseRepository";
 import type { Pagination } from "../../DTO/admin/adminDTO";
-import type { AggregationResultJobRequest, createJobRepoDTO, EditJobRepoData, JobFilter, JobReportDTO } from "../../DTO/user/jobsDTO";
+import type { AggregationResultJobRequest, createJobRepoDTO, EditJobRepoData, HireDesignerQueryParam, JobFilter, JobReportDTO, MyJobsQueryParams } from "../../DTO/user/jobsDTO";
 import type { IUser } from "../../interfaces/auth/IUser";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
 import { JOB_REQUEST_FILTERS } from "../../shared/enums/filterEnums";
 import { JOB_REQUEST_STATUS, JOB_SOURCE_TYPE } from "../../shared/enums/commonEnums";
 import type { HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
+import type { sortByTypes } from "../../interfaces/base/IApiResponse";
+import { toCleanRegExp, validateDate } from "../../shared/helpers/extraFunctions";
 
 export class JobRequestRepository extends BaseRepository<IJobRequest> implements IJobRepository {
   constructor() {
@@ -20,19 +22,19 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
       {
         $group: {
           _id: "$status",
-          value: { $sum: 1 }
-        }
+          value: { $sum: 1 },
+        },
       },
       {
         $group: {
           _id: null,
           data: { $push: { name: "$_id", value: "$value" } },
-          totalValue: { $sum: "$value" }
-        }
+          totalValue: { $sum: "$value" },
+        },
       },
-      { $project: { _id: 0, data: 1, totalValue: 1 } }
-    ])
-    return result ?? { data: [], totalValue: 0 }
+      { $project: { _id: 0, data: 1, totalValue: 1 } },
+    ]);
+    return result ?? { data: [], totalValue: 0 };
   }
 
   async findCandidatesExcluding(): Promise<IJobRequestPopulated[]> {
@@ -57,7 +59,6 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
   }
 
   async changeStatus(id: string, status: JobStatus, session?: ClientSession): Promise<IJobRequest | null> {
-    console.log(session?.id, "Change status")
     return await this._model.findByIdAndUpdate(id, { $set: { status } }, { returnDocument: "after" }).session(session ?? null);
   }
 
@@ -92,16 +93,36 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
     return !!result;
   }
 
-  async getMyJobs(userId: string, sourceType: Source_type, page?: string): Promise<{ data: IJobRequest[]; pagination: Pagination }> {
-    const pageNo = page ? Number(page) : 1;
+  async getMyJobs(userId: string, sourceType: Source_type, filter?: MyJobsQueryParams): Promise<{ data: IJobRequest[]; pagination: Pagination }> {
+    const page = filter?.page ? Number(filter.page) : 1;
     const limit = 6;
-    const result = await this._model
-      .find({ userId, sourceType })
-      .skip((pageNo - 1) * limit)
-      .limit(limit)
-      .sort({ createdAt: 1 })
-      .exec();
-    const total = await this._model.countDocuments({ userId, sourceType });
+    const skip = (page - 1) * limit;
+    const SORT_MAP: Record<sortByTypes, Record<string, 1 | -1>> = {
+      newest: { createdAt: -1, _id: -1 },
+      oldest: { createdAt: 1, _id: 1 },
+      name_asc: { projectTitle: 1, _id: 1 },
+      name_desc: { projectTitle: -1, _id: -1 },
+    };
+    const sort = SORT_MAP[filter?.sortBy as sortByTypes] ?? SORT_MAP.newest;
+    const query: QueryFilter<IJobRequest> = { userId, sourceType };
+    if (filter) {
+      if (filter.projectTitle) {
+        query.projectTitle = toCleanRegExp(filter.projectTitle);
+      }
+      if (filter.status) {
+        query.status = filter.status;
+      }
+      const start = validateDate(filter.startDate, "startDate");
+      const end = validateDate(filter.endDate, "endDate");
+      if (start || end) {
+        query.createdAt = {
+          ...(start && { $gte: start }),
+          ...(end && { $lte: end }),
+        };
+      }
+    }
+    const result = await this._model.find(query).sort(sort).skip(skip).limit(limit).exec();
+    const total = await this._model.countDocuments(query);
 
     const pagination: Pagination = {
       total,
@@ -113,28 +134,37 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
     };
   }
 
-  async getjobRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<{ data: IJobRequestCustomerPopulated[]; pagination: Pagination }> {
-    const page = filters?.page ? Number(filters.page) : 1;
+  async getjobRequestPerDesign(designId: string, filter?: HireDesignerQueryParam): Promise<{ data: IJobRequestCustomerPopulated[]; pagination: Pagination }> {
+    const page = filter?.page ? Number(filter.page) : 1;
     const limit = 6;
     const skip = (page - 1) * limit;
+    const SORT_MAP: Record<sortByTypes, Record<string, 1 | -1>> = {
+      newest: { createdAt: -1, _id: -1 },
+      oldest: { createdAt: 1, _id: 1 },
+      name_asc: { projectTitle: 1, _id: 1 },
+      name_desc: { projectTitle: -1, _id: -1 },
+    };
+    const sort = SORT_MAP[filter?.sortBy as sortByTypes] ?? SORT_MAP.newest;
     const query: QueryFilter<IJobRequest> = { designId: designId };
-    const sortOrder: { [key: string]: SortOrder } = { createdAt: -1 };
 
-    if (filters) {
-      if (filters.sort === "asc") {
-        sortOrder.createdAt = "asc";
-      } else if (filters.sort === "desc") {
-        sortOrder.createdAt = "desc";
+    if (filter) {
+      if (filter.projectTitle) {
+        query.projectTitle = toCleanRegExp(filter.projectTitle);
       }
-
-      if (filters.startDate && filters.endDate) {
+      if (filter.status) {
+        query.status = filter.status;
+      }
+      const start = validateDate(filter.startDate, "startDate");
+      const end = validateDate(filter.endDate, "endDate");
+      if (start || end) {
         query.createdAt = {
-          $gte: new Date(filters.startDate),
-          $lte: new Date(filters.endDate),
+          ...(start && { $gte: start }),
+          ...(end && { $lte: end }),
         };
       }
     }
-    const [result, total] = await Promise.all([this._model.find(query).populate<{ userId: IUser }>("userId").skip(skip).limit(limit).exec(), this._model.countDocuments(query)]);
+
+    const [result, total] = await Promise.all([this._model.find(query).populate<{ userId: IUser }>("userId").sort(sort).skip(skip).limit(limit).exec(), this._model.countDocuments(query)]);
     const pagination: Pagination = {
       total,
       totalPages: Math.ceil(total / limit),
@@ -142,7 +172,6 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
 
     return { data: result, pagination };
   }
-
 
   async getAllJobs(jobFilter?: JobFilter): Promise<{ data: IJobRequestPopulated[]; pagination: Pagination }> {
     const page = jobFilter?.page ? Number(jobFilter.page) : 1;

@@ -8,14 +8,18 @@ import type { AdminUserDetailDTO, AdminUserQueryParams, AdminUsersResponseDTO, A
 export const adminUsersApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getAllusers: builder.query<IApiResponseWithPagination<AdminUsersResponseDTO[]>, AdminUserQueryParams>({
-            query: ({ page, debouncedName, role, status }) => ({
+            query: ({ page, debouncedName, role, status,sortBy,startDate,endDate }) => ({
                 url: API_ROUTES.ADMIN.GET_ALL_USERS,
                 method: "GET",
                 params: {
                     page,
                     ...(debouncedName && { debouncedName }),
                     ...(role && role !== "All" && { role }),
-                    ...(status && status !== "All" && { is_blocked: status === "Blocked" })
+                    ...(status && status !== "All" && { is_blocked: status === "Blocked" }),
+                    ...(sortBy && {sortBy}),
+                    ...(startDate && {startDate}),
+                    ...(endDate && {endDate}),
+
                 }
             }),
             providesTags: ["users"]

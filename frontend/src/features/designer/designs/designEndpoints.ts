@@ -2,133 +2,132 @@ import { API_ROUTES } from "../../../api/apiRoutes";
 import { baseApi } from "../../../api/baseApi";
 import type { IApiResponse, IApiResponseWithPagination } from "../../../api/responseType";
 import type { DesignGallaryDTO } from "../../common/commonInterface";
-import type { HireDesignerFields, HireDesignerFilter } from "../../user/jobs/jobInterface";
+import type { HireDesignerFields, HireDesignerQueryParam } from "../../user/jobs/jobInterface";
 import type { AcceptOrRejectHireDesigner, DesignAiImageFilter, DesignDetailResponseDTO, DesignResponseDTO, DesignsQueryParms, GetAllDesignCommonResponseDTO, HireDesignerDTO } from "./designInterface";
 
 export const designApi = baseApi.injectEndpoints({
-    endpoints: (builder) => ({
-        getMyDesigns: builder.query<IApiResponseWithPagination<DesignResponseDTO[]>, { page: number }>({
-            query: ({ page }) => ({
-                url: API_ROUTES.DESIGNS.MY_DESIGNS,
-                method: "GET",
-                params: {
-                    page
-                }
-            }),
-            providesTags: ["designs"]
-        }),
-        addDesign: builder.mutation<IApiResponse, FormData>({
-            query: (formData: FormData) => ({
-                url: API_ROUTES.DESIGNS.ADD_DESIGN,
-                method: "POST",
-                body: formData
-            }),
-            invalidatesTags: ["designs"]
-        }),
-        getDesignDetail: builder.query<IApiResponse<DesignDetailResponseDTO>, string>({
-            query: (id) => ({
-                url: `${API_ROUTES.DESIGNS.DESIGN_DETAIL}/${id}`,
-                method: "GET"
-            }),
-            providesTags: (_result, _error, id) => [{ type: "designs", id }]
-        }),
+  endpoints: (builder) => ({
+    getMyDesigns: builder.query<IApiResponseWithPagination<DesignResponseDTO[]>, { page: number }>({
+      query: ({ page }) => ({
+        url: API_ROUTES.DESIGNS.MY_DESIGNS,
+        method: "GET",
+        params: {
+          page,
+        },
+      }),
+      providesTags: ["designs"],
+    }),
+    addDesign: builder.mutation<IApiResponse, FormData>({
+      query: (formData: FormData) => ({
+        url: API_ROUTES.DESIGNS.ADD_DESIGN,
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["designs"],
+    }),
+    getDesignDetail: builder.query<IApiResponse<DesignDetailResponseDTO>, string>({
+      query: (id) => ({
+        url: `${API_ROUTES.DESIGNS.DESIGN_DETAIL}/${id}`,
+        method: "GET",
+      }),
+      providesTags: (_result, _error, id) => [{ type: "designs", id }],
+    }),
 
-        hireDesigner: builder.mutation<IApiResponse, HireDesignerFields>({
-            query: (body: HireDesignerFields) => ({
-                url: API_ROUTES.HIRE_DESIGNER.CREATE,
-                method: "POST",
-                body
-            })
-        }),
-        approveOrRejectHireRequest: builder.mutation<IApiResponse, AcceptOrRejectHireDesigner>({
-            query: (body: AcceptOrRejectHireDesigner) => ({
-                url: API_ROUTES.HIRE_DESIGNER.ACCEPT_OR_REJECT,
-                method: "PATCH",
-                body
-            }),
-            invalidatesTags: ["hireRequest", "designs"]
-        }),
+    hireDesigner: builder.mutation<IApiResponse, HireDesignerFields>({
+      query: (body: HireDesignerFields) => ({
+        url: API_ROUTES.HIRE_DESIGNER.CREATE,
+        method: "POST",
+        body,
+      }),
+    }),
+    approveOrRejectHireRequest: builder.mutation<IApiResponse, AcceptOrRejectHireDesigner>({
+      query: (body: AcceptOrRejectHireDesigner) => ({
+        url: API_ROUTES.HIRE_DESIGNER.ACCEPT_OR_REJECT,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["hireRequest", "designs"],
+    }),
 
-        hireRequest: builder.query<IApiResponseWithPagination<HireDesignerDTO[]>, HireDesignerFilter>({
-            query: (args) => ({
-                url: `${API_ROUTES.HIRE_DESIGNER.REQUEST_PER_DESIGN}/${args.designId}`,
-                method: "GET",
-                params: {
-                    page: args.page,
-                    ...(args.sort && { sort: args.sort }),
-                    ...(args.startDate && { startDate: args.startDate }),
-                    ...(args.endDate && { endDate: args.endDate }),
-                },
+    hireRequest: builder.query<IApiResponseWithPagination<HireDesignerDTO[]>, HireDesignerQueryParam>({
+      query: ({ page, projectTitle, sortBy, status, startDate, endDate, designId }) => ({
+        url: `${API_ROUTES.HIRE_DESIGNER.REQUEST_PER_DESIGN}/${designId}`,
+        method: "GET",
+        params: {
+          page,
+          ...(projectTitle && { projectTitle }),
+          ...(status && status !== "All" && { status }),
+          ...(sortBy && { sortBy }),
+          ...(startDate && { startDate }),
+          ...(endDate && { endDate }),
+        },
+      }),
+      providesTags: ["hireRequest"],
+    }),
+    deleteADesign: builder.mutation<IApiResponse, string>({
+      query: (id) => ({
+        url: `${API_ROUTES.DESIGNS.DESIGN_DELETE}/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["designs"],
+    }),
 
-            }),
-            providesTags: ["hireRequest"]
+    editDesign: builder.mutation<IApiResponse, { formdata: FormData; id: string }>({
+      query: ({ formdata, id }) => ({
+        url: `${API_ROUTES.DESIGNS.EDIT_DESIGN}/${id}`,
+        method: "PATCH",
+        body: formdata,
+      }),
+      invalidatesTags: ["designs"],
+    }),
 
-        }),
-        deleteADesign: builder.mutation<IApiResponse, string>({
-            query: (id) => ({
-                url: `${API_ROUTES.DESIGNS.DESIGN_DELETE}/${id}`,
-                method: "DELETE"
-            }),
-            invalidatesTags: ["designs"]
-        }),
+    getAllDesignsCommon: builder.query<IApiResponseWithPagination<GetAllDesignCommonResponseDTO[]>, DesignsQueryParms>({
+      query: (args) => {
+        const designStyles = args.designStyles?.map((s) => s.label).join(",") || "";
+        const propertyTypes = args.propertyTypes?.map((s) => s.label).join(",") || "";
+        const spaceTypes = args.spaceTypes?.map((s) => s.label).join(",") || "";
+        const sortBy = args.sortBy?.value || "";
 
-        editDesign: builder.mutation<IApiResponse, { formdata: FormData, id: string }>({
-            query: ({ formdata, id }) => ({
-                url: `${API_ROUTES.DESIGNS.EDIT_DESIGN}/${id}`,
-                method: "PATCH",
-                body: formdata
-            }),
-            invalidatesTags: ["designs"]
-        }),
+        return {
+          url: API_ROUTES.DESIGNS.DESIGNS,
+          method: "GET",
+          params: {
+            page: args.page,
+            ...(designStyles && { designStyles }),
+            ...(propertyTypes && { propertyTypes }),
+            ...(spaceTypes && { spaceTypes }),
+            ...(sortBy && { sortBy }),
+          },
+        };
+      },
+    }),
 
-        getAllDesignsCommon: builder.query<IApiResponseWithPagination<GetAllDesignCommonResponseDTO[]>, DesignsQueryParms>({
-            query: (args) => {
-                const designStyles = args.designStyles?.map(s => s.label).join(",") || "";
-                const propertyTypes = args.propertyTypes?.map(s => s.label).join(",") || "";
-                const spaceTypes = args.spaceTypes?.map(s => s.label).join(",") || "";
-                const sortBy = args.sortBy?.value || "";
-
-                return {
-                    url: API_ROUTES.DESIGNS.DESIGNS,
-                    method: "GET",
-                    params: {
-                        page: args.page,
-                        ...(designStyles && { designStyles }),
-                        ...(propertyTypes && { propertyTypes }),
-                        ...(spaceTypes && { spaceTypes }),
-                        ...(sortBy && { sortBy }),
-                    },
-                }
-            }
-        }),
-
-        getSuggestedDesigns: builder.query<IApiResponse<DesignGallaryDTO[]>, DesignAiImageFilter>({
-            query: (args) => {
-                const designStyles = args.matchedDesignStyles?.join(",") || "";
-                const spaceTypes = args.matchedSpaceTypes?.join(",") || "";
-                return {
-                    url: API_ROUTES.DESIGNS.SUGGESTION,
-                    method: "GET",
-                    params: {
-                        ...(designStyles && { designStyles }),
-                        ...(spaceTypes && { spaceTypes }),
-                    }
-                }
-            }
-        }),
-    })
-})
-
+    getSuggestedDesigns: builder.query<IApiResponse<DesignGallaryDTO[]>, DesignAiImageFilter>({
+      query: (args) => {
+        const designStyles = args.matchedDesignStyles?.join(",") || "";
+        const spaceTypes = args.matchedSpaceTypes?.join(",") || "";
+        return {
+          url: API_ROUTES.DESIGNS.SUGGESTION,
+          method: "GET",
+          params: {
+            ...(designStyles && { designStyles }),
+            ...(spaceTypes && { spaceTypes }),
+          },
+        };
+      },
+    }),
+  }),
+});
 
 export const {
-    useGetSuggestedDesignsQuery,
-    useGetMyDesignsQuery,
-    useAddDesignMutation,
-    useGetDesignDetailQuery,
-    useGetAllDesignsCommonQuery,
-    useDeleteADesignMutation,
-    useEditDesignMutation,
-    useHireDesignerMutation,
-    useHireRequestQuery,
-    useApproveOrRejectHireRequestMutation,
-} = designApi
+  useGetSuggestedDesignsQuery,
+  useGetMyDesignsQuery,
+  useAddDesignMutation,
+  useGetDesignDetailQuery,
+  useGetAllDesignsCommonQuery,
+  useDeleteADesignMutation,
+  useEditDesignMutation,
+  useHireDesignerMutation,
+  useHireRequestQuery,
+  useApproveOrRejectHireRequestMutation,
+} = designApi;

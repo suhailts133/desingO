@@ -1,4 +1,4 @@
-import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO } from "../../DTO/designer/jobsDTO";
+import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO, JobApplicationQueryParms } from "../../DTO/designer/jobsDTO";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
@@ -96,7 +96,7 @@ async approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRe
 }
 
 
-    async getJobApplications(jobId: string, filters?: JobApplicationFilter): Promise<IApiResponseWithPagination<AllJobApplicationsDTO[]>> {
+    async getJobApplications(jobId: string, filters?: JobApplicationQueryParms): Promise<IApiResponseWithPagination<AllJobApplicationsDTO[]>> {
 
         const jobRequestExists = await this._jobRequestRepo.getJobRequest(jobId)
         if (!jobRequestExists) {
@@ -116,7 +116,7 @@ async approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRe
 
 
 
-    async getMyJobApplications(userId: string, filters?: JobApplicationFilter): Promise<IApiResponseWithPagination<MyJobApplicationsDTO[]>> {
+    async getMyJobApplications(userId: string, filters?: JobApplicationQueryParms): Promise<IApiResponseWithPagination<MyJobApplicationsDTO[]>> {
         const result = await this._jobApplicationRepo.getMyJobApplications(userId, filters);
         const jobApplicationData = JobApplicationMapper.toMyJobApplicationDTOlist(result.data)
         return {

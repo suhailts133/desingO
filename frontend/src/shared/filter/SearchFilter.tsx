@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 
 type Props = {
+  id?: string
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -11,6 +12,7 @@ type Props = {
 
 export function SearchFilter({
   value,
+  id,
   onChange,
   placeholder = "Enter a name",
   debounceMs = 400,
@@ -31,6 +33,7 @@ export function SearchFilter({
   return (
     <div className={`relative ${widthClass}`}>
       <input
+        id={id}
         type="text"
         className="auth-input"
         value={input}

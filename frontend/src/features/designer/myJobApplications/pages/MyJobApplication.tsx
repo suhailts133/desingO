@@ -6,15 +6,32 @@ import ConfirmModal from "../../../../shared/modals/ConfirmModal";
 import { useDeleteMyJobApplication } from "../hooks/useDeleteMyJobApplication";
 import Pagination from "../../../../shared/common/Pagination";
 import Spinner from "../../../../shared/common/Spinner";
+import type { SortByTypes } from "../../../../api/responseType";
+import { useFilterParams } from "../../../../shared/filter/useFilterParams";
+import { getDateRange } from "../../../../shared/filter/dateOptions";
+import { FilterBar } from "../../../../shared/filter/FilterBar";
+import { JOB_APPLICATION_FILTERS } from "../../../user/jobApplications/jobApplicationFilters";
+import { useHandleResponse } from "../../../../helpers/useHandleResponse";
 
 export default function MyJobApplications() {
-    const [page, setPage] = useState(1)
-    const [status, setStatus] = useState<JobApplicationStatus | "All">("All")
+    const { searchParams, getValue, setFilter, setPage } = useFilterParams({ sortBy: "newest" });
+    const sortBy = getValue("sortBy") as SortByTypes;
+    const status = getValue("status") as JobApplicationStatus | "All";
+    const page = Number(searchParams.get("page") ?? "1");
+    const { startDate, endDate } = getDateRange(
+        getValue("date"),
+        getValue("dateFrom", ""),
+        getValue("dateTo", "")
+    );
+    const handleResponse = useHandleResponse()
     const [deleteJobApplication, setDeleteJobApplication] = useState<string | null>(null)
-    const { handleDeletion, deleteError, deleteSuccess, isDeleting } = useDeleteMyJobApplication();
+    const { handleDeletion, isDeleting } = useDeleteMyJobApplication();
     const { data, isLoading, error } = useGetMyJobApplicationsQuery({
         page,
-        status: status === "All" ? undefined : status
+        sortBy,
+        startDate,
+        endDate,
+        status,
     })
 
     const jobApplications = data?.data
@@ -26,7 +43,8 @@ export default function MyJobApplications() {
         if (!deleteJobApplication) return
 
         console.log(deleteJobApplication)
-        await handleDeletion(deleteJobApplication)
+        const result = await handleDeletion(deleteJobApplication)
+        handleResponse(result.success, "You have deleted your job application.", result.message)
         setDeleteJobApplication(null)
     }
 
@@ -34,28 +52,10 @@ export default function MyJobApplications() {
     const totalJobapplications = data.total ?? 1
 
     return (
-        <div className="w-full flex flex-col gap-6 min-h-full">
+        <div className="w-full min-h-full flex flex-col gap-6">
+            <FilterBar filters={JOB_APPLICATION_FILTERS} getValue={getValue} onFilterChange={setFilter} />
 
-            {/* Filter */}
-            <div className="flex items-center gap-3">
-                <label className="text-xs font-semibold text-text-faint uppercase tracking-widest">Status</label>
-                <select
-                    value={status}
-                    onChange={(e) => { setStatus(e.target.value as JobApplicationStatus | "All"); setPage(1) }}
-                    className="text-xs font-semibold text-text-primary bg-surface-hover border border-surface-border rounded-lg px-3 py-1.5 focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-colors cursor-pointer"
-                >
-                    {["All", "Pending", "Rejected", "Ongoing"].map(s => (
-                        <option key={s} value={s}>{s}</option>
-                    ))}
-                </select>
-            </div>
 
-            {deleteSuccess && (
-                <p className="text-success text-sm text-center">{deleteSuccess}</p>
-            )}
-            {deleteError && (
-                <p className="text-error text-sm text-center">{deleteError}</p>
-            )}
 
             <div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -86,8 +86,8 @@ export default function MyJobApplications() {
                     totalItem={totalJobapplications}
                     totalPages={totalPages}
                     whichItem="job applications"
-                    onDecrease={() => setPage(p => p - 1)}
-                    onIncrease={() => setPage(p => p + 1)}
+                    onDecrease={() => setPage(Math.max(1, page - 1))}
+                    onIncrease={() => setPage(Math.min(totalPages, page + 1))}
                 />
             </div>
 

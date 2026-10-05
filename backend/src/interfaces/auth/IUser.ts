@@ -2,6 +2,7 @@ import type mongoose from "mongoose";
 import type { ImageUploadResult } from "../base/IImageUpload";
 
 export type UserRole = "Admin" | "Customer" | "Designer";
+export type  UserRoleNoAdmin = "Customer" | "Designer"
 
 export interface IUser {
   id: string;
@@ -23,6 +24,7 @@ export interface IUser {
   savedDesigns: mongoose.Types.ObjectId[]
   designerPreference?: IDesignerPreference
   embedding?: number[]
+
 }
 
 

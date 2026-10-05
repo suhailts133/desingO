@@ -1,25 +1,19 @@
 import type { FilterFieldConfig } from "../../../shared/filter/types";
 
-export const USER_FILTERS: FilterFieldConfig[] = [
-  { type: "search", key: "name", label: "Name", placeholder: "Enter a name" },
-  {
-    type: "select",
-    key: "role",
-    label: "Role",
-    options: [
-      { label: "All", value: "All" },
-      { label: "Customer", value: "Customer" },
-      { label: "Designer", value: "Designer" },
-    ],
-  },
+export const JOB_FILTERS: FilterFieldConfig[] = [
+  { type: "search", key: "projectTitle", label: "Project Title", placeholder: "Enter project title" },
   {
     type: "select",
     key: "status",
     label: "Status",
     options: [
       { label: "All", value: "All" },
-      { label: "Active", value: "Active" },
-      { label: "Blocked", value: "Blocked" },
+      { label: "Pending", value: "Pending" },
+      { label: "Ongoing", value: "Ongoing" },
+      { label: "Accepted", value: "Accepted" },
+      { label: "Closed", value: "Closed" },
+      { label: "Rejected", value: "Rejected" },
+      { label: "Terminated", value: "Terminated" },
     ],
   },
   {
@@ -35,3 +29,4 @@ export const USER_FILTERS: FilterFieldConfig[] = [
   },
    { type: "date", key: "date", label: "Date" },
 ];
+

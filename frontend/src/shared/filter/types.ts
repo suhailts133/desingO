@@ -4,13 +4,22 @@ export type FilterFieldConfig =
   | {
       type: "search";
       key: string;
+      label: string;
       placeholder?: string;
       debounceMs?: number;
-      widthClass?: string; // default w-70
+      widthClass?: string;
     }
   | {
       type: "select";
       key: string;
+      label: string;
       options: FilterOption[];
-      widthClass?: string; // default w-30
+      widthClass?: string;
+    }
+  | {
+      type: "date";
+      key: string;
+      label: string;
+      options?: FilterOption[];
+      widthClass?: string;
     };

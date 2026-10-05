@@ -1,5 +1,19 @@
+import type { sortByTypes } from "../../interfaces/base/IApiResponse";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload"
 import type { ICreateJobRequest, IHouseholdProfile, IJobRequest, IJobRequestPopulated, INewBuildDetails, IRenovationDetails, JobStatus, Source_type } from "../../interfaces/customer/ICustomer"
+
+
+export interface MyJobsQueryParams {
+  projectTitle?: string;
+  status?: JobStatus;
+  sortBy?: sortByTypes;
+  startDate?: string;
+  endDate?: string;
+  page?: number;
+  sourceType?: Source_type;
+}
+
+export type HireDesignerQueryParam = Omit<MyJobsQueryParams, "sourceType"> 
 
 
 export interface JobsResponseDTO {

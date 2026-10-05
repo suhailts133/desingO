@@ -1,17 +1,18 @@
 import type { ClientSession } from "mongoose";
 import type { Pagination } from "../../DTO/admin/adminDTO";
 import type { CustomerInteraction, CustomerInteractionPopulated } from "../../DTO/common/interaction";
-import type { ActiveJobFilter, ActiveJobPopulated, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO";
+import type {  ActiveJobPopulated, ActiveJobsQueryParams, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO";
 import type { HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
 
-import type { createJobRepoDTO, EditJobRepoData, JobFilter, JobReportDTO } from "../../DTO/user/jobsDTO";
+import type { createJobRepoDTO, EditJobRepoData, HireDesignerQueryParam, JobFilter, JobReportDTO, MyJobsQueryParams } from "../../DTO/user/jobsDTO";
 import type { ImageUploadResult } from "../base/IImageUpload";
 import type { IActiveJob, ICustomerInteraction, IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, Source_type, JobStatus } from "./ICustomer";
+import type {  UserRoleNoAdmin } from "../auth/IUser";
 
 export interface IJobRepository {
     createJobRequest(data: createJobRepoDTO, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<IJobRequest>;
-    getjobRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<{ data: IJobRequestCustomerPopulated[], pagination: Pagination }>
-    getMyJobs(userId: string, sourceType: Source_type, page?: string): Promise<{ data: IJobRequest[], pagination: Pagination }>
+    getjobRequestPerDesign(designId: string, filters?: HireDesignerQueryParam): Promise<{ data: IJobRequestCustomerPopulated[], pagination: Pagination }>
+    getMyJobs(userId: string, sourceType: Source_type, filter?: MyJobsQueryParams): Promise<{ data: IJobRequest[], pagination: Pagination }>
     getAllJobs(jobFilter?: JobFilter): Promise<{ data: IJobRequestPopulated[], pagination: Pagination }>;
     deleteAJob(id: string): Promise<boolean>;
     getJobRequest(id: string): Promise<IJobRequestPopulated | null>
@@ -35,8 +36,7 @@ export interface IActiveJobRepository {
     getActiveJobBySource(id: string): Promise<IActiveJob | null>
     getAllActiveJobPerDesigner(designerId: string): Promise<IActiveJob[]>
     createActiveJOb(data: CreateActiveJobDTO,session?:ClientSession): Promise<IActiveJob>
-    getCustomerActiveJobs(customerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulated[], pagination: Pagination }>
-    getDesignerActiveJobs(designerId: string, filter?: ActiveJobFilter): Promise<{ data: ActiveJobPopulated[], pagination: Pagination }>
+    getAllActiveJobs(designerId: string, userRole:UserRoleNoAdmin, filter?: ActiveJobsQueryParams): Promise<{ data: ActiveJobPopulated[], pagination: Pagination }>
 }
 
 
