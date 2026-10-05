@@ -1,7 +1,3 @@
-export interface JobApplicationQueryParms {
-    page?: number,
-    status?:JobApplicationStatus
-}
 
 
 export type JobApplicationStatus = "Pending" | "Approved" | "Rejected" | "Ongoing"
