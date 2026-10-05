@@ -1,3 +1,4 @@
+import type { SortByTypes } from "../../../api/responseType";
 import type { ImageUploadResult } from "../../designer/profile/designerProfileInterface";
 
 export interface RoomMeasurement {
@@ -195,8 +196,8 @@ export interface JobRequestDetailDTO {
   id: string;
   userId: string;
   userName: string;
-  userProfile?:string
-  designerProfile?:string
+  userProfile?: string;
+  designerProfile?: string;
   designerId?: string;
   designerName?: string;
   designId?: string;
@@ -248,6 +249,16 @@ export interface JobsQueryParms {
   lat?: number | null;
   lng?: number | null;
   radiusKm?: string | null;
+}
+
+export interface MyJobsQueryParams {
+  projectTitle?: string;
+  status: JobStatus | "All";
+  sortBy: SortByTypes;
+  startDate?: string;
+  endDate?: string;
+  page: number;
+  sourceType: Source_type;
 }
 
 export interface JobsResponseDTO {
