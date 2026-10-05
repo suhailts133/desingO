@@ -2,7 +2,7 @@ import { useState } from "react"
 import VersionCard from "./VersionCard"
 import type { ProposalServiceItemDTO, ServiceStatus, PaymentStatus, EscrowStatus } from "../proposalInterface"
 import { dateFormater } from "../../../helpers/dateFormater"
-import EscrowStatusBadge from "./EscrowStatusBadge"
+import PaymentSummary from "./PaymentSummary"
 
 type Role = "Designer" | "Admin" | "Customer"
 
@@ -37,6 +37,19 @@ const paymentStyle: Record<PaymentStatus, string> = {
     "Refunded": "bg-surface-hover text-text-faint border-surface-border",
 }
 
+function StatusItem({ label, value, className }: { label: string; value: string; className: string }) {
+    return (
+        <div className="flex flex-col gap-1">
+            <span className="text-xxs font-medium uppercase tracking-wider text-text-faint">
+                {label}
+            </span>
+            <span className={`self-start text-[11px] font-medium px-2.5 py-1 rounded-full border ${className}`}>
+                {value}
+            </span>
+        </div>
+    )
+}
+
 export default function ServiceCard({ isPayLoading, service, role, onPay, onVerify, onRedo, onUpload }: ServiceCardProps) {
     const [versionsOpen, setVersionsOpen] = useState(false)
     const [openVersionIndex, setOpenVersionIndex] = useState<number | null>(null)
@@ -60,45 +73,36 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
     return (
         <div className={`bg-surface rounded-xl border border-surface-border p-4 transition-opacity duration-200 ${isLocked ? "opacity-50" : ""}`}>
 
-            {/* Header */}
-            <div className="flex items-center justify-between gap-3 mb-3">
+            {/* Header: title + due date */}
+            <div className="flex items-start justify-between gap-3 mb-3">
                 <div className="flex items-center gap-2">
                     <span className="text-xs font-medium text-text-faint">#{service.order}</span>
                     <span className="text-sm font-Jost-Semibold text-text-primary">{service.serviceName}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                    <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full border ${paymentStyle[service.paymentStatus]}`}>
-                        {service.paymentStatus}
-                    </span>
-                    <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full border ${statusStyle[service.status]}`}>
-                        {service.status}
-                    </span>
-                    {  service.escrowStatus && (
-                        <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full border ${escrowStatusStyle[service.escrowStatus]}`}>
-                            {service.escrowStatus}
-                        </span>
-                    )}
-
-
-                </div>
-            </div>
-
-            {/* Meta */}
-            <div className="flex items-center justify-between gap-2 mb-3">
-                <span className="text-xs text-text-faint">
+                <span className="text-xs text-text-faint whitespace-nowrap">
                     Due {dateFormater(service.expectedDeliveryDate)}
                 </span>
             </div>
 
-            {/* Pricing */}
-            <div className="mb-3 space-y-1.5">
-                <div className="text-xs text-text-primary">
-                    ₹{service.price.toLocaleString("en-IN")} service &nbsp;+&nbsp; ₹{service.executionPrice.toLocaleString("en-IN")} execution
-                </div>
-
-                {service.escrowStatus && service.amountHeld && (
-                    <EscrowStatusBadge amount={service.amountHeld} status={service.escrowStatus} />
+            {/* Statuses (labeled) */}
+            <div className="flex flex-wrap items-start gap-x-5 gap-y-2 mb-3">
+                <StatusItem label="Payment" value={service.paymentStatus} className={paymentStyle[service.paymentStatus]} />
+                <StatusItem label="Service" value={service.status} className={statusStyle[service.status]} />
+                {service.escrowStatus && (
+                    <StatusItem label="Escrow" value={service.escrowStatus} className={escrowStatusStyle[service.escrowStatus]} />
                 )}
+            </div>
+
+            {/* Payment details */}
+            <div className="mb-3">
+                <PaymentSummary
+                    price={service.price}
+                    executionPrice={service.executionPrice}
+                    paymentStatus={service.paymentStatus}
+                    escrowStatus={service.escrowStatus}
+                    amountHeld={service.amountHeld}
+                    platformFee={service.platformFee}
+                />
             </div>
 
             {/* Versions */}
