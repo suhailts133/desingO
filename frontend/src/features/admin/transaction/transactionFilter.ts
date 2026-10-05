@@ -6,6 +6,7 @@ export const TRANSACTION_FILTERS: FilterFieldConfig[] = [
     type: "select",
     key: "type",
     widthClass: "w-45",
+    label:"type",
     options: [
       { label: "All types", value: "All" },
       { label: "Payment", value: "Payment" },

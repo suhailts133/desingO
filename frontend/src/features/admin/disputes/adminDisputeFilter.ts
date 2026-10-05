@@ -4,6 +4,7 @@ export const DISPUTE_FILTERS: FilterFieldConfig[] = [
     {
         type: "select",
         key: "status",
+        label:"status",
         widthClass: "w-45",
         options: [
             { label: "All statuses", value: "All" },
@@ -17,6 +18,7 @@ export const DISPUTE_FILTERS: FilterFieldConfig[] = [
     {
         type: "select",
         key: "sort",
+        label:"sort",
         options: [
             { label: "Newest", value: "desc" },
             { label: "Oldest", value: "asc" },
