@@ -1,13 +1,15 @@
 import mongoose from "mongoose";
-import type { IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO } from "../../DTO/designer/jobsDTO";
+import type { IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationQueryParms } from "../../DTO/designer/jobsDTO";
 import type { IJobApplication, IJobApplicationPopulated, IJobApplicationPopulatedWithJobAndUser } from "../../interfaces/designer/IDesigner";
 import type { IJobApplicationRepository } from "../../interfaces/designer/IDesignerRepository";
 import { JobApplicationModel } from "../../models/designer/jobApplicationModel";
 import { BaseRepository } from "../baseRepository";
 import type { Pagination } from "../../DTO/admin/adminDTO";
-import type { ClientSession, QueryFilter, SortOrder } from "mongoose";
+import type { ClientSession, QueryFilter } from "mongoose";
 import type { IJobRequest } from "../../interfaces/customer/ICustomer";
 import type { IUser } from "../../interfaces/auth/IUser";
+import type { sortByTypes } from "../../interfaces/base/IApiResponse";
+import { validateDate } from "../../shared/helpers/extraFunctions";
 
 export class JobApplicationRepository extends BaseRepository<IJobApplication> implements IJobApplicationRepository {
   constructor() {
@@ -51,7 +53,6 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
   }
 
   async approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRejectionRequestDTO, session?: ClientSession): Promise<IJobApplication | null> {
-
     return await this._model
       .findByIdAndUpdate(id, data, { returnDocument: "after" })
       .session(session ?? null)
@@ -79,33 +80,34 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
     return { data: result, pagination };
   }
 
-  async getJobApplications(jobId: string, filters?: JobApplicationFilter): Promise<{ data: IJobApplicationPopulatedWithJobAndUser[]; pagination: Pagination }> {
-    const page = filters?.page ? Number(filters.page) : 1;
-    const limit = 1;
+  async getJobApplications(jobId: string, filter?: JobApplicationQueryParms): Promise<{ data: IJobApplicationPopulatedWithJobAndUser[]; pagination: Pagination }> {
+    const page = filter?.page ? Number(filter.page) : 1;
+    const limit = 6;
     const skip = (page - 1) * limit;
+    const SORT_MAP: Record<sortByTypes, Record<string, 1 | -1>> = {
+      newest: { createdAt: -1, _id: -1 },
+      oldest: { createdAt: 1, _id: 1 },
+      name_asc: { sourceName: 1, _id: 1 },
+      name_desc: { sourceName: -1, _id: -1 },
+    };
+    const sort = SORT_MAP[filter?.sortBy as sortByTypes] ?? SORT_MAP.newest;
     const query: QueryFilter<IJobApplication> = { jobId: jobId };
-    const sortOrder: { [key: string]: SortOrder } = { createdAt: -1 };
 
-    if (filters) {
-      if (filters.status) {
-        query.status = filters.status;
+    if (filter) {
+      if (filter.status) {
+        query.status = filter.status;
       }
-
-      if (filters.sort === "asc") {
-        sortOrder.createdAt = "asc";
-      } else if (filters.sort === "desc") {
-        sortOrder.createdAt = "desc";
-      }
-
-      if (filters.startDate && filters.endDate) {
+      const start = validateDate(filter.startDate, "startDate");
+      const end = validateDate(filter.endDate, "endDate");
+      if (start || end) {
         query.createdAt = {
-          $gte: new Date(filters.startDate),
-          $lte: new Date(filters.endDate),
+          ...(start && { $gte: start }),
+          ...(end && { $lte: end }),
         };
       }
     }
 
-    const result = await this._model.find(query).populate<{ jobId: IJobRequest }>("jobId").populate<{ designerId: IUser }>("designerId").sort(sortOrder).skip(skip).limit(limit).exec();
+    const result = await this._model.find(query).populate<{ jobId: IJobRequest }>("jobId").populate<{ designerId: IUser }>("designerId").sort(sort).skip(skip).limit(limit).exec();
 
     const total = await this._model.countDocuments(query);
     const pagination: Pagination = {

@@ -4,7 +4,7 @@ import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { jobApplicationApprovalOrRejectionValidation, JobApplicationsQueryFilter, jobApplicationValidation } from "../../validators/designers/jobApplicationValidations";
-import type { IJobApplicationRequestDTO, JobApplicationApprovalOrRejectionRequestDTO } from "../../DTO/designer/jobsDTO";
+import type { IJobApplicationRequestDTO, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationQueryParms } from "../../DTO/designer/jobsDTO";
 import { RespsonseHelper } from "../../shared/helpers/responseHelper";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { isObjectId } from "../../shared/helpers/extraFunctions";
@@ -79,11 +79,6 @@ export class JobApplicationController {
     })
 
     getJobApplications = asyncHandler(async (req: Request, res: Response) => {
-
-        const { error, value } = JobApplicationsQueryFilter.validate(req.query, { stripUnknown: true })
-        if (error) {
-            throw new AppError(error.details[0]?.message || "Invalid query parameters", RESPONSE_CODE.BAD_REQUEST)
-        }
         const jobId = req.params.id as string
         if (!jobId) {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
@@ -92,7 +87,7 @@ export class JobApplicationController {
             throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
 
-        const result = await this._jobApplicationService.getJobApplications(jobId, value)
+        const result = await this._jobApplicationService.getJobApplications(jobId, req.query as JobApplicationQueryParms)
         RespsonseHelper.successWithPagination(res, result)
     })
 }

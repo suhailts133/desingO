@@ -1,3 +1,4 @@
+import type { sortByTypes } from "../../interfaces/base/IApiResponse";
 import type { JobApplicationStatus } from "../../interfaces/designer/IDesigner";
 
 
@@ -48,4 +49,13 @@ export interface JobApplicationFilter {
     sort?: "asc" | "desc",
     startDate?: string,
     endDate?: string,
+}
+
+
+export interface JobApplicationQueryParms {
+  page?: number;
+  status?: JobApplicationStatus;
+  sortBy?: sortByTypes;
+  startDate?: string;
+  endDate?: string;
 }

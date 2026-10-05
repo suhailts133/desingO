@@ -4,7 +4,7 @@ import type { DesignerInteraction, DesignerInteractionPopulated } from "../../DT
 import type { createDesignDTO, DesignAiImageFilter, DesignFilter, EditDesignRepoData } from "../../DTO/designer/designDTO";
 import type { DesignerFilter } from "../../DTO/designer/designerDTO";
 import type { DesignerVerificationDTO } from "../../DTO/designer/designerVerificationDTOs";
-import type { IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO } from "../../DTO/designer/jobsDTO";
+import type { IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationQueryParms } from "../../DTO/designer/jobsDTO";
 import type { DesignerUpdateRequestDTO } from "../../DTO/profile/profileDTO";
 import type { ImageUploadResult } from "../base/IImageUpload";
 import type { SpaceTypeAvg } from "../benchmark/IBenchMark";
@@ -43,7 +43,7 @@ export interface IJobApplicationRepository {
     changeStatusForPendingUser(id: string, jobId: string, session?:ClientSession): Promise<void>
     approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRejectionRequestDTO, session?:ClientSession): Promise<IJobApplication | null>
     getMyJobApplications(jobId: string, filters?: JobApplicationFilter): Promise<{ data: IJobApplicationPopulated[], pagination: Pagination }>
-    getJobApplications(userId: string, filters?: JobApplicationFilter): Promise<{ data: IJobApplicationPopulatedWithJobAndUser[], pagination: Pagination }>
+    getJobApplications(userId: string, filters?: JobApplicationQueryParms): Promise<{ data: IJobApplicationPopulatedWithJobAndUser[], pagination: Pagination }>
 }
 
 export interface IDesignerInteractionRepository {
