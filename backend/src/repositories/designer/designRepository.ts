@@ -30,7 +30,6 @@ export class DesignRepository extends BaseRepository<IDesign> implements IDesign
   }
 
   async adjustActiveJobCount(id: string, delta: 1 | -1, session?: ClientSession): Promise<IDesign | null> {
-    console.log(session?.id, "adjust active job count")
     return await this._model.findByIdAndUpdate(id, { $inc: { activeJobCount: delta } }, { new: true }).session(session ?? null);
   }
 

@@ -1,7 +1,7 @@
 import type { CustomerDashboardDTO } from "../../DTO/common/dashboard";
 import type { GetAllDesignCommonResponseDTO } from "../../DTO/designer/designDTO";
 import type {  ActiveJobResponseDTO, ActiveJobsQueryParams } from "../../DTO/user/activeJobDTO";
-import type { AcceptOrRejectHireDesignerDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
+import type { AcceptOrRejectHireDesignerDTO } from "../../DTO/user/hireDesignerDTO";
 import type { EditJobRequest, HireDesignerDTO, HireDesignerQueryParam, JobDetailResponseDTO, JobFilter, JobsCommonResponseDTO, JobsResponseDTO, MyJobsQueryParams } from "../../DTO/user/jobsDTO";
 import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../base/IApiResponse";
 import type { JobChatValidation } from "../socket/ISocket";

@@ -1,4 +1,4 @@
-import mongoose, { type ClientSession, type PipelineStage, type QueryFilter, type SortOrder } from "mongoose";
+import mongoose, { type ClientSession, type PipelineStage, type QueryFilter } from "mongoose";
 import type { IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, JobStatus, Source_type } from "../../interfaces/customer/ICustomer";
 import type { IJobRepository } from "../../interfaces/customer/ICustomerRepository";
 import { JobRequestModel } from "../../models/user/jobModel";
@@ -9,7 +9,6 @@ import type { IUser } from "../../interfaces/auth/IUser";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
 import { JOB_REQUEST_FILTERS } from "../../shared/enums/filterEnums";
 import { JOB_REQUEST_STATUS, JOB_SOURCE_TYPE } from "../../shared/enums/commonEnums";
-import type { HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
 import type { sortByTypes } from "../../interfaces/base/IApiResponse";
 import { toCleanRegExp, validateDate } from "../../shared/helpers/extraFunctions";
 
@@ -17,6 +16,9 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
   constructor() {
     super(JobRequestModel);
   }
+    async adjustApplicationCount(id: string, delta: 1 | -1, session?: ClientSession): Promise<IJobRequest | null> {
+      return await this._model.findByIdAndUpdate(id, { $inc: { applicationCount: delta } }, { new: true }).session(session ?? null);
+    }
   async getJobReport(): Promise<JobReportDTO> {
     const [result] = await this._model.aggregate<JobReportDTO>([
       {

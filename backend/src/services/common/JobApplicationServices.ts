@@ -1,4 +1,11 @@
-import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO, JobApplicationQueryParms } from "../../DTO/designer/jobsDTO";
+import type {
+  AllJobApplicationsDTO,
+  IJobApplicationRequestDTO,
+  JobApplicationApprovalOrRejectionRequestDTO,
+  JobApplicationApprovalOrRejectionResponseDTO,
+  MyJobApplicationsDTO,
+  JobApplicationQueryParms,
+} from "../../DTO/designer/jobsDTO";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
 import type { IApiResponse, IApiResponseWithPagination } from "../../interfaces/base/IApiResponse";
@@ -7,126 +14,151 @@ import type { IJobApplicationRepository } from "../../interfaces/designer/IDesig
 import type { IJobApplicationService } from "../../interfaces/designer/IDesignerService";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { JobApplicationMapper } from "../../dtoMappers/designer/JobApplicationMapper";
-import { JOB_APPLICATION_STATUS, SOURCE_TYPE } from "../../shared/enums/commonEnums";
+import { DELTA_COUNT, JOB_APPLICATION_STATUS, SOURCE_TYPE } from "../../shared/enums/commonEnums";
 import type { CreateNotificationDTO } from "../../DTO/socket/notificationDTO";
 import { SOCKET_MESSAGES } from "../../shared/messages/socketMessage";
 import { NOTIFICATION_TYPES } from "../../shared/enums/notificationEnum";
 import type { INotificationService } from "../../interfaces/socket/ISocketService";
 import type { ITransactionManager } from "../../interfaces/base/ITransactionManager";
 
-
 export class JobApplicationService implements IJobApplicationService {
-    constructor(private _jobApplicationRepo: IJobApplicationRepository, private _jobRequestRepo: IJobRepository, private _activeJobRepo: IActiveJobRepository, private _notificationService: INotificationService, private _transactionManager:ITransactionManager) { }
+  constructor(
+    private _jobApplicationRepo: IJobApplicationRepository,
+    private _jobRequestRepo: IJobRepository,
+    private _activeJobRepo: IActiveJobRepository,
+    private _notificationService: INotificationService,
+    private _transactionManager: ITransactionManager,
+  ) {}
 
-    async applyForJob(data: IJobApplicationRequestDTO): Promise<IApiResponse> {
-
-        const jobExists = await this._jobRequestRepo.getJobRequest(data.jobId)
-        if (!jobExists) {
-            throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
-        }
-        const alreadyApplied = await this._jobApplicationRepo.checkUserJobApplication(data.userId, data.jobId)
-        if (alreadyApplied) {
-            throw new AppError(JOB_MESSAGES.JOB_APPLICATION.ALREADY_APPLIED, RESPONSE_CODE.CONFILT)
-        }
-        const result = await this._jobApplicationRepo.applyForJob(jobExists.userId.id, data);
-        const notification: CreateNotificationDTO = {
-            recipientId: result.customerId.toString(),
-            senderId: result.designerId.toString(),
-            title: SOCKET_MESSAGES.NOTIFICATION_TITLES.JOB_APPLICATION,
-            type: NOTIFICATION_TYPES.JOB_REQUEST,
-            message: SOCKET_MESSAGES.NOTIFICATION_MESSAGES.JOB_APPLICATION(jobExists.projectTitle).slice(0, 80),
-            activeId: result.id
-        }
-        await this._notificationService.notify(notification);
-        return { message: JOB_MESSAGES.JOB_APPLICATION.APPLIED_SUCCESS, statuscode: RESPONSE_CODE.CREATED }
+  async applyForJob(data: IJobApplicationRequestDTO): Promise<IApiResponse> {
+    const jobExists = await this._jobRequestRepo.getJobRequest(data.jobId);
+    if (!jobExists) {
+      throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
     }
-
-    async deleteJobApplication(id: string): Promise<IApiResponse> {
-        const result = await this._jobApplicationRepo.deleteJobApplication(id);
-        if (!result) {
-            throw new AppError(JOB_MESSAGES.JOB_APPLICATION.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
-        }
-        return {
-            success: true,
-            message: JOB_MESSAGES.JOB_APPLICATION.DELETED_SUCCESS,
-            statuscode: RESPONSE_CODE.OK
-        }
+    const alreadyApplied = await this._jobApplicationRepo.checkUserJobApplication(data.userId, data.jobId);
+    if (alreadyApplied) {
+      throw new AppError(JOB_MESSAGES.JOB_APPLICATION.ALREADY_APPLIED, RESPONSE_CODE.CONFILT);
     }
-async approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRejectionRequestDTO): Promise<IApiResponse<JobApplicationApprovalOrRejectionResponseDTO>> {
+    const notification = await this._transactionManager.runInTransaction(async (session) => {
+      const result = await this._jobApplicationRepo.applyForJob(jobExists.userId.id, data, session);
+      const notification: CreateNotificationDTO = {
+        recipientId: result.customerId.toString(),
+        senderId: result.designerId.toString(),
+        title: SOCKET_MESSAGES.NOTIFICATION_TITLES.JOB_APPLICATION,
+        type: NOTIFICATION_TYPES.JOB_REQUEST,
+        message: SOCKET_MESSAGES.NOTIFICATION_MESSAGES.JOB_APPLICATION(jobExists.projectTitle).slice(0, 80),
+        activeId: result.id,
+      };
 
-    const result = await this._transactionManager.runInTransaction(async (session) => {
-        if (data.status === JOB_APPLICATION_STATUS.ONGOING) {
-            await this._jobApplicationRepo.changeStatusForPendingUser(id, data.jobId, session)
-        }
-        const result = await this._jobApplicationRepo.approveOrRejectJobApplication(id, data, session);
-        if (!result) {
-            throw new AppError(JOB_MESSAGES.JOB_APPLICATION.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
-        }
+      const changeApplicationCount = await this._jobRequestRepo.adjustApplicationCount(data.jobId, DELTA_COUNT.INC, session);
+      if (!changeApplicationCount) {
+        throw new AppError(JOB_MESSAGES.JOB_REQUEST.COUNT_CHANGE_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+      }
 
-        if (result.status === JOB_APPLICATION_STATUS.ONGOING) {
-            const jobStatusUpdated = await this._jobRequestRepo.changeStatus(result.jobId.toString(), result.status, session);
-            if (!jobStatusUpdated) {
-                throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
-            }
-
-            const activeJob = await this._activeJobRepo.createActiveJOb({
-                userId: jobStatusUpdated.userId.toString(),
-                designerId: result.designerId.toString(),
-                sourceId: jobStatusUpdated.id,
-                sourceType: SOURCE_TYPE.JOB_REQUEST,
-                sourceName: jobStatusUpdated.projectTitle
-            }, session)
-
-            if (!activeJob) {
-                throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
-            }
-        }
-
-        return result;
+      return notification;
     });
 
-    const jobApplicationData = JobApplicationMapper.toJobApplicationApprovalOrRejectionDTO(result)
+    await this._notificationService.notify(notification);
+    return { message: JOB_MESSAGES.JOB_APPLICATION.APPLIED_SUCCESS, statuscode: RESPONSE_CODE.CREATED };
+  }
+
+  async deleteJobApplication(id: string): Promise<IApiResponse> {
+    const jobApplication = await this._jobApplicationRepo.findAppliction(id);
+    if (!jobApplication) {
+      throw new AppError(JOB_MESSAGES.JOB_APPLICATION.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+    }
+    await this._transactionManager.runInTransaction(async (session) => {
+      const result = await this._jobApplicationRepo.deleteJobApplication(id, session);
+      if (!result) {
+        throw new AppError(JOB_MESSAGES.JOB_APPLICATION.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+      }
+      const changeApplicationCount = await this._jobRequestRepo.adjustApplicationCount(jobApplication.jobId.toString(), DELTA_COUNT.DEC, session);
+      if (!changeApplicationCount) {
+        throw new AppError(JOB_MESSAGES.JOB_REQUEST.COUNT_CHANGE_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+      }
+    });
 
     return {
-        success: true,
-        message: JOB_MESSAGES.JOB_APPLICATION.STATUS_UPDATED_SUCCESS,
-        statuscode: RESPONSE_CODE.OK,
-        data: jobApplicationData
-    }
-}
+      success: true,
+      message: JOB_MESSAGES.JOB_APPLICATION.DELETED_SUCCESS,
+      statuscode: RESPONSE_CODE.OK,
+    };
+  }
+  async approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRejectionRequestDTO): Promise<IApiResponse<JobApplicationApprovalOrRejectionResponseDTO>> {
+    const result = await this._transactionManager.runInTransaction(async (session) => {
+      if (data.status === JOB_APPLICATION_STATUS.ONGOING) {
+        await this._jobApplicationRepo.changeStatusForPendingUser(id, data.jobId, session);
+      }
+      const result = await this._jobApplicationRepo.approveOrRejectJobApplication(id, data, session);
+      if (!result) {
+        throw new AppError(JOB_MESSAGES.JOB_APPLICATION.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+      }
 
-
-    async getJobApplications(jobId: string, filters?: JobApplicationQueryParms): Promise<IApiResponseWithPagination<AllJobApplicationsDTO[]>> {
-
-        const jobRequestExists = await this._jobRequestRepo.getJobRequest(jobId)
-        if (!jobRequestExists) {
-            throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+      if (result.status === JOB_APPLICATION_STATUS.ONGOING) {
+        const jobStatusUpdated = await this._jobRequestRepo.changeStatus(result.jobId.toString(), result.status, session);
+        if (!jobStatusUpdated) {
+          throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
         }
-        const { data, pagination } = await this._jobApplicationRepo.getJobApplications(jobId, filters);
-        const jobApplicationsData = JobApplicationMapper.toJobApplicationDTOList(data)
-        return {
-            message: JOB_MESSAGES.JOB_APPLICATION.ALL_JOB_APPLICATIONS,
-            data: jobApplicationsData,
-            statuscode: RESPONSE_CODE.OK,
-            success: true,
-            total: pagination.total,
-            totalPages: pagination.totalPages
+
+        const activeJob = await this._activeJobRepo.createActiveJOb(
+          {
+            userId: jobStatusUpdated.userId.toString(),
+            designerId: result.designerId.toString(),
+            sourceId: jobStatusUpdated.id,
+            sourceType: SOURCE_TYPE.JOB_REQUEST,
+            sourceName: jobStatusUpdated.projectTitle,
+          },
+          session,
+        );
+
+        if (!activeJob) {
+          throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
         }
+      }
+      const changeApplicationCount = await this._jobRequestRepo.adjustApplicationCount(result.jobId.toString(), DELTA_COUNT.DEC, session);
+      if (!changeApplicationCount) {
+        throw new AppError(JOB_MESSAGES.JOB_REQUEST.COUNT_CHANGE_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+      }
+      return result;
+    });
+
+    const jobApplicationData = JobApplicationMapper.toJobApplicationApprovalOrRejectionDTO(result);
+
+    return {
+      success: true,
+      message: JOB_MESSAGES.JOB_APPLICATION.STATUS_UPDATED_SUCCESS,
+      statuscode: RESPONSE_CODE.OK,
+      data: jobApplicationData,
+    };
+  }
+
+  async getJobApplications(jobId: string, filters?: JobApplicationQueryParms): Promise<IApiResponseWithPagination<AllJobApplicationsDTO[]>> {
+    const jobRequestExists = await this._jobRequestRepo.getJobRequest(jobId);
+    if (!jobRequestExists) {
+      throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
     }
+    const { data, pagination } = await this._jobApplicationRepo.getJobApplications(jobId, filters);
+    const jobApplicationsData = JobApplicationMapper.toJobApplicationDTOList(data);
+    return {
+      message: JOB_MESSAGES.JOB_APPLICATION.ALL_JOB_APPLICATIONS,
+      data: jobApplicationsData,
+      statuscode: RESPONSE_CODE.OK,
+      success: true,
+      total: pagination.total,
+      totalPages: pagination.totalPages,
+    };
+  }
 
-
-
-    async getMyJobApplications(userId: string, filters?: JobApplicationQueryParms): Promise<IApiResponseWithPagination<MyJobApplicationsDTO[]>> {
-        const result = await this._jobApplicationRepo.getMyJobApplications(userId, filters);
-        const jobApplicationData = JobApplicationMapper.toMyJobApplicationDTOlist(result.data)
-        return {
-            message: JOB_MESSAGES.JOB_APPLICATION.MY_JOB_APPLICATIONS,
-            data: jobApplicationData,
-            statuscode: RESPONSE_CODE.OK,
-            success: true,
-            total: result.pagination.total,
-            totalPages: result.pagination.totalPages
-        }
-    }
-
+  async getMyJobApplications(userId: string, filters?: JobApplicationQueryParms): Promise<IApiResponseWithPagination<MyJobApplicationsDTO[]>> {
+    const result = await this._jobApplicationRepo.getMyJobApplications(userId, filters);
+    const jobApplicationData = JobApplicationMapper.toMyJobApplicationDTOlist(result.data);
+    return {
+      message: JOB_MESSAGES.JOB_APPLICATION.MY_JOB_APPLICATIONS,
+      data: jobApplicationData,
+      statuscode: RESPONSE_CODE.OK,
+      success: true,
+      total: result.pagination.total,
+      totalPages: result.pagination.totalPages,
+    };
+  }
 }

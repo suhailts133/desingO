@@ -11,7 +11,7 @@ import type { EditJobRequest, HireDesignerQueryParam, MyJobsQueryParams } from "
 import { isObjectId } from "../../shared/helpers/extraFunctions.js";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
 import Logger from "../../config/logger.js";
-import { directHireApprovalOrRejectionValidation, directHireQueryFilters } from "../../validators/user/hireDesignerValidator.js";
+import { directHireApprovalOrRejectionValidation } from "../../validators/user/hireDesignerValidator.js";
 import type { AcceptOrRejectHireDesigner } from "../../DTO/user/hireDesignerDTO.js";
 import { USER_TYPE } from "../../shared/enums/proposalEnums.js";
 export class JobController {

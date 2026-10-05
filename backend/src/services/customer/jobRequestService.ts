@@ -19,7 +19,7 @@ import { AppError } from "../../shared/errors/appError";
 import type { IImageUploaderService, ImageUploadResult } from "../../interfaces/base/IImageUpload";
 import {
   CLOUDINARY_FOLDER_NAME,
-  DESIGN_JOB_COUNT,
+  DELTA_COUNT,
   JOB_REQUEST_STATUS,
   JOB_REQUEST_UNIQUE_ID,
   JOB_SOURCE_TYPE,
@@ -29,7 +29,7 @@ import {
 } from "../../shared/enums/commonEnums";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 import { JobRequestMapper } from "../../dtoMappers/user/jobRequestMapper";
-import type { AcceptOrRejectHireDesignerDTO, HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
+import type { AcceptOrRejectHireDesignerDTO } from "../../DTO/user/hireDesignerDTO";
 import { getBudgetTier } from "../../shared/helpers/budgetTier";
 import { generateEmbedding } from "../../shared/helpers/embedding";
 import type { IDesignerInteractionRepository, IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
@@ -90,7 +90,7 @@ export class JobRequestService implements IJobRequestService {
           throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
         }
         if (updatedHireRequst.designId) {
-          const updateDesignCount = await this._designRepo.adjustActiveJobCount(updatedHireRequst.designId.toString(), DESIGN_JOB_COUNT.INC, session);
+          const updateDesignCount = await this._designRepo.adjustActiveJobCount(updatedHireRequst.designId.toString(), DELTA_COUNT.INC, session);
           if (!updateDesignCount) {
             throw new AppError(DESIGNER_MESSAGES.DESIGNS.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
           }

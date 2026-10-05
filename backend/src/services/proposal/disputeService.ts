@@ -10,7 +10,7 @@ import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepos
 import type { IDisputeRepository, IDisputeService } from "../../interfaces/proposal/IDispute";
 import type { DisputeStatus } from "../../interfaces/proposal/IProposal";
 import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
-import { ACTIVE_JOB_STATUS, CLOUDINARY_FOLDER_NAME, DESIGN_JOB_COUNT, JOB_REQUEST_STATUS, TRANSACTION_TYPE, TRANSACTION_UNIQUE_ID, USER_ROLES } from "../../shared/enums/commonEnums";
+import { ACTIVE_JOB_STATUS, CLOUDINARY_FOLDER_NAME, DELTA_COUNT, JOB_REQUEST_STATUS, TRANSACTION_TYPE, TRANSACTION_UNIQUE_ID, USER_ROLES } from "../../shared/enums/commonEnums";
 import { CONTRACT_STATUS, DISPUTE_SOLUTION, DISPUTE_STATUS, EscrowStatus, USER_TYPE } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
@@ -255,7 +255,7 @@ export class DisputeService implements IDisputeService {
         }
 
         if (job.designId) {
-          const designCountDec = await this._designRepo.adjustActiveJobCount(job.designId.toString(), DESIGN_JOB_COUNT.DEC, session);
+          const designCountDec = await this._designRepo.adjustActiveJobCount(job.designId.toString(), DELTA_COUNT.DEC, session);
           if (!designCountDec) {
             throw new AppError(DESIGNER_MESSAGES.DESIGNS.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
           }

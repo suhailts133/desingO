@@ -50,6 +50,7 @@ const jobRequestSchema = new Schema<IJobRequest>({
         coordinates: { type: [Number], required: true },
     },
 
+    applicationCount: { type: Number, required: true, default:0 },
     totalCarpetArea: { type: Number, required: true, min: 0 },
     areaUnit: { type: String, enum: ["ft", "m"], default: "ft" },
     selectedRooms: { type: [String], required: true, default: [] },

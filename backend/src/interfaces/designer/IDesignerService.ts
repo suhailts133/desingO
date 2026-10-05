@@ -2,7 +2,7 @@ import type { DesignerDashboardDTO } from "../../DTO/common/dashboard";
 import type { AddDesignRequestDTO, DesignAiImageFilter, DesignDetailResponseDTO, DesignFiles, DesignFilter, DesignGallaryDTO, EditDesign, EditDesignFiles, GetAllDesignCommonResponseDTO, getAllDesignsResponseDTO } from "../../DTO/designer/designDTO";
 import type { DesignerCardDTO, DesignerFilter } from "../../DTO/designer/designerDTO";
 import type { DesignerVerificationBodyDTO } from "../../DTO/designer/designerVerificationDTOs";
-import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO, JobApplicationQueryParms } from "../../DTO/designer/jobsDTO";
+import type { AllJobApplicationsDTO, IJobApplicationRequestDTO, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationApprovalOrRejectionResponseDTO, MyJobApplicationsDTO, JobApplicationQueryParms } from "../../DTO/designer/jobsDTO";
 import type { JobsCommonResponseDTO } from "../../DTO/user/jobsDTO";
 import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../base/IApiResponse";
 import type { WarningDTO } from "../benchmark/IBenchMark";

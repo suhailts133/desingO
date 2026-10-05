@@ -91,6 +91,7 @@ export interface IJobRequest {
     services: string[]
     embedding: number[],
     referenceImages: ImageUploadResult[]
+    applicationCount:number
 }
 
 export type IJobRequestPopulated = Omit<IJobRequest, "userId" | "designerId"> & {

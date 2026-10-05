@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import type { IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationQueryParms } from "../../DTO/designer/jobsDTO";
+import type { IJobApplicationRequestDTO, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationQueryParms } from "../../DTO/designer/jobsDTO";
 import type { IJobApplication, IJobApplicationPopulated, IJobApplicationPopulatedWithJobAndUser } from "../../interfaces/designer/IDesigner";
 import type { IJobApplicationRepository } from "../../interfaces/designer/IDesignerRepository";
 import { JobApplicationModel } from "../../models/designer/jobApplicationModel";
@@ -14,6 +14,10 @@ import { validateDate } from "../../shared/helpers/extraFunctions";
 export class JobApplicationRepository extends BaseRepository<IJobApplication> implements IJobApplicationRepository {
   constructor() {
     super(JobApplicationModel);
+  }
+
+  async findAppliction(id: string): Promise<IJobApplication | null> {
+    return await this.findById(id);
   }
 
   async changeStatusForPendingUser(id: string, jobId: string, session?: ClientSession): Promise<void> {
@@ -34,12 +38,12 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
       .session(session ?? null);
   }
 
-  async applyForJob(customerId: string, data: IJobApplicationRequestDTO): Promise<IJobApplication> {
+  async applyForJob(customerId: string, data: IJobApplicationRequestDTO, session?:ClientSession): Promise<IJobApplication> {
     return await this.create({
       designerId: new mongoose.Types.ObjectId(data.userId),
       customerId: new mongoose.Types.ObjectId(customerId),
       jobId: new mongoose.Types.ObjectId(data.jobId),
-    });
+    },session);
   }
 
   async checkUserJobApplication(userId: string, jobId: string): Promise<boolean> {
@@ -48,8 +52,8 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
     return !!result;
   }
 
-  async deleteJobApplication(id: string): Promise<boolean> {
-    return this.delete(id);
+  async deleteJobApplication(id: string, session?: ClientSession): Promise<boolean> {
+    return this.delete(id, session);
   }
 
   async approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRejectionRequestDTO, session?: ClientSession): Promise<IJobApplication | null> {
@@ -118,7 +122,6 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
         };
       }
     }
-
 
     const result = await this._model.find(query).populate<{ jobId: IJobRequest }>("jobId").populate<{ designerId: IUser }>("designerId").sort(sort).skip(skip).limit(limit).exec();
 

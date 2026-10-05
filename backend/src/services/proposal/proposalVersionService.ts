@@ -8,7 +8,7 @@ import type { IActiveJobRepository, IJobRepository } from "../../interfaces/cust
 import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
 import type { IProposalRepository, IServiceVersionRepository } from "../../interfaces/proposal/IProposalRepository";
 import type { IProposalVersionService } from "../../interfaces/proposal/IProposalService";
-import { ACTIVE_JOB_STATUS, CLOUDINARY_FOLDER_NAME, DESIGN_JOB_COUNT, SOURCE_TYPE, TRANSACTION_TYPE, TRANSACTION_UNIQUE_ID, USER_ROLES } from "../../shared/enums/commonEnums";
+import { ACTIVE_JOB_STATUS, CLOUDINARY_FOLDER_NAME, DELTA_COUNT, JOB_REQUEST_STATUS, SOURCE_TYPE, TRANSACTION_TYPE, TRANSACTION_UNIQUE_ID, USER_ROLES } from "../../shared/enums/commonEnums";
 import { CONTRACT_STATUS, EscrowStatus, ServicePaymentStatus, ServiceStatus, VERSION_STATUS } from "../../shared/enums/proposalEnums";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import { AppError } from "../../shared/errors/appError";
@@ -173,14 +173,17 @@ export class ProposalVersionService implements IProposalVersionService {
           if (!updateActiveJobStatus) {
             throw new AppError(JOB_MESSAGES.ACTIVE_JOB.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
           }
-
+          const updateJobRequestStatus = await this._jobRepo.changeStatus(proposal.sourceId.toString(), JOB_REQUEST_STATUS.CLOSED,session)
+          if(!updateJobRequestStatus){
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.STATUS_CHANGE_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+          }
           if (updateContractStatus.sourceType === SOURCE_TYPE.DIRECT_HIRE) {
             const job = await this._jobRepo.getJobRequest(proposal.sourceId.toString());
             if (!job) {
               throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
             }
             if (job.designId) {
-              const designCountDec = await this._designRepo.adjustActiveJobCount(job.designId.toString(), DESIGN_JOB_COUNT.DEC, session);
+              const designCountDec = await this._designRepo.adjustActiveJobCount(job.designId.toString(), DELTA_COUNT.DEC, session);
               if (!designCountDec) {
                 throw new AppError(DESIGNER_MESSAGES.DESIGNS.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
               }

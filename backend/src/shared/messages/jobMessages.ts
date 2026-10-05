@@ -12,6 +12,8 @@ export const JOB_MESSAGES = {
     },
 
     JOB_REQUEST: {
+        COUNT_CHANGE_FAILED:"Failed to change job application count.",
+        STATUS_CHANGE_FAILED:"Failed to change status",
         RECOMENDED: "fetched recomended jobs.",
         RECENT: "fetched recent jobs.",
         SOURCE_INVALID: "Invalid source type",

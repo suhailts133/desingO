@@ -4,7 +4,7 @@ import type { DesignerInteraction, DesignerInteractionPopulated } from "../../DT
 import type { createDesignDTO, DesignAiImageFilter, DesignFilter, EditDesignRepoData } from "../../DTO/designer/designDTO";
 import type { DesignerFilter } from "../../DTO/designer/designerDTO";
 import type { DesignerVerificationDTO } from "../../DTO/designer/designerVerificationDTOs";
-import type { IJobApplicationRequestDTO, JobApplicationFilter, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationQueryParms } from "../../DTO/designer/jobsDTO";
+import type { IJobApplicationRequestDTO, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationQueryParms } from "../../DTO/designer/jobsDTO";
 import type { DesignerUpdateRequestDTO } from "../../DTO/profile/profileDTO";
 import type { ImageUploadResult } from "../base/IImageUpload";
 import type { SpaceTypeAvg } from "../benchmark/IBenchMark";
@@ -37,9 +37,10 @@ export interface IDesignRepository {
 
 
 export interface IJobApplicationRepository {
-    applyForJob(customerId: string, data: IJobApplicationRequestDTO): Promise<IJobApplication>
+    findAppliction(id:string): Promise<IJobApplication | null>
+    applyForJob(customerId: string, data: IJobApplicationRequestDTO, session?:ClientSession): Promise<IJobApplication>
     checkUserJobApplication(userId: string, jobId: string): Promise<boolean>
-    deleteJobApplication(id: string): Promise<boolean>
+    deleteJobApplication(id: string, session?:ClientSession): Promise<boolean>
     changeStatusForPendingUser(id: string, jobId: string, session?:ClientSession): Promise<void>
     approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRejectionRequestDTO, session?:ClientSession): Promise<IJobApplication | null>
     getMyJobApplications(jobId: string, filters?: JobApplicationQueryParms): Promise<{ data: IJobApplicationPopulated[], pagination: Pagination }>

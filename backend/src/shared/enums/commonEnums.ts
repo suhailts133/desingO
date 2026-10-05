@@ -116,7 +116,7 @@ export enum TRANSACTION_UNIQUE_ID {
     REFUND = 'REF'
 }
 
-export enum DESIGN_JOB_COUNT {
+export enum DELTA_COUNT {
     INC = 1,
     DEC = -1
 }

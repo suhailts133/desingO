@@ -26,6 +26,7 @@ export interface JobsResponseDTO {
     status: JobStatus
     rooms: number
     city: string
+    applicationCount:number
     district: string
     state: string
     minBudget: number
@@ -83,7 +84,7 @@ export interface HireDesignerDTO {
     timeLine: string
     rejectionReason?: string
     projectType: "Renovation" | "New_Build";
-    status: "Pending" | "Ongoing" | "Closed" | "Rejected" | "Accepted"
+    status: JobStatus
 }
 
 
@@ -95,7 +96,7 @@ export type JobsCommonResponseDTO = Omit<JobsResponseDTO, "status"> & {
 }
 
 
-export type JobDetailResponseDTO = Omit<IJobRequest, "designId" | "userId" | "designerId" | "createdAt" | "embedding" | "location"> & {
+export type JobDetailResponseDTO = Omit<IJobRequest, "designId" | "userId" | "designerId" | "createdAt" | "embedding" | "location" | "applicationCount"> & {
     userId: string;
     userName: string;
     designerId?: string;

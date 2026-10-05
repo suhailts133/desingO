@@ -3,7 +3,7 @@ import type { IJobApplicationService } from "../../interfaces/designer/IDesigner
 import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
-import { jobApplicationApprovalOrRejectionValidation, JobApplicationsQueryFilter, jobApplicationValidation } from "../../validators/designers/jobApplicationValidations";
+import { jobApplicationApprovalOrRejectionValidation, jobApplicationValidation } from "../../validators/designers/jobApplicationValidations";
 import type { IJobApplicationRequestDTO, JobApplicationApprovalOrRejectionRequestDTO, JobApplicationQueryParms } from "../../DTO/designer/jobsDTO";
 import { RespsonseHelper } from "../../shared/helpers/responseHelper";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages";

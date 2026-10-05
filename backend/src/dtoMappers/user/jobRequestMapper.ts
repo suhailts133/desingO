@@ -27,6 +27,7 @@ export class JobRequestMapper {
             state: data.state,
             district: data.district,
             city: data.state,
+            applicationCount:data.applicationCount,
             minBudget: data.minBudget,
             maxBudget: data.maxBudget,
             description: data.description,
