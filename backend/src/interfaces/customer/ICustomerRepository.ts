@@ -4,14 +4,14 @@ import type { CustomerInteraction, CustomerInteractionPopulated } from "../../DT
 import type { ActiveJobFilter, ActiveJobPopulated, CreateActiveJobDTO } from "../../DTO/user/activeJobDTO";
 import type { HireDesignerFilter } from "../../DTO/user/hireDesignerDTO";
 
-import type { createJobRepoDTO, EditJobRepoData, JobFilter, JobReportDTO } from "../../DTO/user/jobsDTO";
+import type { createJobRepoDTO, EditJobRepoData, JobFilter, JobReportDTO, MyJobsQueryParams } from "../../DTO/user/jobsDTO";
 import type { ImageUploadResult } from "../base/IImageUpload";
 import type { IActiveJob, ICustomerInteraction, IJobRequest, IJobRequestCustomerPopulated, IJobRequestPopulated, Source_type, JobStatus } from "./ICustomer";
 
 export interface IJobRepository {
     createJobRequest(data: createJobRepoDTO, referenceImages?: ImageUploadResult[], floorplans?: ImageUploadResult[]): Promise<IJobRequest>;
     getjobRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<{ data: IJobRequestCustomerPopulated[], pagination: Pagination }>
-    getMyJobs(userId: string, sourceType: Source_type, page?: string): Promise<{ data: IJobRequest[], pagination: Pagination }>
+    getMyJobs(userId: string, sourceType: Source_type, filter?: MyJobsQueryParams): Promise<{ data: IJobRequest[], pagination: Pagination }>
     getAllJobs(jobFilter?: JobFilter): Promise<{ data: IJobRequestPopulated[], pagination: Pagination }>;
     deleteAJob(id: string): Promise<boolean>;
     getJobRequest(id: string): Promise<IJobRequestPopulated | null>

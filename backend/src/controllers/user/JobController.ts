@@ -7,7 +7,7 @@ import type { ICreateJobRequest, Source_type } from "../../interfaces/customer/I
 import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError.js";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
-import type { EditJobRequest } from "../../DTO/user/jobsDTO.js";
+import type { EditJobRequest, MyJobsQueryParams } from "../../DTO/user/jobsDTO.js";
 import { isObjectId } from "../../shared/helpers/extraFunctions.js";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
 import Logger from "../../config/logger.js";
@@ -106,13 +106,8 @@ export class JobController {
         if (!userId) {
             throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
-        const { page, sourceType } = req.query;
-
-        if (typeof sourceType !== "string" || (sourceType !== "JOB_REQUEST" && sourceType !== "DIRECT_HIRE")) {
-            throw new AppError(JOB_MESSAGES.JOB_REQUEST.SOURCE_INVALID, RESPONSE_CODE.BAD_REQUEST);
-        }
-
-        const result = await this._jobRequestService.getMyJobs(userId as string, sourceType as Source_type, page as string)
+    
+        const result = await this._jobRequestService.getMyJobs(userId as string, req.query as MyJobsQueryParams)
         RespsonseHelper.successWithPagination(res, result)
     })
 
