@@ -11,23 +11,32 @@ import { FilterBar } from "../../../../shared/filter/FilterBar";
 import { USER_FILTERS } from "../adminUserFilter";
 import { userColumns } from "../adminUserColumn";
 import Spinner from "../../../../shared/common/Spinner";
+import { getDateRange } from "../../../../shared/filter/dateOptions";
 
 
 export default function UsersTable() {
   const navigate = useNavigate();
-  const { searchParams, getValue, setFilter, setPage } = useFilterParams();
+  const { searchParams, getValue, setFilter, setPage } = useFilterParams({ sortBy: "newest" });
 
   const page = Number(searchParams.get("page") ?? "1");
   const role = getValue("role") as "All" | "Customer" | "Designer";
   const status = getValue("status") as "All" | "Active" | "Blocked";
   const name = searchParams.get("name");
-
-  const { data, isLoading, error } = useGetAllusersQuery({
-    page,
-    debouncedName: name || undefined,
-    role,
-    status,
-  });
+  const sortBy = getValue("sortBy") as "newest" | "oldest" | "name_asc" | "name_desc";
+  const { startDate, endDate } = getDateRange(
+  getValue("date"),
+  getValue("dateFrom", ""),
+  getValue("dateTo", "")
+);                            
+const { data, isLoading, error } = useGetAllusersQuery({
+  page,
+  debouncedName: name || undefined,
+  role,
+  status,
+  sortBy,
+  startDate,
+  endDate,
+});
 
   const users = data?.data;
   const totalUsers = data?.total ?? 0;
@@ -39,7 +48,7 @@ export default function UsersTable() {
     view: (u: AdminUsersResponseDTO) => <ViewButton onClick={() => navigate(`/admin/users/${u.id}`)} />,
   };
 
-  if (isLoading) return <Spinner/>
+  if (isLoading) return <Spinner />
   if (error || !users) return <p>Error loading users</p>;
 
   return (

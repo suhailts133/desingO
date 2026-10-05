@@ -15,4 +15,11 @@ export type FilterFieldConfig =
       label: string;
       options: FilterOption[];
       widthClass?: string;
+    }
+  | {
+      type: "date";
+      key: string;
+      label: string;
+      options?: FilterOption[];
+      widthClass?: string;
     };

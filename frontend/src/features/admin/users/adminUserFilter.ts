@@ -21,5 +21,17 @@ export const USER_FILTERS: FilterFieldConfig[] = [
       { label: "Active", value: "Active" },
       { label: "Blocked", value: "Blocked" },
     ],
-  }, 
+  },
+  {
+    type: "select",
+    key: "sortBy",
+    label: "Sort By",
+    options: [
+      { label: "Latest", value: "newest" },
+      { label: "Oldest", value: "oldest" },
+      { label: "Name A-Z", value: "name_asc" },
+      { label: "Name Z-A", value: "name_desc" },
+    ],
+  },
+   { type: "date", key: "date", label: "Date" },
 ];
