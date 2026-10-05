@@ -23,6 +23,7 @@ export interface IUser {
   savedDesigns: mongoose.Types.ObjectId[]
   designerPreference?: IDesignerPreference
   embedding?: number[]
+
 }
 
 

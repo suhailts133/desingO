@@ -1,3 +1,5 @@
+import type { sortByTypes } from "../../interfaces/base/IApiResponse";
+
 export interface AdminUsersResponseDTO {
     id: string;
     full_name: string;
@@ -37,8 +39,10 @@ export interface UserFilterDTO {
     debouncedName?: string,
     role?: string,
     is_blocked?: string,
-    page?: number
-    sortByName?: string
+    sortBy?: sortByTypes,
+    page?: number,
+    startDate?: string,
+    endDate?: string
 }
 
 export interface DesignerFilterDTO {
