@@ -33,7 +33,7 @@ export interface IJobApplicationService {
     applyForJob(data: IJobApplicationRequestDTO): Promise<IApiResponse>
     deleteJobApplication(id: string): Promise<IApiResponse>
     approveOrRejectJobApplication(id: string, data: JobApplicationApprovalOrRejectionRequestDTO): Promise<IApiResponse<JobApplicationApprovalOrRejectionResponseDTO>>
-    getMyJobApplications(userId: string, filters?: JobApplicationFilter): Promise<IApiResponseWithPagination<MyJobApplicationsDTO[]>>
+    getMyJobApplications(userId: string, filters?: JobApplicationQueryParms): Promise<IApiResponseWithPagination<MyJobApplicationsDTO[]>>
     getJobApplications(jobId: string, filters?: JobApplicationQueryParms): Promise<IApiResponseWithPagination<AllJobApplicationsDTO[]>>
 }
 

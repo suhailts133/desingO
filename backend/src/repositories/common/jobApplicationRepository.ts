@@ -59,17 +59,31 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
       .exec();
   }
 
-  async getMyJobApplications(userId: string, filters?: JobApplicationFilter): Promise<{ data: IJobApplicationPopulated[]; pagination: Pagination }> {
-    const page = filters?.page ? Number(filters.page) : 1;
-    const limit = 9;
+  async getMyJobApplications(userId: string, filter?: JobApplicationQueryParms): Promise<{ data: IJobApplicationPopulated[]; pagination: Pagination }> {
+    const page = filter?.page ? Number(filter.page) : 1;
+    const limit = 6;
     const skip = (page - 1) * limit;
+    const SORT_MAP: Partial<Record<sortByTypes, Record<string, 1 | -1>>> = {
+      newest: { createdAt: -1, _id: -1 },
+      oldest: { createdAt: 1, _id: 1 },
+    };
+    const sort = SORT_MAP[filter?.sortBy as sortByTypes] ?? SORT_MAP.newest;
     const query: QueryFilter<IJobApplication> = { designerId: userId };
-    if (filters) {
-      if (filters.status) {
-        query.status = filters.status;
+
+    if (filter) {
+      if (filter.status) {
+        query.status = filter.status;
+      }
+      const start = validateDate(filter.startDate, "startDate");
+      const end = validateDate(filter.endDate, "endDate");
+      if (start || end) {
+        query.createdAt = {
+          ...(start && { $gte: start }),
+          ...(end && { $lte: end }),
+        };
       }
     }
-    const result = await this._model.find(query).populate<{ jobId: IJobRequest }>("jobId").sort({ createdAt: -1 }).skip(skip).limit(limit).exec();
+    const result = await this._model.find(query).populate<{ jobId: IJobRequest }>("jobId").sort(sort).skip(skip).limit(limit).exec();
 
     const total = await this._model.countDocuments(query);
     const pagination: Pagination = {
@@ -84,11 +98,9 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
     const page = filter?.page ? Number(filter.page) : 1;
     const limit = 6;
     const skip = (page - 1) * limit;
-    const SORT_MAP: Record<sortByTypes, Record<string, 1 | -1>> = {
+    const SORT_MAP: Partial<Record<sortByTypes, Record<string, 1 | -1>>> = {
       newest: { createdAt: -1, _id: -1 },
       oldest: { createdAt: 1, _id: 1 },
-      name_asc: { sourceName: 1, _id: 1 },
-      name_desc: { sourceName: -1, _id: -1 },
     };
     const sort = SORT_MAP[filter?.sortBy as sortByTypes] ?? SORT_MAP.newest;
     const query: QueryFilter<IJobApplication> = { jobId: jobId };
@@ -106,6 +118,7 @@ export class JobApplicationRepository extends BaseRepository<IJobApplication> im
         };
       }
     }
+
 
     const result = await this._model.find(query).populate<{ jobId: IJobRequest }>("jobId").populate<{ designerId: IUser }>("designerId").sort(sort).skip(skip).limit(limit).exec();
 

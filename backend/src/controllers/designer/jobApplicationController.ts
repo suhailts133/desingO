@@ -64,17 +64,12 @@ export class JobApplicationController {
 
 
     getMyJobApplications = asyncHandler(async (req: Request, res: Response) => {
-        const { error, value } = JobApplicationsQueryFilter.validate(req.query, { stripUnknown: true })
-        if (error) {
-            throw new AppError(error.details[0]?.message || "Invalid query parameters", RESPONSE_CODE.BAD_REQUEST)
-        }
-
         const userId = req.user?.userId
         if (!userId) {
             throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
 
-        const result = await this._jobApplicationService.getMyJobApplications(userId, value)
+        const result = await this._jobApplicationService.getMyJobApplications(userId, req.query as JobApplicationQueryParms)
         RespsonseHelper.success(res, result)
     })
 
