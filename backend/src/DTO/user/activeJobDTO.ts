@@ -1,5 +1,6 @@
 import type { IUser } from "../../interfaces/auth/IUser";
-import type { IActiveJob, IHireDesigner, IJobRequest } from "../../interfaces/customer/ICustomer";
+import type { sortByTypes } from "../../interfaces/base/IApiResponse";
+import type { ActiveJobProposalStatus, ActiveJobSource, ActiveJobStatus, IActiveJob, IHireDesigner, IJobRequest } from "../../interfaces/customer/ICustomer";
 
 export type ActiveJobPopulateAll = Omit<IActiveJob, "userId" | "designerId" | "sourceId" | "sourceType"> & {
     userId: IUser
@@ -47,4 +48,17 @@ export interface ActiveJobResponseDTO {
     status: 'Active' | 'Completed' | 'Cancelled'
     proposalStatus: "NOT_CREATED" | "CREATED" | "REJECTED"
     startedAt: string
+}
+
+
+
+export interface ActiveJobsQueryParams {
+  sourceName?: string;
+  status?: ActiveJobStatus ;
+  proposalStatus?: ActiveJobProposalStatus ;
+  sortBy?: sortByTypes;
+  startDate?: string;
+  endDate?: string;
+  page?: number;
+  sourceType?: ActiveJobSource ;
 }

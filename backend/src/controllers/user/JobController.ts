@@ -3,7 +3,7 @@ import type { Request, Response } from "express";
 import { EditjobRequestValidation, jobRequestValidation } from "../../validators/user/jobValidator.js";
 import { RespsonseHelper } from "../../shared/helpers/responseHelper.js";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode.js";
-import type { ICreateJobRequest, Source_type } from "../../interfaces/customer/ICustomer.js";
+import type { ICreateJobRequest } from "../../interfaces/customer/ICustomer.js";
 import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError.js";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";

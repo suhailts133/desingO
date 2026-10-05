@@ -120,6 +120,10 @@ export interface IBid {
     description: string
 }
 
+export type ActiveJobStatus = "Active" | "Completed" | "Cancelled" | "Terminated";
+export type ActiveJobProposalStatus = "NOT_CREATED" | "CREATED" | "REJECTED";
+export type ActiveJobSource = "jobRequest" | "direct_hire";
+
 
 
 
@@ -127,11 +131,11 @@ export interface IActiveJob {
     id: string
     userId: mongoose.Types.ObjectId
     designerId: mongoose.Types.ObjectId
-    sourceType: 'jobRequest' | 'direct_hire'
+    sourceType: ActiveJobSource
     sourceId: mongoose.Types.ObjectId
     sourceName: string
-    status: 'Active' | 'Completed' | 'Cancelled' | "Terminated"
-    proposalStatus: "NOT_CREATED" | "CREATED" | "REJECTED"
+    status: ActiveJobStatus
+    proposalStatus: ActiveJobProposalStatus
     startedAt: Date
     completedAt?: Date
     cancelledAt?: Date

@@ -11,7 +11,7 @@ import type {
 } from "../../DTO/user/jobsDTO";
 import { RESPONSE_CODE } from "../../shared/enums/statusCode";
 import type { IApiResponse, IApiResponseWithPagination, IApiResponseWithRecomendation } from "../../interfaces/base/IApiResponse";
-import type { ICreateJobRequest, Source_type } from "../../interfaces/customer/ICustomer";
+import type { ICreateJobRequest } from "../../interfaces/customer/ICustomer";
 import type { IActiveJobRepository, IJobRepository } from "../../interfaces/customer/ICustomerRepository";
 import type { IJobRequestService } from "../../interfaces/customer/ICustomerService";
 import { AppError } from "../../shared/errors/appError";
