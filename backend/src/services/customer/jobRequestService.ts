@@ -3,6 +3,7 @@ import type {
   EditJobRepoData,
   EditJobRequest,
   HireDesignerDTO,
+  HireDesignerQueryParam,
   JobDetailResponseDTO,
   JobFilter,
   JobsCommonResponseDTO,
@@ -128,7 +129,7 @@ export class JobRequestService implements IJobRequestService {
     }
     return { message: JOB_MESSAGES.JOB_REQUEST.JOB_REQUEST_SUCCESS };
   }
-  async getjobRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<IApiResponseWithPagination<HireDesignerDTO[]>> {
+  async getjobRequestPerDesign(designId: string, filters?: HireDesignerQueryParam): Promise<IApiResponseWithPagination<HireDesignerDTO[]>> {
     const { data, pagination } = await this._jobRequestRepo.getjobRequestPerDesign(designId, filters);
     const hireDesignerData = JobRequestMapper.toHireRequestDTOList(data);
     return { message: JOB_MESSAGES.HIRE_DESIGNER.MY_REQUEST, data: hireDesignerData, total: pagination.total, totalPages: pagination.totalPages };

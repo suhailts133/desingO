@@ -7,7 +7,7 @@ import type { ICreateJobRequest } from "../../interfaces/customer/ICustomer.js";
 import asyncHandler from "express-async-handler";
 import { AppError } from "../../shared/errors/appError.js";
 import { JOB_MESSAGES } from "../../shared/messages/jobMessages.js";
-import type { EditJobRequest, MyJobsQueryParams } from "../../DTO/user/jobsDTO.js";
+import type { EditJobRequest, HireDesignerQueryParam, MyJobsQueryParams } from "../../DTO/user/jobsDTO.js";
 import { isObjectId } from "../../shared/helpers/extraFunctions.js";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages.js";
 import Logger from "../../config/logger.js";
@@ -69,10 +69,6 @@ export class JobController {
 
 
     getRequestPerDesign = asyncHandler(async (req: Request, res: Response) => {
-        const { error, value } = directHireQueryFilters.validate(req.query, { stripUnknown: true })
-        if (error) {
-            throw new AppError(error.details[0]?.message || "Invalid query parameters", RESPONSE_CODE.BAD_REQUEST)
-        }
         const designId = req.params?.id as string;
         if (!designId) {
             throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
@@ -80,8 +76,7 @@ export class JobController {
         if (!isObjectId(designId)) {
             throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
         }
-
-        const result = await this._jobRequestService.getjobRequestPerDesign(designId, value)
+        const result = await this._jobRequestService.getjobRequestPerDesign(designId, req.query as HireDesignerQueryParam)
         RespsonseHelper.successWithPagination(res, result)
     })
 

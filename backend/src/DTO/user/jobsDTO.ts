@@ -13,7 +13,7 @@ export interface MyJobsQueryParams {
   sourceType?: Source_type;
 }
 
-
+export type HireDesignerQueryParam = Omit<MyJobsQueryParams, "sourceType"> 
 
 
 export interface JobsResponseDTO {

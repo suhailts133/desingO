@@ -4,7 +4,7 @@ import type { IJobRepository } from "../../interfaces/customer/ICustomerReposito
 import { JobRequestModel } from "../../models/user/jobModel";
 import { BaseRepository } from "../baseRepository";
 import type { Pagination } from "../../DTO/admin/adminDTO";
-import type { AggregationResultJobRequest, createJobRepoDTO, EditJobRepoData, JobFilter, JobReportDTO, MyJobsQueryParams } from "../../DTO/user/jobsDTO";
+import type { AggregationResultJobRequest, createJobRepoDTO, EditJobRepoData, HireDesignerQueryParam, JobFilter, JobReportDTO, MyJobsQueryParams } from "../../DTO/user/jobsDTO";
 import type { IUser } from "../../interfaces/auth/IUser";
 import type { ImageUploadResult } from "../../interfaces/base/IImageUpload";
 import { JOB_REQUEST_FILTERS } from "../../shared/enums/filterEnums";
@@ -100,8 +100,8 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
     const SORT_MAP: Record<sortByTypes, Record<string, 1 | -1>> = {
       newest: { createdAt: -1, _id: -1 },
       oldest: { createdAt: 1, _id: 1 },
-      name_asc: { projectTitle: -1 },
-      name_desc: { projectTitle: 1},
+      name_asc: { projectTitle: 1, _id: 1 },
+      name_desc: { projectTitle: -1, _id: -1 },
     };
     const sort = SORT_MAP[filter?.sortBy as sortByTypes] ?? SORT_MAP.newest;
     const query: QueryFilter<IJobRequest> = { userId, sourceType };
@@ -134,28 +134,37 @@ export class JobRequestRepository extends BaseRepository<IJobRequest> implements
     };
   }
 
-  async getjobRequestPerDesign(designId: string, filters?: HireDesignerFilter): Promise<{ data: IJobRequestCustomerPopulated[]; pagination: Pagination }> {
-    const page = filters?.page ? Number(filters.page) : 1;
+  async getjobRequestPerDesign(designId: string, filter?: HireDesignerQueryParam): Promise<{ data: IJobRequestCustomerPopulated[]; pagination: Pagination }> {
+    const page = filter?.page ? Number(filter.page) : 1;
     const limit = 6;
     const skip = (page - 1) * limit;
+    const SORT_MAP: Record<sortByTypes, Record<string, 1 | -1>> = {
+      newest: { createdAt: -1, _id: -1 },
+      oldest: { createdAt: 1, _id: 1 },
+      name_asc: { projectTitle: 1, _id: 1 },
+      name_desc: { projectTitle: -1, _id: -1 },
+    };
+    const sort = SORT_MAP[filter?.sortBy as sortByTypes] ?? SORT_MAP.newest;
     const query: QueryFilter<IJobRequest> = { designId: designId };
-    const sortOrder: { [key: string]: SortOrder } = { createdAt: -1 };
 
-    if (filters) {
-      if (filters.sort === "asc") {
-        sortOrder.createdAt = "asc";
-      } else if (filters.sort === "desc") {
-        sortOrder.createdAt = "desc";
+    if (filter) {
+      if (filter.projectTitle) {
+        query.projectTitle = toCleanRegExp(filter.projectTitle);
       }
-
-      if (filters.startDate && filters.endDate) {
+      if (filter.status) {
+        query.status = filter.status;
+      }
+      const start = validateDate(filter.startDate, "startDate");
+      const end = validateDate(filter.endDate, "endDate");
+      if (start || end) {
         query.createdAt = {
-          $gte: new Date(filters.startDate),
-          $lte: new Date(filters.endDate),
+          ...(start && { $gte: start }),
+          ...(end && { $lte: end }),
         };
       }
     }
-    const [result, total] = await Promise.all([this._model.find(query).populate<{ userId: IUser }>("userId").skip(skip).limit(limit).exec(), this._model.countDocuments(query)]);
+
+    const [result, total] = await Promise.all([this._model.find(query).populate<{ userId: IUser }>("userId").sort(sort).skip(skip).limit(limit).exec(), this._model.countDocuments(query)]);
     const pagination: Pagination = {
       total,
       totalPages: Math.ceil(total / limit),
