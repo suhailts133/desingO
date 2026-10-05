@@ -10,13 +10,9 @@ export interface RoomMeasurement {
   notes: string;
 }
 
-export interface HireDesignerFilter {
-  page?: number;
-  sort?: "asc" | "desc";
-  startDate?: string;
-  endDate?: string;
+export type HireDesignerQueryParam = Omit<MyJobsQueryParams, "sourceType"> & {
   designId: string;
-}
+};
 
 export interface HireDesignerFields {
   length: string;
