@@ -56,18 +56,22 @@ export default function MyJobCard({ jobRequest, onDeleteClick }: Props) {
                         {jobRequest.projectTitle}
                     </h5>
 
-                    {
-                        jobRequest.sourceType === "JOB_REQUEST" && (
-                            <button
-                                onClick={() => jobApplications(jobRequest.id)}
-                                title="Job Applications"
-                                className="shrink-0 inline-flex items-center gap-1.5 bg-accent text-text-on-accent hover:bg-accent-hover px-3.5 py-1.5 rounded-full text-[11px] font-semibold tracking-wide transition-all duration-200"
-                            >
-                                <ScrollText className="w-3.5 h-3.5" />
-                                <span>Job Applications</span>
-                            </button>
-                        )
-                    }
+                    {jobRequest.sourceType === "JOB_REQUEST" && (
+                        <button
+                            onClick={() => jobApplications(jobRequest.id)}
+                            title="Job Applications"
+                            className="shrink-0 inline-flex items-center gap-1.5 whitespace-nowrap bg-accent text-text-on-accent hover:bg-accent-hover pl-3.5 pr-2 py-1.5 rounded-full text-[11px] font-semibold tracking-wide transition-all duration-200"
+                        >
+                            <ScrollText className="w-3.5 h-3.5" />
+                            <span>Job Applications</span>
+
+                            {jobRequest.applicationCount > 0 && (
+                                <span className="min-w-5 h-5 px-1.5 inline-flex items-center justify-center rounded-full bg-surface text-accent text-xxs font-bold leading-none">
+                                    {jobRequest.applicationCount > 99 ? "99+" : jobRequest.applicationCount}
+                                </span>
+                            )}
+                        </button>
+                    )}
                 </div>
 
                 {/* Location */}

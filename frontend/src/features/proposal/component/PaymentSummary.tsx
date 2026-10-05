@@ -48,7 +48,7 @@ function Collapsible({
                 aria-expanded={open}
                 className="w-full flex items-center justify-between gap-3 px-3 py-2.5 text-left"
             >
-                <span className="text-[10px] font-medium uppercase tracking-wider text-text-faint">
+                <span className="text-xxs font-medium uppercase tracking-wider text-text-faint">
                     {title}
                 </span>
                 <span className="flex items-center gap-2">

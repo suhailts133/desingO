@@ -26,7 +26,7 @@ export const jobsApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: { status, rejectionReason, jobId },
       }),
-      invalidatesTags: ["jobApplications"],
+      invalidatesTags: ["jobApplications", "jobs"],
     }),
   }),
 });

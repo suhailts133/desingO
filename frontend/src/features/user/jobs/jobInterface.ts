@@ -263,6 +263,7 @@ export interface JobsResponseDTO {
   propertyType: string;
   sourceType: Source_type;
   description: string;
+  applicationCount:number
   timeLine: string;
   status: JobStatus;
   rooms: number;
