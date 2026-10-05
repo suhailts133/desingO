@@ -30,7 +30,7 @@ export default function Jobs() {
         getValue("dateFrom", ""),
         getValue("dateTo", "")
     );
-    console.log(startDate, endDate)
+  
 
 
     const { data, isLoading, error } = useGetMyJobsQuery({ 

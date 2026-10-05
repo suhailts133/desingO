@@ -1,15 +1,36 @@
-import { useState } from "react";
 import Pagination from "../../../shared/common/Pagination";
 import { useGetDesignerActiveJobsQuery } from "./designerActiveJobEndpoints";
 import ActiveJobCard from "../../../shared/common/ActiveJobCard";
 import Spinner from "../../../shared/common/Spinner";
+import { FilterBar } from "../../../shared/filter/FilterBar";
+import { ACTIVE_JOBS_FILTERS } from "./ActiveJobFilters";
+import { useFilterParams } from "../../../shared/filter/useFilterParams";
+import type { SortByTypes } from "../../../api/responseType";
+import { getDateRange } from "../../../shared/filter/dateOptions";
 
 export default function DesignerActiveJobPage() {
-    const [page, setPage] = useState(1)
-    const [status, setStatus] = useState<'jobRequest' | 'direct_hire'>("jobRequest")
+    const { searchParams, getValue, setFilter, setPage } = useFilterParams({ sortBy: "newest" });
+    const sourceName = searchParams.get("sourceName");
+    const sortBy = getValue("sortBy") as SortByTypes;
+    const status = getValue("status") as 'Active' | 'Completed' | 'Cancelled' | "Terminated" | "All";
+    const proposalStatus = getValue("proposalStatus") as "NOT_CREATED" | "CREATED" | "REJECTED" | "All";
+    const sourceType = getValue("sourceType") as 'jobRequest' | 'direct_hire' | "All";
+    const page = Number(searchParams.get("page") ?? "1");
+    const { startDate, endDate } = getDateRange(
+        getValue("date"),
+        getValue("dateFrom", ""),
+        getValue("dateTo", "")
+    );
+
     const { data, isLoading, error } = useGetDesignerActiveJobsQuery({
-        page,
-        sourceType: status
+        sourceName:sourceName || undefined,
+        sourceType,
+        sortBy,
+        startDate,
+        endDate,
+        status,
+        proposalStatus,
+        page
 
     })
 
@@ -25,26 +46,9 @@ export default function DesignerActiveJobPage() {
     const totalActiveJobs = data.total ?? 1
 
     return (
-        <div className="w-full flex flex-col gap-6">
+        <div className="w-full min-h-full flex flex-col gap-6">
 
-
-            <div className="flex items-center gap-2 bg-surface border border-surface-border rounded-xl p-1 w-fit">
-                {(["jobRequest", "direct_hire"] as const).map(s => (
-                    <button
-                        key={s}
-                        onClick={() => { setStatus(s); setPage(1) }}
-                        className={`text-xs font-semibold px-4 py-1.5 rounded-lg transition-all duration-200
-                ${status === s
-                                ? "bg-accent text-text-on-accent"
-                                : "text-text-muted hover:text-text-primary"
-                            }`}
-                    >
-                        {s === "jobRequest" ? "Job request" : "Direct hire"}
-                    </button>
-                ))}
-            </div>
-
-
+            <FilterBar filters={ACTIVE_JOBS_FILTERS} getValue={getValue} onFilterChange={setFilter} />
 
             <div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -57,16 +61,15 @@ export default function DesignerActiveJobPage() {
                 </div>
             </div>
 
-            <div className="sticky bottom-0 mt-auto pt-4 bg-bg">
+            <div className="mt-auto pt-4">
                 <Pagination
                     page={page}
                     totalItem={totalActiveJobs}
-                    totalPages={totalPages}
                     whichItem="Active Jobs"
-                    onDecrease={() => setPage(p => p - 1)}
-                    onIncrease={() => setPage(p => p + 1)}
+                    totalPages={totalPages}
+                    onDecrease={() => setPage(Math.max(1, page - 1))}
+                    onIncrease={() => setPage(Math.min(totalPages, page + 1))}
                 />
-
             </div>
 
 
