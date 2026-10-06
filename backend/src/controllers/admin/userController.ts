@@ -34,7 +34,7 @@ export class UserController {
         */
     getUser = asyncHandler(async (req: Request, res: Response) => {
         const userId = req.params.id as string;
-    
+        console.log(userId)
         if (!userId) {
             throw new AppError(ADMIN_MESSAGES.USER_MANAGEMENT.ID_NOT_PROVIDED, RESPONSE_CODE.BAD_REQUEST)
         }
