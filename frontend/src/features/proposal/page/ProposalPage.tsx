@@ -495,6 +495,7 @@ export default function ProposalPage() {
                                 key={service.order}
                                 service={service}
                                 role={role}
+                                isTerminated={contractStatus === "Terminated"}
                                 onPay={() => handlePay(service.serviceName, service.price, proposal.sourceId)}
                                 onVerify={(versionId) => setApproveVersion(versionId)}
                                 onRedo={(versionId) => setRejectVersion(versionId)}

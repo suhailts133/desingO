@@ -9,6 +9,7 @@ type Role = "Designer" | "Admin" | "Customer"
 interface ServiceCardProps {
     service: ProposalServiceItemDTO
     role: Role
+    isTerminated:boolean
     isPayLoading: boolean
     onPay?: () => void
     onVerify: (versionId: string) => void
@@ -50,7 +51,7 @@ function StatusItem({ label, value, className }: { label: string; value: string;
     )
 }
 
-export default function ServiceCard({ isPayLoading, service, role, onPay, onVerify, onRedo, onUpload }: ServiceCardProps) {
+export default function ServiceCard({ isTerminated,isPayLoading, service, role, onPay, onVerify, onRedo, onUpload }: ServiceCardProps) {
     const [versionsOpen, setVersionsOpen] = useState(false)
     const [openVersionIndex, setOpenVersionIndex] = useState<number | null>(null)
 
@@ -166,7 +167,7 @@ export default function ServiceCard({ isPayLoading, service, role, onPay, onVeri
                             Request redo
                         </button>
                     )}
-                    {showUpload && (
+                    {showUpload && !isTerminated && (
                         <button
                             onClick={() => onUpload(service.order, service.serviceName)}
                             className="inline-flex items-center justify-center gap-1.5 bg-warning-tint text-warning-text border border-warning hover:brightness-110 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200"
