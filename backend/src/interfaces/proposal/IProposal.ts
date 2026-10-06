@@ -5,6 +5,7 @@ export type ProposalServiceStatus = "Locked" | "Open" | "In Progress" | "Uploade
 export type ProposalPaymentStatus = "Pending" | "Paid" | "Refunded"
 
 export type EscrowStatus = "Held" | "Released" | "Refunded" | "Disputed"
+export type NewEscrowStatus = "Held" | "Released" | "Refunded"
 
 export type ContractStatus = "Sent" | "Accepted" | "Rejected" | "Ongoing" | "Completed" | "Disputed" | "Expired" | "Terminated"
 

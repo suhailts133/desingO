@@ -8,7 +8,7 @@ import type { ITransactionManager } from "../../interfaces/base/ITransactionMana
 import type { IActiveJobRepository, IJobRepository } from "../../interfaces/customer/ICustomerRepository";
 import type { IDesignRepository } from "../../interfaces/designer/IDesignerRepository";
 import type { IDisputeRepository, IDisputeService } from "../../interfaces/proposal/IDispute";
-import type { DisputeStatus } from "../../interfaces/proposal/IProposal";
+import type { DisputeStatus, NewEscrowStatus } from "../../interfaces/proposal/IProposal";
 import type { IProposalRepository } from "../../interfaces/proposal/IProposalRepository";
 import { ACTIVE_JOB_STATUS, CLOUDINARY_FOLDER_NAME, DELTA_COUNT, JOB_REQUEST_STATUS, TRANSACTION_TYPE, TRANSACTION_UNIQUE_ID, USER_ROLES } from "../../shared/enums/commonEnums";
 import { CONTRACT_STATUS, DISPUTE_SOLUTION, DISPUTE_STATUS, EscrowStatus, USER_TYPE } from "../../shared/enums/proposalEnums";
@@ -102,7 +102,6 @@ export class DisputeService implements IDisputeService {
     };
 
     const { dispute, proposalUpdated } = await this._transactionManager.runInTransaction(async (session) => {
-      console.log(session.id, "from create dispute serice");
       const dispute = await this._disputeRepo.createDispute(repoData, session);
       const proposalUpdated = await this._propsalRepo.updateProposal(proposal.id, { disputeId: dispute.id, contractStatus: CONTRACT_STATUS.DISPUTED }, session);
       if (!proposalUpdated) {
@@ -225,8 +224,13 @@ export class DisputeService implements IDisputeService {
             },
             session,
           );
-
-          const escrowUpdated = await this._propsalRepo.changeEscrowStatus(proposal.sourceId.toString(), dispute.serviceOrder, EscrowStatus.RELEASED, session);
+          let newEscrowStatus:NewEscrowStatus;
+          if(isCustomerRaised){
+            newEscrowStatus = EscrowStatus.REFUNDED
+          }else{
+            newEscrowStatus = EscrowStatus.RELEASED
+          }
+          const escrowUpdated = await this._propsalRepo.changeEscrowStatus(proposal.sourceId.toString(), dispute.serviceOrder, newEscrowStatus, session);
           if (!escrowUpdated) {
             throw new AppError(PROPOSAL_MESSAGES.DISPUTE.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
           }
