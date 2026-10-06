@@ -234,7 +234,7 @@ export interface JobRequestDetailDTO {
   status: JobStatus;
   createdAt: string;
 }
-export type JobStatus = "Pending" | "Closed" | "Ongoing" | "Terminated" | "Rejected";
+export type JobStatus = "Pending" | "Closed" | "Ongoing" | "Terminated" | "Rejected" | "Accepted";
 
 export interface JobsQueryParms {
   page?: number;

@@ -7,6 +7,7 @@ export const JOB_STATUS_COLORS: Record<JobStatus, string> = {
   Closed: "var(--color-text-muted)",
   Terminated: "var(--color-error)",
   Rejected: "var(--color-text-faint)",
+  Accepted: "var(--color-accent-hover)",
 };
 
 export const DISPUTE_STATUS_COLORS: Record<DisputeStatus, string> = {
