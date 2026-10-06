@@ -8,7 +8,7 @@ export const JOB_APPLICATION_FILTERS: FilterFieldConfig[] = [
     options: [
       { label: "All", value: "All" },
       { label: "Pending", value: "Pending" },
-      { label: "Approved", value: "Approved" },
+      { label: "Completed", value: "Completed" },
       { label: "Rejected", value: "Rejected" },
       { label: "Ongoing", value: "Ongoing" },
     ],

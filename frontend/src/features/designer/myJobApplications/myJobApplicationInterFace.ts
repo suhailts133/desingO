@@ -1,6 +1,6 @@
 
 
-export type JobApplicationStatus = "Pending" | "Approved" | "Rejected" | "Ongoing"
+export type JobApplicationStatus = "Pending" | "Completed" | "Rejected" | "Ongoing"
 
 
 export interface MyJobApplicationsDTO {
