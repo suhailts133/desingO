@@ -39,7 +39,7 @@ const sections: NavSection[] = [
       { to: "/customer/jobs", label: "My Jobs", icon: Briefcase },
       {
         to: "/customer/active-jobs",
-        label: "Active Jobs",
+        label: "Contracts",
         icon: BriefcaseBusiness,
       },
       { to: "/customer/my-hire", label: "My hires", icon: BriefcaseBusiness },

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { Wallet, Lock, CheckCircle2, ChevronRight, Sparkles, Briefcase, Receipt, ClipboardList } from "lucide-react"
+import { Wallet, Lock, CheckCircle2, ChevronRight, Sparkles, Briefcase, Receipt, ClipboardList, Palette } from "lucide-react"
 import StatCard from "../../../../shared/dashboard/StatCard"
 import type { CustomerDashboardDTO } from "../customerDashboardInterface"
 
@@ -46,12 +46,21 @@ export default function CustomerStatsOverview({ data }: Props) {
                     </div>
                 </div>
 
-                <button
-                    onClick={() => navigate(`/designers/${data.userId}`)}
-                    className="flex items-center gap-1 text-sm font-semibold text-accent hover:text-accent-hover hover:underline shrink-0 mt-1"
-                >
-                    View profile <ChevronRight size={16} />
-                </button>
+                <div className="flex flex-col items-end gap-2 shrink-0 mt-1">
+                    <button
+                        onClick={() => navigate("/designer/designer-verification")}
+                        className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-full bg-accent text-text-on-accent hover:bg-accent-hover transition-colors"
+                    >
+                        <Palette size={16} />
+                        Become a designer
+                    </button>
+                    <button
+                        onClick={() => navigate(`/designers/${data.userId}`)}
+                        className="flex items-center gap-1 text-sm font-semibold text-accent hover:text-accent-hover hover:underline"
+                    >
+                        View profile <ChevronRight size={16} />
+                    </button>
+                </div>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">

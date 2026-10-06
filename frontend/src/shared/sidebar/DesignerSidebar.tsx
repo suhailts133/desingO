@@ -44,7 +44,7 @@ const sections: NavSection[] = [
       },
       {
         to: "/designer/active-jobs",
-        label: "Active Jobs",
+        label: "Contracts",
         icon: BriefcaseBusiness,
       },
       { to: "/designer/saved-design/my", label: "Saved Designs", icon: Heart },
