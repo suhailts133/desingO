@@ -9,7 +9,7 @@ type Props = {
 
 const statusStyles: Record<JobApplicationStatus, string> = {
     Pending: "bg-warning-tint text-warning-text border-warning-tint",
-    Approved: "bg-success-tint text-success-text border-success-tint",
+    Completed: "bg-success-tint text-success-text border-success-tint",
     Rejected: "bg-error-tint text-error border-error-tint",
     Ongoing: "bg-accent-tint text-accent-tint-text border-accent-tint",
 }

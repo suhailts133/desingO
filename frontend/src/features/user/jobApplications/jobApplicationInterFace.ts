@@ -9,7 +9,7 @@ export interface JobApplicationQueryParms {
   endDate?: string;
 }
 
-export type JobApplicationStatus = "Pending" | "Approved" | "Rejected" | "Ongoing";
+export type JobApplicationStatus = "Pending" | "Completed" | "Rejected" | "Ongoing";
 
 
 
