@@ -35,7 +35,7 @@ export const adminDisputesApi = baseApi.injectEndpoints({
                 method: "POST",
                 body
             }),
-            invalidatesTags: ["dispute"]
+            invalidatesTags: ["dispute", "disputeChart"]
         })
 
     })

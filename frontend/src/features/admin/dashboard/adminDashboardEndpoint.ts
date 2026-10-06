@@ -18,7 +18,8 @@ export const adminDisputesApi = baseApi.injectEndpoints({
         getDisputeReport:builder.query<IApiResponse<DisputeReportDTO>,void>({
             query:() => ({
                 url:API_ROUTES.DASHBOARD.DISPUTE_REPORT
-            })
+            }),
+            providesTags:["disputeChart"]
         })
     })
 })
