@@ -23,7 +23,7 @@ export default function SaveDesignPage() {
   if (error || !savedDesigns) return <div className="p-10 text-center text-red-500">Error loading designs.</div>;
 
   return (
-    <div className="w-full flex flex-col gap-6">
+      <div className="w-full min-h-full flex flex-col gap-6">
       <button onClick={() => navigate(-1)} className="flex items-center mb-4 text-sm text-accent hover:underline">
         <ChevronLeft className="w-4 h-4" />
         Back
@@ -42,7 +42,8 @@ export default function SaveDesignPage() {
         </div>
       </div>
 
-      <div className="sticky bottom-0 mt-auto pt-4 bg-bg">
+
+            <div className="mt-auto pt-4">
         <Pagination
           page={page}
           totalItem={data?.total ?? 0}
