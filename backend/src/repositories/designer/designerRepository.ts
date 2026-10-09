@@ -43,7 +43,7 @@ export class DesignerRepository extends BaseRepository<IDesigner> implements IDe
 
   async getAllDesigners(designerFilter: DesignerFilter): Promise<{ data: IDesignerPopulated[]; pagination: Pagination }> {
     const PageNo = designerFilter.page ? Number(designerFilter.page) : 1;
-    const limit = 1;
+    const limit = 12;
     const skip = (PageNo - 1) * limit;
     const query: QueryFilter<IDesigner> = {};
     if (designerFilter) {
