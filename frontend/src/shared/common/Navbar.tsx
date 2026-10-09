@@ -45,6 +45,9 @@ export default function Navbar() {
           <NavLink to="/designs" className={navLinkClass}>
             Designs
           </NavLink>
+          <NavLink to="/jobs" className={navLinkClass}>
+            Jobs
+          </NavLink>
           <NavLink to="/designers" className={navLinkClass}>
             Designers
           </NavLink>
