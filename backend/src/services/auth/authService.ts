@@ -159,7 +159,10 @@ export class AuthService implements IAuthService {
         if (!isSaved) {
             throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.OTP_SENT_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
-        await sendVerificationEmail(email, newOTP);
+        const sendEmail = await sendVerificationEmail(email, newOTP);
+        if(!sendEmail){
+            throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.OTP_SENT_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
         return { message: AUTH_MESSAGES.LOGIN_SIGNUP.OTP_SENT_SUCCESS }
     }
 
@@ -185,7 +188,10 @@ export class AuthService implements IAuthService {
         if (!isSaved) {
             throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.OTP_SENT_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
-        await sendVerificationEmail(email, forgetPasswordOTP)
+        const sendEmail = await sendVerificationEmail(email, forgetPasswordOTP)
+        if(!sendEmail){
+            throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.OTP_SENT_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
         return { message: AUTH_MESSAGES.LOGIN_SIGNUP.OTP_SENT_SUCCESS }
     }
 
@@ -210,7 +216,7 @@ export class AuthService implements IAuthService {
         }
         const savedOTP = await this._otpRepository.getOTP(email)
         if (savedOTP === null) {
-            throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.OTP_EXPIRED, RESPONSE_CODE.NOT_FOUND)
+            throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.OTP_EXPIRED, RESPONSE_CODE.GONE)
         }
 
         const otpChecking = otp === savedOTP
@@ -245,7 +251,10 @@ export class AuthService implements IAuthService {
         if (!isSaved) {
             throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.OTP_SENT_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
-        await sendVerificationEmail(email, newOTP)
+        const emailSend = await sendVerificationEmail(email, newOTP)
+        if(!emailSend){
+            throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.OTP_SENT_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
+        }
         return { message: AUTH_MESSAGES.LOGIN_SIGNUP.OTP_SENT_SUCCESS }
 
     }

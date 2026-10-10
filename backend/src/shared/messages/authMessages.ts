@@ -16,7 +16,7 @@ export const AUTH_MESSAGES = {
         NEW_TOKEN_CREATED: "New access token created.",
         EMAIL_ALREADY_EXISTS: "Email already exists.",
         EMAIL_NOT_FOUND: "Email not found.",
-        OTP_SENT_FAIL: "Failed to send OTP.",
+        OTP_SENT_FAIL: "Failed to send OTP. Please try again later.",
         OTP_SENT_SUCCESS: "OTP has been sent to your email.",
         OTP_SUCCESS: "OTP verification successful.",
         OTP_INCORRECT: "Incorrect OTP.",

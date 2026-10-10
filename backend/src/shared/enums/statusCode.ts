@@ -7,5 +7,6 @@ export enum RESPONSE_CODE {
     FORBIDDEN = 403,
     NOT_FOUND = 404,
     CONFILT = 409,
+    GONE = 410,
     INTERNAL_SERVER_ERROR = 500,
 }
