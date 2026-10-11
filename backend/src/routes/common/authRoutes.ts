@@ -12,8 +12,7 @@ const router = Router()
 const otpRepository = new OtpRepository()
 const userRepository = new UserRepository()
 const refreshTokenRepo = new RefreshTokenRepositoy()
-const blackListRepo = new BlackListRepository()
-const authService = new AuthService(otpRepository, userRepository, refreshTokenRepo, blackListRepo);
+const authService = new AuthService(otpRepository, userRepository, refreshTokenRepo);
 const authController = new AuthController(authService)
 
 router.post("/signup", authController.register)

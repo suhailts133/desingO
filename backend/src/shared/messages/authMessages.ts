@@ -21,7 +21,7 @@ export const AUTH_MESSAGES = {
         OTP_SUCCESS: "OTP verification successful.",
         OTP_INCORRECT: "Incorrect OTP.",
         OTP_EXPIRED: "OTP expired. Please try again.",
-        PASSWORD_CHANGE_FAIL: "Unable to change password.",
+        PASSWORD_CHANGE_FAIL: "Unable to change password. plese try again later.",
         PASSWORD_CHANGE_SUCCESS: "Password changed successfully. Please log in again.",
         USER_BLOCKED: "Your account has been blocked. Contact support.",
         GOOGLE_LOGIN_DETECTED: "Did you log in with Google?",
