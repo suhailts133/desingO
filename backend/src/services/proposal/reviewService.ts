@@ -84,7 +84,6 @@ export class ReviewService implements IReviewService {
   }
 
   async getReviewPerJob(jobId: string): Promise<IApiResponse<ProposalReviewDTO>> {
-    console.log("hit");
     const review = await this._reviewRepo.getReviewPerJob(jobId);
     if (!review) {
       throw new AppError(PROPOSAL_MESSAGES.REVIEW.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);

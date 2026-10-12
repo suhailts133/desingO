@@ -36,7 +36,6 @@ export class PaymentController {
    * @throws {AppError} 400 if there is any issue with req.params.id or the id is not in the format of an objectid
   */
     createPaymentIntent = asyncHandler(async (req: Request, res: Response) => {
-        Logger.info(`${JSON.stringify(req.body)}`)
         const { jobId } = req.body
 
         if (!jobId) {

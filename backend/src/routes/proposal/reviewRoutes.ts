@@ -5,7 +5,6 @@ import { UserRepository } from "../../repositories/auth/userRepository";
 import { ProposalRepository } from "../../repositories/proposal/proposalRepository";
 import { ReviewController } from "../../controllers/proposal/reviewController";
 import customerAuthentication from "../../middlewares/customerAuth";
-import authenticate from "../../middlewares/auth";
 import { MongooseTransactionManager } from "../../shared/helpers/MongooseTransactionManager";
 
 const router = Router();

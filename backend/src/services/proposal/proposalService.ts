@@ -168,7 +168,7 @@ export class ProposalService implements IProposalService {
     const allVersions = await this._serviceVersionRepo.findAllVersions(sourceId);
 
     const proposalData = ProposalMapper.toProposalDetailDTO(result, allVersions, floorPlans);
-    return { message: PROPOSAL_MESSAGES.PROPOSAL.FETCH_SUCCESS, data: proposalData, statuscode: RESPONSE_CODE.CREATED };
+    return { message: PROPOSAL_MESSAGES.PROPOSAL.FETCH_SUCCESS, data: proposalData };
   }
 
   async getProposalTemplate(id: string): Promise<IApiResponse<ProposalInputData>> {

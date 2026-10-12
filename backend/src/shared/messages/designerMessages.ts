@@ -10,7 +10,7 @@ export const DESIGNER_MESSAGES = {
         DESIGN_CREATE_SUCCESS: "Design posted successfully.",
         COVER_IMAGE_NOT_FOUND: "Cover image is required.",
         GALLERY_NOT_FOUND: "Gallery is required.",
-        UPDATION_FAILED: "Failed to update your design. Please contact support.",
+        UPDATION_FAILED: "Failed to update your design.",
         UPDATION_SUCCESS: "Design updated successfully.",
         DELETION_FAILED: "Failed to delete your design. Please contact support.",
         DELETION_SUCCESS: "Design deleted successfully.",
