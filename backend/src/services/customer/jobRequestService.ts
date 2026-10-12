@@ -207,7 +207,7 @@ export class JobRequestService implements IJobRequestService {
   async getJobRequestDetail(jobId: string, designerId?: string): Promise<IApiResponse<JobDetailResponseDTO>> {
     const result = await this._jobRequestRepo.getJobRequest(jobId);
     if (!result) {
-      throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NO_CONTENT);
+      throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
     }
     if (designerId) {
       await this._designerInteractionRepo.createInteraction({

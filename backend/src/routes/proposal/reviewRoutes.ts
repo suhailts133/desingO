@@ -18,6 +18,6 @@ const reviewService = new ReviewService(reviewRepo, proposalRepo, userRepo, tran
 export const reviewController = new ReviewController(reviewService);
 
 router.post("/create", customerAuthentication, reviewController.createReview);
-router.get("/my/:id", authenticate, reviewController.getMyReviews);
+router.get("/my/:id", reviewController.getMyReviews);
 
 export default router;

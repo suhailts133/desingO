@@ -4,7 +4,6 @@ import { AuthService } from "../../services/auth/authService";
 import { AuthController } from "../../controllers/common/AuthController";
 import { UserRepository } from "../../repositories/auth/userRepository";
 import { RefreshTokenRepositoy } from "../../repositories/auth/refreshTokenRepository";
-import { BlackListRepository } from "../../repositories/auth/blacklistRepository";
 
 const router = Router()
 
