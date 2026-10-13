@@ -75,6 +75,13 @@ export class AdminDesignerVerificationservice implements IAdminDesignerVerificat
    * @throws {AppError} 500 - If updating the request status or user role fails.
    */
   async ApproveOrRejectDesignerRequest(adminId:string, id: string, data: AdminDesignerApprovalDTO): Promise<IApiResponse<AdminDesignerStatusDTO>> {
+    const designerApplication = await this._designerVerificationRepo.getDesignerRequest(id);
+    if(!designerApplication){
+      throw new AppError(ADMIN_MESSAGES.DESIGNER_VERFICATION.DESIGNER_APPLICATION_NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+    }
+    if(designerApplication.status === DESIGNER_STATUS.REJECTED){
+        throw new AppError(ADMIN_MESSAGES.DESIGNER_VERFICATION.ALLREADY_REJECTED, RESPONSE_CODE.CONFILT);
+    }
     const updatedDesignerRequest = await this._transactionManager.runInTransaction(async (session) => {
       const updatedDesignerRequest = await this._designerVerificationRepo.ApproveOrReject(id, data, session);
       if (!updatedDesignerRequest) {
