@@ -80,6 +80,10 @@ export class AdminUserManagementService implements IAdminUserManagementService {
      * @throws {AppError} 500 - If updating the user's status fails in the repository.
      */
     async toggleUser(id: string, is_blocked: boolean): Promise<IApiResponse<AdminUserToggleStatusDTO>> {
+        const user = await this._userManagement.getUser(id);
+        if(!user){
+            throw new AppError(ADMIN_MESSAGES.USER_MANAGEMENT.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+        }
         const result = await this._userManagement.toggleUser(id, is_blocked);
         if (!result) {
             throw new AppError(ADMIN_MESSAGES.USER_MANAGEMENT.TOGGLE_ERROR, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
