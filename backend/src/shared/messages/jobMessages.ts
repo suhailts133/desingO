@@ -1,6 +1,9 @@
 export const JOB_MESSAGES = {
 
     JOB_APPLICATION: {
+        APPROVED:"Job application approved successfully",
+        REJECTED:"Job application rejected successfully",
+        UPDATE_FAILED:"Failed to update job application, please try again or contact support.",
         ALREADY_APPLIED: "You have already applied for this job.",
         APPLIED_SUCCESS: "Job application submitted successfully.",
         NOT_FOUND: "Job application not found.",
@@ -51,6 +54,7 @@ export const JOB_MESSAGES = {
 
     },
     ACTIVE_JOB: {
+        CANT_CREATE: "Failed to activate the job.",
         NOT_FOUND: "Active job not found.",
         UPDATION_FAILED: "failed to update active job.",
         FETCH_ALL: "Fetched all active jobs.",
