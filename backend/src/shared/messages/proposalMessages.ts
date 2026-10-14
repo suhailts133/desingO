@@ -6,7 +6,7 @@ export const PROPOSAL_MESSAGES = {
     NOT_FOUND: "Floor Plan not found.",
     UPDATE_FAIL: "failed to update floorplan status.",
     ALREDY_CHANGED: (status: string) => `Already Updated the floor Plan Status to ${status}`,
-    UPDATE_SUCCESS: "failed to  update floorplan status.",
+    UPDATE_SUCCESS:  "Floor plan status updated successfully.",
   },
 
   DISPUTE: {
@@ -70,6 +70,8 @@ export const PROPOSAL_MESSAGES = {
     SERVICE_ORDER_NOT_CONTINUOUS: "Service orders must be continuous (1, 2, 3...)",
     SERVICES_REQUIRED: "Service is required",
     NOT_ONGOING: "This proposal is not Active.",
+    APPROVED:"Proposal accepted successfully",
+     REJECTED:"Proposal rejected successfully",
   },
   PROPOSAL_INPUT: {
     TEMPLATE_FETCH_SUCCESS: "Proposal template fetched success.",

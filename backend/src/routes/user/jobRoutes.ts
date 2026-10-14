@@ -1,5 +1,4 @@
 import { Router } from "express";
-import authenticate from "../../middlewares/auth";
 import { JobController } from "../../controllers/user/JobController";
 import { JobRequestService } from "../../services/customer/jobRequestService";
 import { JobRequestRepository } from "../../repositories/customer/jobRequestRepository";

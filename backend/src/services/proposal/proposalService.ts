@@ -214,7 +214,7 @@ export class ProposalService implements IProposalService {
       message: SOCKET_MESSAGES.NOTIFICATION_MESSAGES.PROPOSAL(proposal.sourceName, data.contractStatus).slice(0, 80),
     };
     await this._notificationService.notify(notification);
-
-    return { message: PROPOSAL_MESSAGES.PROPOSAL.STATUS_CHANGED, data: data.contractStatus };
+    const message = data.contractStatus === CONTRACT_STATUS.ACCEPTED ?  PROPOSAL_MESSAGES.PROPOSAL.APPROVED: PROPOSAL_MESSAGES.PROPOSAL.REJECTED
+    return { message, data: data.contractStatus };
   }
 }
