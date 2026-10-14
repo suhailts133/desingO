@@ -127,7 +127,7 @@ export class JobRequestService implements IJobRequestService {
       };
       await this._notificationService.notify(notification);
     }
-    return { message: JOB_MESSAGES.JOB_REQUEST.JOB_REQUEST_SUCCESS };
+    return { message: JOB_MESSAGES.JOB_REQUEST.JOB_REQUEST_SUCCESS,statuscode:RESPONSE_CODE.CREATED };
   }
   async getjobRequestPerDesign(designId: string, filters?: HireDesignerQueryParam): Promise<IApiResponseWithPagination<HireDesignerDTO[]>> {
     const { data, pagination } = await this._jobRequestRepo.getjobRequestPerDesign(designId, filters);
@@ -237,8 +237,8 @@ export class JobRequestService implements IJobRequestService {
     if (!jobRequest) {
       throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
     }
-    if (!jobRequest) {
-      throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+    if(jobRequest.status !== JOB_REQUEST_STATUS.PENDING){
+      throw new AppError(JOB_MESSAGES.JOB_REQUEST.CANNOT_DELETE, RESPONSE_CODE.CONFILT)
     }
     if (jobRequest.referenceImages && jobRequest.referenceImages.length > 0) {
       await this._imageUploder.deleteMany(jobRequest.referenceImages.map((e) => e.filename));

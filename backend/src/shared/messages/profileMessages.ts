@@ -5,6 +5,6 @@ export const PROFILE_MESSAGES = {
         USER_NOT_FOUND: "User not found.",
         USER_FOUND: "User fetched successfully.",
         UPDATE_SUCCESS: "Profile updated successfully.",
-        UPDATE_FAIL: "Profile update failed."
+        UPDATE_FAIL: "failed to update profile, try again later or contact support."
     },
 } as const

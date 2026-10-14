@@ -1,5 +1,5 @@
 import Joi from "joi";
-import type { HireDesignerPayload, ICreateJobRequest, IHouseholdProfile, IItemDimensions, INewBuildDetails, IRenovationDetails, IRoomMeasurement } from "../../interfaces/customer/ICustomer";
+import type {  ICreateJobRequest, IHouseholdProfile, IItemDimensions, INewBuildDetails, IRenovationDetails, IRoomMeasurement } from "../../interfaces/customer/ICustomer";
 import type { EditJobRequest } from "../../DTO/user/jobsDTO";
 
 
@@ -44,34 +44,6 @@ export const roomMeasurementValidation: Joi.ObjectSchema<IRoomMeasurement> = Joi
         }),
 });
 
-export const directHireValidation = roomMeasurementValidation
-    .fork(
-        ["spaceType"],
-        (schema) => schema.strip().optional()
-    )
-    .fork(
-        ["unit"],
-        () =>
-            Joi.string()
-                .valid("ft", "m")
-                .required()
-                .messages({
-                    "any.only": "Unit must be either 'ft' or 'm'",
-                    "string.empty": "Unit is required",
-                    "any.required": "Unit is required",
-                })
-    )
-    .append({
-        designId: Joi.string()
-            .regex(/^[a-fA-F0-9]{24}$/)
-            .required(),
-        services: Joi.array()
-            .items(Joi.string())
-            .required(),
-        timeLine: Joi.string()
-            .trim()
-            .required(),
-    }) as Joi.ObjectSchema<HireDesignerPayload>;
 
 
 export const itemDimensionsValidation: Joi.ObjectSchema<IItemDimensions> = Joi.object({

@@ -19,7 +19,7 @@ export const JOB_MESSAGES = {
         SOURCE_INVALID: "Invalid source type",
         ID_REQUIRED: "Job request id is required.",
         NOT_FOUND: "Job request not found.",
-        ACCEPTED_CANT_UPDATE: "The job request is accepted so cant update.",
+        ACCEPTED_CANT_UPDATE: "Ongoing job request cannot be updated.",
         JOB_REQUEST_FAIL: "Failed to post job request, please try again.",
         JOB_REQUEST_SUCCESS: "Job request posted successfully.",
         UPDATION_FAILED: "Failed to update your job request. Please contact support.",
@@ -29,6 +29,7 @@ export const JOB_MESSAGES = {
         JOB_REQUEST: "Fetched  job request successfully.",
         DELETION_FAILED: "Failed to delete your job request. Please contact support.",
         DELETION_SUCCESS: "Job request deleted successfully.",
+        CANNOT_DELETE: "Cannot delete the job request because it has already been accepted by a designer."
 
     },
 

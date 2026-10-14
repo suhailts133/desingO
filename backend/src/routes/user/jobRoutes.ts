@@ -12,6 +12,7 @@ import optionalAuth from "../../middlewares/optionalAuth";
 import { notificationService } from "../designer/jobApplicationRoutes";
 import { DesignRepository } from "../../repositories/designer/designRepository";
 import { MongooseTransactionManager } from "../../shared/helpers/MongooseTransactionManager";
+import customerAuthentication from "../../middlewares/customerAuth";
 const upload = multer({ storage: multer.memoryStorage() });
 
 
@@ -28,18 +29,18 @@ export const jobrequestService = new JobRequestService(designRepo, notificationS
 const jobController = new JobController(jobrequestService)
 
 router.get("/", jobController.getAllJobs)
-router.post("/post-job", authenticate, upload.fields([
+router.post("/post-job", customerAuthentication, upload.fields([
     { name: "referenceImages", maxCount: 10 },
     { name: "floorPlans", maxCount: 10 }
 ]), jobController.postJobRequest)
 router.patch("/accept-reject", designerAuthentication, jobController.acceptOrRejectHireRequest)
-router.get("/my", authenticate, jobController.getMyJobs)
-router.patch("/edit-job/:id", authenticate, upload.fields([
+router.get("/my", customerAuthentication, jobController.getMyJobs)
+router.patch("/edit-job/:id", customerAuthentication, upload.fields([
     { name: "referenceImages", maxCount: 10 },
     { name: "floorPlans", maxCount: 10 }
 ]), jobController.editJobRequest)
 
-router.get("/design/request/:id", jobController.getRequestPerDesign)
+router.get("/design/request/:id",designerAuthentication, jobController.getRequestPerDesign)
 router.get("/:id", optionalAuth, jobController.getJobDetails)
-router.delete("/:id", authenticate, jobController.deleteAJob)
+router.delete("/:id", customerAuthentication, jobController.deleteAJob)
 export default router
