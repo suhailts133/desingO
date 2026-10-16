@@ -151,18 +151,12 @@ export class AuthController {
      * @throws {AppError} 400 if there is any issue with req.body
     */
     forgetPasswordChangePassword = asyncHandler(async (req: Request, res: Response) => {
-        // const jti = req.user?.jti
-        // const exp = req.user?.exp
-
-        if(!req.user){
-            throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.UNAUTHORIZED)
-        }
         const { error, value } = emailAndPasswordValidator.validate(req.body)
         if (error) {
             throw new AppError(error.details[0]?.message || "Missing fields or Invalid Data", RESPONSE_CODE.BAD_REQUEST)
         }
         const { email, password } = value
-        const result = await this._authService.forgetPasswordChangePassword(email, password, req.user.jti, req.user.exp);
+        const result = await this._authService.forgetPasswordChangePassword(email, password);
         RespsonseHelper.success(res, result)
     })
 

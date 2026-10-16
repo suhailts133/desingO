@@ -129,7 +129,6 @@ export class DisputeService implements IDisputeService {
     }
 
     await this._transactionManager.runInTransaction(async (session) => {
-      console.log(session.id, "From accept or reject disputd");
       const claimed = await this._disputeRepo.updateDisputeIfStatus(data.disputeId, DISPUTE_STATUS.AWAITING_CONFIRMATION, { status: data.status }, session);
 
       if (!claimed) {

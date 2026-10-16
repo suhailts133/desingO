@@ -10,6 +10,7 @@ import { CloudinaryService } from "../../services/common/cloudinaryService";
 import multer from "multer";
 import designerAuthentication from "../../middlewares/designerAuth";
 import { MongooseTransactionManager } from "../../shared/helpers/MongooseTransactionManager";
+import customerAuthentication from "../../middlewares/customerAuth";
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router();
@@ -25,10 +26,10 @@ const profileImageService = new ProfileImageService(userRepo, imageUploadService
 const profileController = new ProfileController(profileService);
 const profileImageController = new ProfileImageController(profileImageService);
 
-router.get("/designer", authenticate, profileController.getDesignerProfile);
+router.get("/designer", designerAuthentication, profileController.getDesignerProfile);
 router.patch("/edit-designer-preference", designerAuthentication, profileController.updateDesigenrPreference);
-router.get("/user", authenticate, profileController.getUserProfile);
-router.patch("/designer", authenticate, profileController.updateDesignerProfle);
-router.patch("/user", authenticate, profileController.updateUserProfile);
+router.get("/user", customerAuthentication, profileController.getUserProfile);
+router.patch("/designer", designerAuthentication, profileController.updateDesignerProfle);
+router.patch("/user", customerAuthentication, profileController.updateUserProfile);
 router.patch("/change-profile-image", authenticate, upload.single("profileImageFile"), profileImageController.changeProfileImage);
 export default router;

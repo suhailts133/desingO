@@ -16,11 +16,12 @@ export const ADMIN_MESSAGES = {
     },
 
     DESIGNER_VERFICATION: {
+        ALLREADY_REJECTED: "Designer applications already rejected.",
         DESIGNER_APPLICATIONS: "Designer applications fetched successfully.",
         DESIGNER_APPLICATION_NOT_FOUND: "Designer application not found.",
         DESIGNER_APPLICATION_DETAIL: "Designer application detail fetched successfully.",
-        STATUS_CHAGNE_NOT_FOUND: "Designer application not found or failed to process.",
-        STATUS_CHANGE_USER_NOT_FOUND: "User not found for role update.",
+        STATUS_CHAGNE_NOT_FOUND: "Designer application failed to process, Please try again or contact support.",
+        STATUS_CHANGE_USER_NOT_FOUND: "Cannot change user role to Designer, Please try again or contact support.",
         STATUS_CHANGE_FAIL: "Failed to assign designer role to user.",
         STATUS_CHANGE_SUCCESS: "Designer application approved successfully.",
         STATUS_CHANGE_REJECTED: "Designer application rejected successfully.",

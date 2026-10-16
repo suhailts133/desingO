@@ -4,8 +4,8 @@ import { DesignerController } from "../../controllers/designer/designerControlle
 import { DesignerService } from "../../services/designer/designerService";
 import { DesignerRepository } from "../../repositories/designer/designerRepository";
 import { UserRepository } from "../../repositories/auth/userRepository";
-import authenticate from "../../middlewares/auth"
 import { CloudinaryService } from "../../services/common/cloudinaryService";
+import customerAuthentication from "../../middlewares/customerAuth";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -19,7 +19,7 @@ const designerService = new DesignerService(userRepository, designerRepository, 
 
 const designerController = new DesignerController(designerService)
 
-router.post("/designer-verification", authenticate, upload.fields([
+router.post("/designer-verification", customerAuthentication, upload.fields([
     { name: "governmentIdImage", maxCount: 1 },
     { name: "educationImages", maxCount: 4 },
     { name: "workExperienceImages", maxCount: 4 },

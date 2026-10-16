@@ -14,10 +14,13 @@ export class SavedDesignService implements ISavedDesignService {
     constructor(private _savedDesignRepo: ISavedDesignRepository, private _userRepo: IUserRepository, private _DesignRepo: IDesignRepository) { }
 
     async addOrRemoveDesign(data: ISavedDesignDTO, userId: string): Promise<IApiResponse<boolean>> {
-        console.log(data)
         const user = await this._userRepo.findUserById(userId);
         if (!user) {
             throw new AppError(AUTH_MESSAGES.USER.NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
+        }
+        const design = await this._DesignRepo.getDesign(data.designId);
+        if(!design){
+            throw new AppError(DESIGNER_MESSAGES.DESIGNS.DESIGN_NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
         }
         const designId = new mongoose.Types.ObjectId(data.designId);
         if (data.isSaved) {
@@ -29,7 +32,8 @@ export class SavedDesignService implements ISavedDesignService {
         if (!updatedUser) {
             throw new AppError(DESIGNER_MESSAGES.SAVED_DEIGN.UPATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
-        return { message: DESIGNER_MESSAGES.SAVED_DEIGN.UPATE_SUCCESS, data: data.isSaved }
+        const message = data.isSaved ? DESIGNER_MESSAGES.SAVED_DEIGN.ADD_DESIGN : DESIGNER_MESSAGES.SAVED_DEIGN.REMOVE_DESIGN;
+        return { message, data: data.isSaved }
     }
 
     

@@ -18,6 +18,7 @@ async function customerAuthentication(req: Request, res: Response, next: NextFun
         }
 
         const decoded = jwt.verify(token as string, process.env.ACCESS_TOKEN_SECRET_KEY as string) as JwtPayloadAccessToken
+        console.log(decoded.role)
         const isBlackListed = await blacklistRepo.getToken(decoded.jti)
         if (isBlackListed) {
             return res.status(RESPONSE_CODE.UNAUTHORIZED).json({ message: AUTH_MESSAGES.AUTH.TOKEN_REVOKED, success: false });

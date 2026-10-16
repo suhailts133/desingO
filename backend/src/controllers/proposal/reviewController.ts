@@ -11,6 +11,7 @@ import { isObjectId } from "../../shared/helpers/extraFunctions";
 import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
 import { DESIGNER_MESSAGES } from "../../shared/messages/designerMessages";
 import Logger from "../../config/logger";
+import { JOB_MESSAGES } from "../../shared/messages/jobMessages";
 
 export class ReviewController {
     constructor(private _reviewService: IReviewService) { }
@@ -83,17 +84,17 @@ export class ReviewController {
 
     /**
      * to get review per proposal or jobrequest 
-     * @route GET /proposal/top-reviews
+     * @route GET /proposal/review/:id
      * @param req.params.id  jobId
      * @throws {AppError} 400 if there is any issue with jobId
      */
     getReviewPerJob = asyncHandler(async (req: Request, res: Response) => {
         const jobId = req.params.id as string
         if (!jobId) {
-            throw new AppError(AUTH_MESSAGES.AUTH.UNAUTHORIZED, RESPONSE_CODE.BAD_REQUEST);
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST);
         }
         if (!isObjectId(jobId)) {
-            throw new AppError(DESIGNER_MESSAGES.DESIGNER.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
+            throw new AppError(JOB_MESSAGES.JOB_REQUEST.ID_REQUIRED, RESPONSE_CODE.BAD_REQUEST)
         }
         const result = await this._reviewService.getReviewPerJob(jobId)
         RespsonseHelper.success(res, result)

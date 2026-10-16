@@ -124,7 +124,7 @@ export class ProposalService implements IProposalService {
       throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
     }
     if (proposal.contractStatus !== CONTRACT_STATUS.REJECTED) {
-      throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.UPDATE_NOT_REJECTED, RESPONSE_CODE.BAD_REQUEST);
+      throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.UPDATE_NOT_REJECTED, RESPONSE_CODE.CONFILT);
     }
     const expectedTotalDrawingFee = rest.drawingFeePerSqFt * jobRequest.totalCarpetArea;
     const totalDrawingFee = data.services.reduce((acc, cur) => acc + cur.price, 0);
@@ -168,7 +168,7 @@ export class ProposalService implements IProposalService {
     const allVersions = await this._serviceVersionRepo.findAllVersions(sourceId);
 
     const proposalData = ProposalMapper.toProposalDetailDTO(result, allVersions, floorPlans);
-    return { message: PROPOSAL_MESSAGES.PROPOSAL.FETCH_SUCCESS, data: proposalData, statuscode: RESPONSE_CODE.CREATED };
+    return { message: PROPOSAL_MESSAGES.PROPOSAL.FETCH_SUCCESS, data: proposalData };
   }
 
   async getProposalTemplate(id: string): Promise<IApiResponse<ProposalInputData>> {
@@ -214,7 +214,7 @@ export class ProposalService implements IProposalService {
       message: SOCKET_MESSAGES.NOTIFICATION_MESSAGES.PROPOSAL(proposal.sourceName, data.contractStatus).slice(0, 80),
     };
     await this._notificationService.notify(notification);
-
-    return { message: PROPOSAL_MESSAGES.PROPOSAL.STATUS_CHANGED, data: data.contractStatus };
+    const message = data.contractStatus === CONTRACT_STATUS.ACCEPTED ?  PROPOSAL_MESSAGES.PROPOSAL.APPROVED: PROPOSAL_MESSAGES.PROPOSAL.REJECTED
+    return { message, data: data.contractStatus };
   }
 }

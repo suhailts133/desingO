@@ -76,7 +76,7 @@ export class JobRequestService implements IJobRequestService {
         throw new AppError(JOB_MESSAGES.HIRE_DESIGNER.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
       }
       if (updatedHireRequst.status === JOB_REQUEST_STATUS.ACCEPTED) {
-        const isActive = await this._activeJobRepo.createActiveJOb(
+         await this._activeJobRepo.createActiveJOb(
           {
             userId: updatedHireRequst.userId.toString(),
             designerId: updatedHireRequst.designerId.toString(),
@@ -86,9 +86,7 @@ export class JobRequestService implements IJobRequestService {
           },
           session,
         );
-        if (!isActive) {
-          throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
-        }
+      
         if (updatedHireRequst.designId) {
           const updateDesignCount = await this._designRepo.adjustActiveJobCount(updatedHireRequst.designId.toString(), DELTA_COUNT.INC, session);
           if (!updateDesignCount) {
@@ -127,7 +125,7 @@ export class JobRequestService implements IJobRequestService {
       };
       await this._notificationService.notify(notification);
     }
-    return { message: JOB_MESSAGES.JOB_REQUEST.JOB_REQUEST_SUCCESS };
+    return { message: JOB_MESSAGES.JOB_REQUEST.JOB_REQUEST_SUCCESS,statuscode:RESPONSE_CODE.CREATED };
   }
   async getjobRequestPerDesign(designId: string, filters?: HireDesignerQueryParam): Promise<IApiResponseWithPagination<HireDesignerDTO[]>> {
     const { data, pagination } = await this._jobRequestRepo.getjobRequestPerDesign(designId, filters);
@@ -207,7 +205,7 @@ export class JobRequestService implements IJobRequestService {
   async getJobRequestDetail(jobId: string, designerId?: string): Promise<IApiResponse<JobDetailResponseDTO>> {
     const result = await this._jobRequestRepo.getJobRequest(jobId);
     if (!result) {
-      throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NO_CONTENT);
+      throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
     }
     if (designerId) {
       await this._designerInteractionRepo.createInteraction({
@@ -237,8 +235,8 @@ export class JobRequestService implements IJobRequestService {
     if (!jobRequest) {
       throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
     }
-    if (!jobRequest) {
-      throw new AppError(JOB_MESSAGES.JOB_REQUEST.NOT_FOUND, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
+    if(jobRequest.status !== JOB_REQUEST_STATUS.PENDING){
+      throw new AppError(JOB_MESSAGES.JOB_REQUEST.CANNOT_DELETE, RESPONSE_CODE.CONFILT)
     }
     if (jobRequest.referenceImages && jobRequest.referenceImages.length > 0) {
       await this._imageUploder.deleteMany(jobRequest.referenceImages.map((e) => e.filename));

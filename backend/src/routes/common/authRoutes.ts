@@ -4,7 +4,6 @@ import { AuthService } from "../../services/auth/authService";
 import { AuthController } from "../../controllers/common/AuthController";
 import { UserRepository } from "../../repositories/auth/userRepository";
 import { RefreshTokenRepositoy } from "../../repositories/auth/refreshTokenRepository";
-import { BlackListRepository } from "../../repositories/auth/blacklistRepository";
 
 const router = Router()
 
@@ -12,8 +11,7 @@ const router = Router()
 const otpRepository = new OtpRepository()
 const userRepository = new UserRepository()
 const refreshTokenRepo = new RefreshTokenRepositoy()
-const blackListRepo = new BlackListRepository()
-const authService = new AuthService(otpRepository, userRepository, refreshTokenRepo, blackListRepo);
+const authService = new AuthService(otpRepository, userRepository, refreshTokenRepo);
 const authController = new AuthController(authService)
 
 router.post("/signup", authController.register)

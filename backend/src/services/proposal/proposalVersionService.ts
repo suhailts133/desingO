@@ -53,16 +53,12 @@ export class ProposalVersionService implements IProposalVersionService {
       images,
       serviceOrder: service.order,
     });
-    if (!versionResult) {
-      throw new AppError("version createion failed", RESPONSE_CODE.INTERNAL_SERVER_ERROR);
-    }
-
     const updatedServiceVersion = await this._proposalRepo.updateServiceVersion(sourceId, Number(ServiceNumber), ServiceStatus.UPLOADED, versionResult.version);
     if (!updatedServiceVersion) {
       throw new AppError(PROPOSAL_MESSAGES.SERVICE.UPDATE_FAIL, RESPONSE_CODE.NOT_FOUND);
     }
 
-    return { message: PROPOSAL_MESSAGES.SERVICE.SUCCESS };
+    return { message: PROPOSAL_MESSAGES.SERVICE.SUCCESS, statuscode:RESPONSE_CODE.CREATED };
   }
 
   async acceptOrRejectVersion(data: VersionAcceptOrRejectDTO): Promise<IApiResponse> {

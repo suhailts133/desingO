@@ -91,7 +91,7 @@ export class JobApplicationService implements IJobApplicationService {
       }
       const result = await this._jobApplicationRepo.approveOrRejectJobApplication(id, data, session);
       if (!result) {
-        throw new AppError(JOB_MESSAGES.JOB_APPLICATION.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
+        throw new AppError(JOB_MESSAGES.JOB_APPLICATION.UPDATE_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
       }
 
       if (result.status === JOB_APPLICATION_STATUS.ONGOING) {
@@ -123,10 +123,10 @@ export class JobApplicationService implements IJobApplicationService {
     });
 
     const jobApplicationData = JobApplicationMapper.toJobApplicationApprovalOrRejectionDTO(result);
-
+    const message = data.status === JOB_APPLICATION_STATUS.ONGOING ? JOB_MESSAGES.JOB_APPLICATION.APPROVED:JOB_MESSAGES.JOB_APPLICATION.REJECTED
     return {
       success: true,
-      message: JOB_MESSAGES.JOB_APPLICATION.STATUS_UPDATED_SUCCESS,
+      message,
       statuscode: RESPONSE_CODE.OK,
       data: jobApplicationData,
     };

@@ -18,7 +18,7 @@ import { AUTH_MESSAGES } from "../../shared/messages/authMessages";
 import { UserMapper } from "../../dtoMappers/user/userMapper";
 
 import { v4 as uuidv4 } from "uuid"
-import type { IBlackListRepository, IRefreshTokenRepository, RefreshTokenPayload } from "../../interfaces/auth/IRefreshToken";
+import type {  IRefreshTokenRepository, RefreshTokenPayload } from "../../interfaces/auth/IRefreshToken";
 import { USER_ROLES } from "../../shared/enums/commonEnums";
 
 
@@ -34,7 +34,6 @@ export class AuthService implements IAuthService {
         private _otpRepository: IOTPRepository,
         private _userRepository: IUserRepository,
         private _refreshTokenRepo: IRefreshTokenRepository,
-        private _blackListRepo: IBlackListRepository
     ) { }
 
 
@@ -223,10 +222,6 @@ export class AuthService implements IAuthService {
         if (!otpChecking) {
             throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.OTP_INCORRECT, RESPONSE_CODE.BAD_REQUEST)
         }
-        const deleted = await this._otpRepository.deleteOTP(email);
-        if (deleted === 0) {
-            throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.OTP_EXPIRED, RESPONSE_CODE.NOT_FOUND);
-        }
         return { message: AUTH_MESSAGES.LOGIN_SIGNUP.OTP_SUCCESS }
 
     }
@@ -274,20 +269,25 @@ export class AuthService implements IAuthService {
      * @throws {AppError} 404 - If no account exists with the provided email.
      * @throws {AppError} 500 - If updating the password fails in the repository.
      */
-    async forgetPasswordChangePassword(email: string, password: string, jti: string, exp: number): Promise<IApiResponse> {
+    async forgetPasswordChangePassword(email: string, password: string): Promise<IApiResponse> {
         const userExists = await this._userRepository.findEmail(email);
         if (!userExists) {
             throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.EMAIL_NOT_FOUND, RESPONSE_CODE.NOT_FOUND)
         }
+         const savedOTP = await this._otpRepository.getOTP(email)
+        if (savedOTP === null) {
+            throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.OTP_EXPIRED, RESPONSE_CODE.GONE)
+        }
+        
         const hashedPassword = await hashPassword(password);
         const isPasswordChanged = await this._userRepository.changePassword(email, hashedPassword)
         if (!isPasswordChanged) {
             throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.PASSWORD_CHANGE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR)
         }
-        const ttl = exp - Math.floor(Date.now() / 1000)
-
-        if (ttl > 0) {
-            await this._blackListRepo.storeToken(jti, ttl)
+     
+           const deleted = await this._otpRepository.deleteOTP(email);
+        if (deleted === 0) {
+            throw new AppError(AUTH_MESSAGES.LOGIN_SIGNUP.OTP_EXPIRED, RESPONSE_CODE.NOT_FOUND);
         }
         await this._refreshTokenRepo.deleteAllTokens(isPasswordChanged.id)
         return { message: AUTH_MESSAGES.LOGIN_SIGNUP.PASSWORD_CHANGE_SUCCESS }
