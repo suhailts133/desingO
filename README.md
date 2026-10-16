@@ -6,7 +6,7 @@ Built with the **MERN stack and TypeScript**, structured around a **repository a
 
 🔗 **Live demo:** https://www.designo.space/
 
-📘 **API docs:** [Postman](https://documenter.getpostman.com/view/58996015/2sBYHSwfPX) · 🗄️ **DB design:** [Eraser](https://app.eraser.io/workspace/6YcrQTvL6StgVV1iHVeK)
+📘 **API docs:** [Postman](https://documenter.getpostman.com/view/58996015/2sBYHSwfPX) · 🗄️ **DB design:** [Eraser](https://app.eraser.io/workspace/6YcrQTvL6StgVV1iHVeK)  . 🎨 **UI/UX:** [figma](https://www.figma.com/design/gww48S2VU2IqYURpEf5SCf/designo?node-id=38-1628&t=7TGGicTe6SWQ8ZjR-1)
 
 ---
 
@@ -169,7 +169,7 @@ Customers and designers communicate through **Socket.IO** with authenticated soc
 | 🌐 Live application | [designo.space](https://www.designo.space/) |
 | 📘 API documentation | [Postman docs](https://documenter.getpostman.com/view/58996015/2sBYHSwfPX) |
 | 🗄️ Database design | [Eraser workspace](https://app.eraser.io/workspace/6YcrQTvL6StgVV1iHVeK) |
-| 🎨 UI/UX design [figma]([https://app.eraser.io/workspace/6YcrQTvL6StgVV1iHVeK](https://www.figma.com/design/gww48S2VU2IqYURpEf5SCf/designo?node-id=38-1628&t=7TGGicTe6SWQ8ZjR-1)) |
+| 🎨 UI/UX design [figma](https://www.figma.com/design/gww48S2VU2IqYURpEf5SCf/designo?node-id=38-1628&t=7TGGicTe6SWQ8ZjR-1)) |
 | 💻 Source code | [GitHub](https://github.com/suhailts133/designo) |
 
 ---
