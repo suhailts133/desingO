@@ -124,7 +124,7 @@ export class ProposalService implements IProposalService {
       throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.NOT_FOUND, RESPONSE_CODE.NOT_FOUND);
     }
     if (proposal.contractStatus !== CONTRACT_STATUS.REJECTED) {
-      throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.UPDATE_NOT_REJECTED, RESPONSE_CODE.BAD_REQUEST);
+      throw new AppError(PROPOSAL_MESSAGES.PROPOSAL.UPDATE_NOT_REJECTED, RESPONSE_CODE.CONFILT);
     }
     const expectedTotalDrawingFee = rest.drawingFeePerSqFt * jobRequest.totalCarpetArea;
     const totalDrawingFee = data.services.reduce((acc, cur) => acc + cur.price, 0);

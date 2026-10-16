@@ -60,9 +60,9 @@ export class DesignerService implements IDesignerService {
         await this._designerRepository.createDesignerRequest(designerData)
         const emailSent = await sendDesignerVerificationEmail(user.email, user.full_name)
         if (!emailSent) {
-            return { message: AUTH_MESSAGES.EMAIL.NOT_SEND }
+            return { message: AUTH_MESSAGES.EMAIL.NOT_SEND,statuscode:RESPONSE_CODE.CREATED }
         }
-        return { message: DESIGNER_MESSAGES.DESIGNER_VERIFICATION.SUCCESS }
+        return { message: DESIGNER_MESSAGES.DESIGNER_VERIFICATION.SUCCESS , statuscode:RESPONSE_CODE.CREATED}
 
     }
 

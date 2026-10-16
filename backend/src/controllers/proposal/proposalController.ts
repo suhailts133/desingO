@@ -28,7 +28,7 @@ export class ProposalController {
 
 
     /**
-   * for create new PRoposal
+   * for update ne PRoposal
    * @route PATCH /proposal/update
    * @param req.body {@link UpdateProposalDTO}
    * @throws {AppError} 400 if there is any issue with req.body
@@ -42,7 +42,12 @@ export class ProposalController {
         const result = await this._proposalService.updateProposal(validated)
         RespsonseHelper.success(res, result)
     })
-
+ /**
+   * for create new proposal
+   * @route POST /proposal/create
+   * @param req.body {@link CreateProposalDTO}
+   * @throws {AppError} 400 if there is any issue with req.body
+  */
     createProposal = asyncHandler(async (req: Request, res: Response) => {
         const { error, value } = createProposalValidation.validate(req.body, { stripUnknown: true })
         if (error) {

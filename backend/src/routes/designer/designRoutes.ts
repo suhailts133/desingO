@@ -9,6 +9,7 @@ import optionalAuth from "../../middlewares/optionalAuth";
 import { UserRepository } from "../../repositories/auth/userRepository";
 import { DesignBenchMarkRepository } from "../../repositories/benchmarks/designBenchMarkRepository";
 import { CustomerInteractionRepository } from "../../repositories/customer/customerInteractionRepository";
+import customerAuthentication from "../../middlewares/customerAuth";
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router()
@@ -27,7 +28,7 @@ router.post("/add-design", designerAuthentication, upload.fields([
 ]), designController.addDesign)
 
 router.get("/my", designerAuthentication, designController.getMyDesigns)
-router.get("/suggestion", designController.getDesignForAiImageGeneration)
+router.get("/suggestion", customerAuthentication, designController.getDesignForAiImageGeneration)
 router.get("/all-designs", optionalAuth, designController.getAllDesigns)
 
 router.patch("/edit-design/:id", designerAuthentication, upload.fields([

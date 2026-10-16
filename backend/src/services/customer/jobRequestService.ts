@@ -76,7 +76,7 @@ export class JobRequestService implements IJobRequestService {
         throw new AppError(JOB_MESSAGES.HIRE_DESIGNER.UPDATE_FAIL, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
       }
       if (updatedHireRequst.status === JOB_REQUEST_STATUS.ACCEPTED) {
-        const isActive = await this._activeJobRepo.createActiveJOb(
+         await this._activeJobRepo.createActiveJOb(
           {
             userId: updatedHireRequst.userId.toString(),
             designerId: updatedHireRequst.designerId.toString(),
@@ -86,9 +86,7 @@ export class JobRequestService implements IJobRequestService {
           },
           session,
         );
-        if (!isActive) {
-          throw new AppError(JOB_MESSAGES.JOB_REQUEST.UPDATION_FAILED, RESPONSE_CODE.INTERNAL_SERVER_ERROR);
-        }
+      
         if (updatedHireRequst.designId) {
           const updateDesignCount = await this._designRepo.adjustActiveJobCount(updatedHireRequst.designId.toString(), DELTA_COUNT.INC, session);
           if (!updateDesignCount) {
