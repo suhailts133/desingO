@@ -406,15 +406,7 @@ More test cards: [Stripe testing docs](https://docs.stripe.com/testing)
 
 ---
 
-## 🔮 Future Improvements
 
-- [ ] Automated unit and integration tests
-- [ ] Push and email notification preferences
-- [ ] Designer analytics and earnings reports
-- [ ] Multi-language support
-- [ ] Add your own ideas here
-
----
 
 ## 👤 Author
 
